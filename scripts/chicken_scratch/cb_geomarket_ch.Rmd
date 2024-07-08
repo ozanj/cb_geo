@@ -1,0 +1,176 @@
+---
+title: 'CB Geomarket'
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+---
+
+```{r setup, include = F}
+knitr::opts_chunk$set(message = F, warning = F)
+
+options(scipen = 10000)
+```
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(lubridate)
+library(haven)
+library(labelled)
+library(tidycensus)
+library(sf)
+library(tigris)
+library(maptools)
+```
+
+
+# Load data
+
+```{r}
+data_dir <- file.path('..', '..', 'data')
+eps_data_dir <- file.path(data_dir, 'eps_market')
+```
+
+```{r}
+# Geomarket to zip conversion
+eps_zip <- read_excel(path = file.path(eps_data_dir, 'eps.xls'), sheet = 'Sheet 1') %>% 
+  mutate(eps = if_else(str_sub(eps, 3, 3) == '0', str_c(str_sub(eps, 1, 2), ' ', str_sub(eps, 4, 4)), eps))
+
+eps_zip
+```
+
+```{r}
+# Zip code shapes (2010)
+zcta_2010 <- zctas(
+  cb = T, 
+  year = 2010
+)
+
+zcta_2010
+```
+
+```{r}
+# Zip code income data (2015)
+income_2015_zcta <- get_acs(
+  geography = 'zcta',
+  variables = 'B19013_001',
+  year = 2015,
+  geometry = F,
+  survey = 'acs5'
+)
+
+income_2015_zcta
+```
+
+```{r}
+# Aggregate income data to geomarket level
+income_2015_eps <- eps_zip %>% 
+  inner_join(income_2015_zcta, by = c('zip' = 'GEOID')) %>%
+  group_by(eps) %>% 
+  summarize(
+    mean_inc = mean(estimate, na.rm = T)
+  ) %>% 
+  ungroup()
+
+income_2015_eps
+income_2015_eps %>% arrange(desc(mean_inc)) %>% print(n=100)
+```
+
+```{r}
+# CA data
+eps_zip_CA <- zcta_2010 %>%  # has to be left join (right/inner loses attributes on geometry)
+  left_join(eps_zip, by = c('ZCTA5' = 'zip')) %>% 
+  filter(str_detect(eps, '^CA'))
+
+eps_zip_CA
+```
+
+```{r}
+myzip <- readShapePoly(file.path(eps_data_dir, 'US_Zip_-_Lower_48.shp'))
+
+myzip@data <- data.frame(myzip@data, eps_zip[match(as.character(myzip@data$ZIP), eps_zip$zip),])
+myzip@data
+myzip_CA <- myzip[!is.na(myzip@data$eps) & str_detect(myzip@data$eps, '^CA'), ]
+```
+
+
+# Plot CA (zip-code level)
+
+## Data from `US_Zip_-_Lower_48.shp`
+
+Matches zip codes from [CA state geoportal](https://gis.data.ca.gov/datasets/CDEGIS::california-zip-codes/explore?location=38.510705%2C-120.973098%2C6.71):
+
+```{r}
+plot(myzip_CA, col = 'pink')
+```
+
+## Data from Census Bureau
+
+Matches zip codes from [Census Bureau](https://hub.arcgis.com/datasets/7f3aa1bd8d1f4915b928ff4da5f3f3bb/explore?location=38.818303%2C-119.108380%2C6.90):
+
+```{r}
+eps_zip_CA %>% 
+  ggplot(aes(fill = 'pink')) +
+  geom_sf()
+```
+
+Color by zip code-level income:
+
+```{r}
+eps_zip_CA %>% 
+  left_join(income_2015_zcta, by = c('NAME' = 'GEOID')) %>% 
+  ggplot(aes(fill = estimate)) +
+  geom_sf(color = NA) +
+  scale_fill_gradient(low = 'lightyellow', high = 'red')
+```
+
+
+# Plot CA (geomarket level)
+
+No difference between aggregate functions:
+
+```{r}
+# Aggregate by identity function
+eps_shapes <- eps_zip_CA %>%
+  aggregate(by = list(eps_zip_CA$eps), FUN = identity) %>% 
+  select(-eps) %>% rename(eps = Group.1)
+
+eps_shapes %>% 
+  ggplot(aes(fill = 'pink')) +
+  geom_sf()
+```
+
+```{r}
+# Aggregate by mean function
+eps_shapes <- eps_zip_CA %>%
+  aggregate(by = list(eps_zip_CA$eps), FUN = mean) %>% 
+  select(-eps) %>% rename(eps = Group.1)
+
+eps_shapes %>% 
+  ggplot(aes(fill = 'pink')) +
+  geom_sf()
+```
+
+Color by geomarket-level income:
+
+```{r}
+eps_shapes %>% 
+  left_join(income_2015_eps, by = 'eps') %>% 
+  ggplot(aes(fill = mean_inc)) +
+  geom_sf(color = NA) +
+  geom_sf_label(aes(label = eps)) +
+  scale_fill_gradient(low = 'lightyellow', high = 'red')
+```
+
+Color by zip code-level income w/ geomarket outline (i.e., within geomarket):
+
+```{r}
+eps_zip_CA %>% 
+    left_join(income_2015_zcta, by = c('NAME' = 'GEOID')) %>% 
+    ggplot() +
+    geom_sf(aes(fill = estimate), color = NA) +
+    geom_sf(data = eps_shapes, fill = NA, color = 'black') +
+    scale_fill_gradient(low = 'lightyellow', high = 'red')
+```

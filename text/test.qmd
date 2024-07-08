@@ -1,0 +1,11 @@
+---
+title: "Word Count Test"
+author: "Tester"
+format:
+  pdf:
+    extensions: [andrewheiss/wordcount]
+---
+
+# Test Document
+
+This document contains {{< words-total >}} words.

@@ -1,0 +1,66 @@
+---
+title: "Structuring College Access: College Board Geo-markets and the Market Segment Model"
+author: ["Ozan Jaquette (UCLA)", "Karina Salazar (University of Arizona)"]
+bibliography: ./../assets/bib/cb_geomarket_bib.bib
+csl: ./../assets/bib/apa.csl
+format:
+  pdf:
+    documentclass: article
+    #papersize: letter
+    number-sections: true
+    number-depth: 2
+    #toc: FALSE
+    #pandoc_args: !expr rmdfiltr::add_wordcount_filter(rmdfiltr::add_citeproc_filter(args = NULL))
+    #keep_tex: true
+editor: visual
+geometry:
+  margin=1in
+fontsize: 11pt
+header-includes:
+  - \usepackage{setspace}
+  - \doublespacing
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+#library(bookdown)
+
+# https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_pdf.pdf
+library(kableExtra)
+```
+
+# Introduction
+
+```{=html}
+<!-- CUT ORIGINS OF MARKET SEGMENT MODEL; TAKES TOO LONG TO GET TO THE NICE QUOTES, WHICH IS SUPPOSED TO BE THE VIGNETTE PART
+@RN4982 describes the origins of the Market Segment Model. In 1978, Robert Zemsky, a University of Pennsylvania professor, was asked by the President to figure out, "'Who thinks about Penn?'" and "'What other institutions do they think about when they think about us?" (p. x) To answer these questions, Zemsky began working with the Market Research Committee of the Consortium on Financing Higher Education (COFHE), an association of thirty-ish selective private universities. As the project project became more ambitious, the researchers reached out to College Board because "we needed a database that described most institutions and most students\ldots Coincientally, the Board was reviewing its own efforts to help colleges estimate their enrollment potential, efforts which had faltered largely because the smallest demographic unit used in tehse analyses was the state' [@RN4982, p. x]. In 1979, College Board began providing data and funding for what became the Comprehensive Undergraduate Enrollment Planning Project (CUEPP).^[say that Pennsylvania Department of Education was also a partner; see page x of Zemsky] [MAYBE CUT SOME TEXT OF THIS PARAGRAPH]
+-->
+```
+In 1983, Zemsky and Oedel authored *The Structure of College Choice*, published by *The College Board.* This book develops the Market Segment Model and introduces local "community-based enrollment markets" (p.14) -- later called "geomarkets" -- which are the basis for the College Board Enrollment Planning Service (EPS), which provides market research to colleges about where to look for students. Whereas subsequent College Board products (e.g., Predictor Plus) can be read as the mimicry of corporate market logic, the Market Segment Model attempts to quantify the knowledge that college admissions officers have about student demand [@RN4982, pp. 9-10]:
+
+> Admissions officers invariably are tellers of stories -- about the colleges they represent, about the colleges they attended, about each other, and about the often vagabond life of college recruiting\ldots We believe that the institutions of admissions officers actually comprise a remarkably systematic body of knowledge about the college selection process\ldots Our research, thus, is based on listening carefully to what admissions officers have to say."
+
+@RN4982 [p. 10] stress the importance of "knowing the territory":
+
+> A good recruiter knows where to look for prospective applicants, as seen in the students' willingness or eluctance to travel. It is necessary to identify not only the most promising communities or poools, but also the specific neighborhoods within those communities -- hence the recruiter's emphasis on feeder high schools. From the beginning, we have sought to mold our research to these concepts, to capture and quantify the phenomenon behind the folklore. Thus, it is the admissions officers' notion of admissions pools that dictates the geographic units of our analysis." \[p. 11\]
+
+The Market Segment Model was created by analyzing College Board data about which colleges SAT test-takers from 1980 sent scores to. High school students who sent scores mostly to colleges in their local geomarket were defined as "local" students. "In-state" students were those who sent most scores to colleges outside their local market but in their home state. "Regional" students were those who sent most scores to colleges outside their home state but in their region (e.g., New England, Midwest). "National" students were those who sent most scores to colleges outside their region. Having categorized students, each local geomarket could be evaluated by the number of students from each of the four market segments, yielding the Market Segment Profile (see @tbl-market-segment-characteristics). Next, for each local geomarket, the Institutional Profile (see @tbl-sample-institutional-profile) the number of students from each market segment that sent scores to a particular college, which could be your college or a competitor.
+
+Collectively, the quantitative outputs of the Market Segment Model provided intelligence about where are the desirable students and which students might consider your college or a competitor. The Market Segment model and geomarkets became the basis or the College Board Enrollment Planning Service (EPS), founded in 1984 and still active today. @RN5019_2010 says "Enrollment Planning Service (EPS\textsuperscript{\textregistered}) the analysis tool that pinpoints the schools and geomarkets where your best prospects are most likely to be found." @RN5021 reports that in 1995, 37% of 4-year publics and 49% of 4-year privates used EPS, while 41% of 4-year publics and 16% of 4-year privates used ACT's market analysis service product, which was similar to EPS.
+
+In 19XX, geomarkets were incorporated into the College Board Student Search Service student list product, which College Board created in 1972 [@belkin2019-studata]. Student lists contain the contact information of prospective students, the basic input for recruiting campaigns that target individual prospects using mail, email, and targeted social media. RN4895 reported that 87% of private and 86% of public four-year institutions purchase student lists. The Student Search Service database consists of College Board test-takers. Colleges pay a fee for each prospect (e.g., \$0.50 in 20XX) and control which prospect profiles through purchase by selecting search filters, such as high school graduation year, SAT score, AP test score, state, etc. Geomarket filters enable colleges to include/exclude prospects from particular geomarkets.
+
+[TRANSITION TO SCHOLARSHIP] @RN4873 describes schools and colleges as "sorting machines" that reproduce inequality by incorporating, creating, and allocating students to different categories. Given the consequences subsequent outcomes, the sociology of education is particularly concerned with the transition from high school to college. Over the last decade or so, scholarship on college access has begun to take more seriously the idea that colleges are not passive recipients of applications; rather they expend substantial resources soliciting demand from desirable applicants [@RN3519; @RN4774; @RN4324]. Most scholarship on recruiting analyzes the behavior of individual colleges, thereby assuming that recruiting behavior is a function of individual colleges [e.g., @RN4758; @RN4759]. @RN5012 analyze the College Board *Student Search Service* product, highlighting the role that third-party products play in structuring the recruiting behavior of colleges. The authors show that the utilization of particular search filters -- particularly geographic filters, such as zip code -- is associated with systematic racial exclusion that does not depend on which college purchased the list. However, prior research has not examined the role of third-party market research in reproducing socioeconomic and racial inequality
+
+This manuscript analyzes the Market Segment Model and College Board Geomarkets as a case study of quantification. We develop arguments from the broader literature on how quantification reproduces inequality \[e.g.,\] [@RN5003; @RN5005]. In particular, we draw from the discussions of correlation and homophily by @RN4975. Predictive analytics are based on correlation. However, when we use data from past cases to make recommendations about future cases, we amplify the effects of historic structural inequality. The Market Segment Model analyzes SAT score-sending data from 1980 and concludes that student demand for higher education is primarily a function of social class= [@RN4982]. Homophily is the idea that actors that share common characteristics are likely to form connections with one another. The Market Segment Model argues that homophily is the organizing principle of student demand and competition between colleges, that "the hierarchical structure of collegiate competition largely reflects the stratified social and economic dimensions of the communities from which colleges draw their students" [@RN4982, p. 72]. Subsequently, the assumption of homophily is programmed into the EPS and Student Service Service products that colleges utilize to decide where to focus recruiting energy.
+
+Empirically, our analyses address the following research questions, which speak to how geomarkets are utilized within the Enrollment Planning Service and within the Student Search Service student list product. First, what is the socioeconomic and racial variation between geomarkets in metropolitan areas and how does this variation change over time? We address this question by spatially joining the geomarket shapefile to Census data about socioeconomic and racial characteristics. Second, how does the socioeconomic and racial composition of included versus included prospects vary when student list purchases filter on particular geomarkets, in concert with other commonly used search filters. We address this question by analyzing student list purchases that do not filter geomarkets and simulating which prospects would have been included had they filtered on particular geomarkets. We obtained these data by issuing public records requests to public universities in four states. Third, in student list purchases that filtered on geomarkets, how does the socioeconomic and racial composition of included students compare the that of the geomarket and how does it compare to that of the broader metropolitan area?
+
+Scholarship on quantification in education has focused on consumer-facing measures such as U.S. News Rankings [@RN5003] and UK "league tables" about school quality [@RN5005]. To our knowledge, prior knowledge has not examined business-facing measures produced by third-party market research. Here, the desirable attributes of students and places they live are quantified with the purpose of informing colleges about where they should allocate recruiting resources to efficiently enroll the most desirable students. We reason that market research reproduces inequality by encouraging colleges to plan their recruiting efforts based on a snapshot of social stratification in student demand that is substantially a function of historic, structural inequality in educational opportunity. In contrast to @RN5005, we cannot demonstrate the effect of geomarkets on inequality. However, we show the mechanisms of how geomarkets reproduce inequality by simulating who is included/excluded when geomarkets are utilized within student list purchases as recommended by @RN4982.
+
+In the following section we provide background information about enrollment management and scholarship on recruiting. Second, we introduce core ideas and concepts from scholarship on quantification. Third, we apply these ideas to a close read of @RN4982 and motivate hypotheses. Four, we describe data and methods. Fifth, we present results. Finally, we discuss implications for scholarship, policy, and practice.
+
+# References
+
+::: {#refs}
+:::

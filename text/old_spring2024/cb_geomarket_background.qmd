@@ -1,0 +1,288 @@
+---
+title: "Structuring College Choice: The Curious, Mundane Case of College Board Geomarkets"
+author: ["Ozan Jaquette (UCLA)", "Karina Salazar (University of Arizona)"]
+bibliography: ./../../assets/bib/cb_geomarket_bib.bib
+csl: ./../../assets/bib/apa.csl
+format:
+  pdf:
+    documentclass: article
+    #papersize: letter
+    number-sections: true
+    number-depth: 2
+    #toc: FALSE
+    #pandoc_args: !expr rmdfiltr::add_wordcount_filter(rmdfiltr::add_citeproc_filter(args = NULL))
+    #keep_tex: true
+editor: visual
+geometry:
+  margin=1in
+fontsize: 12pt
+header-includes:
+  - \usepackage{setspace}
+  - \doublespacing
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+#library(bookdown)
+
+# https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_pdf.pdf
+library(kableExtra)
+```
+
+# Introduction
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+the bal bla @RN2010
+
+# Literature Review
+
+Scholarship on college access can be categorized as focusing on demand-side versus supply-side factors. Broadly, economics defines the demand-side as factors that affect consumer demand for a product (consumer income, population trends, prices, consumer tastes) whereas the supply-side refers to factors that affect production of a product (e.g., cost of inputs and other production costs, technological advancement, government regulation). The majority of research on college access focuses on demand-side factors. In economics, demand-side studies include how students respond to tuition and financial aid, student academic preparation (e.g., racial and socioeconomic "test score gaps"), and information interventions. In sociology, demand-side topics include analyses of college-going culture \[cite Bourdieu, McDonough\]
+
+# Background
+
+According to its [bylaws](https://about.collegeboard.org/governance/bylaws),
+
+> The College Board is a not-for-profit membership corporation operating for educational purposes \ldots Members of the College Board are secondary and postsecondary institutions, districts and systems, and nonprofit educational associations, organizations, and agencies serving secondary and/or postsecondary education
+
+Historically, College Board partnered with Members to develop projects that later became revenue-generating products for College Board. For example, in the 1970s, Carleton College became a leader in applying market research to student recruiting under the direction of Larry Litten, then director of the Office of Institutional Research. In the late 1970s Carleton College partnered with College Board to develop the "Carleton College-College Board Six-Market Study" about the college choice decisions of households, with College Board providing funding and data for the project @RN4986 \[and Litten became Associate Director of the Consortium of Financing Higher Education (COFHE). This research project was the basis for the College Board Admitted Student Questionnaire (ASQ), a revenue-generating product that provides colleges with information about admitted students -- those who enrolled and who did not enroll. Similarly, in 1979 The College Board partnered with Robert Zemsky, a professor at UPenn, to develop the *Comprehensive Undergraduate Enrollment Planning Project* [@RN4982]. This project was the basis for the College Board Enrollment Planning Service (EPS), the market research and enrollment consulting division \[diff word?\] of College Board.
+
+## The Market Segment Model
+
+In 1983, The College Board published *The Structure of College Choice* by Robert Zemsky and Penney Oedel. This book, based on the *Comprehensive Undergraduate Enrollment Planning Project* develops the Market Segment model, which introduced "geo-markets" and became the basis for EPS.
+
+@RN4982 describes the Market Segment model as an effort to develop a systematic, quantitative description of which institutions are likely to be considered by which institutions, based on the shared stories and wisdom of college admissions officers. @RN4982 [p. 9] write that,
+
+> Admissions officers invariably are tellers of stories -- about the colleges they represent, about the colleges they attended, about each other, and about the often vagabond life of college recruiting \ldots. We have begun with this celebtration of storytelling for two reasons. First, we believe that the institutions of admissions officers actually comprise a remarkably systematic body of knowledge about the college selection process. Second, much of that knowledge has been captured in the admissions officers' tales, which exhibit all the hallmarks of a classic folklore: language, symbol, and system. Our research thus is based on listening carefully to what admissions officers have to say."
+
+> From the beginning, we have sought to mold our research to these concepts, to capture and quantify the phenomenon behind the folklore. Thus, it is the admissions officers' notion of admissions pools that dictates the geographic units of our analysis." \[p. 11\]
+
+As such, the first step in developing the Market Segment model was to identify p. 11 "three types of boundaries -- region, state, and community" -- as follows: first, regions were defined as New Egland, Middle States, and the South; Second, states are states; and, third, each state was divided into "as few as two and as many as thirty community-based enrollment markets or pools, for a total of 143 separate markets" \[in New England, Middle States, and the South\]. These community-based enrollment markets -- later called "geomarkets" by The College Board Enrollment Planning Service -- are the analytic focus of this manuscript. Enrollment markets are intended to be consistent with the conception of a catchment market from the perspective of admissions counselors. @RN4982 write that,
+
+> In many cases, the market boundaries match formal political and educational divisions, reflecting natural channels of communication. Each major metropolitan area is composed of several markets, usually corresponding to the inner city, a first ring of suburbs, and an outer ring of suburbs. In more sparsely populated areas, communities are sometimes combined in order to make the analysis meaningful."
+
+Having defined these geographic boundaries, each SAT score a student submits to an institution can be defined as "local" (institution is in the same local market that the student lives in), "in-state" (institution is located in different local market but the same state the that the student lives in), "regional" (institution is located in a different state but the same regional market that the student lives in), or "national" (institution is located in a different regional market than the student lives in).
+
+Next, high school students are categorized into found different *segments* -- local, in-state, regional, and national -- based on their score-sending behavior. A "local" student submits more SAT scores to local institutions than they do to in-state, regional, or national institutions. An "in-state" student submits more SAT scores to in-state institutions than they do to local, regional, or national institutions, etc. <!--
+A "regional" student submits more SAT scores to regional institutions than they do to local, in-state, or national institutions. A "national" student submits more SAT scores to national institutions than they do to local, in-state, or regional institutions.
+-->
+
+*The Market Segment Profile*. The two primary outputs of the Market Segment Model are the (1) Market Segment Profile and (2) the Institutional Profile. @RN4982 state that "the Market Segment Profile is each market's signature, a detailing of student choice and institutional standing within each segment of that market. In a single-page format, this information is presented for each of the 143 markets currently included in the Comprehensive Undergraduate Enrollment Planning Project." @tbl-market-segment-characteristics reproduces a partial, simplified version of the bottom panel of @RN4982 [Figure 2.1] which represents the Market Segment Profile for "Connecticut Market 3: Fairfield County."
+
+@tbl-market-segment-characteristics has separate columns for each market segment (local, in-state, regional, national) and rows show the number of test-takers and characteristics of test-takers. For example, there were 550 "local" students in Fairfield county and these students submitted SAT scores to 2.8 postsecondary institutions on average. By contrast, there were 1,664 "regional" students who submitted test scores to 4.8 institutions on average. For local students, 11.2% had family income greater than \$35,000 and 9% had both parents with a BA. For regional students, 41.9% had family income greater than \$35,000 and 34.0% had both parents with a BA. Each Market Segment Profile also present information about the institutions that students from each segment sent scores to.[^1]
+
+[^1]: @tbl-market-segment-institutions recreates the top panel of @RN4982 [Figure 2.1] for the Fairfield County, CT local market. For example, of the 550 local students, 277 (50.4%) sent scores to institution #1, which was a private master's granting institution. Of the 1,199 in-state students, 757 (63.1) sent scores to institution #1, a public doctoral granting institution, and 515 (43.0%) sent scores to institution #2, a public master's granting institution.
+
+INSERT @tbl-market-segment-characteristics ABOUT HERE
+
+*The Institutional Profile*. For each postsecondary institution, the Market Segment Model produces several Institutional Profiles, which describe the students who sent scores to the institution and which majors they are interested in. Institutional profiles are created separately for students from a particular local market, for all students in a state, or all students in a region. @tbl-sample-institutional-profile reproduces a partial, simplified version of @RN4982 [Figure 2.3], which is the institutional profile of an anonymous institution for students from Fairfield County, CT. @tbl-sample-institutional-profile shows that 58 students submitted SAT scores to the institution. These 58 students represented 4.8% of the total 1,199 in-state students from Fairfield County. 69 regional students sent scores to the institution, representing 4.1% of all 1,664 regional test-takers. Of these 69 regional students, 35 expressed interest in majoring in the liberal arts. These 35 students represent 7.0% of all regional students from Fairfield County who expressed interest in the liberal arts.
+
+INSERT @tbl-sample-institutional-profile ABOUT HERE
+
+@RN4982 argue that the Institutional Profile and the Market Segment Profile enable admissions officers to know where to look for students and which institutions are competing for those students (p. 25):
+
+> The Institutional Profile and the Market Segment Profile quantify the admission officers' intuitive grasp of market structure. Structure here carries a dual meaning, connoting both the structure of student choice and the structure of institutional competition\ldots This two-sided interpretation furnishes the essential framework for planning by individual colleges and universities\ldots To draw effectively on its own natural constituency, a college not only must contact the "right" kind of students --- that is, students who are predisposed toward that type of institution -- but also must persuade them of its special character. This means knowing the competition as well as the clientele.
+
+**Enrollment Planning Service**. The College Board Enrollment Planning Service (EPS) was created in 1984 to provide institution-specific market research that would inform the recruiting strategy of member institutions [@RN4987].
+
+Just as @RN4986 and the "six market area study" -- underwritten by College Board -- was basis for the College Board Admitted Student Questtionnaire product, @RN4982 and the the *Comprehensive Undergraduate Enrollment PlanningProject* -- underwritten by College Board -- was the basis for EPS [@RN4980]. Although information is spotty, the original EPS product seemed to be based fundamentally on the Market Segment Model developed by @RN4982. Each institution purchasing EPS information services would obtain access to the Market Segment Report for each local market. They also received the Institutional report for each state and for each local market. Collectively, these reports enabled institutions to determine where attractive students were located, which students were considering -- or might consider -- the institution, and which institutions were likely to be in competition for these students.
+
+The appendix of @RN4982 maps the local markets for New England, Middle States, and the South, for a total of 143 local markets. At some point, College Board EPS created geo-markets for the remaining US states. @RN4988 shows the College Board geo-markets circa 2023. Incredibly, the geomarkets for New England, Middle States, and the South remain \[?ALMOST?\] exactly the same.
+
+WHAT ELSE TO SAY ABOUT ENROLLMENT PLANNING SERVICE???
+
+PX: think about how geomarkets are used More generally as part of recruitment planning by EPS NEED TO GET SOME CONCRETE INFORMATION ABOUT HOW GEOMARKETS ARE USED In student list purchases, geomarkets are used as a filter alongside other filters
+
+/https://secure-media.collegeboard.org/homeOrg/content/pdf/welcome_to_the_college_board_fullversion.pdf This document is from 2012 "Enrollment Planning Service (EPS®) is an online database using a wide range of criteria, including geography, high schools, score-sending patterns and international regions. EPS allows staff to analyze data and find prospective students both nationally and internationally who are likely to succeed at their institution. This allows for better and more targeted recruiting and communications based on a wide range of criteria, including geography, demographics, academic preparation and collegiate aspirations. EPS also provides comprehensive reporting and fully integrates with Student Search Service.
+
+This is interesting https://www.pdffiller.com/28049652-fillable-college-board-enrollment-planning-service-form?mode=view
+
+EPS "is the analysis tool that pinpoints the schools and geomarkets where your best prospects are most likely to be found. You can research your existing (or new) markets using selection criteria and locate your top prospects in various ways -- by states, geomarkets, counties, Zip codes, high schools and international regions. EPS provides you with comprehensive reports on your markets, your position in those markets, and your copetition."
+
+Market research by college board https://www.tandfonline.com/doi/pdf/10.1080/00091383.1984.10570121 https://eric.ed.gov/?id=ED238341 Druesne, B., Harvey, J. & Zavada, M. (Summer 1980). College mailings: What works. The College Board Review, 116,12-17.
+
+ENROLLMENT PLANNING SERVICE From https://www.jstor.org/stable/pdf/40195699.pdf \[1986 RIHE\] Other Erollment Planning SerVIce EPS and Descriptor PLUS are data serVIces that make use of College Board infornMation to provide Institutions with intelligence on trends and conditions that directly affect their enrollment management strategy
+
+**Student Search Service**.
+
+SAY BASIC SHIT ABOUT STUDENT SEARCH SERVICE. COME BACK TO THIS LATER.
+
+HOW GEOMARKETS ARE USED IN STUDENT LIST PRODUCTS
+
+# Conceptual Framework
+
+We develop a conceptual framework by drawing from *Discriminating Data: Correlation, Neighborhoods, and the New Politics of Recognition* by Wendy Hui Krong Chun (2021). *Discriminating Data* investigates how the correlation and assumptions about homophily have been utilized to create a future that amplifies the power of past discrimination. In particular, we draw from chapter one, "Correlating Eugenics," and chapter two "Homophily, or the Swarming of the Segregated Neighborhood."
+
+## Correlations
+
+Correlation measures the extent to which two or more variables move together. According to the Pearson correlation coefficient, if an observation $x_i$ greater than the mean $\bar{x}$ is associated with an observation $y_i$ greater than the mean $\bar{y}$ then variables $x$ and $y$ are positively correlated.
+
+@RN4975 traces the origins of correlation to 19th century statisticions and "biometric eugenicists" Francis Galton and and his student Karl Pearson. These scholars developed the concepts of correlation and linear regression while conducting research on plants, animals, and peoples about the relationships between breeding and genetic inheritence. Biometric eugenicists viewed selective breeding as the most important tool for human progress. Eugenics, Pearson stated is "the science of improving stock, not only by judicious mating, but by all the influences which gave the more suitable strains a better chance" \[quoted in Chun page 59\]. Eugenicists believed that efforts to improve conditions -- for plants, animals, people -- would only improve performance for a single generation whereas selective breeding would improve performance for multiple generations. Therefore, Pearson stated, "Give educational facilities to all, limit the hours of labour to eight-a-day\ldots give a minimum wage with free medical advice, and yet you will find that the unemployables, the degenerates and the physical and mental weaklings increase rather than decrease" \[quoted from Chun page 65\]. The key to human progress, is to keep unfit bloodlines separate from pure bloodlines and to stop unpure from breeding.
+
+The predictive analytics embedded in most algorithmic products are based on correlation. The creation of predictions proceeds in two steps: Using "training" data, apply statistical models to previous cases to determine the predictors of an outcome; second, apply the results of these analyses to predict the outcome for future cases \[give brief explanation of training data and then predict for subsequent datasets, can draw from your EEPA chapter\] Correlations can be used to predict outcomes without requiring knowledge about causal relationships. @RN4975 provides the example of @RN4989, who develop a method to predict sensitive personal attributes based on Facebook Likes. Their approach was subsequently utilized by political consulting firm Cambridge Analytica to identify and target subgroups that could be swayed to vote for their clients, such as Ted Cruz, who were seeking elected office.
+
+In @RN4982, chapter 3 "A Sense of Place: Students, Families, and Communities" is fundamentally about correlations. Having categorized each high school student as local, in-state, regional, or national based on their score-sending behavior, chapter 3 analyzes which social and economic characteristics are associated with these behaviors and the extent to which these relationships hold across states and local markets. The data analyzed by @RN4982 can be seen as training data. In actual recruiting applications, colleges would have historic data on the number of students in each segment in a local market, but they would not know a current high school student is a local, in-state, regional, or national prospect. Therefore, knowing which observable student characteristics are associated with score sending outcomes can be useful for knowing which prospects an institution should target. \[NOTE: THEY WOULD ALSO KNOW THE NUMBER OF STUDENTS IN EACH SEGMENT FRONM PAST COHORTS; CUZ THIS IS IN THE MARKET SEGMENT REPORT\]
+
+@RN4982 identify four variables that can be used individually or in combination to predict score sending behavior. "These four attributes -- educational aspirations, parental education, scholastic aptitude, and family income -- reflect the basic social patterns of the nation. It would have been surprising if these were not the four social variables that best explained the patterns of college choice" (p. 33). Commenting on parental education, @RN4982 [p. 33] state that, "these data allow us to say with considerable confidence that local and in-state students are not likely to come from families in which both parents have received college educations." Commenting on family income, they write that we could predict that all local students would come from moderate-income or low-income families and be wrong only 5.5 percent of the time" (p. 33). Further analyses reveal that the SAT score is the most important predictor, followed by parental education, family income, and educational aspirations.
+
+Many scholars of critical data studies have shown the negative consequences of using predictive analytics to make decisions [CITE SAFIYA, AMONGST OTHERS]. Proxy variables are variables that are highly correlated to a variable of interest (e.g., EXAMPLE). @RN4849 states that "weapons of math destruction" use proxy variables to make predictions in the absence of desired data. For example, the COMPAS algorithm for predicting re-arrest utilizes home zip-code as an input, which results in higher predicted probabilities of re-arrest for Black people because of racial segregation in housing. Weapons of math destruction often exclude race as an input and use inputs that are correlated with race, while simultaneously ignoring historical structural racism that produced the correlation in the first place. For example, Norris [CITE] shows that Moody's algorithm for assigning city credit scores uses median income as an input, but not racial composition. Given historic wage discrimination, the resulting system penalizes cities with large Black populations while appearing to be race-neutral \[or colorblind?\]. Another consequence of using historic correlations to make future decisions is that this amplifies the effects of past discrimination that produced these correlations \[some redundancy in this paragraph\]. Thus, "Correlations, do not simply predict actions; they also form them" [@RN4982, p. 58].
+
+We argue that the designation and usage of local markets in the Market Segment Model exemplify the negative consequences of correlations. @RN4982 [p. 44] describes a hypothetical college that wants to target regional and national students in New England and is considering whether to expend limited recruiting efforts in the Boston geomarket -- which in 1980, was relatively low-income -- or in more affluent geomarkets nearby:
+
+> Where would you concentrate your energies? Ideally, you would seek communities with a high proportion of students already predisposed toward institutions such as your own. The Market Segment Model would provide this information through segment percentages for the community in question. Further classification of students by social attributes allows you to identify a group for mailings or recruiting\ldots if you were to recruit in Boston, only about two out of every ten students with fewer than two attributes would likely listen, while slightly less than half of the students with two or more attributes would be receptive\ldots. Your efforts would surely be better directed toward three of the four communities in the bottom band, Manchester, Hartford, and Fairfield County. Simply by knowing a little bit about the students' backgrounds and academic records you could quickly focus your attention on those most likely to consider your kind of institution. Indeed, in Fairfield County alone you could reach more than 40 percent of your "primary target" population -- that is, students with a greater than 75-percent probability of concentrating their college choices among institutions like your own."
+
+In this example, historical data on the number of students by Segment is used to divert recruiting energies from lower-income to higher-income local markets. It also shows how geomarkets can be utilized in concert and within student list products. First, decide which geomarkets to concentrate on, then filter students in those geomarkets based on socioeconomic and academic characteristics.
+
+SOMEWHERE: THIS QUOTE FROM CHUN PAGE 57 IS PRETTY SOLID; BUT MAYBE YOU ALREADY HAVE TOO MANY QUOTES?
+
+> As this example makes clear, these models not only "discover" the effects of discrimination; they also automate and perpetuate them for they exploit, rather than remedy inequalities. These correlations are at the heart of what communications scholar Oscar Gandy, writing in 2009..... "identified as"technologies of rational discrimination": unless there is a clear determination not to discriminate, Gandy explained, these technologies perpetuate inequality by creating and comparing "analytically generated groups in terms of their expected value or risk." That homophily drives these groups and correlations "that work" is no accident.
+
+## Homophily and Social Networks
+
+In network science, actors (nodes) are connected to one another via network ties. The first stage in social network analyis is to decide who are the actors and what are the ties that link them. For example, in @RN4982 we can think of students sending SAT scores to colleges as a "two-mode" social network in which students (node 1) send SAT scores -- the network tie -- to colleges (node 2). The second, theorization, stage of social network analysis makes makes statements about which actors are likely to form direct or indirect ties with one another. @RN4975 [p. 90] observes that this stage "builds models that reproduce the abstractions produced in the first. Whatever repeats the initial mapping is true or causal: truth within these mathematical or logical systems as Arendt points out is consistency." For this reason, @RN4975 argues that network science is biased in the direction of its theoretical models and its assumptions -- which are previously proven theoretical models -- in that behavior consistent with the model is defined as "truth" and behavior inconsistent with the model is cast away as "noise."
+
+Homophily has become a core assumption of network science [@mcpherson2001birds]. Homophily means that actors who share common characteristics are likely to form connections with one another, an idea captured by the phrases "birds of a feather flock together" and "similarity breeds connection" [@mcpherson2001birds, p. 415]. By contrast, heterophily is the idea that actors with different characteristics are likely to form connections with one another. According to the review by [@mcpherson2001birds, p. 417], "the classic citation [on homophily] in the sociological literature" was the @RN4990 study of friendship formation in Hilltown and Craftown, two mixed-race housing developments. As survey methods and social network methods advanced in the 1970s and 1980s, evidence in favor of homophily proliferated [@mcpherson2001birds], to the point where homophily became an assumption rather than a finding [@RN4975].
+
+@RN4975 problematizes the idea that homophily is a naturally occurring phenomenon. In commercial social networks, such as Facebook, Twitter/X, and TikTok, homophily is programmed into the algorithms that create connections between users. Thus, "echo chambers are not unfortunate errors, but deliberate goals" because "homophily is used to create agitated clusters of individuals whose angry similarity and overwhelming attrication to their common object of hatred both repel them from one another and glue them together" \[p. 82\].
+
+@RN4975 also problematizes academic scholarship about homophily in two ways. First, network science defines behavior consistent with the theoretical model to be "truth" and behavior inconsistent with the theoretical model to be noise. @RN4975 re-analyzed data about friendship patterns in Hilltown and Craftown and found substantial evidence supporting heterophily in the Black residents, but @RN4990 focus on friendship formation for white residents. Second, drawing heavily from rational choice theory, network science treats homophily as the result of "voluntary" actions by individuals; "it erases historical contingencies, institutional discrimination, and economic realities" [@RN4975, p. 95] that underlie behavior consistent with homophily.
+
+In @RN4982, Chapter 4 -- "The Company We Keep: Colleges and Their Competition" -- conducts a social network analysis to identify which institutions are in competition with one another. A network tie between two institutions occur if "15 percent of the students who sent SAT scores to the first institution also sent a score to the second that 15 percent of students who sent an SAT score to the second institution also sent one to the first" [@RN4982]. Next, the authors develop "Tinker Toy" diagrams that show which institutions are connected to one another. These diagrams are drawn separately for each student segment -- local, in-state, regional, and national -- and separately for each geomarket, such that the analyses convey which institutions compete with one another for which student segments in each local market.
+
+Homophily is the core finding of these network analyses. @RN4982 [p. 42] state that "On the basis of this analysis, we draw a fundamental conclusion about the structure of college choice: collegiate competition occurs principally between like institutions."[^2] Subsequent analyses investigate competitive overlap across institutional type -- e.g., private flagship, private selective college, public flagship -- overlaying tuition price and student student socioeconomic status (SES). The analyses reveal substantial overlap between private selective colleges and private flagship universities, charge the highest prices and enroll students with much higher SES than other institutional types. In conclusion, @RN4982 [p. 72] states,
+
+[^2]: For example, describing the Figure 4.4 "Structure of Fairfield County Regional Market," [@RN4982, p. 54] state that "competitive overlap, moreover, is often confined to institutions belonging to the same \[Carnegie\] type as well sector. For example, public flagships compete primarily with other public flagships; private standard colleges, with other private standard colleges; Catholic institutions, with other Catholic institutions."
+
+> We now know why students so seldom speak of their own social or family backgrounds in explaining how they go about choosing a college. They have no need to. Students describe themselves socially simply by telling us the colleges and universities in which they are interested. The layering of collegiate competition is primarily a socioeconomic layering. The hierarchical structure of collegiate competition largely reflects the stratified social and economic dimensions of the communities from which colleges draw their students. Competition among colleges, as admissions officers have told us for so long, is in fact, a matter of keeping company with one's peers.
+
+@RN4975 discusses the negative consequences arising from homophily. First, when we assume homophily is the naturally occurring behavior of individuals rather than a consequence of societal structures, then we ignore the structures that give rise to the behaviors we observe. Second, when we "engineer homophily" -- through algorithms or policies -- we make it less likely for heterophily to emerge, eliminating possibilities -- of friendships, of matches -- that may have occurred in the absence of such engineering.
+
+The Market Segment Model manifests both negative consequences of homophily. First, @RN4982 observes hierarchical hierarchical matching between the socioeconomic status of students and the socioeconomic status of colleges, but interprets these findings as naturally occurring phenomena rather than the consequences of historic structural inequality in the opportunity structure of the U.S. Second, the Market Segment Model not only describes the structure of college choice, it influences the future structure of college choice by becoming the basis for products and practices. The Market Segment Model is incorporated into the College Board Enrollment Planning Service (EPS) and Student Search Service. This product amplifies the effect of historic structural inequalities on future opportunity structure by encouraging colleges to pursue local markets -- and student segments within these local markets -- in ways that are consistent with the patterns observed by @RN4982.
+
+## Geomarkets and Structural Inequality
+
+**Geomarkets and socioeconomic inequality**. We argue that geomarkets -- and the Market Segment model more broadly -- are built on structural inequality, exhibit structural inequality, and are used in ways that amplify structural inequality.
+
+The Market Segment Model is explicitly a function of socioeconomic status. @RN4982 state that socioeconomic status drives whether students belong to the local, in-state, regional, or national segment. In turn, geomarkets are described by the relative numbers of local, in-state, regional, or national students, which is substantially a function of socioeconomic status. Colleges prioritize geomarkets depending on the number of students from desired students. When purchasing student lists, @RN4982 suggest that affluent coleges should consider targeting affluent geomarkets. Within geomarkets targeted by a student list purchase, colleges may use additional filters to capture student market segment and these filters may systematically exclude low-income students. Finally, in large metropolitan areas, the borders of geomarkets may be drawn in ways that separate affluent from less affluent communities. @RN4982 [pp. 11-12] state that "each major metroplitan area is composed of several markets, usually corresponding to the inner city, a first ring of suburbs, and an outer ring of suburbs." We present the following hypothesis.
+
+**H1**. In large metropolitan areas that contain multiple geomarkets, we expect significant socioeconomic inequality (e.g., income, parental education) between geomarkets.
+
+**Geomarkets and racial inequality**. The relationship between geomarkets and racial inequality is less obvious because race is not an explicit component of the Market Segment Model and @RN4982 make no mention of race. The question of whether geomarket borders are correlated with race is a question about structural racism. Structural racism is "a form of systematic racial bias embedded in the 'normal' functions of laws and social relations" [@RN4760, p. 1143], whereby processes viewed as neutral or common sense systematically advantage dominant groups and disadvantage marginalized groups.
+
+Colorblind racism refers to behaviors and ideology that ignore the significance of race and racial discrimination [CITE LATER WORK BY BONILLA-SILVA]. The Market Segment Model can be seen as an example of colorblind racism because @RN4982 develop an analysis of the structure of college choice that completely ignores race. In turn, enrollment management professionals interpet the Market Segment Model and geomarkets as race-neutral recruiting tools. Race-neutral racism is racial inequality that results from using ostensibly race-neutral inputs that are systematically correlated with race [CITE] [e.g., @RN4775; @RN4786; @RN4975]. DAN HIRSCHMAN CALLS IT A Dan calls geomarket colorblind racist market device.
+
+We argue that geomarkets are seemingly race-neutral inputs that are correlated with race. Geographic borders are the most commonly studied racialized inputs [e.g., @RN4775; @RN4849; @RN4779]. These studies build on the fact that American communities and schools are racially segregated as a consequence of historic and contemporary laws, policies, and practices promoting racial segregation [@RN4551; @RN4801; @rothstein2017color; @RN4975]. Selection devices that categorize people based on geographic location without considering structures that produce segregation are likely to reproduce historical race-based inequality in opportunity. Although previous research has focused racial inequality stemming from the use of zip codes as an input [e.g., @RN4849], College Board geomarkets are much larger than individual zip codes.
+
+Nevertheless, we argue that geomarket borders may be correlated with race for two reasons. First, borders may be drawn in a racicialized way that follows the countours of racial segregation in residential housing. Examples include: the "South and South Central Los Angeles" geomarket (CA21); the "City of Oakland" geomarket (CA07), which is surrounded by the "Alameda County excluding Oakland" geomarket (CA08); and the "Wayne County Detroit" geomarket (MI01), which is surrounded by the "Detroit's Northern Suburbs" (MI02) and "Ann Arbor" (MI03) geomarkets. Second, geomarket borders drawn along class divides may exhibit racial inequality because of race-based inequality in income and wealth \[CITE\]. We present the following hypothesis:
+
+**H2**. In large metropolitan areas that contain multiple geomarkets, we expect significant racial inequality (e.g., income, parental education) between geomarkets.
+
+MOTIVATE HYPOTHESIS ABOUT INCREASE/DECREASE OVER TIME IN BETWEEN-GEOMARKET RACIAL INEQUALITY. POTENTIAL FACTORS MIGHT BE GENTRIFICATION; RISING INCOME INEQUALITY
+
+**Product utilization and racial inequality**. In addition to geomarket borders being correlated with class and race, we argue that geomarkets are likely to be used in ways that amplify socioeconomic and racial inequality in college access. Student lists are purchased by university enrollment personnel or by enrollment management consultants acting as agents on behalf of a university. Student list products are designed to filter on multiple search filters simultaneously, and they grant administrative discretion over which filters to select, which filter thresholds to select, and how many purchases to execute.
+
+Compared to standardized selection devices, scholars tend to find that administrative discretion over selection devices causes structural inequality to increase [@RN4883; @RN4881; @RN4795]. Discretionary selection devices allow explicit or implicit individual bias to affect selection decisions [@RN4794; @RN4801]. Even without implicit bias, discretionary selection devices can increase structural inequality when decision-makers have incomplete knowledge about how the inputs they choose are correlated with race. As such, discretionary selection devices are particularly sensitive to racialized inputs that are perceived to be race-neutral. For example, research shows that Americans dramatically underestimate the magnitude of racial income inequality [@RN4884].
+
+Student list purchases that filter on College Board geo-markets do not not inherently exclude communities of color. Indeed, a university could filter on geomarekts in order to explicitly target an area with a high number of low-SES students or students of color. As such, the incorporation of geomarkets into the student list product creates new ways to target underrepresented communities and also creates new ways to discriminate against these communities. For example, an enrollment professional can reason, there are a lot of 'good' students in the "Contra Cost County" (CA06) and the "Alameda County excluding Oakland" (CA08) geomarkets, but not so many in the "City of Oakland" (CA07) geomarket.
+
+We conceive of geomarkets as a "colorbind racist market device" in that geomarkets are often correlated with race, but geomarkets are likely perceived as race-neutral by people making decisions about student list purchases.[^3] Student list purchases do not show how the characteristics of targeted prospects compare to the characteristics of the surrounding community. From this perspective, racial inequality from the use of geomarkets in student list purchases is likely to be an unintentional result of using a seemingly race-neutral product. Additionally, purchases that specify multiple filters (e.g., test scores, grades, intended major) including geomarkets can yield unintended racial inequality because administrators have incomplete knowledge about how the intersection of these filters interact with local patterns of segregation.'
+
+[^3]: Colorblind racism is the result of ideology that attemps to minimize race; using geomarkets one doesn't have to minimize race, because race has already been eliminated from geomarkets and Market Segment Model.
+
+We argue that unintentional racial inequality can arise because the Market Segment Model -- and the enrollment management profession more generally -- are oriented towards realizing enrollment goals rather than equality of opportunity for students. For example, @RN4982 recommends that instead of targeting the Boston geo-market, a (hypothetical) college targets Manchester-NH, Harford-CT, Burlington-VT, and Fairfield County-CT. The rationale is that students from these local markets are more likely to have socioeconomic characteristics associated with attending this college. By contrast, in 1980, the Boston geomarket was relatively low income and -- though ignored by @RN4982 -- was more racially diverse. @RN4982 [p. 44] comment on this recommendation:
+
+> On occasion, senior spokespersons for the profession worry that students outside the main market areas remain forgotten and hence, unchallenged. Inevitably, the increasing competition for students, the expense of travel and mailings, and internal political constraints compel institutions to concentrate their efforts where they will do the most good. The result is a natural reinforcing of the basic socioeconomic patterns that gave shape in the first place to the structure of college choice.
+
+Consistent with @RN4982, prior research finds that selective private colleges and universities target affluent schools and communities [@RN4330; @RN4733]. The same is true for the out-of-state recruiting efforts of public research universities [@RN4759; @RN4758]. We argue that student list purchases that target affluent geomarkets of large metropolitan areas are likely to exclude more students of color compared to student list purchases that target the entire metropolitan area or target less-affluent geomarkets in the MSA. We test this argument by analyzing actual student list purchases of public reearch universities. We examine student list purchases that filter on geomarket. In student list purchases that did not filter on geomarket, we simulate what would happen if they had.
+
+HX: STATE HYPOTHESIS???
+
+# References
+
+::: {#refs}
+:::
+
+\clearpage
+
+<!-- TABLES -->
+
+```{r market-segment-characteristics, echo = F}
+#| label: tbl-market-segment-characteristics
+#| tbl-cap: 'Simplified market segment profile, Connecticut Market 3: Fairfield County'
+
+market_segment <- data.frame(
+  activity = c('Total test takers','Avg SAT (verbal + math)','Avg # scores sent per test taker','Percent in top 20% of HS class','Percent aspiring to more than BA','Percent family income more than $35,000','Percent both parents with BA'),
+  local = c(550,770,2.8,27.8,30.6,11.2,9.0),
+  in_state = c(1199,850,3.5,26.1,41.5,20.6,16.3),
+  regional = c(1664,970,4.8,44.7,54.5,41.9,34.0),
+  national = c(3766,980,5.3,45.7,62.2,43.0,37.1)
+)
+
+kable(
+  x = market_segment,
+  col.names = c('Characteristic','Local','In-state','Regional','National'),
+  #caption = 'Simplified market segment profile\\\\ Connecticut Market 3: Fairfield County'
+)
+```
+
+\clearpage
+
+```{r sample-institutional-profile, echo = F}
+#| label: tbl-sample-institutional-profile
+#| tbl-cap: 'Simplified sample institutional profile for Connecticut Market 3: Fairfield County'
+
+sample_inst <- data.frame(
+  characteristic = c('Total number of scores received','Pct of all test-takers in segment','lib_arts_num','lib_arts_share','engineering_num','engineering_share'),
+  local = c(1,0.2,0,0.0,0,0.0),
+  in_state = c(58,4.8,25,8.4,2,3.0),
+  regional= c(69,4.1,35,7.0,5,5.8),
+  national = c(109,2.9,61,5.3,3,0.8),
+  total = c(237,3.3,121,5.9,10,1.8)
+)
+
+kable(
+  x = sample_inst,
+  col.names = c('','Local','In-state','Regional','National','Total'),
+  #caption = 'Simplified sample institutional profile\\\\ Connecticut Market 3: Fairfield County'
+)
+```
+
+\clearpage
+
+```{r market-segment-institutions, echo = F}
+#| label: tbl-market-segment-institutions
+#| tbl-cap: 'Top 5 institutions in terms of number of scores sent by segment, Connecticut Market 3: Fairfield County'
+
+market_segment_inst <- data.frame(
+  rank = c(1,2,3,4,5),
+  local_num_scores_sent = c(277,261,183,103,100),
+  local_pct_scores_sent = c(50.4,47.5,33.3,18.7,18.2),
+  local_inst_type = c('priv ma','priv ma','priv ma','pub doct','pub ma'),
+  state_num_scores_sent = c(757,515,438,183,177),
+  state_pct_scores_sent = c(63.1,43.0,36.5,15.3,14.8),
+  state_inst_type = c('pub doct','pub ma','pub ma','pub ma','pub ma'),
+  regional_num_scores_sent = c(610,348,272,248,197),
+  regional_pct_scores_sent = c(36.7,20.9,16.3,14.9,11.8),
+  regional_inst_type = c('pub doct','priv doct','priv doct','pub doct','pub doct'),
+  national_num_scores_sent = c(1226,371,327,312,308),
+  national_pct_scores_sent = c(32.6,9.9,8.7,8.3,8.2),
+  national_inst_type = c('pub doc','priv doct','priv res','priv doct','priv doct')
+)
+
+kable(
+  x = market_segment_inst,
+  col.names = c('','Num','Pct', 'Type','Num','Pct','Type','Num','Pct','Type','Num','Pct','Type'),
+  #caption = 'Top 5 institutions in terms of number of scores sent, by segment \\\\Connecticut Market 3: Fairfield County'
+) %>% 
+  #kable_styling(full_width = F) %>% 
+  add_header_above(c(' '=1,'Local (N=550)' = 3, 'In-state (N=1,199)' = 3,'Regional (N=1,664)' = 3, 'National (N=3,766)' = 3))
+```
+
+```{=html}
+<!--
+\begin{landscape}
+\end{landscape}
+
+\restoregeometry
+-->
+```

@@ -1,0 +1,290 @@
+--------------------------------------------------------------------------------
+Codebook for NHGIS data file 'nhgis0001_ds104_1980_tract'
+--------------------------------------------------------------------------------
+ 
+Contents
+    - Data Summary
+    - Data Dictionary
+    - Citation and Use
+ 
+Additional documentation on NHGIS data sources is available at: 
+    https://www.nhgis.org/documentation/tabular-data 
+ 
+--------------------------------------------------------------------------------
+Data Summary
+--------------------------------------------------------------------------------
+ 
+Year:             1980
+Geographic level: Census Tract (by State--County)
+Dataset:          1980 Census: STF 1 - 100% Data
+   NHGIS code:    1980_STF1
+   NHGIS ID:      ds104
+Breakdown(s):     Geographic Subarea:
+                     Total area (0000)
+ 
+Tables:
+ 
+1. Persons
+   Universe:    Persons
+   Source code: NT1A
+   NHGIS code:  C7L
+ 
+2. Race
+   Universe:    Persons
+   Source code: NT7
+   NHGIS code:  C9D
+ 
+3. Spanish Origin
+   Universe:    Persons
+   Source code: NT8
+   NHGIS code:  C9E
+ 
+4. Persons of Spanish Origin
+   Universe:    Persons of Spanish Origin
+   Source code: NT9A
+   NHGIS code:  C9F
+ 
+5. Race
+   Universe:    Persons of Spanish Origin
+   Source code: NT9B
+   NHGIS code:  C9G
+ 
+6. Age
+   Universe:    Persons
+   Source code: NT12A
+   NHGIS code:  C7B
+ 
+7. Race by Age
+   Universe:    Persons
+   Source code: NT12B
+   NHGIS code:  C7C
+ 
+8. Age
+   Universe:    Persons of Spanish Origin
+   Source code: NT13A
+   NHGIS code:  C7D
+ 
+9. Race by Age
+   Universe:    Persons of Spanish Origin
+   Source code: NT13B
+   NHGIS code:  C7E
+ 
+--------------------------------------------------------------------------------
+Data Dictionary
+--------------------------------------------------------------------------------
+ 
+Context Fields 
+        GISJOIN:     GIS Join Match Code
+        YEAR:        Data File Year
+        FSTATUS:     Functional Status Code
+        REGIONA:     Region Code
+        DIVISIONA:   Division Code
+        STATE:       State Name
+        STATEA:      State Code
+        SMSAA:       Standard Metropolitan Statistical Area Code
+        COUNTY:      County Name
+        COUNTYA:     County Code
+        CTY_SUBA:    County Subdivision Code
+        PLACEA:      Place Code
+        TRACTA:      Census Tract Code
+        BLCK_GRPA:   Block Group Code
+        BLOCKA:      Block Code
+        EDINDA:      Enumeration District Indicator Code
+        ENUMDISTA:   Enumeration District Code
+        SCSAA:       Standard Consolidated Statistical Area Code
+        URB_AREAA:   Urban Area Code
+        CDA:         Congressional District Code
+        AIANHHA:     American Indian Area/Alaska Native Area/Hawaiian Home Land Code
+        MCDSEQNO:    MCD Sequence Number
+        SEA:         State Economic Area (SEA)
+        UATYPE:      Urbanized Area (UA) Type
+        PLACDESC:    Place Description
+        CBD:         Central Business District (CBD)
+        INDSUBR:     Indian Subreservation
+        LONGITUD:    Longitude
+        LATITUDE:    Latitude
+        LANDAREA:    Land Area (square kilometers to the nearest tenth)
+        AREANAME:    Area Name
+        SUPFLG01:    Total Population Suppression Flag
+        SUPFLG02:    White Population Suppression Flag
+        SUPFLG03:    Black Population Suppression Flag
+        SUPFLG04:    American Indian, Eskimo, and Aleut Suppression Flag
+        SUPFLG05:    Asian and Pacific Islander Suppression Flag
+        SUPFLG06:    Spanish Population Suppression Flag
+        SUPFLG07:    Spanish-White Population Suppression Flag
+        SUPFLG08:    Spanish-Black Population Suppression Flag
+        SUPFLG09:    Year-Round Housing Unit Suppression Flag
+        SUPFLG10:    Occupied Housing Unit Suppression Flag
+        SUPFLG11:    White Householder Suppression Flag
+        SUPFLG12:    Black Householder Suppression Flag
+        SUPFLG13:    American Indian, Eskimo, and Aleut Householder Suppression Flag
+        SUPFLG14:    Asian and Pacific Islander Householder Suppression Flag
+        SUPFLG15:    Other Race Householder Suppression Flag
+        SUPFLG16:    Owner/Renter Housing Unit Suppression Flag
+        SUPFLG17:    Owner Occupied Housing Unit Suppression Flag
+        SUPFLG18:    Renter Occupied Housing Unit Suppression Flag
+        SUPFLG19:    Spanish Origin Householder Suppression Flag
+        SUPFLG20:    Spanish-White Householder Suppression Flag
+        SUPFLG21:    Spanish-Black Householder Suppression Flag
+ 
+Breakdown:
+    Geographic Subarea: Total area (0000)
+ 
+    Table 1:     Persons
+    Universe:    Persons
+    Source code: NT1A
+    NHGIS code:  C7L
+        C7L001:      Total
+ 
+    Table 2:     Race
+    Universe:    Persons
+    Source code: NT7
+    NHGIS code:  C9D
+        C9D001:      White
+        C9D002:      Black
+        C9D003:      American Indian, Eskimo, and Aleut: American Indian
+        C9D004:      American Indian, Eskimo, and Aleut: Eskimo
+        C9D005:      American Indian, Eskimo, and Aleut: Aleut
+        C9D006:      Asian and Pacific Islander: Japanese
+        C9D007:      Asian and Pacific Islander: Chinese
+        C9D008:      Asian and Pacific Islander: Filipino
+        C9D009:      Asian and Pacific Islander: Korean
+        C9D010:      Asian and Pacific Islander: Asian Indian
+        C9D011:      Asian and Pacific Islander: Vietnamese
+        C9D012:      Asian and Pacific Islander: Hawaiian
+        C9D013:      Asian and Pacific Islander: Guamanian
+        C9D014:      Asian and Pacific Islander: Samoan
+        C9D015:      Other
+ 
+    Table 3:     Spanish Origin
+    Universe:    Persons
+    Source code: NT8
+    NHGIS code:  C9E
+        C9E001:      Not of Spanish origin
+        C9E002:      Mexican
+        C9E003:      Puerto Rican
+        C9E004:      Cuban
+        C9E005:      Other Spanish
+ 
+    Table 4:     Persons of Spanish Origin
+    Universe:    Persons of Spanish Origin
+    Source code: NT9A
+    NHGIS code:  C9F
+        C9F001:      Total
+ 
+    Table 5:     Race
+    Universe:    Persons of Spanish Origin
+    Source code: NT9B
+    NHGIS code:  C9G
+        C9G001:      White
+        C9G002:      Black
+        C9G003:      American Indian, Eskimo, Aleut, and Asian and Pacific Islander
+        C9G004:      Other
+ 
+    Table 6:     Age
+    Universe:    Persons
+    Source code: NT12A
+    NHGIS code:  C7B
+        C7B001:      Under 5 years
+        C7B002:      5-17 years
+        C7B003:      18-64 years
+        C7B004:      65 years old and over
+ 
+    Table 7:     Race by Age
+    Universe:    Persons
+    Source code: NT12B
+    NHGIS code:  C7C
+        C7C001:      White >> Under 5 years
+        C7C002:      White >> 5-17 years
+        C7C003:      White >> 18-64 years
+        C7C004:      White >> 65 years old and over
+        C7C005:      Black >> Under 5 years
+        C7C006:      Black >> 5-17 years
+        C7C007:      Black >> 18-64 years
+        C7C008:      Black >> 65 years old and over
+        C7C009:      American Indian, Eskimo, and Aleut >> Under 5 years
+        C7C010:      American Indian, Eskimo, and Aleut >> 5-17 years
+        C7C011:      American Indian, Eskimo, and Aleut >> 18-64 years
+        C7C012:      American Indian, Eskimo, and Aleut >> 65 years old and over
+        C7C013:      Asian and Pacific Islander >> Under 5 years
+        C7C014:      Asian and Pacific Islander >> 5-17 years
+        C7C015:      Asian and Pacific Islander >> 18-64 years
+        C7C016:      Asian and Pacific Islander >> 65 years old and over
+        C7C017:      Other >> Under 5 years
+        C7C018:      Other >> 5-17 years
+        C7C019:      Other >> 18-64 years
+        C7C020:      Other >> 65 years old and over
+ 
+    Table 8:     Age
+    Universe:    Persons of Spanish Origin
+    Source code: NT13A
+    NHGIS code:  C7D
+        C7D001:      Under 5 years
+        C7D002:      5-17 years
+        C7D003:      18-64 years
+        C7D004:      65 years old and over
+ 
+    Table 9:     Race by Age
+    Universe:    Persons of Spanish Origin
+    Source code: NT13B
+    NHGIS code:  C7E
+        C7E001:      White >> Under 5 years
+        C7E002:      White >> 5-17 years
+        C7E003:      White >> 18-64 years
+        C7E004:      White >> 65 years old and over
+        C7E005:      Black >> Under 5 years
+        C7E006:      Black >> 5-17 years
+        C7E007:      Black >> 18-64 years
+        C7E008:      Black >> 65 years old and over
+        C7E009:      Other >> Under 5 years
+        C7E010:      Other >> 5-17 years
+        C7E011:      Other >> 18-64 years
+        C7E012:      Other >> 65 years old and over
+ 
+--------------------------------------------------------------------------------
+Citation and Use of NHGIS Data
+--------------------------------------------------------------------------------
+ 
+All persons are granted a limited license to use this documentation and the
+accompanying data, subject to the following conditions:
+
+* REDISTRIBUTION: You will not redistribute the data without permission.
+
+  You may publish a subset of the data to meet journal requirements for accessing 
+  data related to a particular publication. Contact us for permission for any other 
+  redistribution; we will consider requests for free and commercial redistribution.
+
+* CITATION: You will cite NHGIS appropriately.
+
+    * Publications and research reports employing NHGIS data (either tabular or GIS) 
+      should include the following citation:
+
+        Steven Manson, Jonathan Schroeder, David Van Riper, Katherine Knowles, Tracy Kugler, Finn Roberts, and Steven Ruggles.
+        IPUMS National Historical Geographic Information System: Version 18.0 
+        [dataset]. Minneapolis, MN: IPUMS. 2023.
+        http://doi.org/10.18128/D050.V18.0
+
+    * For policy briefs, online resources, or articles in the popular press, we 
+      recommend that you cite the use of NHGIS data as follows:
+
+        IPUMS NHGIS, University of Minnesota, www.nhgis.org.
+
+These terms of use are a legally binding agreement. You can use the data only in 
+accordance with these terms, and any other use is a violation of the agreement. 
+Violations may result in revocation of the agreement and prohibition from using other 
+IPUMS data. If IPUMS or our partners are harmed from your violation, you are 
+responsible for all damages, including reasonable attorney's fees and expenses.
+        
+In addition, we request that users send us a copy of any publications, research
+reports, or educational material making use of the data or documentation.
+
+Send electronic material to: nhgis@umn.edu
+
+Printed matter should be sent to:
+
+    IPUMS NHGIS
+    Institute for Social Research and Data Innovation
+    University of Minnesota
+    50 Willey Hall
+    225 19th Ave S
+    Minneapolis, MN 55455

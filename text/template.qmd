@@ -1,0 +1,109 @@
+---
+title: "Some title"
+author: "Some author"
+date: last-modified
+format: 
+  html: 
+    extensions: [andrewheiss/wordcount]
+references:
+- id: Lovelace1842
+  author:
+    - family: Lovelace
+      given: Ada Augusta
+  citation-key: Lovelace1842
+  container-title: Taylor's Scientific Memoirs
+  issued:
+    - year: 1842
+  language: en-GB
+  page: 666–731
+  title: >-
+    Sketch of the analytical engine invented by Charles Babbage, by LF Menabrea,
+    officer of the military engineers, with notes upon the memoir by the
+    translator
+  type: article-journal
+  volume: 3
+
+- id: Turing1936
+  author:
+    - family: Turing
+      given: Alan Mathison
+  citation-key: Turing1936
+  container-title: Journal of Math
+  issue: 345–363
+  issued:
+    - year: 1936
+  page: 230–265
+  title: On Computable Numbers, with an Application to the Entscheidungsproblem
+  type: article-journal
+  volume: 58
+---
+
+
+## Introduction
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua [@Lovelace1842]. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum [@Turing1936].
+
+
+| Column A | Column B |
+|----------|----------|
+| 7        | Apple    |
+| 19       | Banana   |
+
+: Here's a table with a caption that doesn't get counted
+
+::: {.no-count}
+
+### No counting
+
+You can use the `{.no-count}` class on a [fenced div](https://quarto.org/docs/authoring/markdown-basics.html#sec-divs-and-spans) to skip counting its contents, like this section.
+
+::: 
+
+### Shortcodes
+
+Word counts can be directly included in your document with shortcodes, like so:[^1]
+
+- Use `{{{< words-total >}}}` to include a count of all words: **{{< words-total >}} words**
+
+- Use `{{{< words-body >}}}` to include a count of the words in the text body only, omitting the references, notes, and appendix: **{{< words-body >}} words**
+
+- Use `{{{< words-ref >}}}` to include a count of the words in the reference section: **{{< words-ref >}} words**
+
+- Use `{{{< words-append >}}}` to include a count of the words in the appendix, which must be wrapped in a div with the `#appendix-count` id (see below for an example): **{{< words-append >}} words**
+
+- Use `{{{< words-note >}}}` to include a count of the words in the notes: **{{< words-note >}} words**. You can also reliably count words in the footnotes which would have previously been included in whichever section they were.[^2]
+
+- Use `{{{< words-sum ARG >}}}` where `ARG` is some concatenation of the four countable areas: `body`, `ref`, `append`, and `note`. For example, `{{{< words-sum body-note >}}}` includes a count of the words in the body and notes (**{{< words-sum body-note >}} words**); `{{{< words-sum ref-append >}}}` includes a count of the words in the references and appendix (**{{< words-sum ref-append >}} words**)
+
+[^1]: **NOTE** shortcodes `{{{< words-body >}}}`, `{{{< words-ref >}}}`, `{{{< words-append >}}}`, and `{{{< words-note >}}}` do not overlap their counts.
+
+[^2]: Count footnote words with `{{{< words-note >}}}`: {{< words-note >}}
+
+
+### Minor issues with shortcode counting
+
+This filter may not always produce accurate counts for documents that use shortcodes, specifically shortcodes that run after this filter. If a shortcode has multiple arguments but only returns one word, then it is possible that the word count is inflated,[^3] and conversely deflated if it returns more words.
+
+[^3]: An example in this extension is `{{{< words-sum ARG >}}}`, where `ARG` is formatted as "ref-note" or "body-append", etc., to count specific sections together. Since `words-sum` has two words to construct the shortcode but only one word is returned, the region that uses this shortcode is inflated by one.
+
+
+## Conclusion
+
+Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+
+
+## References [^4]
+
+[^4]: Count reference words with `{{{< words-ref >}}}`: {{< words-ref >}}
+
+::: {#refs}
+:::
+
+
+::: {#appendix-count}
+## Appendix [^5] {.appendix}
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+:::
+
+[^5]: Count appendix words with `{{{< words-append >}}}`: {{< words-append >}}

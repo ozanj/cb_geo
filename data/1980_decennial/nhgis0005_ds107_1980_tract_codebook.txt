@@ -1,0 +1,558 @@
+--------------------------------------------------------------------------------
+Codebook for NHGIS data file 'nhgis0005_ds107_1980_tract'
+--------------------------------------------------------------------------------
+ 
+Contents
+    - Data Summary
+    - Data Dictionary
+    - Citation and Use
+ 
+Additional documentation on NHGIS data sources is available at: 
+    https://www.nhgis.org/documentation/tabular-data 
+ 
+--------------------------------------------------------------------------------
+Data Summary
+--------------------------------------------------------------------------------
+ 
+Year:             1980
+Geographic level: Census Tract (by State--County)
+Dataset:          1980 Census: STF 3 - Sample-Based Data
+   NHGIS code:    1980_STF3
+   NHGIS ID:      ds107
+Breakdown(s):     Geographic Subarea:
+                     Total area (0000)
+ 
+Tables:
+ 
+1. Persons
+   Universe:    Persons
+   Source code: NT1A
+   NHGIS code:  DGO
+ 
+2. 100-percent Count of Persons
+   Universe:    100-Percent Count of Persons
+   Source code: NT3
+   NHGIS code:  DG2
+ 
+3. Families
+   Universe:    Families
+   Source code: NT9
+   NHGIS code:  DI6
+ 
+4. Households
+   Universe:    Households
+   Source code: NT10
+   NHGIS code:  DEC
+ 
+5. Race
+   Universe:    Persons
+   Source code: NT12
+   NHGIS code:  DFB
+ 
+6. Spanish Origin and Race
+   Universe:    Persons
+   Source code: NT13
+   NHGIS code:  DFN
+ 
+7. Race
+   Universe:    Persons of Spanish Origin
+   Source code: NT14A
+   NHGIS code:  DGD
+ 
+8. Persons of Spanish Origin
+   Universe:    Persons of Spanish Origin
+   Source code: NT14B
+   NHGIS code:  DGE
+ 
+9. Race by Age
+   Universe:    Persons of Specified Races
+   Source code: NT16A
+   NHGIS code:  DGI
+ 
+10. Age
+    Universe:    Persons of Spanish Origin
+    Source code: NT17A
+    NHGIS code:  DGK
+ 
+11. Years of School Completed
+    Universe:    Persons 25 Years and Over
+    Source code: NT48A
+    NHGIS code:  DHM
+ 
+12. Years of School Completed
+    Universe:    Persons 25 Years and Over
+    Source code: NT48B
+    NHGIS code:  DHN
+ 
+13. Years of School Completed
+    Universe:    Persons of Spanish Origin 25 Years and Over
+    Source code: NT49
+    NHGIS code:  DHO
+ 
+14. Income in 1979
+    Universe:    Households
+    Source code: NT68
+    NHGIS code:  DID
+ 
+15. Median Household Income in 1979
+    Universe:    Households
+    Source code: NT69
+    NHGIS code:  DIE
+ 
+16. Aggregate Household Income in 1979
+    Universe:    Households
+    Source code: NT70
+    NHGIS code:  DIG
+ 
+17. Family Income in 1979
+    Universe:    Families
+    Source code: NT73
+    NHGIS code:  DIK
+ 
+18. Median Family Income in 1979
+    Universe:    Families
+    Source code: NT74
+    NHGIS code:  DIL
+ 
+19. Race by Family Income in 1979
+    Universe:    Families with Householders of Specified Races
+    Source code: NT75
+    NHGIS code:  DIM
+ 
+20. Family Income in 1979
+    Universe:    Families with Householder of Spanish Origin
+    Source code: NT76
+    NHGIS code:  DIN
+ 
+21. Aggregate Family Income in 1979
+    Universe:    Families
+    Source code: NT77A
+    NHGIS code:  DIO
+ 
+22. Aggregate Family Income in 1979 by Race of Householder
+    Universe:    Families
+    Source code: NT77B
+    NHGIS code:  DIP
+ 
+23. Aggregate Family Income in 1979
+    Universe:    Families with Householder of Spanish Origin
+    Source code: NT78
+    NHGIS code:  DIQ
+ 
+24. Per Capita Income in 1979
+    Universe:    Persons
+    Source code: NT85A
+    NHGIS code:  DIZ
+ 
+--------------------------------------------------------------------------------
+Data Dictionary
+--------------------------------------------------------------------------------
+ 
+Context Fields 
+        GISJOIN:     GIS Join Match Code
+        YEAR:        Data File Year
+        FSTATUS:     Functional Status Code
+        REGIONA:     Region Code
+        DIVISIONA:   Division Code
+        STATE:       State Name
+        STATEA:      State Code
+        SMSAA:       Standard Metropolitan Statistical Area Code
+        COUNTY:      County Name
+        COUNTYA:     County Code
+        CTY_SUBA:    County Subdivision Code
+        PLACEA:      Place Code
+        TRACTA:      Census Tract Code
+        BLCK_GRPA:   Block Group Code
+        ENUMDISTA:   Enumeration District Code
+        SCSAA:       Standard Consolidated Statistical Area Code
+        URB_AREAA:   Urban Area Code
+        CDA:         Congressional District Code
+        AIANHHA:     American Indian Area/Alaska Native Area/Hawaiian Home Land Code
+        MCDSEQNO:    MCD Sequence Number
+        ZIPA:        5-Digit ZIP Code Code
+        SEA:         State Economic Area (SEA)
+        UATYPE:      Urbanized Area (UA) Type
+        PLACDESC:    Place Description
+        CBD:         Central Business District (CBD)
+        INDSUBR:     Indian Subreservation
+        AREANAME:    Area Name
+        SUPFLG01:    Total Population Suppression Flag
+        SUPFLG02:    White Population Suppression Flag
+        SUPFLG03:    Black Population Suppression Flag
+        SUPFLG04:    American Indian, Eskimo, and Aleut Suppression Flag
+        SUPFLG05:    Asian and Pacific Islander Suppression Flag
+        SUPFLG06:    Spanish Population Suppression Flag
+        SUPFLG07:    Year-Round Housing Unit Suppression Flag
+        SUPFLG08:    Occupied Housing Unit Suppression Flag
+        SUPFLG09:    Occupied Housing Unit with White Householder Suppression Flag
+        SUPFLG10:    Occupied Housing Unit with Black Householder Suppression Flag
+        SUPFLG11:    Occupied Housing Unit with American Indian, Eskimo, and Aleut Householder Suppression Flag
+        SUPFLG12:    Occupied Housing Unit with Asian and Pacific Islander Householder Suppression Flag
+        SUPFLG13:    Occupied Housing Unit with Other Race Householder Suppression Flag
+        SUPFLG14:    Occupied Housing Unit with Spanish Origin Householder Suppression Flag
+        SUPFLG15:    Owner-Occupied Housing Unit Suppression Flag
+        SUPFLG16:    Owner-Occupied Housing Unit with White Householder Suppression Flag
+        SUPFLG17:    Owner-Occupied Housing Unit with Black Householder Suppression Flag
+        SUPFLG18:    Owner-Occupied Housing Unit with American Indian, Eskimo, and Aleut Householder Suppression Flag
+        SUPFLG19:    Owner-Occupied Housing Unit with Asian and Pacific Islander Householders Suppression Flag
+        SUPFLG20:    Owner-Occupied Housing Unit with Spanish Householder Suppression Flag
+        SUPFLG21:    Renter-Occupied Housing Unit Suppression Flag
+        SUPFLG22:    Renter-Occupied Housing Unit with White Householder Suppression Flag
+        SUPFLG23:    Renter-Occupied Housing Unit with Black Householder Suppression Flag
+        SUPFLG24:    Renter-Occupied Housing Unit with American Indian, Eskimo, and Aleut Householder Suppression Flag
+        SUPFLG25:    Renter-Occupied Housing Unit with Asian and Pacific Islander Householder Suppression Flag
+        SUPFLG26:    Renter-Occupied Housing Unit with Spanish Householder Suppression Flag
+        SUPFLG27:    Owner/Renter Occupied Housing Unit Suppression Flag
+ 
+Breakdown:
+    Geographic Subarea: Total area (0000)
+ 
+    Table 1:     Persons
+    Universe:    Persons
+    Source code: NT1A
+    NHGIS code:  DGO
+        DGO001:      Total
+ 
+    Table 2:     100-percent Count of Persons
+    Universe:    100-Percent Count of Persons
+    Source code: NT3
+    NHGIS code:  DG2
+        DG2001:      Total
+ 
+    Table 3:     Families
+    Universe:    Families
+    Source code: NT9
+    NHGIS code:  DI6
+        DI6001:      Total
+ 
+    Table 4:     Households
+    Universe:    Households
+    Source code: NT10
+    NHGIS code:  DEC
+        DEC001:      Total
+ 
+    Table 5:     Race
+    Universe:    Persons
+    Source code: NT12
+    NHGIS code:  DFB
+        DFB001:      White
+        DFB002:      Black
+        DFB003:      American Indian, Eskimo and Aleut: American Indian
+        DFB004:      American Indian, Eskimo and Aleut: Eskimo
+        DFB005:      American Indian, Eskimo and Aleut: Aleut
+        DFB006:      Asian and Pacific Islander: Japanese
+        DFB007:      Asian and Pacific Islander: Chinese
+        DFB008:      Asian and Pacific Islander: Filipino
+        DFB009:      Asian and Pacific Islander: Korean
+        DFB010:      Asian and Pacific Islander: Asian Indian
+        DFB011:      Asian and Pacific Islander: Vietnamese
+        DFB012:      Asian and Pacific Islander: Hawaiian
+        DFB013:      Asian and Pacific Islander: Guamanian
+        DFB014:      Asian and Pacific Islander: Samoan
+        DFB015:      Asian and Pacific Islander: Other
+        DFB016:      Other (race N.E.C.): Spanish
+        DFB017:      Other (race N.E.C.): Not Spanish
+ 
+    Table 6:     Spanish Origin and Race
+    Universe:    Persons
+    Source code: NT13
+    NHGIS code:  DFN
+        DFN001:      Not of Spanish origin
+        DFN002:      Mexican
+        DFN003:      Puerto Rican
+        DFN004:      Cuban
+        DFN005:      Other Spanish: White, Black, American Indian, Eskimo, Aleut, and Asian and Pacific Islander
+        DFN006:      Other Spanish: Other (Race N.E.C.)
+ 
+    Table 7:     Race
+    Universe:    Persons of Spanish Origin
+    Source code: NT14A
+    NHGIS code:  DGD
+        DGD001:      White
+        DGD002:      Black
+        DGD003:      American Indian, Eskimo, Aleut, and Asian and Pacific Islander
+        DGD004:      Other
+ 
+    Table 8:     Persons of Spanish Origin
+    Universe:    Persons of Spanish Origin
+    Source code: NT14B
+    NHGIS code:  DGE
+        DGE001:      Total
+ 
+    Table 9:     Race by Age
+    Universe:    Persons of Specified Races
+    Source code: NT16A
+    NHGIS code:  DGI
+        DGI001:      White >> Under 5 years
+        DGI002:      White >> 5-14 years
+        DGI003:      White >> 15-59 years
+        DGI004:      White >> 60-64 years
+        DGI005:      White >> 65 years and over
+        DGI006:      Black >> Under 5 years
+        DGI007:      Black >> 5-14 years
+        DGI008:      Black >> 15-59 years
+        DGI009:      Black >> 60-64 years
+        DGI010:      Black >> 65 years and over
+        DGI011:      American Indian, Eskimo, and Aleut >> Under 5 years
+        DGI012:      American Indian, Eskimo, and Aleut >> 5-14 years
+        DGI013:      American Indian, Eskimo, and Aleut >> 15-59 years
+        DGI014:      American Indian, Eskimo, and Aleut >> 60-64 years
+        DGI015:      American Indian, Eskimo, and Aleut >> 65 years and over
+        DGI016:      Asian and Pacific Islander >> Under 5 years
+        DGI017:      Asian and Pacific Islander >> 5-14 years
+        DGI018:      Asian and Pacific Islander >> 15-59 years
+        DGI019:      Asian and Pacific Islander >> 60-64 years
+        DGI020:      Asian and Pacific Islander >> 65 years and over
+ 
+    Table 10:    Age
+    Universe:    Persons of Spanish Origin
+    Source code: NT17A
+    NHGIS code:  DGK
+        DGK001:      Under 5 years
+        DGK002:      5-14 years
+        DGK003:      15-59 years
+        DGK004:      60-64 years
+        DGK005:      65 years and over
+ 
+    Table 11:    Years of School Completed
+    Universe:    Persons 25 Years and Over
+    Source code: NT48A
+    NHGIS code:  DHM
+        DHM001:      Elementary (0-8 years)
+        DHM002:      High school: 1-3 years
+        DHM003:      High school: 4 years
+        DHM004:      College: 1-3 years
+        DHM005:      College: 4 or more years
+ 
+    Table 12:    Years of School Completed
+    Universe:    Persons 25 Years and Over
+    Source code: NT48B
+    NHGIS code:  DHN
+        DHN001:      White >> Elementary (0-8 years)
+        DHN002:      White >> High school: 1-3 years
+        DHN003:      White >> High school: 4 years
+        DHN004:      White >> College: 1-3 years
+        DHN005:      White >> College: 4 or more years
+        DHN006:      Black >> Elementary (0-8 years)
+        DHN007:      Black >> High school: 1-3 years
+        DHN008:      Black >> High school: 4 years
+        DHN009:      Black >> College: 1-3 years
+        DHN010:      Black >> College: 4 or more years
+        DHN011:      American Indian, Eskimo, and Aleut >> Elementary (0-8 years)
+        DHN012:      American Indian, Eskimo, and Aleut >> High school: 1-3 years
+        DHN013:      American Indian, Eskimo, and Aleut >> High school: 4 years
+        DHN014:      American Indian, Eskimo, and Aleut >> College: 1-3 years
+        DHN015:      American Indian, Eskimo, and Aleut >> College: 4 or more years
+        DHN016:      Asian and Pacific Islander >> Elementary (0-8 years)
+        DHN017:      Asian and Pacific Islander >> High school: 1-3 years
+        DHN018:      Asian and Pacific Islander >> High school: 4 years
+        DHN019:      Asian and Pacific Islander >> College: 1-3 years
+        DHN020:      Asian and Pacific Islander >> College: 4 or more years
+        DHN021:      Other >> Elementary (0-8 years)
+        DHN022:      Other >> High school: 1-3 years
+        DHN023:      Other >> High school: 4 years
+        DHN024:      Other >> College: 1-3 years
+        DHN025:      Other >> College: 4 or more years
+ 
+    Table 13:    Years of School Completed
+    Universe:    Persons of Spanish Origin 25 Years and Over
+    Source code: NT49
+    NHGIS code:  DHO
+        DHO001:      Elementary (0-8 years)
+        DHO002:      High school: 1-3 years
+        DHO003:      High school: 4 years
+        DHO004:      College: 1-3 years
+        DHO005:      College: 4 or more years
+ 
+    Table 14:    Income in 1979
+    Universe:    Households
+    Source code: NT68
+    NHGIS code:  DID
+        DID001:      Less than $2,500
+        DID002:      $2,500-$4,999
+        DID003:      $5,000-$7,499
+        DID004:      $7,500-$9,999
+        DID005:      $10,000-$12,499
+        DID006:      $12,500-$14,999
+        DID007:      $15,000-$17,499
+        DID008:      $17,500-$19,999
+        DID009:      $20,000-$22,499
+        DID010:      $22,500-$24,999
+        DID011:      $25,000-$27,499
+        DID012:      $27,500-$29,999
+        DID013:      $30,000-$34,999
+        DID014:      $35,000-$39,999
+        DID015:      $40,000-$49,999
+        DID016:      $50,000-$74,999
+        DID017:      $75,000 or more
+ 
+    Table 15:    Median Household Income in 1979
+    Universe:    Households
+    Source code: NT69
+    NHGIS code:  DIE
+        DIE001:      Median household income in 1979
+ 
+    Table 16:    Aggregate Household Income in 1979
+    Universe:    Households
+    Source code: NT70
+    NHGIS code:  DIG
+        DIG001:      Aggregate household income
+ 
+    Table 17:    Family Income in 1979
+    Universe:    Families
+    Source code: NT73
+    NHGIS code:  DIK
+        DIK001:      Less than $2,500
+        DIK002:      $2,500-$4,999
+        DIK003:      $5,000-$7,499
+        DIK004:      $7,500-$9,999
+        DIK005:      $10,000-$12,499
+        DIK006:      $12,500-$14,999
+        DIK007:      $15,000-$17,499
+        DIK008:      $17,500-$19,999
+        DIK009:      $20,000-$22,499
+        DIK010:      $22,500-$24,999
+        DIK011:      $25,000-$27,499
+        DIK012:      $27,500-$29,999
+        DIK013:      $30,000-$34,999
+        DIK014:      $35,000-$39,999
+        DIK015:      $40,000-$49,999
+        DIK016:      $50,000-$74,999
+        DIK017:      $75,000 or more
+ 
+    Table 18:    Median Family Income in 1979
+    Universe:    Families
+    Source code: NT74
+    NHGIS code:  DIL
+        DIL001:      Median family income in 1979
+ 
+    Table 19:    Race by Family Income in 1979
+    Universe:    Families with Householders of Specified Races
+    Source code: NT75
+    NHGIS code:  DIM
+        DIM001:      White >> Less than $5,000
+        DIM002:      White >> $5,000-$7,499
+        DIM003:      White >> $7,500-$9,999
+        DIM004:      White >> $10,000-$14,999
+        DIM005:      White >> $15,000-$19,999
+        DIM006:      White >> $20,000-$24,999
+        DIM007:      White >> $25,000-$34,999
+        DIM008:      White >> $35,000-$49,999
+        DIM009:      White >> $50,000 or more
+        DIM010:      Black >> Less than $5,000
+        DIM011:      Black >> $5,000-$7,499
+        DIM012:      Black >> $7,500-$9,999
+        DIM013:      Black >> $10,000-$14,999
+        DIM014:      Black >> $15,000-$19,999
+        DIM015:      Black >> $20,000-$24,999
+        DIM016:      Black >> $25,000-$34,999
+        DIM017:      Black >> $35,000-$49,999
+        DIM018:      Black >> $50,000 or more
+        DIM019:      American Indian, Eskimo and Aleut >> Less than $5,000
+        DIM020:      American Indian, Eskimo and Aleut >> $5,000-$7,499
+        DIM021:      American Indian, Eskimo and Aleut >> $7,500-$9,999
+        DIM022:      American Indian, Eskimo and Aleut >> $10,000-$14,999
+        DIM023:      American Indian, Eskimo and Aleut >> $15,000-$19,999
+        DIM024:      American Indian, Eskimo and Aleut >> $20,000-$24,999
+        DIM025:      American Indian, Eskimo and Aleut >> $25,000-$34,999
+        DIM026:      American Indian, Eskimo and Aleut >> $35,000-$49,999
+        DIM027:      American Indian, Eskimo and Aleut >> $50,000 or more
+        DIM028:      Asian and Pacific Islander >> Less than $5,000
+        DIM029:      Asian and Pacific Islander >> $5,000-$7,499
+        DIM030:      Asian and Pacific Islander >> $7,500-$9,999
+        DIM031:      Asian and Pacific Islander >> $10,000-$14,999
+        DIM032:      Asian and Pacific Islander >> $15,000-$19,999
+        DIM033:      Asian and Pacific Islander >> $20,000-$24,999
+        DIM034:      Asian and Pacific Islander >> $25,000-$34,999
+        DIM035:      Asian and Pacific Islander >> $35,000-$49,999
+        DIM036:      Asian and Pacific Islander >> $50,000 or more
+ 
+    Table 20:    Family Income in 1979
+    Universe:    Families with Householder of Spanish Origin
+    Source code: NT76
+    NHGIS code:  DIN
+        DIN001:      Less than $5,000
+        DIN002:      $5,000-$7,499
+        DIN003:      $7,500-$9,999
+        DIN004:      $10,000-$14,999
+        DIN005:      $15,000-$19,999
+        DIN006:      $20,000-$24,999
+        DIN007:      $25,000-$34,999
+        DIN008:      $35,000-$49,999
+        DIN009:      $50,000 or more
+ 
+    Table 21:    Aggregate Family Income in 1979
+    Universe:    Families
+    Source code: NT77A
+    NHGIS code:  DIO
+        DIO001:      Aggregate family income
+ 
+    Table 22:    Aggregate Family Income in 1979 by Race of Householder
+    Universe:    Families
+    Source code: NT77B
+    NHGIS code:  DIP
+        DIP001:      Aggregate family income >> White
+        DIP002:      Aggregate family income >> Black
+        DIP003:      Aggregate family income >> American Indian, Eskimo, and Aleut
+        DIP004:      Aggregate family income >> Asian and Pacific Islander
+        DIP005:      Aggregate family income >> Other
+ 
+    Table 23:    Aggregate Family Income in 1979
+    Universe:    Families with Householder of Spanish Origin
+    Source code: NT78
+    NHGIS code:  DIQ
+        DIQ001:      Aggregate family income
+ 
+    Table 24:    Per Capita Income in 1979
+    Universe:    Persons
+    Source code: NT85A
+    NHGIS code:  DIZ
+        DIZ001:      Per capita income in 1979
+ 
+--------------------------------------------------------------------------------
+Citation and Use of NHGIS Data
+--------------------------------------------------------------------------------
+ 
+All persons are granted a limited license to use this documentation and the
+accompanying data, subject to the following conditions:
+
+* REDISTRIBUTION: You will not redistribute the data without permission.
+
+  You may publish a subset of the data to meet journal requirements for accessing 
+  data related to a particular publication. Contact us for permission for any other 
+  redistribution; we will consider requests for free and commercial redistribution.
+
+* CITATION: You will cite NHGIS appropriately.
+
+    * Publications and research reports employing NHGIS data (either tabular or GIS) 
+      should include the following citation:
+
+        Steven Manson, Jonathan Schroeder, David Van Riper, Katherine Knowles, Tracy Kugler, Finn Roberts, and Steven Ruggles.
+        IPUMS National Historical Geographic Information System: Version 18.0 
+        [dataset]. Minneapolis, MN: IPUMS. 2023.
+        http://doi.org/10.18128/D050.V18.0
+
+    * For policy briefs, online resources, or articles in the popular press, we 
+      recommend that you cite the use of NHGIS data as follows:
+
+        IPUMS NHGIS, University of Minnesota, www.nhgis.org.
+
+These terms of use are a legally binding agreement. You can use the data only in 
+accordance with these terms, and any other use is a violation of the agreement. 
+Violations may result in revocation of the agreement and prohibition from using other 
+IPUMS data. If IPUMS or our partners are harmed from your violation, you are 
+responsible for all damages, including reasonable attorney's fees and expenses.
+        
+In addition, we request that users send us a copy of any publications, research
+reports, or educational material making use of the data or documentation.
+
+Send electronic material to: nhgis@umn.edu
+
+Printed matter should be sent to:
+
+    IPUMS NHGIS
+    Institute for Social Research and Data Innovation
+    University of Minnesota
+    50 Willey Hall
+    225 19th Ave S
+    Minneapolis, MN 55455

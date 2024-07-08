@@ -1,0 +1,146 @@
+---
+title: "Structuring College Choice: The Curious, Mundane Case of College Board Geo-markets"
+author: ["Ozan Jaquette (UCLA)", "Karina Salazar (University of Arizona)"]
+bibliography: ./../assets/bib/cb_geomarket_bib.bib
+csl: ./../assets/bib/apa.csl
+format:
+  pdf:
+    documentclass: article
+    #papersize: letter
+    number-sections: true
+    number-depth: 2
+    #toc: FALSE
+    #pandoc_args: !expr rmdfiltr::add_wordcount_filter(rmdfiltr::add_citeproc_filter(args = NULL))
+    #keep_tex: true
+editor: visual
+geometry:
+  margin=1in
+fontsize: 12pt
+header-includes:
+  - \usepackage{setspace}
+  - \doublespacing
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+#library(bookdown)
+
+# https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_pdf.pdf
+library(kableExtra)
+```
+
+```{=tex}
+\pagenumbering{roman}
+\newpage
+\pagenumbering{gobble}
+\pagenumbering{arabic}
+```
+# Introduction
+
+TEXT TEXT
+
+Thinking about a revised outline, 4/19/2024
+
+-   Intro/lit review
+-   theory \[e.g., quantification, whatever\]
+-   then do a close read of the zemsky book, which ends in creation of EPS, incorporating geomarkets in student list products
+    -   hypotheses would be motivated here
+-   methods/data
+
+the alternative (typical education journal) structure would be this \[which has one more level 1 heading and feels to inefficient\]:
+
+-   introduction \[topic importance\]
+-   literature review
+-   background
+-   conceptual framework
+-   methods data
+
+IMPORTANT (defense/offense): One important limitation of this manuscript is that we do not study the effect of geomarkets on college access. However, we do show empirically how geomarkets work as a mechanism of exclusion and social reproduction.
+
+Prior research on quantification in education focuses on consumer-facing products. For example, Espeland and Sauder study US News Rankings. McArthur, D., & Reeves, A. (2022) study School League Tables. Prior research has not studied quantification within the context of market research. Here, the desirable attributes of students and places they live are quantified with the purpose of informing colleges about where they should allocate recruiting resources to efficiently enroll the most desirable students.
+
+# Background: Enrollment Management and the Enrollment Funnel
+
+The term "enrollment management" (EM) refers to a profession, an administrative structure, and an industry. As a profession, EM integrates techniques from marketing and economics in order to "influence the characteristics and the size of enrolled student bodies" [@RN2771, p. xiv]. As an administrative structure, the EM office typically controls the activities of admissions, financial aid, and recruiting [@RN2406]. The EM industry consists of university personnel (e.g., admissions counselors, VP for enrollment management), professional associations (e.g., National Association for College Admission Counseling), and third-party servicers that produce market research, software, and and consulting services (e.g., College Board, ACT, EAB, Huron, Slate, PowerSchool).
+
+Figure @fig-em-funnel depicts the "enrollment funnel," which modifies the traditional "marketing funnel" to depict broad stages in the process of recruiting students [@RN4986; @RN2004]. The funnel begins with a large pool of "prospects" (i.e., prospective students) that the university would like to enroll. "Leads" are prospects whose contact information has been obtained. "Inquiries" are prospects that contact the institution and consist of two types: first, inquiries who respond to an initial solicitation (e.g., email) from the university; and second, "student-as-first-contact" inquiries who reach out to the university on their own (e.g., sending ACT scores). <!--  Applicants consist of inquiries who apply plus "stealth applicants" who do not contact the university before applying.  -->The funnel narrows at each successive stage in order to convey the assumption of "melt" (e.g., a subset of "inquiries" will apply). Practically, the purpose of the enrollment funnel is to inform recruiting interventions that target one or more stages. These interventions seek to increase the probability of "conversion" across stages [@RN4322]. At the top of the enrollment funnel, purchasing student lists is the primary means of converting prospects to leads [@list_biz]. Purchased leads are served emails, brochures, and targeted social media advertisements designed to solicit inquiries and applications [@RN4895].
+
+Scholarship at the nexus of enrollment management and college access can be categorized by which part(s) of the enrollment funnel they focus on. The majority of scholarship focuses on the admissions stage, for example which admissions criteria are used [@RN4874; @RN4993] and which applicants are admitted in practice [@RN4131; @RN3522] \[CITE SOMETHING BY BASTEDO\].
+
+A growing literature analyzes the earlier "recruiting" stages of identifying leads, soliciting inquiries, and soliciting applications. Scholarship on recruiting has conceptualized recruiting behavior as an indicator of college enrollment priorities [@RN4758] and identifies recruiting practices as a mechanism for social reproduction in college access.
+
+Ethnographies by @RN3519 and by @RN4407 analyze the connections between privileged colleges and privileged high schools. @RN4407 shows how guidance counselors at elite private school guidance counselors lobby admissions counselors on behalf of marginal students. @RN3519 finds that college admissions officers visit high schools as a means of maintaining positive relationships with guidance counselors at affluent feeder schools. Consistent with this finding, quantitative case studies of off-campus recruiting visits show that selective private colleges visit affluent, predominantly white schools and communities, with a disproportionate number of visits to private high schools [@RN4733; @RN4330]. Additionally, public research universities often make make more out-of-state recruiting visits than in-state visits, and these out-of-state visits focus on the same set sorts of schools targeted by selective private universities [@RN4759; @RN4758].
+
+Other studies have investigated recruiting behavior by non-selective institutions [@RN4520; @cottom2017lower]. Analyzing recruiting from the perspective of high school students, @RN4324 finds that underrepresented students were drawn to colleges that made them feel wanted, often attending institutions with lower graduation rates and requiring larger loans than other college options. @cottom2017lower and @dache2018dangling show that for-profit colleges found a niche in Black and Hispanic communities because traditional colleges ignored these communities. <!--  WHAT YOU SAID ABOUT POSECZNICK Posecznick (2017) studied the “Ravenwood College,” a private nonprofit college founded to serve working Black women. Consistent with analyses of tuition discounting by Lapovsky (2001), the survival of Ravenwood depends on the success of admissions officers in identifying prospects (e.g., through on- and off-campus recruiting events) and “converting” these prospects to enrolled students.  -->
+
+We make two observations about the recruiting literature. First, looking across studies, the recruiting literature suggests a hierarchical competition in which different "types" of postsecondary institutions target different customer niches. For example, for-profit institutions target adults in communities not being targeted by traditional colleges [@cottom2017lower]. Non-selective private non-profits target prospects who might be considering community college or a local state colleges [@RN4324]. Selective private colleges target private high schools, with a particular link between sectarian high schools and colleges of the same faith [@RN4733], but these schools are increasingly targeted by out-of-state public research universities, suggesting growing competition for a coveted market niche.
+
+Second, the recruiting literature -- and scholarship on enrollment management more broadly -- assumes that recruiting is a function of individual organizational behavior \[alternatively, "assumes that recruiting is something done by individual colleges"\]. Why then, does recruiting behavior look so similar across colleges of a particular "type"? Institutional theory offers a compelling explanation [@RN527]. In highly developed organizational fields like higher education, forces of competitive and institutional isomorphism -- including institutional locics -- compel organizations adopt similar practices as their peers. Practices deemed advantageous spread quickly, for example, public research universities targeting nonresident prospects to compensate for declines in state appropriations. These behaviors are conceived as autonomous decisions by individual colleges, albeit structured by institutional logics. <!--WHAT DOMINA (2017) SAID ABOUT LOGICS, P. 322: Like other distinctively modern institutions, contemporary schools are governed by standardized and rationalized institutional logics (Baker 2014, Bowker & Star 2000, Timmermans & Epstein 2010, Meyer 1977). These logics have profound implications for educational category assignment processes, leading educators, policy makers, scholars, and others to debate the universality of selection-->
+
+Whereas most scholarship assumes that recruiting is something done by individual colleges, @RN4985 argues that structural inequality is embedded in third-party recruiting products utilized by colleges. @RN4985 deconstructs the College Board *Student Search Service* product. Student list products are "selection devices" [@RN4778] that incorporate search filters (e.g., high school graduating class, state) which enable colleges to select prospective students. Drawing from @RN4786, @RN4985 argue that several search filters (e.g., AP test score, zip code, geodemographic segment) are "racialized inputs," defined as ostensibly race-neutral inputs that are correlated with race because disadvangaged racial groups have historically been excluded from the input. Using a national sample of high school students, they show that racialized search filters have a strong negative relationship with the selection of Black and Latinx prospects. Using data from actual student lists purchased by public universities, they show that raciaized search filters -- used in conjunction with other search filters -- yield dramatic racial inequality in which prospective students are targeted.
+
+# OLD SHIT
+
+We situate this scholarship broadly within the literature on social reproduction and narrowly within the literature on inequality in colege access, with a particuar focus on enrollment management behavior.
+
+@RN2377 describes education as a sieve, allocating people to opportunities in socially stratified, capitalist societies. This role highlights "Max Weber's core insight that education has a dual character" [\@ @RN2377, p. 129], on one hand, serving social mobility by redistributing access to privileged positions and, on the other, serving social reproduction by granting privileged families disproportionate access to the educational institutions that confer pathways to privileged positions. Similarly, @RN4873 describe schools and colleges as "sorting machines" that incorporate external categories (e.g., race, class), create categories (e.g., instructional tracks), and allocate students to categories. Initial category allocation affects subsequent allocation, such that school assignments and instructional track assignments affect college access, which affects employment assignments. "In evaluating schools as inequality regimes" @RN4873 \[p. 322\] argue, "the relevant question is not whether schools produce inequality; rather, the relevant questions are, when and where do schools produce inequality, \[and\] how do they do so." As @RN2377 show, whereas early research on social stratification sought to identify patterns of inequality [e.g., @RN4873; @RN290; @RN1268], the sociology of education is now more concerned with identifying the mechanisms underlying these patterns. <!--  [NOTE: THIS SETS UP IDENTIFYING MARKET RESEARCH AS AN IMPORTANT **NEW** MECHANISM OF SOCIAL REPRODUCTION THAT SOCIOLOGY OF EDUCATION SHOULD BE STUDYING!!!] -->
+
+Given the substantial social and economic benefits of graduating from college \[CITE\], and the greater benefits of graduating from a selective college \[CITE CHETTY AND STUFF\], sociology has paid particular attention to social stratification in the transition from high school to college. A significant strand of research focuses on cultural capital as a broad mechanism contributing to social reproduction in access to college, particularly selective colleges [@RN1228; @RN1241]. @RN4991 observes that "even as even as colleges' definitions of merit have evolved, from the post-World War II growth of standardized testing,\ldots to a renewed focus on holistic review," affluent, college-educated families have maintained a competitive advantage college access \[CITE\]. These families are socialized to place value on selective colleges, have financial and cultural resources to devote to this competition, and are concentrated in communities and schools that orient student achievement and activities towards the admissions criteria of selective institutions \[CITE\]. <!--  CAN YOU SAY THIS MORE EFFICIENTLY; LIKE ON THE STUDENT DEMAND SIDE, SOCIOLOGY OF EDUCATION HAS FOCUSED ON CULTURAL CAPITAL, WHEREBY PRIVILEGED FAMILIES EMBODY THE CHARACTERISTICS OF DESIRABLE APPLICANTS; AND ON SUPPLY SIDE COLLEGES REALLY WANT THESE APPLICANTS. -->
+
+On the supply-side of college access, an interdisciplinary literature focuses on enrollment management. The term "enrollment management" (EM) refers to a profession, an administrative structure, and an industry. As a profession, EM integrates techniques from marketing and economics in order to "influence the characteristics and the size of enrolled student bodies" [@RN2771, p. xiv]. As an administrative structure, the EM office typically controls the activities of admissions, financial aid, and recruiting [@RN2406]. The EM industry consists of university personnel (e.g., admissions counselors, VP for enrollment management), professional associations (e.g., National Association for College Admission Counseling), and third-party servicers in the consulting, market research, and technology spaces (e.g., College Board, ACT, EAB, Huron, Slate, PowerSchool).
+
+Figure @fig-em-funnel depicts the "enrollment funnel," which modifies the traditional "marketing funnel" to depict broad stages in the process of recruiting students [@RN4986; @RN2004]. The funnel begins with a large pool of "prospects" (i.e., prospective students) that the university would like to enroll. "Leads" are prospects whose contact information has been obtained. "Inquiries" are prospects that contact the institution and consist of two types: first, inquiries who respond to an initial solicitation (e.g., email) from the university; and second, "student-as-first-contact" inquiries who reach out to the university on their own (e.g., sending ACT scores). <!--  Applicants consist of inquiries who apply plus "stealth applicants" who do not contact the university before applying.  -->The funnel narrows at each successive stage in order to convey the assumption of "melt" (e.g., a subset of "inquiries" will apply). Practically, the purpose of the enrollment funnel is to inform recruiting interventions that target one or more stages. These interventions seek to increase the probability of "conversion" across stages [@RN4322]. At the top of the enrollment funnel, purchasing student lists is the primary means of converting prospects to leads [@list_biz]. Purchased leads are served emails, brochures, and targeted social media advertisements designed to solicit inquiries and applications [@RN4895].
+
+Scholarship at the nexus of enrollment management and college access can be categorized by which part(s) of the enrollment funnel they focus on. The majority of scholarship focuses on the admissions stage, for example which admissions criteria are used [@RN4874; @RN4993] and which applicants are admitted in practice [@RN4131; @RN3522] \[CITE SOMETHING BY BASTEDO\].
+
+A growing literature analyzes the earlier "recruiting" stages of identifying leads, soliciting inquiries, and soliciting applications. Scholarship on recruiting has conceptualized recruiting behavior as an indicator of college enrollment priorities [@RN4758] and identifies recruiting practices as a mechanism for social reproduction in college access.
+
+Ethnographies by @RN3519 and by @RN4407 analyze the connections between privileged colleges and privileged high schools. @RN4407 shows how guidance counselors at elite private school guidance counselors lobby admissions counselors on behalf of marginal students. @RN3519 finds that college admissions officers visit high schools as a means of maintaining positive relationships with guidance counselors at affluent feeder schools. Consistent with this finding, quantitative case studies of off-campus recruiting visits show that selective private colleges visit affluent, predominantly white schools and communities, with a disproportionate number of visits to private high schools [@RN4733; @RN4330]. Additionally, public research universities often make make more out-of-state recruiting visits than in-state visits, and these out-of-state visits focus on the same set sorts of schools targeted by selective private universities [@RN4759; @RN4758].
+
+Other studies have investigated recruiting behavior by non-selective institutions [@RN4520; @cottom2017lower]. Analyzing recruiting from the perspective of high school students, @RN4324 finds that underrepresented students were drawn to colleges that made them feel wanted, often attending institutions with lower graduation rates and requiring larger loans than other college options. @cottom2017lower and @dache2018dangling show that for-profit colleges found a niche in Black and Hispanic communities because traditional colleges ignored these communities. <!--  WHAT YOU SAID ABOUT POSECZNICK Posecznick (2017) studied the “Ravenwood College,” a private nonprofit college founded to serve working Black women. Consistent with analyses of tuition discounting by Lapovsky (2001), the survival of Ravenwood depends on the success of admissions officers in identifying prospects (e.g., through on- and off-campus recruiting events) and “converting” these prospects to enrolled students.  -->
+
+We make two observations about the recruiting literature. First, looking across studies, the recruiting literature suggests a hierarchical competition in which different "types" of postsecondary institutions target different customer niches. For example, for-profit institutions target adults in communities not being targeted by traditional colleges [@cottom2017lower]. Non-selective private non-profits target prospects who might be considering community college or a local state colleges [@RN4324]. Selective private colleges target private high schools, with a particular link between sectarian high schools and colleges of the same faith [@RN4733], but these schools are increasingly targeted by out-of-state public research universities, suggesting growing competition for a coveted market niche.
+
+Second, the recruiting literature -- and scholarship on enrollment management more broadly -- assumes that recruiting is a function of individual organizational behavior \[alternatively, "assumes that recruiting is something done by individual colleges"\]. Why then, does recruiting behavior look so similar across colleges of a particular "type"? Institutional theory offers a compelling explanation [@RN527]. In highly developed organizational fields like higher education, forces of competitive and institutional isomorphism -- including institutional locics -- compel organizations adopt similar practices as their peers. Practices deemed advantageous spread quickly, for example, public research universities targeting nonresident prospects to compensate for declines in state appropriations. These behaviors are conceived as autonomous decisions by individual colleges, albeit structured by institutional logics. <!--WHAT DOMINA (2017) SAID ABOUT LOGICS, P. 322: Like other distinctively modern institutions, contemporary schools are governed by standardized and rationalized institutional logics (Baker 2014, Bowker & Star 2000, Timmermans & Epstein 2010, Meyer 1977). These logics have profound implications for educational category assignment processes, leading educators, policy makers, scholars, and others to debate the universality of selection-->
+
+Whereas most scholarship assumes that recruiting is something done by individual colleges, @RN4985 argues that structural inequality is embedded in third-party recruiting products utilized by colleges. @RN4985 deconstructs the College Board *Student Search Service* product. Student list products are "selection devices" [@RN4778] that incorporate search filters (e.g., high school graduating class, state) which enable colleges to select prospective students. Drawing from @RN4786, @RN4985 argue that several search filters (e.g., AP test score, zip code, geodemographic segment) are "racialized inputs," defined as ostensibly race-neutral inputs that are correlated with race because disadvangaged racial groups have historically been excluded from the input. Using a national sample of high school students, they show that racialized search filters have a strong negative relationship with the selection of Black and Latinx prospects. Using data from actual student lists purchased by public universities, they show that raciaized search filters -- used in conjunction with other search filters -- yield dramatic racial inequality in which prospective students are targeted.
+
+This manuscript builds on @RN4985 by conceptualizing market research as a mechanism of social reproduction in education. Market research is "the process of gathering, analyzing, and interpreting information about a market, including its consumers, competitors, and the overall industry" \[CHAT GPT, REPLACE\]. Market research is oriented to the goals producers/sellers and is the foundation for marketing efforts and products that target desired prospects. This manuscript shows how College Board "geo-markets" emerged from market research by @RN4982. @RN4982 used SAT score-sending behavior from 19XX to develop the "market segment model," which shows how student demand for different kinds of postsecondary institutions varies across different geographies. Geo-markets carve large metropolitan areas into smaller "local" markets. For each geo-market, the market segment model categorizes students by the kind of postsecondary institutions they are likely to be interested in and calculates institution-specific measures of student demand. In turn, the market segment model is the basis for the College Board Enrollment Planning Service (EPS), which helps colleges plan and implement recruiting strategy.
+
+Empirically, we examine how socioeconomic and racial composition differs across geomarkets. We conceptualize the market segment model as a snapshot of social stratification in student demand for higher education. Additionally, because of segregation and structural racism in income/wealth, we expect local geomarkets to be correlated with race. Later, College Board geo-markets become a filter on the Student Search Service product that enables colleges to purchase the contact information of prospective students. Using simulations, we show how the how the racial and socioeconomic composition of student list purchases change as different geomarkets are selected. We also examine actual student list purchases that filter on geomarket.
+
+This research makes a broad contribution to the sociology of education by conceptualizing market research as a mechanism of inequality. Market research helps producers identify and target potential customers by taking snapshots of existing social stratification in who are the desirable prospective customers and where do they live. These snapshots are a function of historic and contemporary structural inequalities. Market research uses these snapshots to make recommendations about which prospective customers to recruit and to create marketing products. These recommendations an products are then used by producers. Because the snapshots are reflections of historic structural inequality, using these snapshots to identify future customers is likely to amplify historic structural inequality.\[discussion section identifies areas of future research\]
+
+NEXT SUBSECTION IS MARKET RESEARCH AS A MECHANISM OF INEQUALITY IN SOCIOLOGY WRIT LARGE
+
+-   poon, FICO scores
+-   geodemography
+    -   from EEPA article: using geography as a predictive input was pioneered by geodemography, a branch of market research that estimates the behavior of consumers based on where they live (Burrows and Gane, 2006)
+-   fourcade and healey
+    -   classification situations
+-   key theme is third-party market research and related products that sorts customers for the benefit of merchants.
+
+This study extends @RN4985 in two ways. First, critical scholarship on data science finds that geography is the most common racialized input, owing to centuries of residential segregation. College Board student list product enables colleges to filter based on known geographic units (state, zip code, MSA). But it also creates new academic units ... bla bla
+
+second, PARTX: Scholars have not analyzed the ways that market research is built into products that recruit students In other words, market research identifies student demand for different kinds of institutions This market research is then incorporated into recruiting projects We argue that this phenomenon may be an important mechanism by which historic racial and socioeconomic inequality in student demand is utilized to inform the subsequent recruiting behavior of universities.
+
+We Overall, scholarship from sociology tends to assume that recruiting -- and, in turn, structural inequality in recruiting -- is a function of individual college behavior.
+
+TIFFANY HUANG SAYS THIS IS ABOUT REPRODUCTION; MECHANISMS OF HOW REPRODUCTION OF INEQUALITY HAPPENS; THIS FEELS RIGHT; Tiffany and she helped me realize that the literature I am contributing to (broadly) is social reproduction. more specifically, how (third-party) supply-side actors take snapshots of existing social stratification and build those into the supply-side architecture.
+
+But another mechanism of reproduction is market research and marketing. Market research takes a picture of "student demand" one that is a function of class and racial inequality and then uses that picture to create river beds of where colleges should allow recruiting to flow.
+
+# References
+
+::: {#refs}
+:::
+
+\clearpage
+
+<!-- TABLES -->
+
+```{r fig-em-funnel, echo = FALSE, fig.align = 'center', fig.cap = "The Enrollment Funnel", out.width = "45%"}
+knitr::include_graphics('./../assets/images/enroll_funnelv2.png')
+#knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
+#![The enrollment funnel](assets/images/enrollment_funnel.png)
+```
