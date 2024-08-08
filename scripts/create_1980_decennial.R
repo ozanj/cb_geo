@@ -11,7 +11,7 @@
   # PERCENT RECEIVING PUBLIC ASSISTANCE
 
 ### SETTINGS
-  rm(list = ls())
+  rm(list = ls()) # remove all objects
   options(max.print=1000)
   #options(width = 160)
   #d1980_stf1f3_anal_eps %>% glimpse()
@@ -129,7 +129,7 @@ scripts_dir <- file.path('.','scripts') #
   msa_pre_2004 <- read_csv(file.path(d1980_data_dir, 'pre-2004-msa-codes-csv.csv'), col_names = TRUE, skip=0) %>% 
     mutate(area_fips = str_sub(area_fips,start=2L, end=-1L))
      
-# 1980 DECENNIAL CENSUS DATA, POPULATION BY RACE, ETHNICITY, AND AGE
+# 1980 DECENNIAL CENSUS DATA, STF1 POPULATION BY RACE, ETHNICITY, AND AGE
 
 # Read the first row to get the variable names
   variable_names <- read_csv(file.path(d1980_data_dir, 'nhgis0001_ds104_1980_tract.csv'), col_names = FALSE, n_max = 1) %>% as.character()
@@ -147,7 +147,7 @@ scripts_dir <- file.path('.','scripts') #
   # replace upper case w/ lower case variable names
   names(stf1_d1980_tract) <- stf1_d1980_tract %>% names %>% tolower()
   
-# 1980 DECENNIAL CENSUS DATA, EDUCATION AND INCOME
+# 1980 DECENNIAL CENSUS DATA, STF3, EDUCATION AND INCOME
   
   # Read the first row to get the variable names
   stf3_variable_names <- read_csv(file.path(d1980_data_dir, 'nhgis0005_ds107_1980_tract.csv'), col_names = FALSE, n_max = 1) %>% as.character()
@@ -197,7 +197,30 @@ scripts_dir <- file.path('.','scripts') #
       # DEC001:      Total
   
     #stf3_d1980_tract %>% select(c(all_of(starts_with('dgo')),all_of(starts_with('dg2')),all_of(starts_with('dec')))) %>% var_label()
+ 
+# 1980 DECENNIAL CENSUS STF3 POVERTY
   
+  # Read the first row to get the variable names
+  stf3_pov_variable_names <- read_csv(file.path(d1980_data_dir, 'nhgis0006_ds107_1980_tract.csv'), col_names = FALSE, n_max = 1) %>% as.character()
+  stf3_pov_variable_names
+  
+  # Read the second row to get the variable labels
+  stf3_pov_variable_labels <- read_csv(file.path(d1980_data_dir, 'nhgis0006_ds107_1980_tract.csv'), col_names = FALSE, skip = 1, n_max = 1) %>% as.character()
+  stf3_pov_variable_labels
+  # Read the data starting from the third row using the first row as column names
+  stf3_pov_d1980_tract <- read_csv(file.path(d1980_data_dir, 'nhgis0006_ds107_1980_tract.csv'), col_names = stf3_pov_variable_names, skip = 2)
+  
+  # Add variable labels using the var_label function from labelled package
+  var_label(stf3_pov_d1980_tract) <- stf3_pov_variable_labels
+  
+  # replace upper case w/ lower case variable names
+  names(stf3_pov_d1980_tract) <- stf3_pov_d1980_tract %>% names %>% tolower()
+  
+  rm(stf3_pov_variable_labels,stf3_pov_variable_names)
+  
+  stf3_pov_d1980_tract %>% glimpse()
+  stf3_d1980_tract %>% glimpse()
+  stf3_d1980_tract %>% var_label()   
 ###############
   
 # census-tract level variables about population by race, ethnicity, and age
@@ -249,12 +272,18 @@ scripts_dir <- file.path('.','scripts') #
     inner_join(
       y=stf3_d1980_tract %>% select(-all_of(drop_vars),-starts_with('supflg')),
       by = c('gisjoin')
+    ) %>% 
+    # add poverty variables
+    inner_join(
+      y=stf3_pov_d1980_tract %>% select(gisjoin,di8001,di8002),
+      by = c('gisjoin')
     )
+  
   d1980_stf1_stf3_tract %>% glimpse()
   rm(drop_vars)
   
   # remove separate datasets
-  rm(stf1_d1980_tract,stf3_d1980_tract)
+  rm(stf1_d1980_tract,stf3_d1980_tract,stf3_pov_d1980_tract)
   
 ######## READ IN SHAPE FILE FOR 1980 CENSUS TRACTS
   
@@ -379,7 +408,7 @@ scripts_dir <- file.path('.','scripts') #
     # have sf object of eps-level data with one obs per EPS code and geometry for each EPS
   
   # desired output
-    # or sf object that has one obs per tract and for each tract we know the eps code of that tract
+    # or sf object that has one obs per tract-eps and for each tract we know the eps code of that tract
   
     # st_crs function retreives coordinate reference system for an object
     st_crs(eps_geometry_zcta) == st_crs(d1980_stf1_stf3_tractbna_sf) # false
@@ -648,7 +677,7 @@ scripts_dir <- file.path('.','scripts') #
       hispother_agelt5 = c7e009,
       hispother_age517 = c7e010,
       hispother_age1864 = c7e011,
-      hispother_agegt65 = c7e012,    
+      hispother_agegt65 = c7e012,
     ) %>% 
     mutate(
       native_ageall = ifelse(is.na(c9d003) & is.na(c9d004) & is.na(c9d005), NA, 
@@ -756,7 +785,10 @@ scripts_dir <- file.path('.','scripts') #
     inc_house_med_all  = if_else(die001==0,NA,die001), # median household income
     inc_house_agg_all = if_else(dig001==0,NA,dig001), # aggregate household income
     households_tot_calc = rowSums(select(., did001:did016), na.rm = TRUE), # calculated number of households that have values for household income bands
-    inc_house_mean_all = inc_house_agg_all/households_tot_calc # mean income at tract-level, based on calculated number of houses that report income
+    inc_house_mean_all = inc_house_agg_all/households_tot_calc, # mean income at tract-level, based on calculated number of houses that report income
+    
+    pov_denom = if_else(is.na(di8001) & is.na(di8002), NA, 
+                           rowSums(select(., di8001, di8002), na.rm = TRUE)), # num families above poverty + num below; will be used as denominator for % poverty
   ) %>% rename(
     inc_house_lt2k_all = did001,
     inc_house_2kto5k_all = did002,
@@ -774,7 +806,9 @@ scripts_dir <- file.path('.','scripts') #
     inc_house_35kto40k_all = did014,
     inc_house_40kto50k_all = did015,
     inc_house_50kto75k_all = did016,
-    inc_house_gt75k = did017,    
+    inc_house_gt75k = did017,
+    pov_no = di8001,
+    pov_yes = di8002,
   ) %>% 
   # drop family income variables, income variables by race/ethnicity, and per capita income
   select(-c(all_of(starts_with('dik')),all_of(starts_with('dil')),
@@ -783,7 +817,7 @@ scripts_dir <- file.path('.','scripts') #
   # drop measures of total number of people from sf3 because you have them from sf1
   select(-dgo001,-dg2001)
   
-  d1980_stf1f3_anal_tract %>% select(all_of(starts_with('inc_'))) %>% glimpse()
+  d1980_stf1f3_anal_tract %>% select(all_of(starts_with('pov_'))) %>% glimpse()
   
   # replace df with one that only has eps and desired variables
   d1980_stf1f3_anal_tract <- d1980_stf1f3_anal_tract %>%
@@ -799,7 +833,7 @@ scripts_dir <- file.path('.','scripts') #
       # education vars
       starts_with('ed_'),
       # income vars
-      dec001,die001,dig001,all_of(starts_with('households')),all_of(starts_with('inc_'))
+      dec001,die001,dig001,all_of(starts_with('households')),all_of(starts_with('inc_')),,all_of(starts_with('pov_'))
     )
  
   # create character vector of names of variables to be summed
@@ -855,7 +889,7 @@ scripts_dir <- file.path('.','scripts') #
         # sum of agg inc across all tracts/ (sum of total households across all tracts)
       mean_inc_house = sum_inc_house_agg_all/sum_households_tot_calc,
       
-      # convert income measures from 1979 dollars to 1980 dollars:
+      # convert income measures from 1979 dollars to 2024 dollars:
         # To convert 1979 dollars to 2024 dollars, you can use the Consumer Price Index (CPI) values for these years.
         # The CPI in 1979 was 72.6, and the CPI for 2024 is 314.069. Using these values, the conversion factor is:
         
@@ -870,6 +904,10 @@ scripts_dir <- file.path('.','scripts') #
       mean_inc_house = mean_inc_house*4.33,
       med_inc_house_med_all = med_inc_house_med_all*4.33,
       med_inc_house_mean_all = med_inc_house_mean_all*4.33,
+     
+      # create measures of percent of people in poverty
+      pct_pov_yes = sum_pov_yes/sum_pov_denom*100,  
+      pct_pov_no = sum_pov_no/sum_pov_denom*100,
       
       # create measures of highest educational attainment
         #pct_ed_lths_all = sum_ed_lths_all/sum_ed_tot_all*100,
@@ -900,6 +938,13 @@ scripts_dir <- file.path('.','scripts') #
 
   d1980_stf1f3_anal_eps %>% select(eps,pct_white_ageall,pct_black_ageall,pct_api_ageall,pct_hisp_ageall,med_inc_house_med_all,mean_inc_house,
                                    pct_sum_ed_lths_all,pct_sum_ed_ba_all,pct_sum_ed_ba_white,pct_sum_ed_ba_black,pct_sum_ed_ba_api,,pct_sum_ed_ba_hisp) %>% print(n=305)  %>% View()
+
+  # check results, including poverty variables
+  d1980_stf1f3_anal_eps %>% select(eps,pct_white_ageall,pct_black_ageall,pct_api_ageall,pct_hisp_ageall,pct_pov_yes,med_inc_house_med_all,mean_inc_house,
+                                   pct_sum_ed_lths_all,pct_sum_ed_ba_all) %>% print(n=305)  %>% View()
+
+  #check if poverty variables look ok
+  d1980_stf1f3_anal_eps %>% select(eps,sum_pov_yes,sum_pov_no,sum_pov_denom,pct_pov_yes,pct_pov_no) %>% print(n=305)  
   
   #check if income variables look ok
   d1980_stf1f3_anal_eps %>% select(eps,n_tracts,med_inc_house_med_all,mean_inc_house) %>% print(n=305)  

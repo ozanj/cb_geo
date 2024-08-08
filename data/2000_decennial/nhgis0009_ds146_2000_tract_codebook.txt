@@ -1,0 +1,486 @@
+--------------------------------------------------------------------------------
+Codebook for NHGIS data file 'nhgis0009_ds146_2000_tract'
+--------------------------------------------------------------------------------
+ 
+Contents
+    - Data Summary
+    - Data Dictionary
+    - Citation and Use
+ 
+Additional documentation on NHGIS data sources is available at: 
+    https://www.nhgis.org/documentation/tabular-data 
+ 
+--------------------------------------------------------------------------------
+Data Summary
+--------------------------------------------------------------------------------
+ 
+Year:             2000
+Geographic level: Census Tract (by State--County)
+Dataset:          2000 Census: SF 1a - 100% Data [Areas Larger Than Block Groups]
+   NHGIS code:    2000_SF1a
+   NHGIS ID:      ds146
+Breakdown(s):     Geographic Subarea:
+                     Total area (00)
+ 
+Tables:
+ 
+1. Total Population
+   Universe:    Persons
+   Source code: NP001A
+   NHGIS code:  FL5
+ 
+2. Population by Number of Races
+   Universe:    Persons
+   Source code: NP003A
+   NHGIS code:  FL8
+ 
+3. Population of One Race by Race
+   Universe:    Persons of One Race
+   Source code: NP003B
+   NHGIS code:  FL9
+ 
+4. Population of Two or More Races by Number of Races
+   Universe:    Persons of Two or More Races
+   Source code: NP003C
+   NHGIS code:  FMA
+ 
+5. Population of Two or More Races by Race Combination
+   Universe:    Persons of Two or More Races
+   Source code: NP003D
+   NHGIS code:  FMB
+ 
+6. Population by Hispanic or Latino and Not Hispanic or Latino
+   Universe:    Persons
+   Source code: NP004A
+   NHGIS code:  FMC
+ 
+7. Not Hispanic or Latino Population by Number of Races
+   Universe:    Not Hispanic or Latino Persons
+   Source code: NP004B
+   NHGIS code:  FMD
+ 
+8. Not Hispanic or Latino Population of One Race by Race
+   Universe:    Not Hispanic or Latino Persons of One Race
+   Source code: NP004C
+   NHGIS code:  FME
+ 
+9. Not Hispanic or Latino Population of Two or More Races by Number of Races
+   Universe:    Not Hispanic or Latino Persons of Two or More Races
+   Source code: NP004D
+   NHGIS code:  FMF
+ 
+10. Not Hispanic or Latino Population of Two or More Races by Race Combination
+    Universe:    Not Hispanic or Latino Persons of Two or More Races
+    Source code: NP004E
+    NHGIS code:  FMG
+ 
+11. Population by Race
+    Universe:    Persons
+    Source code: NP007A
+    NHGIS code:  FMR
+ 
+12. Population by Hispanic or Latino and Not Hispanic or Latino by Race
+    Universe:    Persons
+    Source code: NP008A
+    NHGIS code:  FMS
+ 
+13. Total Races Tallied
+    Universe:    Races Tallied
+    Source code: NP009A
+    NHGIS code:  FMT
+ 
+14. Races Tallied by Race
+    Universe:    Races Tallied
+    Source code: NP009B
+    NHGIS code:  FMU
+ 
+15. Races Tallied by Hispanic or Latino and Not Hispanic or Latino
+    Universe:    Races Tallied
+    Source code: NP010A
+    NHGIS code:  FMV
+ 
+16. Races Tallied by Hispanic or Latino and Not Hispanic or Latino by Race
+    Universe:    Races Tallied
+    Source code: NP010B
+    NHGIS code:  FMW
+ 
+17. Total Hispanic or Latino Population
+    Universe:    Hispanic or Latino Persons
+    Source code: NP011A
+    NHGIS code:  FMX
+ 
+--------------------------------------------------------------------------------
+Data Dictionary
+--------------------------------------------------------------------------------
+ 
+Context Fields 
+        GISJOIN:     GIS Join Match Code
+        YEAR:        Data File Year
+        STUSAB:      File Identification
+        REGIONA:     Region Code
+        DIVISIONA:   Division Code
+        STATE:       State Name
+        STATEA:      State Code
+        COUNTY:      County Name
+        COUNTYA:     County Code
+        CTY_SUBA:    County Subdivision Code
+        COUSUBCC:    FIPS County Subdivion Class Code
+        PLACEA:      Place Code
+        PLACECC:     FIPS Place Class Code
+        PLACEDC:     Place Description Code
+        TRACTA:      Census Tract Code
+        TRBL_CTA:    Tribal Census Tract Code
+        BLCK_GRPA:   Block Group Code
+        TRBL_BGA:    Tribal Block Group Code
+        C_CITYA:     Consolidated City Code
+        AIANHHA:     American Indian Area/Alaska Native Area/Hawaiian Home Land Code
+        RES_ONLYA:   American Indian Area/Alaska Native Area (Reservation or Statistical Entity Only) Code
+        TRUSTA:      American Indian Area (Off-Reservation Trust Land Only)/Hawaiian Home Land Code
+        AIANHHCC:    FIPS American Indian Area/Alaska Native Area/Hawaiian Home Land Class Code
+        AITSCE:      American Indian Tribal Subdivision (Census)
+        TRBL_SUBA:   Tribal Subdivision Code
+        ANRCA:       Alaska Native Regional Corporation Code
+        MSA_CMSAA:   Metropolitan Statistical Area/Consolidated Metropolitan Statistical Area Code
+        CMSA:        Consolidated Metropolitan Statistical Area
+        MACCI:       Metropolitan Area Central City Indicator
+        PMSAA:       Primary Metropolitan Statistical Area Code
+        NECMAA:      New England County Metropolitan Area Code
+        NECMACCI:    New England County Metropolitan Area Central City Indicator
+        URB_AREAA:   Urban Area Code
+        UATYPE:      Urban Area Type
+        CD106A:      Congressional District (106th) Code
+        CD108A:      Congressional District (108th) Code
+        CD109A:      Congressional District (109th) Code
+        ZIP3A:       3-Digit ZIP Code Tabulation Area Code
+        ZCTAA:       5-Digit ZIP Code Tabulation Area Code
+        AREALAND:    Area (Land)
+        AREAWATR:    Area (Water)
+        NAME:        Area Name-Legal/Statistical Area Description (LSAD) Term-Part Indicator
+        FUNCSTAT:    Functional Status Code
+        INTPTLAT:    Internal Point (Latitude)
+        INTPLON:     Internal Point (Longitude)
+        LSADC:       Legal/Statistical Area Description Code
+        MACC:        Metropolitan Area Central City
+        UACP:        Urban Area Central Place
+ 
+Breakdown:
+    Geographic Subarea: Total area (00)
+ 
+    Table 1:     Total Population
+    Universe:    Persons
+    Source code: NP001A
+    NHGIS code:  FL5
+        FL5001:      Total
+ 
+    Table 2:     Population by Number of Races
+    Universe:    Persons
+    Source code: NP003A
+    NHGIS code:  FL8
+        FL8001:      Population of one race
+        FL8002:      Population of two or more races
+ 
+    Table 3:     Population of One Race by Race
+    Universe:    Persons of One Race
+    Source code: NP003B
+    NHGIS code:  FL9
+        FL9001:      White alone
+        FL9002:      Black or African American alone
+        FL9003:      American Indian and Alaska Native alone
+        FL9004:      Asian alone
+        FL9005:      Native Hawaiian and Other Pacific Islander alone
+        FL9006:      Some other race alone
+ 
+    Table 4:     Population of Two or More Races by Number of Races
+    Universe:    Persons of Two or More Races
+    Source code: NP003C
+    NHGIS code:  FMA
+        FMA001:      Population of two races
+        FMA002:      Population of three races
+        FMA003:      Population of four races
+        FMA004:      Population of five races
+        FMA005:      Population of six races
+ 
+    Table 5:     Population of Two or More Races by Race Combination
+    Universe:    Persons of Two or More Races
+    Source code: NP003D
+    NHGIS code:  FMB
+        FMB001:      Population of Two Races: White; Black or African American
+        FMB002:      Population of Two Races: White; American Indian and Alaska Native
+        FMB003:      Population of Two Races: White; Asian
+        FMB004:      Population of Two Races: White; Native Hawaiian and Other Pacific Islander
+        FMB005:      Population of Two Races: White; some other race
+        FMB006:      Population of Two Races: Black or African American; American Indian and Alaska Native
+        FMB007:      Population of Two Races: Black or African American; Asian
+        FMB008:      Population of Two Races: Black or African American; Native Hawaiian and Other Pacific Islander
+        FMB009:      Population of Two Races: Black or African American; some other race
+        FMB010:      Population of Two Races: American Indian and Alaska Native; Asian
+        FMB011:      Population of Two Races: American Indian and Alaska Native; Native Hawaiian and Other Pacific Islander
+        FMB012:      Population of Two Races: American Indian and Alaska Native; some other race
+        FMB013:      Population of Two Races: Asian; Native Hawaiian and Other Pacific Islander
+        FMB014:      Population of Two Races: Asian; some other race
+        FMB015:      Population of Two Races: Native Hawaiian and Other Pacific Islander; some other race
+        FMB016:      Population of Three Races: White; Black or African American; American Indian and Alaska Native
+        FMB017:      Population of Three Races: White; Black or African American; Asian
+        FMB018:      Population of Three Races: White; Black or African American; Native Hawaiian and Other Pacific Islander
+        FMB019:      Population of Three Races: White; Black or African American; some other race
+        FMB020:      Population of Three Races: White; American Indian and Alaska Native; Asian
+        FMB021:      Population of Three Races: White; American Indian and Alaska Native; Native Hawaiian and Other Pacific Islander
+        FMB022:      Population of Three Races: White; American Indian and Alaska Native; some other race
+        FMB023:      Population of Three Races: White; Asian; Native Hawaiian and Other Pacific Islander
+        FMB024:      Population of Three Races: White; Asian; some other race
+        FMB025:      Population of Three Races: White; Native Hawaiian and Other Pacific Islander; some other race
+        FMB026:      Population of Three Races: Black or African American; American Indian and Alaska Native; Asian
+        FMB027:      Population of Three Races: Black or African American; American Indian and Alaska Native; Native Hawaiian and Other Pacific Islander
+        FMB028:      Population of Three Races: Black or African American; American Indian and Alaska Native; some other race
+        FMB029:      Population of Three Races: Black or African American; Asian; Native Hawaiian and Other Pacific Islander
+        FMB030:      Population of Three Races: Black or African American; Asian; some other race
+        FMB031:      Population of Three Races: Black or African American; Native Hawaiian and Other Pacific Islander; some other race
+        FMB032:      Population of Three Races: American Indian and Alaska Native; Asian; Native Hawaiian and Other Pacific Islander
+        FMB033:      Population of Three Races: American Indian and Alaska Native; Asian; some other race
+        FMB034:      Population of Three Races: American Indian and Alaska Native; Native Hawaiian and Other Pacific Islander; some other race
+        FMB035:      Population of Three Races: Asian; Native Hawaiian and Other Pacific Islander; some other race
+        FMB036:      Population of Four Races: White; Black or African American; American Indian and Alaska Native; Asian
+        FMB037:      Population of Four Races: White; Black or African American; American Indian and Alaska Native; Native Hawaiian and Other Pacific Islander
+        FMB038:      Population of Four Races: White; Black or African American; American Indian and Alaska Native; some other race
+        FMB039:      Population of Four Races: White; Black or African American; Asian; Native Hawaiian and Other Pacific Islander
+        FMB040:      Population of Four Races: White; Black or African American; Asian; some other race
+        FMB041:      Population of Four Races: White; Black or African American; Native Hawaiian and Other Pacific Islander; some other race
+        FMB042:      Population of Four Races: White; American Indian and Alaska Native; Asian; Native Hawaiian and Other Pacific Islander
+        FMB043:      Population of Four Races: White; American Indian and Alaska Native; Asian; some other race
+        FMB044:      Population of Four Races: White; American Indian and Alaska Native; Native Hawaiian and Other Pacific Islander; some other race
+        FMB045:      Population of Four Races: White; Asian; Native Hawaiian and Other Pacific Islander; some other race
+        FMB046:      Population of Four Races: Black or African American; American Indian and Alaska Native; Asian; Native Hawaiian and Other Pacific Islander
+        FMB047:      Population of Four Races: Black or African American; American Indian and Alaska Native; Asian; some other race
+        FMB048:      Population of Four Races: Black or African American; American Indian and Alaska Native; Native Hawaiian and Other Pacific Islander; some other race
+        FMB049:      Population of Four Races: Black or African American; Asian; Native Hawaiian and Other Pacific Islander; some other race
+        FMB050:      Population of Four Races: American Indian and Alaska Native; Asian; Native Hawaiian and Other Pacific Islander; some other race
+        FMB051:      Population of Five Races: White; Black or African American; American Indian and Alaska Native; Asian; Native Hawaiian and Other Pacific Islander
+        FMB052:      Population of Five Races: White; Black or African American; American Indian and Alaska Native; Asian; some other race
+        FMB053:      Population of Five Races: White; Black or African American; American Indian and Alaska Native; Native Hawaiian and Other Pacific Islander; some other race
+        FMB054:      Population of Five Races: White; Black or African American; Asian; Native Hawaiian and Other Pacific Islander; some other race
+        FMB055:      Population of Five Races: White; American Indian and Alaska Native; Asian; Native Hawaiian and Other Pacific Islander; some other race
+        FMB056:      Population of Five Races: Black or African American; American Indian and Alaska Native; Asian; Native Hawaiian and Other Pacific Islander; some other race
+        FMB057:      Population of Six Races: White; Black or African American; American Indian and Alaska Native; Asian; Native Hawaiian and Other Pacific Islander; some other race
+ 
+    Table 6:     Population by Hispanic or Latino and Not Hispanic or Latino
+    Universe:    Persons
+    Source code: NP004A
+    NHGIS code:  FMC
+        FMC001:      Hispanic or Latino
+        FMC002:      Not Hispanic or Latino
+ 
+    Table 7:     Not Hispanic or Latino Population by Number of Races
+    Universe:    Not Hispanic or Latino Persons
+    Source code: NP004B
+    NHGIS code:  FMD
+        FMD001:      Population of one race
+        FMD002:      Population of two or more races
+ 
+    Table 8:     Not Hispanic or Latino Population of One Race by Race
+    Universe:    Not Hispanic or Latino Persons of One Race
+    Source code: NP004C
+    NHGIS code:  FME
+        FME001:      White alone
+        FME002:      Black or African American alone
+        FME003:      American Indian and Alaska Native alone
+        FME004:      Asian alone
+        FME005:      Native Hawaiian and Other Pacific Islander alone
+        FME006:      Some other race alone
+ 
+    Table 9:     Not Hispanic or Latino Population of Two or More Races by Number of Races
+    Universe:    Not Hispanic or Latino Persons of Two or More Races
+    Source code: NP004D
+    NHGIS code:  FMF
+        FMF001:      Population of two races
+        FMF002:      Population of three races
+        FMF003:      Population of four races
+        FMF004:      Population of five races
+        FMF005:      Population of six races
+ 
+    Table 10:    Not Hispanic or Latino Population of Two or More Races by Race Combination
+    Universe:    Not Hispanic or Latino Persons of Two or More Races
+    Source code: NP004E
+    NHGIS code:  FMG
+        FMG001:      Population of Two Races: White; Black or African American
+        FMG002:      Population of Two Races: White; American Indian and Alaska Native
+        FMG003:      Population of Two Races: White; Asian
+        FMG004:      Population of Two Races: White; Native Hawaiian and Other Pacific Islander
+        FMG005:      Population of Two Races: White; some other race
+        FMG006:      Population of Two Races: Black or African American; American Indian and Alaska Native
+        FMG007:      Population of Two Races: Black or African American; Asian
+        FMG008:      Population of Two Races: Black or African American; Native Hawaiian and Other Pacific Islander
+        FMG009:      Population of Two Races: Black or African American; some other race
+        FMG010:      Population of Two Races: American Indian and Alaska Native; Asian
+        FMG011:      Population of Two Races: American Indian and Alaska Native; Native Hawaiian and Other Pacific Islander
+        FMG012:      Population of Two Races: American Indian and Alaska Native; some other race
+        FMG013:      Population of Two Races: Asian; Native Hawaiian and Other Pacific Islander
+        FMG014:      Population of Two Races: Asian; some other race
+        FMG015:      Population of Two Races: Native Hawaiian and Other Pacific Islander; some other race
+        FMG016:      Population of Three Races: White; Black or African American; American Indian and Alaska Native
+        FMG017:      Population of Three Races: White; Black or African American; Asian
+        FMG018:      Population of Three Races: White; Black or African American; Native Hawaiian and Other Pacific Islander
+        FMG019:      Population of Three Races: White; Black or African American; some other race
+        FMG020:      Population of Three Races: White; American Indian and Alaska Native; Asian
+        FMG021:      Population of Three Races: White; American Indian and Alaska Native; Native Hawaiian and Other Pacific Islander
+        FMG022:      Population of Three Races: White; American Indian and Alaska Native; some other race
+        FMG023:      Population of Three Races: White; Asian; Native Hawaiian and Other Pacific Islander
+        FMG024:      Population of Three Races: White; Asian; some other race
+        FMG025:      Population of Three Races: White; Native Hawaiian and Other Pacific Islander; some other race
+        FMG026:      Population of Three Races: Black or African American; American Indian and Alaska Native; Asian
+        FMG027:      Population of Three Races: Black or African American; American Indian and Alaska Native; Native Hawaiian and Other Pacific Islander
+        FMG028:      Population of Three Races: Black or African American; American Indian and Alaska Native; some other race
+        FMG029:      Population of Three Races: Black or African American; Asian; Native Hawaiian and Other Pacific Islander
+        FMG030:      Population of Three Races: Black or African American; Asian; some other race
+        FMG031:      Population of Three Races: Black or African American; Native Hawaiian and Other Pacific Islander; some other race
+        FMG032:      Population of Three Races: American Indian and Alaska Native; Asian; Native Hawaiian and Other Pacific Islander
+        FMG033:      Population of Three Races: American Indian and Alaska Native; Asian; some other race
+        FMG034:      Population of Three Races: American Indian and Alaska Native; Native Hawaiian and Other Pacific Islander; some other race
+        FMG035:      Population of Three Races: Asian; Native Hawaiian and Other Pacific Islander; some other race
+        FMG036:      Population of Four Races: White; Black or African American; American Indian and Alaska Native; Asian
+        FMG037:      Population of Four Races: White; Black or African American; American Indian and Alaska Native; Native Hawaiian and Other Pacific Islander
+        FMG038:      Population of Four Races: White; Black or African American; American Indian and Alaska Native; some other race
+        FMG039:      Population of Four Races: White; Black or African American; Asian; Native Hawaiian and Other Pacific Islander
+        FMG040:      Population of Four Races: White; Black or African American; Asian; some other race
+        FMG041:      Population of Four Races: White; Black or African American; Native Hawaiian and Other Pacific Islander; some other race
+        FMG042:      Population of Four Races: White; American Indian and Alaska Native; Asian; Native Hawaiian and Other Pacific Islander
+        FMG043:      Population of Four Races: White; American Indian and Alaska Native; Asian; some other race
+        FMG044:      Population of Four Races: White; American Indian and Alaska Native; Native Hawaiian and Other Pacific Islander; some other race
+        FMG045:      Population of Four Races: White; Asian; Native Hawaiian and Other Pacific Islander; some other race
+        FMG046:      Population of Four Races: Black or African American; American Indian and Alaska Native; Asian; Native Hawaiian and Other Pacific Islander
+        FMG047:      Population of Four Races: Black or African American; American Indian and Alaska Native; Asian; some other race
+        FMG048:      Population of Four Races: Black or African American; American Indian and Alaska Native; Native Hawaiian and Other Pacific Islander; some other race
+        FMG049:      Population of Four Races: Black or African American; Asian; Native Hawaiian and Other Pacific Islander; some other race
+        FMG050:      Population of Four Races: American Indian and Alaska Native; Asian; Native Hawaiian and Other Pacific Islander; some other race
+        FMG051:      Population of Five Races: White; Black or African American; American Indian and Alaska Native; Asian; Native Hawaiian and Other Pacific Islander
+        FMG052:      Population of Five Races: White; Black or African American; American Indian and Alaska Native; Asian; some other race
+        FMG053:      Population of Five Races: White; Black or African American; American Indian and Alaska Native; Native Hawaiian and Other Pacific Islander; some other race
+        FMG054:      Population of Five Races: White; Black or African American; Asian; Native Hawaiian and Other Pacific Islander; some other race
+        FMG055:      Population of Five Races: White; American Indian and Alaska Native; Asian; Native Hawaiian and Other Pacific Islander; some other race
+        FMG056:      Population of Five Races: Black or African American; American Indian and Alaska Native; Asian; Native Hawaiian and Other Pacific Islander; some other race
+        FMG057:      Population of Six Races: White; Black or African American; American Indian and Alaska Native; Asian; Native Hawaiian and Other Pacific Islander; some other race
+ 
+    Table 11:    Population by Race
+    Universe:    Persons
+    Source code: NP007A
+    NHGIS code:  FMR
+        FMR001:      White alone
+        FMR002:      Black or African American alone
+        FMR003:      American Indian and Alaska Native alone
+        FMR004:      Asian alone
+        FMR005:      Native Hawaiian and Other Pacific Islander alone
+        FMR006:      Some other race alone
+        FMR007:      Two or more races
+ 
+    Table 12:    Population by Hispanic or Latino and Not Hispanic or Latino by Race
+    Universe:    Persons
+    Source code: NP008A
+    NHGIS code:  FMS
+        FMS001:      Not Hispanic or Latino >> White alone
+        FMS002:      Not Hispanic or Latino >> Black or African American alone
+        FMS003:      Not Hispanic or Latino >> American Indian and Alaska Native alone
+        FMS004:      Not Hispanic or Latino >> Asian alone
+        FMS005:      Not Hispanic or Latino >> Native Hawaiian and Other Pacific Islander alone
+        FMS006:      Not Hispanic or Latino >> Some other race alone
+        FMS007:      Not Hispanic or Latino >> Two or more races
+        FMS008:      Hispanic or Latino >> White alone
+        FMS009:      Hispanic or Latino >> Black or African American alone
+        FMS010:      Hispanic or Latino >> American Indian and Alaska Native alone
+        FMS011:      Hispanic or Latino >> Asian alone
+        FMS012:      Hispanic or Latino >> Native Hawaiian and Other Pacific Islander alone
+        FMS013:      Hispanic or Latino >> Some other race alone
+        FMS014:      Hispanic or Latino >> Two or more races
+ 
+    Table 13:    Total Races Tallied
+    Universe:    Races Tallied
+    Source code: NP009A
+    NHGIS code:  FMT
+        FMT001:      Total
+ 
+    Table 14:    Races Tallied by Race
+    Universe:    Races Tallied
+    Source code: NP009B
+    NHGIS code:  FMU
+        FMU001:      White alone or in combination with one or more other races
+        FMU002:      Black or African American alone or in combination with one or more other races
+        FMU003:      American Indian and Alaska Native alone or in combination with one or more other races
+        FMU004:      Asian alone or in combination with one or more other races
+        FMU005:      Native Hawaiian and Other Pacific Islander alone or in combination with one or more other races
+        FMU006:      Some other race alone or in combination with one or more other races
+ 
+    Table 15:    Races Tallied by Hispanic or Latino and Not Hispanic or Latino
+    Universe:    Races Tallied
+    Source code: NP010A
+    NHGIS code:  FMV
+        FMV001:      Not Hispanic or Latino
+        FMV002:      Hispanic or Latino
+ 
+    Table 16:    Races Tallied by Hispanic or Latino and Not Hispanic or Latino by Race
+    Universe:    Races Tallied
+    Source code: NP010B
+    NHGIS code:  FMW
+        FMW001:      Not Hispanic or Latino >> White alone or in combination with one or more other races
+        FMW002:      Not Hispanic or Latino >> Black or African American alone or in combination with one or more other races
+        FMW003:      Not Hispanic or Latino >> American Indian and Alaska Native alone or in combination with one or more other races
+        FMW004:      Not Hispanic or Latino >> Asian alone or in combination with one or more other races
+        FMW005:      Not Hispanic or Latino >> Native Hawaiian and Other Pacific Islander alone or in combination with one or more other races
+        FMW006:      Not Hispanic or Latino >> Some other race alone or in combination with one or more other races
+        FMW007:      Hispanic or Latino >> White alone or in combination with one or more other races
+        FMW008:      Hispanic or Latino >> Black or African American alone or in combination with one or more other races
+        FMW009:      Hispanic or Latino >> American Indian and Alaska Native alone or in combination with one or more other races
+        FMW010:      Hispanic or Latino >> Asian alone or in combination with one or more other races
+        FMW011:      Hispanic or Latino >> Native Hawaiian and Other Pacific Islander alone or in combination with one or more other races
+        FMW012:      Hispanic or Latino >> Some other race alone or in combination with one or more other races
+ 
+    Table 17:    Total Hispanic or Latino Population
+    Universe:    Hispanic or Latino Persons
+    Source code: NP011A
+    NHGIS code:  FMX
+        FMX001:      Total
+ 
+--------------------------------------------------------------------------------
+Citation and Use of NHGIS Data
+--------------------------------------------------------------------------------
+ 
+All persons are granted a limited license to use this documentation and the
+accompanying data, subject to the following conditions:
+
+* REDISTRIBUTION: You will not redistribute the data without permission.
+
+  You may publish a subset of the data to meet journal requirements for accessing 
+  data related to a particular publication. Contact us for permission for any other 
+  redistribution; we will consider requests for free and commercial redistribution.
+
+* CITATION: You will cite NHGIS appropriately.
+
+    * Publications and research reports employing NHGIS data (either tabular or GIS) 
+      should include the following citation:
+
+        Steven Manson, Jonathan Schroeder, David Van Riper, Katherine Knowles, Tracy Kugler, Finn Roberts, and Steven Ruggles.
+        IPUMS National Historical Geographic Information System: Version 18.0 
+        [dataset]. Minneapolis, MN: IPUMS. 2023.
+        http://doi.org/10.18128/D050.V18.0
+
+    * For policy briefs, online resources, or articles in the popular press, we 
+      recommend that you cite the use of NHGIS data as follows:
+
+        IPUMS NHGIS, University of Minnesota, www.nhgis.org.
+
+These terms of use are a legally binding agreement. You can use the data only in 
+accordance with these terms, and any other use is a violation of the agreement. 
+Violations may result in revocation of the agreement and prohibition from using other 
+IPUMS data. If IPUMS or our partners are harmed from your violation, you are 
+responsible for all damages, including reasonable attorney's fees and expenses.
+        
+In addition, we request that users send us a copy of any publications, research
+reports, or educational material making use of the data or documentation.
+
+Send electronic material to: nhgis@umn.edu
+
+Printed matter should be sent to:
+
+    IPUMS NHGIS
+    Institute for Social Research and Data Innovation
+    University of Minnesota
+    50 Willey Hall
+    225 19th Ave S
+    Minneapolis, MN 55455
