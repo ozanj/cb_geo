@@ -50,6 +50,10 @@ list.files(path = eps_data_dir)
 scripts_dir <- file.path('.','scripts') # 
 list.files(path = scripts_dir)
 
+###### LOAD EPS SHAPE FILE DATA
+
+  load(file.path(eps_data_dir, 'eps_shapes.RData'))
+
 ######## READ IN SHAPE FILE FOR 2000 CENSUS TRACTS
 
 list.files(path = file.path(shape_dir,'2000_decennial'))
@@ -138,9 +142,6 @@ rm(variable_labels,variable_names)
 
 # replace upper case w/ lower case variable names
 names(d2000_sf3a_inc_tract) <- d2000_sf3a_inc_tract %>% names %>% tolower()
-
-
-
 
 d2000_sf3a_inc_tract %>% var_label()
 
@@ -439,9 +440,6 @@ d2000_sf1a_tract_sf %>% select(gisjoin) %>% as.data.frame() %>% group_by(gisjoin
         # did checks on income input vars and no missing or weird values
       pov_yes = gok001,
       pov_no = gok002,
-      
- 
- 
     ) %>% 
     mutate(
       households_tot_calc = rowSums(select(., gmx001:gmx016), na.rm = TRUE), # calculated number of households that have values for household income bands
