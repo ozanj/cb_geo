@@ -1,0 +1,305 @@
+﻿eps_code,eps_name
+AK01,"Anchorage, Kenai, & Mat-su District"
+AK02,Greater Alaska
+AL01,Birmingham & Tuscaloosa
+AL02,Huntsville & Florence
+AL03,Mobile
+AL04,Montgomery
+AR01,Little Rock & Southern Arkansas
+AR02,Northern Arkansas
+AZ01,Phoenix
+AZ02,Tucson
+AZ03,Northern Arizona
+CA01,Far Northern California
+CA02,Valley of the Moon
+CA03,Sacramento Co
+CA04,Marin Co
+CA05,San Francisco Co
+CA06,Contra Costa Co
+CA07,City of Oakland
+CA08,Alameda Co (w/o Oakland)
+CA09,San Mateo Co
+CA10,City of San Jose
+CA11,Santa Clara Co (excluding San Jose)
+CA12,Central Coast
+CA13,Santa Barbara & West Ventura Co
+CA14,San Fernando Valley (West)
+CA15,San Fernando Valley (East)
+CA16,Glendale and Pasadena
+CA17,West Los Angeles & West Beach
+CA18,Hollywood & Wilshire
+CA19,East Los Angeles
+CA20,South Bay
+CA21,South & South Central Los Angeles
+CA22,Long Beach
+CA23,Covina & West Covina
+CA24,Whittier & North Orange Co
+CA25,Anaheim
+CA26,Santa Ana
+CA27,"Riverside, San Bernardino, & Ontario"
+CA28,South Orange Co
+CA29,North San Diego Co (w/o San Diego)
+CA30,South San Diego Co (w/o San Diego)
+CA31,City of San Diego
+CA32,Central Valley--North
+CA33,Central Valley--South
+CA34,Greater Imperial Valley
+CO01,Colorado Springs & Southeastern Colorado
+CO02,Metro Denver & Northeastern Colorado
+CO03,Mountain & Western Colorado
+CT01,New London & Windham Co
+CT02,New Haven & Middlesex Co
+CT03,Fairfield Co
+CT04,Waterbury & Litchfield Co
+CT05,Hartford & Tolland Co
+DC01,District of Columbia
+DE01,New Castle Co
+DE02,Kent & Sussex Co
+FL01,Panhandle
+FL02,Crown
+FL03,East Central Florida
+FL04,West Central Florida
+FL05,"Broward, Martin, & Palm Beach Co"
+FL06,Dade Co
+FL07,"Collier, Hendry, & Monroe Co"
+GA01,"Cherokee, Cobb, & Douglas Co"
+GA02,Fulton Co
+GA03,DeKalb & Gwinnett Co
+GA04,"Clayton, Fayette, Henry, & Rockdale Co"
+GA05,Northeast Georgia
+GA06,Southeast Georgia
+GA07,Southwest Georgia
+GA08,Northwest Georgia
+HI01,Island of Oahu
+HI02,Remaining Hawaiian Islands
+IA01,Cedar Rapids & Eastern Iowa
+IA02,Des Moines & Western Iowa
+ID01,Boise City
+ID02,Northern Idaho
+IL01,Rockford
+IL02,Quad Cities
+IL03,Peoria
+IL04,Springfield
+IL05,Decatur & Champaign
+IL06,Southern Illinois
+IL07,Chain of Lakes
+IL08,Northwest Suburbs
+IL09,North Shore
+IL10,Evanston & Skokie
+IL11,City of Chicago
+IL12,Western Suburbs
+IL13,South & Southwest Suburbs
+IN01,"""The Region"""
+IN02,Northwest Indiana
+IN03,South Bend & Elkhart
+IN04,Northeast Indiana
+IN05,West Central Indiana
+IN06,East Central Indiana
+IN07,Greater Indianapolis
+IN08,West Indiana
+IN09,South Central Indiana
+IN10,East Indiana
+IN11,Southwest Indiana
+IN12,Southeast Indiana
+KS01,Kansas City & Topeka
+KS02,Wichita & Western Kansas
+KY01,Lexington & Fayette
+KY02,Louisville & Western Kentucky
+LA01,Baton Rouge
+LA02,New Orleans
+LA03,Shreveport
+MA01,Berkshire & Franklin Co
+MA02,Springfield & Hampshire Co
+MA03,Fitchburg & North Worcester Co
+MA04,Essex Co
+MA05,Cape Cod & Islands
+MA06,Boston & Cambridge
+MA07,Quincy & Plymouth Co
+MA08,"Lowell, Concord, & Wellesley"
+MA09,Norfolk & Bristol Co
+MA10,"Milton, Lexington, & Waltham"
+MA11,Worcester
+MD01,Western Maryland
+MD02,Montgomery Metropolitan
+MD03,Central Maryland (w/o Baltimore)
+MD04,Eastern Shore
+MD05,Prince Georges Metropolitan
+MD06,Southern Maryland
+MD07,Baltimore (Urban)
+ME01,Portland & Southern Maine
+ME02,Augusta & Central Maine
+ME03,Bangor & Northern Maine
+MI01,Wayne Co
+MI02,Detroit's Northern Suburbs
+MI03,Ann Arbor
+MI04,Capital District
+MI05,Kalamazoo and Grand Rapids
+MI06,"""The Thumb"""
+MI07,Northern Michigan
+MN01,Twin Cities
+MN02,Northern Minnesota
+MO01,Kansas City & St. Joseph
+MO02,St. Louis & Eastern Missouri
+MO03,Springfield & Southern Missouri
+MS01,Jackson
+MS02,Northern Mississippi
+MT01,Billings & Eastern Montana
+MT02,Western Montana
+NC01,Coastal Plains
+NC02,East Central North Carolina
+NC03,Research Triangle
+NC04,Sand Hills
+NC05,North Piedmont
+NC06,South Piedmont
+NC07,Western North Carolina
+ND01,Fargo & Eastern North Dakota
+ND02,Western North Dakota
+NE01,Lincoln
+NE02,Omaha
+NE03,Western Nebraska
+NH01,Seacoast
+NH02,Merrimack Valley
+NH03,Monadnock & Lake Sunapee
+NH04,Lakes & White Mountains
+NJ01,Southern Jersey
+NJ02,Camden & Burlington Co
+NJ03,Jersey Shore & Pinelands
+NJ04,Middlesex Co
+NJ05,Monmouth Co
+NJ06,Somerset & Mercer Co
+NJ07,Union Co
+NJ08,Essex & Southern Passaic Co
+NJ09,Hudson Co
+NJ10,Bergen Co
+NJ11,Morris & Northern Passaic Co
+NJ12,"Sussex, Warren, & Hunterdon Co"
+NM01,Albuquerque & Northern New Mexico
+NM02,Southern New Mexico
+NV01,Las Vegas
+NV02,Reno
+NY01,Southern Tier West
+NY02,Erie Co
+NY03,Genesee Valley & N. Frontier
+NY04,Rochester & Monroe Co
+NY05,Finger Lakes Region
+NY06,Central New York
+NY07,Saint Lawrence Valley
+NY08,Adirondacks
+NY09,Tri Cities
+NY10,Central Hudson Valley
+NY11,Catskills
+NY12,Southern Tier East
+NY13,Rockland Co
+NY14,Staten Island
+NY15,Westchester Co
+NY16,Southern Nassau Co
+NY17,Northern Nassau Co
+NY18,Central Nassau Co
+NY19,Northwest Suffolk Co
+NY20,Southwest Suffolk Co
+NY21,East Suffolk Co
+NY22,Southeast Brooklyn
+NY23,West Brooklyn
+NY24,Northeast Brooklyn
+NY25,East Bronx
+NY26,West Bronx
+NY27,Manhattan
+NY28,South Queens
+NY29,Northwest Queens
+NY30,Northeast Queens
+OH01,Northwest Ohio
+OH02,North Central Ohio
+OH03,City of Cleveland (West)
+OH04,City of Cleveland (East)
+OH05,"Cuyahoga, Geauga, & Lake Co"
+OH06,Northeast Ohio
+OH07,West Central Ohio
+OH08,Central Ohio
+OH09,Greater Cincinnati
+OH10,Southeast Ohio
+OK01,Oklahoma City & Western Oklahoma
+OK02,Tulsa & Eastern Oklahoma
+OR01,Greater Portland (West)
+OR02,Greater Portland (East)
+OR03,Northern Valley (Coast)
+OR04,Southern Valley
+OR05,Southwest Oregon
+OR06,East Oregon
+PA01,Bucks Co
+PA02,Chester Co
+PA03,Delaware Co
+PA04,Montgomery Co
+PA05,Philadelphia Co
+PA06,Lehigh Valley
+PA07,Northeastern Pennsylvania
+PA08,North Central Pennsylvania
+PA09,Northwestern Pennsylvania
+PA10,Southern Pennsylvania (East)
+PA11,Southern Pennsylvania (West)
+PA12,Allegheny Co
+PA13,Southwestern PA (w/o Allegheny Co)
+RI01,Providence & N. Rhode Island
+RI02,Southern Rhode Island
+SC01,Pee Dee
+SC02,Low Country
+SC03,Mid Lands
+SC04,East Piedmont
+SC05,West Piedmont
+SD01,Sioux Falls & Eastern South Dakota
+SD02,Western South Dakota
+TN01,Chattanooga
+TN02,Knoxville
+TN03,Memphis
+TN04,Nashville & Davidson
+TX01,"Amarillo, Panhandle, & South Plains"
+TX02,El Paso
+TX03,"Midland, Odessa, & Trans Pecos"
+TX04,Abilene & San Angelo
+TX05,Red River Area
+TX06,Austin & Central Texas
+TX07,"Waco, Temple, & Killeen"
+TX08,East Texas
+TX09,Beaumont & Port Arthur
+TX10,"Gulf Coast, Wharton, & Victoria Co"
+TX11,South Texas Valley
+TX12,Brazos & Trinity Valley
+TX13,"Del Rio, Uvalde Co, & Bexar Co"
+TX14,City of San Antonio
+TX15,Northwest Houston & Conroe School Dist
+TX16,Southwest Houston Metro Area
+TX17,City of Houston (East)
+TX18,Galveston & East Harris Co
+TX19,City of Dallas
+TX20,City of Fort Worth
+TX21,"Irving, Arlington, & Grand Prairie"
+TX22,Dallas Co (w/o City of Dallas)
+TX23,Collin & Rockwall Co
+TX24,West of Dallas/Ft. Worth Metroplex
+UT01,"Salt Lake City, Ogden, & Provo"
+UT02,Southern Utah
+VA01,Arlington & Alexandria
+VA02,Fairfax Co
+VA03,North Central Virginia
+VA04,Northern Neck
+VA05,Central Virginia
+VA06,Richmond
+VA07,Southside Virginia
+VA08,Tidewater
+VA09,Shenandoah
+VA10,Southwest Virginia
+VT01,Burlington
+VT02,Southern Vermont
+VT03,Northern & Eastern Vermont
+WA01,Greater Seattle
+WA02,South Sound
+WA03,Greater Spokane
+WA04,Greater Washington (East)
+WA05,Greater Washington (West)
+WA06,Bellingham Area
+WI01,Madison and Janesville
+WI02,Milwaukee and Racine
+WI03,Northern Wisconsin
+WV01,Charleston & Huntington
+WV02,Northern West Virginia
+WY01,Casper & Cheyenne
+WY02,Western Wyoming

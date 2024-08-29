@@ -31,6 +31,7 @@ library(tigris)
 #library(stars)
 #library(spatstat)
 #library(rgeos)
+library(lwgeom) # library has checks/vixes for valid geometries
 
 ### DIRECTORY PATHS
 
@@ -275,70 +276,58 @@ st_crs(eps_geometry_zcta) == st_crs(acs2020_ab_tract_sf)
   #6 = Aggregate Data by Geomarket
     #Finally, aggregate the proportionally adjusted data by geomarket to get the total contributions from all overlapping tracts.
 
+# calculate the original area of the census tracts; on the object that has one obs per geoid
+  acs2020_ab_tract_sf <- acs2020_ab_tract_sf %>% mutate(area_tract = st_area(.))
 
+####
 # 2 = Perform spacial intersection
+
+  # first simplify the geometry
+    #acs2020_ab_tract_sf <- st_simplify(acs2020_ab_tract_sf, dTolerance = 0.001) # chatGPT said this was a "pretty cautious" value for dTolerance for census tract geometries
+      # geometryies are vertices (points) arranged in order, connected by lines. st_simplify() removes points that are "close" together, with "close" defined by the value you assign to the dTolerance argument
+      # Understanding dTolerance in EPSG:4269; Since your CRS is in degrees, the dTolerance value you choose will represent a distance in degrees. Here's what a dTolerance of 0.001 would correspond to:
+        # 0.001 degrees of latitude would be about 0.001 × 69 =0.069
+        # 0.001×69=0.069 miles, or approximately 364 feet.
   # this is very computationally/time intensive! [like 45 minutes +]
-  # acs2020_tract_eps_intersect <- st_intersection(acs2020_ab_tract_sf, eps_geometry_zcta)
-  # save(acs2020_tract_eps_intersect, file = file.path(shape_dir,'2020', 'acs2020_tract_eps_intersect.RData'))
+    acs2020_tract_eps_intersect <- st_intersection(acs2020_ab_tract_sf, eps_geometry_zcta)
+    
+  # check if geometry is valid
+    valid_geom <- st_is_valid(acs2020_tract_eps_intersect) # check to see whether geometries are "valid"; valid geometries needed for st_intersect
+    summary(valid_geom) 
+      # with using st_simplify with dTolerance = 0.001: 13567 obs FALSE; 84147 obs TRUE; this was worse performance than prior to st_simplify
+      # without using st_simplify: 9,523 FALSE, 88129 TRUE
+    rm(valid_geom)
+    
+  # make geometries valid
+    acs2020_tract_eps_intersect <- st_make_valid(acs2020_tract_eps_intersect)    
+    
+  # save/load for use    
+   save(acs2020_tract_eps_intersect, file = file.path(shape_dir,'2020', 'acs2020_tract_eps_intersect.RData'))
+
   # load object created by st_intersection
-  load(file = file.path(shape_dir,'2020', 'acs2020_tract_eps_intersect.RData'))
+    # load(file = file.path(shape_dir,'2020', 'acs2020_tract_eps_intersect.RData'))
 
   acs2020_tract_eps_intersect %>% glimpse()
 
 #3 = calculate the area of each intersection
   #After obtaining the intersection, calculate the area of each intersected polygon (which represents the part of the census tract within a geomarket). Then calculate the area of each original census tract.
 
-  # first have to make geometries "valid"
-  library(lwgeom)
-  acs2020_tract_eps_intersect <- st_make_valid(acs2020_tract_eps_intersect)
-  
-  valid_geometries <- st_is_valid(acs2020_tract_eps_intersect)
-  summary(valid_geometries)  
-
   # calculate area of each intersected polygon  
-  acs2020_tract_eps_intersect$area_intersection <- st_area(acs2020_tract_eps_intersect) 
+  acs2020_tract_eps_intersect$area_intersection <- st_area(acs2020_tract_eps_intersect) # does same as this:  st_area(acs2020_tract_eps_intersect$geometry)
   
 #4 calculate the area proportion
   #Calculate the proportion of the census tract that is within each geomarket by dividing the area of the intersection by the total area of the original census tract.
   # steps
   
-  # calculate the original area
-  
-  acs2020_ab_tract_sf <- acs2020_ab_tract_sf %>% mutate(area_tract = st_area(.))
-  
-  # join the original area to the intersections
-  acs2020_tract_eps_intersect <- acs2020_tract_eps_intersect %>%
-    left_join(st_drop_geometry(acs2020_ab_tract_sf) %>% select(geoid, area_tract), by = "geoid")  
-  
   # calculate proportion:
   acs2020_tract_eps_intersect <- acs2020_tract_eps_intersect %>%
-    mutate(proportion = area_intersection / area_tract)
+    mutate(proportion = as.numeric(area_intersection / area_tract))
   
-  acs2020_tract_eps_intersect %>% select(geoid,name,eps,area_intersection,area_tract,proportion) %>% View()
-  acs2020_tract_eps_intersect <- acs2020_tract_eps_intersect %>%
-    mutate(area_tract = st_area(acs2020_ab_tract_sf),
-           proportion = area_intersection / area_tract)  
-  
+  # Perform the spatial join 
+    #acs2020_ab_tract_sf_eps <- st_join(acs2020_ab_tract_sf, eps_geometry_zcta, join = st_intersects) # this is the previous spatial join
+
   acs2020_tract_eps_intersect %>% glimpse()
-  
-  
-  
-#5 = adjust tract data by proportion
-  #Adjust any tract-level variables (e.g., population counts) by multiplying them by the proportion of the tract within each geomarket.
-#6 = Aggregate Data by Geomarket
-  #Finally, aggregate the proportionally adjusted data by geomarket to get the total contributions from all overlapping tracts.  
-###### 
-  
-# desired output
-# or sf object that has one obs per tract and for each tract we know the eps code of that tract
-# what my homie chatgpt says:
-#You can perform a spatial join to assign the eps code from eps_geometry_zcta to each observation in stf1_d1980_tractbna_sf. Here’s how you can do it using the sf package in R
-
-# Perform the spatial join
-acs2020_ab_tract_sf_eps <- st_join(acs2020_ab_tract_sf, eps_geometry_zcta, join = st_intersects)  
-
-acs2020_ab_tract_sf_eps %>% glimpse()
-acs2020_ab_tract_sf_eps %>% class()  
+  acs2020_tract_eps_intersect %>% class()  
 
 #investigate data structure
 # gisjoin uniquely identifies obs in the input dataset
@@ -346,11 +335,11 @@ acs2020_ab_tract_sf %>% as.data.frame() %>%
   select(geoid) %>% group_by(geoid) %>% summarise(n_per_group = n()) %>% ungroup %>% count(n_per_group) # one observation per gisjoin value
 
 # gisjoin does not uniquely identify obs in the dataset created by st_join with join = st_intersect    
-acs2020_ab_tract_sf_eps %>% as.data.frame() %>% 
+acs2020_tract_eps_intersect %>% as.data.frame() %>% 
   select(geoid) %>% group_by(geoid) %>% summarise(n_per_group = n()) %>% ungroup %>% count(n_per_group) #
 
 # gisjoin,eps uniquely identifies obs in new dataset
-acs2020_ab_tract_sf_eps %>% as.data.frame() %>% 
+acs2020_tract_eps_intersect %>% as.data.frame() %>% 
   select(geoid,eps) %>% group_by(geoid,eps) %>% summarise(n_per_group = n()) %>% ungroup %>% count(n_per_group) # one observation per zip code  
 
 # result: if the geometry of a census tract overlaps with more than one eps geometry, that census tract appears multiple times
@@ -372,17 +361,16 @@ acs2020_ab_tract_sf_eps %>% as.data.frame() %>%
   # Balance of Accuracy: The projection is designed to maintain a balance between shape and area accuracy, which is important for visualizing and analyzing spatial data across different regions.      
 
 # Reproject sf object to NAD83 / Conus Albers
-acs2020_ab_tract_sf_eps <- st_transform(x = acs2020_ab_tract_sf_eps, crs = 5070)
+acs2020_tract_eps_intersect <- st_transform(x = acs2020_tract_eps_intersect, crs = 5070) # important to do this after the st_simplify step (above) because in previous crs the dTolerance level of 0.001 is like 364 feet, whereas in this crs it is like milimeters or something
 
 # Check the new CRS
-st_crs(acs2020_ab_tract_sf_eps)
+st_crs(acs2020_tract_eps_intersect)
 
 ############## 
 # USING GROUP-BY AND SUMMARIZE, CREATE OBJECTS AT THE EPS LEVEL THAT HAVE POPULATION VARIABLES SUMMARIZED 
 # MERGE EPS-LEVEL CHARACTERISTIC DATA TO DATAFRAME THAT HAS EPS GEOMETRY; THEN DO SOME ANALYSES:           
 
-
-acs2020_ab_tract_sf_eps %>% glimpse()
+acs2020_tract_eps_intersect %>% glimpse()
 
 acs2020_ab_tract %>% var_label()
 
@@ -390,8 +378,7 @@ acs2020_ab_tract %>% select(matches('B15003')) %>% var_label()
 
 edu_variables %>% View()
 
-
-acs2020_ab_anal_tract <- acs2020_ab_tract_sf_eps %>% as.data.frame() %>% 
+acs2020_ab_anal_tract <- acs2020_tract_eps_intersect %>% as.data.frame() %>% 
   # RACE/ETHNICITY VARIABLES
   # drop variables you don't need (after running checks)
   # non-hispanic, two-or more races: amp3e009 always == amp3e010+amp3e011
@@ -521,7 +508,7 @@ acs2020_ab_anal_tract <- acs2020_ab_tract_sf_eps %>% as.data.frame() %>%
     edu_tot_hisp = rowSums(select(., c15002i_002e, c15002i_007e), na.rm = TRUE)     # Total population    
   ) %>% 
   # drop input vars
-  select(-c(starts_with('c15002')),-c(starts_with('b15003')))
+  select(-c(starts_with('c15002')),-c(starts_with('b15003')),-area_intersection,-area_tract)
 
 #acs2020_ab_anal_tract %>% select(c15002i_006e, c15002i_011e,edu_baplus_hisp) %>% View()
 #acs2020_ab_anal_tract %>% select(c15002i_002e, c15002i_007e,edu_tot_hisp) %>% View()
@@ -530,8 +517,19 @@ acs2020_ab_anal_tract %>% glimpse()
 
 # create character vector of names of variables to be summed
 # remove income variables that should not be summed
-sum_vars <- acs2020_ab_anal_tract %>% select(-eps,-geometry,-geoid,-inc_house_med) %>% names()
-sum_vars  
+sum_vars <- acs2020_ab_anal_tract %>% select(-c(eps,geometry,geoid,inc_house_med,proportion)) %>% names()
+sum_vars
+
+#5 = adjust tract data by proportion
+  #Adjust any tract-level variables (e.g., population counts) by multiplying them by the proportion of the tract within each geomarket.
+
+acs2020_ab_anal_tract <- acs2020_ab_anal_tract %>%
+  mutate(across(
+    .cols = all_of(sum_vars),
+    .fns = ~ .x * proportion
+  ))  
+
+acs2020_ab_anal_tract %>% glimpse()
 
 # create eps-level analysis dataset
 acs2020_ab_anal_eps <- acs2020_ab_anal_tract %>% 
@@ -596,7 +594,33 @@ acs2020_ab_anal_eps <- acs2020_ab_anal_tract %>%
 
   acs2020_ab_anal_eps %>% glimpse()
   
+  
+  # merge to object w/ eps shape files and convert to sf object
+  acs2020_ab_anal_eps_sf <- acs2020_ab_anal_eps %>% 
+    inner_join(y = eps_geometry_zcta, by = c('eps')) %>% 
+    st_as_sf() %>% 
+    st_transform(5070)
+  
+  
+  # save in analysis data file
+  save(acs2020_ab_anal_eps_sf, file = file.path(data_dir,'analysis_data', 'acs2020_ab_anal_eps_sf.RData'))
+  
+  load(file = file.path(data_dir,'analysis_data', 'acs2020_ab_anal_eps_sf.RData'))
+  
+  # results for "important" vars
+  acs2020_ab_anal_eps %>% 
+    select(eps,pct_nhisp_white,pct_hisp_all,pct_nhisp_black,pct_nhisp_api,pct_nhisp_other,pct_nhisp_multi,med_inc_house_med,mean_inc_house,pct_pov_yes,pct_edu_baplus_all,pct_edu_baplus_nhisp_white,pct_edu_baplus_black,pct_edu_baplus_hisp) %>% View()
+  
+
   # look at result of education vars
+  # all education vars
+  acs2020_ab_anal_eps %>% 
+    select(eps,pct_edu_baplus_all,pct_edu_baplus_nhisp_white,pct_edu_baplus_white,pct_edu_baplus_hisp,pct_edu_baplus_black,pct_edu_baplus_api,pct_edu_baplus_asian,pct_edu_baplus_nhpi,pct_edu_baplus_native,pct_edu_baplus_multi) %>% View()
+  
+  
+  
+  
+  
   acs2020_ab_anal_eps %>% 
     select(eps,pct_edu_baplus_all,pct_edu_baplus_nhisp_white,pct_edu_baplus_black,pct_edu_baplus_hisp,pct_edu_baplus_api,pct_edu_baplus_asian,pct_edu_baplus_nhpi,pct_edu_baplus_multi) %>% View()
   

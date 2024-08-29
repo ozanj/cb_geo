@@ -31,6 +31,7 @@ library(tigris)
 #library(stars)
 #library(spatstat)
 #library(rgeos)
+library(lwgeom) # library has checks/vixes for valid geometries
 
 ### DIRECTORY PATHS
 
@@ -217,16 +218,61 @@ d2000_sf1a_tract_sf %>% select(gisjoin) %>% as.data.frame() %>% group_by(gisjoin
     eps_geometry_zcta <- st_transform(eps_geometry_zcta, st_crs(d2000_sf1a_tract_sf))
     st_crs(eps_geometry_zcta) == st_crs(d2000_sf1a_tract_sf)
 
-    # desired output
-    # or sf object that has one obs per tract and for each tract we know the eps code of that tract
-    # what my homie chatgpt says:
-    #You can perform a spatial join to assign the eps code from eps_geometry_zcta to each observation in stf1_d1980_tractbna_sf. Here’s how you can do it using the sf package in R
+# PERFORM PARTIAL SPATIAL JOIN. here are conceptual steps:
+  #1 = make sure CRS is the same
+  #2 = perform a spatial intersection
+    #Use st_intersection() to find the intersection of the census tracts and geomarkets. This function will create a new sf object where each feature represents the area of overlap between a census tract and a geomarket.
+  #3 = calculate the area of each intersection
+    #After obtaining the intersection, calculate the area of each intersected polygon (which represents the part of the census tract within a geomarket). Then calculate the area of each original census tract.
+  #4 calculate the area proportion
+    #Calculate the proportion of the census tract that is within each geomarket by dividing the area of the intersection by the total area of the original census tract.
+  #5 = adjust tract data by proportion
+    #Adjust any tract-level variables (e.g., population counts) by multiplying them by the proportion of the tract within each geomarket.
+  #6 = Aggregate Data by Geomarket
+    #Finally, aggregate the proportionally adjusted data by geomarket to get the total contributions from all overlapping tracts.
+
+# calculate the original area of the census tracts; on the object that has one obs per geoid
+    d2000_sf1a_tract_sf <- d2000_sf1a_tract_sf %>% mutate(area_tract = st_area(.))
+
+####
+# 2 = Perform spacial intersection
+
+  # first simplify the geometry
+    #d2000_sf1a_tract_sf <- st_simplify(d2000_sf1a_tract_sf, dTolerance = 0.001) # chatGPT said this was a "pretty cautious" value for dTolerance for census tract geometries
+      # geometryies are vertices (points) arranged in order, connected by lines. st_simplify() removes points that are "close" together, with "close" defined by the value you assign to the dTolerance argument
+      # Understanding dTolerance in EPSG:4269; Since your CRS is in degrees, the dTolerance value you choose will represent a distance in degrees. Here's what a dTolerance of 0.001 would correspond to:
+        # 0.001 degrees of latitude would be about 0.001 × 69 =0.069
+        # 0.001×69=0.069 miles, or approximately 364 feet.
+  # calculate geometries of intersections
+    d2000_tract_eps_intersect <- st_intersection(d2000_sf1a_tract_sf, eps_geometry_zcta)
     
+  # check if geometry is valid
+    valid_geom <- st_is_valid(d2000_tract_eps_intersect) # check to see whether geometries are "valid"; valid geometries needed for st_intersect
+    summary(valid_geom) # ALL TRUE
+    rm(valid_geom)
+    
+  # make geometries valid
+    #d2000_tract_eps_intersect <- st_make_valid(d2000_tract_eps_intersect)    
+   
+#3 = calculate the area of each intersection
+  #After obtaining the intersection, calculate the area of each intersected polygon (which represents the part of the census tract within a geomarket). Then calculate the area of each original census tract.
+
+  # calculate area of each intersected polygon  
+    d2000_tract_eps_intersect$area_intersection <- st_area(d2000_tract_eps_intersect) # does same as this:  st_area(acs2020_tract_eps_intersect$geometry)
+    
+#4 calculate the area proportion
+  #Calculate the proportion of the census tract that is within each geomarket by dividing the area of the intersection by the total area of the original census tract.
+  # steps
+  
+  # calculate proportion:
+    d2000_tract_eps_intersect <- d2000_tract_eps_intersect %>%
+      mutate(proportion = as.numeric(area_intersection / area_tract))
+
     # Perform the spatial join
-    d2000_sf1a_tract_sf_eps <- st_join(d2000_sf1a_tract_sf, eps_geometry_zcta, join = st_intersects)  
+    #d2000_sf1a_tract_sf_eps <- st_join(d2000_sf1a_tract_sf, eps_geometry_zcta, join = st_intersects)  # previous spatial join
     
-    d2000_sf1a_tract_sf_eps %>% glimpse()
-    d2000_sf1a_tract_sf_eps %>% class()    
+    d2000_tract_eps_intersect %>% glimpse()
+    d2000_tract_eps_intersect %>% class()    
     
     #investigate data structure
     # gisjoin uniquely identifies obs in the input dataset
@@ -234,20 +280,12 @@ d2000_sf1a_tract_sf %>% select(gisjoin) %>% as.data.frame() %>% group_by(gisjoin
       select(gisjoin) %>% group_by(gisjoin) %>% summarise(n_per_group = n()) %>% ungroup %>% count(n_per_group) # one observation per gisjoin value
     
     # gisjoin does not uniquely identify obs in the dataset created by st_join with join = st_intersect    
-    d2000_sf1a_tract_sf_eps %>% as.data.frame() %>% 
+    d2000_tract_eps_intersect %>% as.data.frame() %>% 
       select(gisjoin) %>% group_by(gisjoin) %>% summarise(n_per_group = n()) %>% ungroup %>% count(n_per_group) #
     
     # gisjoin,eps uniquely identifies obs in new dataset
-    d2000_sf1a_tract_sf_eps %>% as.data.frame() %>% 
+    d2000_tract_eps_intersect %>% as.data.frame() %>% 
       select(gisjoin,eps) %>% group_by(gisjoin,eps) %>% summarise(n_per_group = n()) %>% ungroup %>% count(n_per_group) # one observation per zip code  
-    
-    # result: if the geometry of a census tract overlaps with more than one eps geometry, that census tract appears multiple times
-    # what chat gpt says    
-    # Yes, in the solution you've implemented, a given census tract will appear once if it is wholly contained within a single geomarket and will appear multiple times if it intersects with multiple geomarkets. Each appearance represents an intersection with a different geomarket.
-    #Wholly Contained Tracts: If a census tract is entirely within a single geomarket, it will appear once in the joined dataframe with that geomarket's eps code.
-    #Intersecting Tracts: If a census tract intersects with multiple geomarkets, it will appear once for each geomarket it intersects with, each time with the respective geomarket's eps code.
-    #This results in some census tracts being duplicated in the joined dataframe, reflecting the fact that they span more than one geomarket.    
-    
     
     # transform crs to one that is good for mapping contiguous US
     # what chat gpt says about NAD83 / Conus Albers
@@ -261,22 +299,22 @@ d2000_sf1a_tract_sf %>% select(gisjoin) %>% as.data.frame() %>% group_by(gisjoin
     # Balance of Accuracy: The projection is designed to maintain a balance between shape and area accuracy, which is important for visualizing and analyzing spatial data across different regions.      
     
     # Reproject sf object to NAD83 / Conus Albers
-    d2000_sf1a_tract_sf_eps <- st_transform(x = d2000_sf1a_tract_sf_eps, crs = 5070)
+    d2000_tract_eps_intersect <- st_transform(x = d2000_tract_eps_intersect, crs = 5070)
     
     # Check the new CRS
-    st_crs(d2000_sf1a_tract_sf_eps)
-    
+    st_crs(d2000_tract_eps_intersect)
  
 ############## 
 # USING GROUP-BY AND SUMMARIZE, CREATE OBJECTS AT THE EPS LEVEL THAT HAVE POPULATION VARIABLES SUMMARIZED 
   # MERGE EPS-LEVEL CHARACTERISTIC DATA TO DATAFRAME THAT HAS EPS GEOMETRY; THEN DO SOME ANALYSES:           
     
     
-  d2000_sf1a_tract_sf_eps %>% glimpse()
+    d2000_tract_eps_intersect %>% glimpse()
     
   d2000_sf3a_inc_tract %>% var_label()
     
-  d2000_sf1a_anal_tract <- d2000_sf1a_tract_sf_eps %>% as.data.frame() %>% 
+  # create tract-level analysis vars
+  d2000_sf1a_anal_tract <- d2000_tract_eps_intersect %>% as.data.frame() %>% 
     # RENAME AND CREATE VARS OF POPULATION BY RACE, ETHNICITY, AND AGE
     rename(
       tot_all = fl5001,
@@ -448,7 +486,7 @@ d2000_sf1a_tract_sf %>% select(gisjoin) %>% as.data.frame() %>% group_by(gisjoin
       pov_denom = rowSums(select(., pov_yes,pov_no), na.rm = TRUE),
         #check_calc = if_else(households_tot==pov_denom,1,0), # check whether total number of households from Census equals number of households that are either above or below poverty line
         # ran frequency: check_calc always equals 1
-    ) %>% select(-households_tot_calc,-pov_denom,-c(starts_with('gmx')))
+    ) %>% select(-households_tot_calc,-pov_denom,-c(starts_with('gmx')),-c(area_tract,area_intersection))
 
   d2000_sf1a_anal_tract %>% glimpse()
   
@@ -456,8 +494,19 @@ d2000_sf1a_tract_sf %>% select(gisjoin) %>% as.data.frame() %>% group_by(gisjoin
 
   # create character vector of names of variables to be summed
     # remove income variables that should not be summed
-  sum_vars <- d2000_sf1a_anal_tract %>% select(-eps,-geometry,-gisjoin,-state,-statea,-county,-countya,-tracta, -inc_house_med) %>% names()
+  sum_vars <- d2000_sf1a_anal_tract %>% select(-c(eps,geometry,gisjoin,state,statea,county,countya,tracta,inc_house_med,proportion)) %>% names()
   sum_vars  
+  
+  #5 = adjust tract data by proportion
+  #Adjust any tract-level variables (e.g., population counts) by multiplying them by the proportion of the tract within each geomarket.
+  
+  d2000_sf1a_anal_tract <- d2000_sf1a_anal_tract %>%
+    mutate(across(
+      .cols = all_of(sum_vars),
+      .fns = ~ .x * proportion
+    ))  
+  
+  d2000_sf1a_anal_tract %>% glimpse()
   
   d2000_sf1a_anal_tract %>% select(contains('_baplus')) %>% names()
   d2000_sf1a_anal_tract %>% select(starts_with('edu_tot')) %>% names()
@@ -538,10 +587,31 @@ d2000_sf1a_tract_sf %>% select(gisjoin) %>% as.data.frame() %>% group_by(gisjoin
       pct_pov_no = sum_pov_no/sum_households_tot*100,
       
     )
+  
+  # merge to object w/ eps shape files and convert to sf object
+  d2000_sf1a_anal_eps_sf <- d2000_sf1a_anal_eps %>% 
+    inner_join(y = eps_geometry_zcta, by = c('eps')) %>% 
+    st_as_sf() %>% 
+    st_transform(5070)
+  
+  # save in analysis data file
+  save(d2000_sf1a_anal_eps_sf, file = file.path(data_dir,'analysis_data', 'd2000_sf1a_anal_eps_sf.RData'))
+  
+  load(file = file.path(data_dir,'analysis_data', 'd2000_sf1a_anal_eps_sf.RData'))
+  
+  # results for "important" vars
+  d2000_sf1a_anal_eps %>% 
+    select(eps,pct_nhisp_white,pct_hisp_all,pct_nhisp_black,pct_nhisp_api,pct_nhisp_other,pct_nhisp_multi,med_inc_house_med,mean_inc_house,pct_pov_yes,pct_edu_baplus_all,pct_edu_baplus_nhisp_white,pct_edu_baplus_black,pct_edu_baplus_hisp) %>% View()
+  
   # look at result of income and poverty variables
   d2000_sf1a_anal_eps %>% select(eps,pct_nhisp_white,pct_nhisp_black,pct_nhisp_native,pct_nhisp_api,pct_nhisp_multi,pct_hisp_all,med_inc_house_med,mean_inc_house,pct_pov_yes) %>% View()
   
   # look at result of education vars
+  # all education vars
+  d2000_sf1a_anal_eps %>% 
+    select(eps,pct_edu_baplus_all,,pct_edu_baplus_white,pct_edu_baplus_nhisp_white,pct_edu_baplus_hisp,pct_edu_baplus_black,pct_edu_baplus_api,pct_edu_baplus_asian,pct_edu_baplus_nhpi,pct_edu_baplus_native) %>% View() # ,pct_edu_baplus_multi
+  
+  
   d2000_sf1a_anal_eps %>% select(eps,pct_nhisp_white,pct_nhisp_black,pct_nhisp_native,pct_nhisp_api,pct_nhisp_multi,pct_hisp_all,pct_edu_baplus_all,pct_edu_baplus_nhisp_white,pct_edu_baplus_black,pct_edu_baplus_hisp,pct_edu_baplus_api) %>% View()
   
   # look at result of education vars
