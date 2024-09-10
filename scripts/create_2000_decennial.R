@@ -486,15 +486,18 @@ d2000_sf1a_tract_sf %>% select(gisjoin) %>% as.data.frame() %>% group_by(gisjoin
       pov_denom = rowSums(select(., pov_yes,pov_no), na.rm = TRUE),
         #check_calc = if_else(households_tot==pov_denom,1,0), # check whether total number of households from Census equals number of households that are either above or below poverty line
         # ran frequency: check_calc always equals 1
-    ) %>% select(-households_tot_calc,-pov_denom,-c(starts_with('gmx')),-c(area_tract,area_intersection))
+    ) %>% select(-households_tot_calc,-pov_denom,-c(starts_with('gmx')),-c(area_tract,area_intersection,state,statea,county,countya,tracta))
+    
 
   d2000_sf1a_anal_tract %>% glimpse()
+  
+  
   
   #d2000_sf1a_anal_tract %>% select(gisjoin,grw015:grw028,edu_tot_black) %>% View()
 
   # create character vector of names of variables to be summed
     # remove income variables that should not be summed
-  sum_vars <- d2000_sf1a_anal_tract %>% select(-c(eps,geometry,gisjoin,state,statea,county,countya,tracta,inc_house_med,proportion)) %>% names()
+  sum_vars <- d2000_sf1a_anal_tract %>% select(-c(eps,geometry,gisjoin,inc_house_med,proportion)) %>% names()
   sum_vars  
   
   #5 = adjust tract data by proportion
@@ -507,6 +510,74 @@ d2000_sf1a_tract_sf %>% select(gisjoin) %>% as.data.frame() %>% group_by(gisjoin
     ))  
   
   d2000_sf1a_anal_tract %>% glimpse()
+  
+  # create tract-level analysis dataset that is sf  
+  d2000_sf1a_anal_tract_sf <- d2000_sf1a_anal_tract %>% 
+    mutate(
+      
+      # create percent race and ethnicity variables
+      pct_nhisp_white = nhisp_white / tot_all * 100,
+      pct_nhisp_black = nhisp_black / tot_all * 100,
+      pct_nhisp_native = nhisp_native / tot_all * 100,
+      pct_nhisp_asian = nhisp_asian / tot_all * 100,
+      pct_nhisp_nhpi = nhisp_nhpi / tot_all * 100,
+      pct_nhisp_other = nhisp_other / tot_all * 100,
+      pct_nhisp_multi = nhisp_multi / tot_all * 100,
+      pct_hisp_white = hisp_white / tot_all * 100,
+      pct_hisp_black = hisp_black / tot_all * 100,
+      pct_hisp_native = hisp_native / tot_all * 100,
+      pct_hisp_asian = hisp_asian / tot_all * 100,
+      pct_hisp_nhpi = hisp_nhpi / tot_all * 100,
+      pct_hisp_other = hisp_other / tot_all * 100,
+      pct_hisp_multi = hisp_multi / tot_all * 100,
+      pct_nhisp_api = nhisp_api / tot_all * 100,
+      pct_hisp_api = hisp_api / tot_all * 100,
+      pct_hisp_all = hisp_all / tot_all * 100,
+      
+      # education vars; focus on percent of households w/ a BA or higher
+      pct_edu_baplus_all = edu_baplus_all / edu_tot_all * 100,
+      pct_edu_baplus_white = edu_baplus_white / edu_tot_white * 100,
+      pct_edu_baplus_black = edu_baplus_black / edu_tot_black * 100,
+      pct_edu_baplus_native = edu_baplus_native / edu_tot_native * 100,
+      pct_edu_baplus_asian = edu_baplus_asian / edu_tot_asian * 100,
+      pct_edu_baplus_nhpi = edu_baplus_nhpi / edu_tot_nhpi * 100,
+      pct_edu_baplus_api = edu_baplus_api / edu_tot_api * 100,
+      pct_edu_baplus_hisp = edu_baplus_hisp / edu_tot_hisp * 100,
+      pct_edu_baplus_nhisp_white = edu_baplus_nhisp_white / edu_tot_nhisp_white * 100,
+
+      # create mean income variable
+      # sum of agg inc across all tracts/ (sum of total households across all tracts)
+      mean_inc_house = inc_house_agg/households_tot,
+      
+      # Convert 1999 dollars to 2024 dollars using CPI data
+      # CPI for 1999: 166.6
+      # CPI for 2024: 314.175
+      # Formula: Adjusted Amount = Original Amount * (CPI in 2024 / CPI in 1999) = (og amoun)t * (314.175/166.6) = (og amount) * 1.885804
+      
+      mean_inc_house = mean_inc_house*1.885804,
+      med_inc_house = inc_house_med*1.885804,
+      
+      # create percent poverty variables
+      pct_pov_yes = pov_yes/households_tot*100,  
+      
+    ) %>% rename(geometry_eps = geometry) %>% 
+    # retrieve tract-level geometry (including partial geometries for those that cross eps borders)
+    inner_join(
+      y = d2000_tract_eps_intersect %>% select(gisjoin,eps,geometry),
+      by = c('gisjoin','eps')
+    ) %>% 
+    # transform into sf object, using WGS84 CRS which leaflet mapping says is required
+    st_as_sf() %>% st_transform(crs = 4326)
+  
+  
+  d2000_sf1a_anal_tract_sf %>% class()
+  d2000_sf1a_anal_tract_sf %>% glimpse()
+
+  # save to analysis folder, outside the repo cuz too big for repo
+  save(d2000_sf1a_anal_tract_sf, file = file.path(shape_dir,'analysis_data', 'd2000_sf1a_anal_tract_sf.RData'))
+  
+  load(file = file.path(shape_dir,'analysis_data', 'd2000_sf1a_anal_tract_sf.RData'))
+  
   
   d2000_sf1a_anal_tract %>% select(contains('_baplus')) %>% names()
   d2000_sf1a_anal_tract %>% select(starts_with('edu_tot')) %>% names()

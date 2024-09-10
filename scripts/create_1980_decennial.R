@@ -477,7 +477,7 @@ scripts_dir <- file.path('.','scripts') #
       # Check the new CRS
       st_crs(d1980_tract_eps_intersect)
 
-      
+      d1980_tract_eps_intersect %>% class()
 ############## 
 # USING GROUP-BY AND SUMMARIZE, CREATE OBJECTS AT THE EPS LEVEL THAT HAVE POPULATION VARIABLES SUMMARIZED 
   # MERGE EPS-LEVEL CHARACTERISTIC DATA TO DATAFRAME THAT HAS EPS GEOMETRY; THEN DO SOME ANALYSES:
@@ -707,8 +707,14 @@ scripts_dir <- file.path('.','scripts') #
         select(-c(year, fstatus, regiona, divisiona, state, statea, smsaa, county, countya, cty_suba, placea, tracta, blck_grpa, blocka, edinda, 
                   enumdista, scsaa, urb_areaa, cda, aianhha, mcdseqno, sea, uatype, placdesc, cbd, indsubr, longitud, latitude, landarea, areaname,
                   area_intersection,area_title)
-               )  
+               ) %>% 
+        select(-ends_with('lt5'),-ends_with('517'),-ends_with('1864'),-ends_with('gt65'),
+               -c(inc_house_lt2k_all, inc_house_2kto5k_all, inc_house_5kto7k_all, inc_house_7kto10k_all, inc_house_10kto12k_all, inc_house_12kto15k_all, inc_house_15kto17k_all, inc_house_17kto20k_all, inc_house_20kto22k_all, inc_house_22kto25k_all, inc_house_25kto27k_all, inc_house_27kto30k_all, inc_house_30kto35k_all, inc_house_35kto40k_all, inc_house_40kto50k_all, inc_house_50kto75k_all, inc_house_gt75k),
+               ) %>% 
+        select(-c(dec001,die001,dig001,bna80))
   
+      d1980_stf1f3_anal_tract %>% glimpse()    
+
 
   # create character vector of names of variables to be summed [and vars to multiply by proportion of census tract area]
     # remove the two income variables that should not be summed
@@ -727,14 +733,72 @@ scripts_dir <- file.path('.','scripts') #
     ))  
   
 
-  d1980_stf1f3_anal_tract %>% select(starts_with('edu_')) %>% glimpse()
-
-  d1980_stf1f3_anal_tract %>% glimpse()
+# create tract-level analysis dataset that is sf
+  d1980_stf1f3_anal_tract_sf <- d1980_stf1f3_anal_tract %>% 
+    mutate(
+      # create percent vars race/ethnicity population vars
+      pct_white = white/tot_all*100,
+      pct_black = black/tot_all*100,
+      pct_api = api/tot_all*100,
+      pct_native = native/tot_all*100,
+      pct_other = other/tot_all*100,
+      
+      pct_nhisp_all = nhisp_all/tot_all*100,
+      pct_hisp_all = hisp_all/tot_all*100,
+      
+      pct_hisp_white = hisp_white/tot_all*100,
+      pct_nhisp_white = nhisp_white/tot_all*100,
+      pct_hisp_black = hisp_black/tot_all*100,
+      pct_nhisp_black = nhisp_black/tot_all*100,
+      pct_hisp_other = hisp_other/tot_all*100,
+      pct_nhisp_other = nhisp_other/tot_all*100,
+      pct_asian = asian/tot_all*100,
+      pct_nhpi = nhpi/tot_all*100,
+      pct_native_api = native_api/tot_all*100,
+      pct_hisp_native_api = hisp_native_api/tot_all*100,
+      pct_nhisp_native_api = nhisp_native_api/tot_all*100,
+      
+      #create income/poverty variables
+      mean_inc_house = inc_house_agg_all/households_tot_calc,
+      mean_inc_house = mean_inc_house*4.33,
+      med_inc_house = inc_house_med_all*4.33,
+      pct_pov_yes = pov_yes/pov_denom*100,
+      
+      # create measures of highest educational attainment
+      pct_edu_baplus_all = edu_baplus_all/edu_tot_all*100,
+      pct_edu_baplus_white = edu_baplus_white/edu_tot_white*100,
+      pct_edu_baplus_black = edu_baplus_black/edu_tot_black*100,
+      pct_edu_baplus_native = edu_baplus_native/edu_tot_native*100,
+      pct_edu_baplus_api = edu_baplus_api/edu_tot_api*100,
+      pct_edu_baplus_other = edu_baplus_other/edu_tot_other*100,
+      pct_edu_baplus_hisp = edu_baplus_hisp/edu_tot_hisp*100,
+      
+    ) %>% rename(geometry_eps = geometry) %>% 
+    # retrieve tract-level geometry (including partial geometries for those that cross eps borders)
+    inner_join(
+      y = d1980_tract_eps_intersect %>% select(gisjoin,eps,geometry),
+      by = c('gisjoin','eps')
+    ) %>% 
+    # transform into sf object, using WGS84 CRS which leaflet mapping says is required
+    st_as_sf() %>% st_transform(crs = 4326)
+    
+    # Reproject the data to WGS84 (longitude/latitude)
+    #st_transform(d1980_stf1f3_anal_eps_sf, crs = 4326)  
+  
+  d1980_stf1f3_anal_tract_sf %>% glimpse()
+  d1980_stf1f3_anal_tract_sf %>% class()
+  
+  # save to analysis folder, outside the repo cuz too big for repo
+  save(d1980_stf1f3_anal_tract_sf, file = file.path(shape_dir,'analysis_data', 'd1980_stf1f3_anal_tract_sf.RData'))
+  
+  load(file = file.path(shape_dir,'analysis_data', 'd1980_stf1f3_anal_tract_sf.RData'))
+  
+  
+# CREATE EPS LEVEL DATASET WITH ANALYSIS VARIABLES
   
   # Create suffix for race variables; used below
   race_suffixes <- c("all", "white", "black", "native", "api", "other", "hisp")
   
-  # CREATE EPS LEVEL DATASET WITH ANALYSIS VARIABLES
   d1980_stf1f3_anal_eps <- d1980_stf1f3_anal_tract %>% 
     group_by(eps) %>% summarize(
       n_tracts = n(),
@@ -770,21 +834,21 @@ scripts_dir <- file.path('.','scripts') #
       pct_hisp_native_api = sum_hisp_native_api/sum_tot_all*100,
       pct_nhisp_native_api = sum_nhisp_native_api/sum_tot_all*100,      
       
-      pct_white_age517 = sum_white_age517/sum_tot_age517*100,
-      pct_black_age517 = sum_black_age517/sum_tot_age517*100,
-      pct_api_age517 = sum_api_age517/sum_tot_age517*100,
-      pct_native_age517 = sum_native_age517/sum_tot_age517*100,
-      pct_other_age517 = sum_other_age517/sum_tot_age517*100,
-      pct_nonhisp_age517 = sum_nonhisp_age517/sum_tot_age517*100,
-      pct_hisp_age517 = sum_hisp_age517/sum_tot_age517*100,
+      #pct_white_age517 = sum_white_age517/sum_tot_age517*100,
+      #pct_black_age517 = sum_black_age517/sum_tot_age517*100,
+      #pct_api_age517 = sum_api_age517/sum_tot_age517*100,
+      #pct_native_age517 = sum_native_age517/sum_tot_age517*100,
+      #pct_other_age517 = sum_other_age517/sum_tot_age517*100,
+      #pct_nonhisp_age517 = sum_nonhisp_age517/sum_tot_age517*100,
+      #pct_hisp_age517 = sum_hisp_age517/sum_tot_age517*100,
       
-      pct_white_age1864 = sum_white_age1864/sum_tot_age1864*100,
-      pct_black_age1864 = sum_black_age1864/sum_tot_age1864*100,
-      pct_api_age1864 = sum_api_age1864/sum_tot_age1864*100,
-      pct_native_age1864 = sum_native_age1864/sum_tot_age1864*100,
-      pct_other_age1864 = sum_other_age1864/sum_tot_age1864*100,
-      pct_nonhisp_age1864 = sum_nonhisp_age1864/sum_tot_age1864*100,
-      pct_hisp_age1864 = sum_hisp_age1864/sum_tot_age1864*100,
+      #pct_white_age1864 = sum_white_age1864/sum_tot_age1864*100,
+      #pct_black_age1864 = sum_black_age1864/sum_tot_age1864*100,
+      #pct_api_age1864 = sum_api_age1864/sum_tot_age1864*100,
+      #pct_native_age1864 = sum_native_age1864/sum_tot_age1864*100,
+      #pct_other_age1864 = sum_other_age1864/sum_tot_age1864*100,
+      #pct_nonhisp_age1864 = sum_nonhisp_age1864/sum_tot_age1864*100,
+      #pct_hisp_age1864 = sum_hisp_age1864/sum_tot_age1864*100,
       
       # create mean income variable
         # sum of agg inc across all tracts/ (sum of total households across all tracts)
@@ -822,12 +886,7 @@ scripts_dir <- file.path('.','scripts') #
         ~ round(. / get(paste0("sum_edu_tot_", sub(".*_(.*)", "\\1", cur_column()))) * 100, 2), 
         .names = "pct_edu_{sub('sum_edu_', '', col)}"
       )
-      # checks that education vars look ok
-        # all
-        # select(sum_ed_lths_all,sum_ed_hs_all,sum_ed_ltba_all,sum_ed_ba_all,sum_ed_tot_all,pct_sum_ed_lths_all,pct_sum_ed_hs_all,pct_sum_ed_ltba_all,pct_sum_ed_ba_all) %>% print(n=305)
-        # api
-        # select(sum_ed_lths_api,sum_ed_hs_api,sum_ed_ltba_api,sum_ed_ba_api,sum_ed_tot_api,pct_sum_ed_lths_api,pct_sum_ed_hs_api,pct_sum_ed_ltba_api,pct_sum_ed_ba_api) %>% print(n=305)
-      
+
     ) # mutate
   
   d1980_stf1f3_anal_eps %>% glimpse()
@@ -847,9 +906,9 @@ scripts_dir <- file.path('.','scripts') #
     st_transform(5070)
 
   # save in analysis data file
-  save(d1980_stf1f3_anal_eps_sf, file = file.path(data_dir,'analysis_data', 'd1980_stf1f3_anal_eps_sf.RData'))
+  save(d1980_stf1f3_anal_eps_sf, file = file.path(shape_dir,'analysis_data', 'd1980_stf1f3_anal_eps_sf.RData'))
   
-  load(file = file.path(data_dir,'analysis_data', 'd1980_stf1f3_anal_eps_sf.RData'))
+  load(file = file.path(shape_dir,'analysis_data', 'd1980_stf1f3_anal_eps_sf.RData'))
   
   d1980_stf1f3_anal_eps_sf %>% glimpse()
   # check results

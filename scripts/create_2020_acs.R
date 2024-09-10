@@ -305,7 +305,7 @@ st_crs(eps_geometry_zcta) == st_crs(acs2020_ab_tract_sf)
    save(acs2020_tract_eps_intersect, file = file.path(shape_dir,'2020', 'acs2020_tract_eps_intersect.RData'))
 
   # load object created by st_intersection
-    # load(file = file.path(shape_dir,'2020', 'acs2020_tract_eps_intersect.RData'))
+    load(file = file.path(shape_dir,'2020', 'acs2020_tract_eps_intersect.RData'))
 
   acs2020_tract_eps_intersect %>% glimpse()
 
@@ -376,7 +376,6 @@ acs2020_ab_tract %>% var_label()
 
 acs2020_ab_tract %>% select(matches('B15003')) %>% var_label()
 
-edu_variables %>% View()
 
 acs2020_ab_anal_tract <- acs2020_tract_eps_intersect %>% as.data.frame() %>% 
   # RACE/ETHNICITY VARIABLES
@@ -530,6 +529,74 @@ acs2020_ab_anal_tract <- acs2020_ab_anal_tract %>%
   ))  
 
 acs2020_ab_anal_tract %>% glimpse()
+
+# create tract-level analysis sf dataset that has percent variables
+acs2020_ab_anal_tract_sf <- acs2020_ab_anal_tract %>% 
+  mutate(
+    
+    # create percent race and ethnicity variables
+    pct_nhisp_white = nhisp_white / tot_all * 100,
+    pct_nhisp_black = nhisp_black / tot_all * 100,
+    pct_nhisp_native = nhisp_native / tot_all * 100,
+    pct_nhisp_asian = nhisp_asian / tot_all * 100,
+    pct_nhisp_nhpi = nhisp_nhpi / tot_all * 100,
+    pct_nhisp_other = nhisp_other / tot_all * 100,
+    pct_nhisp_multi = nhisp_multi / tot_all * 100,
+    pct_hisp_white = hisp_white / tot_all * 100,
+    pct_hisp_black = hisp_black / tot_all * 100,
+    pct_hisp_native = hisp_native / tot_all * 100,
+    pct_hisp_asian = hisp_asian / tot_all * 100,
+    pct_hisp_nhpi = hisp_nhpi / tot_all * 100,
+    pct_hisp_other = hisp_other / tot_all * 100,
+    pct_hisp_multi = hisp_multi / tot_all * 100,
+    pct_nhisp_api = nhisp_api / tot_all * 100,
+    pct_hisp_api = hisp_api / tot_all * 100,
+    pct_hisp_all = hisp_all / tot_all * 100,
+    pct_nhisp_all = nhisp_all / tot_all * 100,
+    
+    # create mean income variable
+    # sum of agg inc across all tracts/ (sum of total households across all tracts)
+    mean_inc_house = inc_house_agg/households_tot,
+    
+    # Convert 2020 dollars to 2024 dollars using CPI data
+    # CPI for 2020: 258.811
+    # CPI for 2024: 314.175
+    # Formula: Adjusted Amount = Original Amount * (CPI in 2024 / CPI in 2020) = (og amoun)t * (314.175/258.811) = (og amount) * 1.213917
+    mean_inc_house = mean_inc_house*1.213917,
+    med_inc_house = inc_house_med*1.213917,
+    
+    # create percent poverty variables
+    pct_pov_yes = pov_yes/pov_denom*100,  
+    
+    # education vars; focus on percent of households w/ a BA or higher
+    pct_edu_baplus_all = edu_baplus_all / edu_tot_all * 100,
+    pct_edu_baplus_white = edu_baplus_white / edu_tot_white * 100,
+    pct_edu_baplus_black = edu_baplus_black / edu_tot_black * 100,
+    pct_edu_baplus_native = edu_baplus_native / edu_tot_native * 100,
+    pct_edu_baplus_asian = edu_baplus_asian / edu_tot_asian * 100,
+    pct_edu_baplus_nhpi = edu_baplus_nhpi / edu_tot_nhpi * 100,
+    pct_edu_baplus_api = edu_baplus_api / edu_tot_api * 100,
+    pct_edu_baplus_multi = edu_baplus_multi / edu_tot_multi * 100,
+    pct_edu_baplus_hisp = edu_baplus_hisp / edu_tot_hisp * 100,
+    pct_edu_baplus_nhisp_white = edu_baplus_nhisp_white / edu_tot_nhisp_white * 100,  
+    
+  ) %>% rename(geometry_eps = geometry) %>% 
+  # retrieve tract-level geometry (including partial geometries for those that cross eps borders)
+  inner_join(
+    y = acs2020_tract_eps_intersect %>% select(geoid,eps,geometry),
+    by = c('geoid','eps')
+  ) %>% 
+  # transform into sf object, using WGS84 CRS which leaflet mapping says is required
+  st_as_sf() %>% st_transform(crs = 4326)
+
+  acs2020_ab_anal_tract_sf %>% glimpse()
+  acs2020_ab_anal_tract_sf %>% class()
+  
+  # save to analysis folder, outside the repo cuz too big for repo
+  save(acs2020_ab_anal_tract_sf, file = file.path(shape_dir,'analysis_data', 'acs2020_ab_anal_tract_sf.RData'))
+  
+  load(file = file.path(shape_dir,'analysis_data', 'acs2020_ab_anal_tract_sf.RData'))
+
 
 # create eps-level analysis dataset
 acs2020_ab_anal_eps <- acs2020_ab_anal_tract %>% 
