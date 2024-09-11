@@ -69,6 +69,10 @@ list.files(path = eps_data_dir)
 scripts_dir <- file.path('.','scripts') # 
 list.files(path = scripts_dir)
 
+tables_dir <- file.path('.','results','tables') # 
+list.files(path = tables_dir)
+
+
 ##### LOAD EPS-LEVEL DATA
 
 # load EPS data
@@ -200,8 +204,6 @@ cleveland_eps_codes
 
   allyr_anal_tract_sf %>% glimpse()
 
-# Define table_vars in the desired order
-table_vars <- c("pct_nhisp_white", "pct_nhisp_black", "pct_hisp_all", "pct_nhisp_api", "pct_nhisp_native", "med_inc_house", "mean_inc_house", "pct_pov_yes", "pct_edu_baplus_all")
 
 table_var_names <- list(
   "pct_hisp_all" = "% Hispanic",
@@ -216,69 +218,280 @@ table_var_names <- list(
   "pct_edu_baplus_all" = "% with BA+"
 )
 
-eps_table <- allyr_anal_tract_sf %>% 
-  as.data.frame() %>% 
-  filter(eps %in% chi_eps_codes) %>%
-  
-  # Divide income variables by 1,000 and round to nearest integer [don't round here]
-  mutate(across(contains("_inc"), ~ (.x / 1000))) %>%
-  
-  group_by(eps_name, year) %>%
-  summarize(
-    # Mean calculation
-    across(all_of(table_vars), ~ mean(.x, na.rm = TRUE), .names = "mean_{.col}"),
-    
-    # Standard deviation calculation
-    across(all_of(table_vars), ~ sd(.x, na.rm = TRUE), .names = "sd_{.col}"),
-    
-    # 25th percentile calculation
-    across(all_of(table_vars), ~ quantile(.x, probs = 0.25, na.rm = TRUE), .names = "p25_{.col}"),
-    
-    # 50th percentile (median) calculation
-    across(all_of(table_vars), ~ quantile(.x, probs = 0.50, na.rm = TRUE), .names = "p50_{.col}"),
-    
-    # 75th percentile calculation
-    across(all_of(table_vars), ~ quantile(.x, probs = 0.75, na.rm = TRUE), .names = "p75_{.col}")
-  ) %>%
-  
-  # Reshape variables from columns to rows
-  pivot_longer(
-    cols = starts_with("mean_") | starts_with("sd_") | starts_with("p25_") | starts_with("p50_") | starts_with("p75_"),
-    names_to = c("statistic", "variable"),
-    names_pattern = "(mean|sd|p25|p50|p75)_(.*)",  # Regex pattern to correctly split the names
-    values_to = "value"
-  ) %>%
-  
-  # Replace variable names with human-friendly names
-  mutate(variable = recode(variable, !!!table_var_names)) %>%
-  
-  # Set the order of the 'variable' column to match table_vars
-  mutate(variable = factor(variable, levels = recode(table_vars, !!!table_var_names))) %>%
-  
-  # Reshape statistics and years from rows to columns
-  pivot_wider(
-    names_from = c(year, statistic),  # Pivot both year and statistic to columns
-    values_from = value,
-    names_glue = "{statistic}_{year}"  # Customize the new column names to include only statistic and year
-  ) %>%
-  ungroup() %>%
-  arrange(variable, eps_name) %>%
-  select(variable, eps_name, everything()) %>% 
-  mutate(
-    # Apply integer formatting for income variables
-    across(starts_with("mean_") | starts_with("sd_") | starts_with("p25_") | starts_with("p50_") | starts_with("p75_"),
-           ~ if_else(str_detect(variable, "income"), round(.x), .x)),
-    
-    # Apply one decimal point for percentage variables
-    across(starts_with("mean_") | starts_with("sd_") | starts_with("p25_") | starts_with("p50_") | starts_with("p75_"),
-           ~ if_else(str_detect(variable, "^%"), round(.x, 1), .x))
+# Define table_vars in the desired order
+table_varlist <- c("pct_nhisp_white", "pct_nhisp_black", "pct_hisp_all", "pct_nhisp_api", "pct_nhisp_native", "pct_nhisp_multi", "med_inc_house", "mean_inc_house", "pct_pov_yes", "pct_edu_baplus_all")
+
+create_eps_table <- function(eps_codes, table_vars) {
+  # Human-readable names for the variables (you can modify this list based on the variables passed in)
+  table_var_names <- list(
+    "pct_hisp_all" = "% Hispanic",
+    "mean_inc_house" = "Mean income",
+    "med_inc_house" = "Median income",
+    "pct_nhisp_asian" = "% Asian, non-Hispanic",
+    "pct_nhisp_white" = "% White, non-Hispanic",
+    "pct_nhisp_black" = "% Black, non-Hispanic",
+    "pct_nhisp_api" = "% API, non-Hispanic", 
+    "pct_nhisp_native" = "% Native, non-Hispanic",
+    "pct_pov_yes" = "% in poverty",
+    "pct_edu_baplus_all" = "% with BA+"
   )
+  
+  # Main table creation pipeline
+  eps_table <- allyr_anal_tract_sf %>% 
+    as.data.frame() %>%
+    # Filter based on provided eps_codes
+    filter(eps %in% eps_codes) %>%
+    
+    # Divide income variables by 1,000
+    mutate(across(contains("_inc"), ~ (.x / 1000))) %>%
+    
+    # Group by eps_name and year
+    group_by(eps_name, year) %>%
+    
+    # Summarize the data (mean, standard deviation, percentiles)
+    summarize(
+      across(all_of(table_vars), ~ mean(.x, na.rm = TRUE), .names = "mean_{.col}"),
+      across(all_of(table_vars), ~ sd(.x, na.rm = TRUE), .names = "sd_{.col}"),
+      across(all_of(table_vars), ~ quantile(.x, probs = 0.25, na.rm = TRUE), .names = "p25_{.col}"),
+      across(all_of(table_vars), ~ quantile(.x, probs = 0.50, na.rm = TRUE), .names = "p50_{.col}"),
+      across(all_of(table_vars), ~ quantile(.x, probs = 0.75, na.rm = TRUE), .names = "p75_{.col}")
+    ) %>%
+    
+    # Reshape variables from columns to rows
+    pivot_longer(
+      cols = starts_with("mean_") | starts_with("sd_") | starts_with("p25_") | starts_with("p50_") | starts_with("p75_"),
+      names_to = c("statistic", "variable"),
+      names_pattern = "(mean|sd|p25|p50|p75)_(.*)",  # Regex pattern to correctly split the names
+      values_to = "value"
+    ) %>%
+    
+    # Replace variable names with human-friendly names
+    mutate(variable = recode(variable, !!!table_var_names)) %>%
+    
+    # Set the order of the 'variable' column based on the provided table_vars
+    mutate(variable = factor(variable, levels = recode(table_vars, !!!table_var_names))) %>%
+    
+    # Reshape statistics and years from rows to columns
+    pivot_wider(
+      names_from = c(year, statistic),  # Pivot both year and statistic to columns
+      values_from = value,
+      names_glue = "{statistic}_{year}"  # Customize the new column names to include only statistic and year
+    ) %>%
+    
+    # Ungroup and arrange by variable and eps_name
+    ungroup() %>%
+    arrange(variable, eps_name) %>%
+    
+    # Apply integer formatting for income variables and 1 decimal point for percentage variables
+    mutate(
+      across(starts_with("mean_") | starts_with("sd_") | starts_with("p25_") | starts_with("p50_") | starts_with("p75_"),
+             ~ if_else(str_detect(variable, "income"), round(.x), .x)),
+      across(starts_with("mean_") | starts_with("sd_") | starts_with("p25_") | starts_with("p50_") | starts_with("p75_"),
+             ~ if_else(str_detect(variable, "^%"), round(.x, 1), .x))
+    )
+  
+  # Return the resulting table
+  return(eps_table)
+}
 
-eps_table %>% print(n=100)
 
-# Then print the table to check the results
-#eps_table %>% select(-c(contains('_1980')),-c(contains('_2000'))) %>% print(n = 100)
+library(dplyr)
+library(stringr)
+library(tidyr)
 
+create_eps_table <- function(eps_codes, table_vars) {
+  
+  # Human-readable names for the variables (you can modify this list based on the variables passed in)
+  table_var_names <- list(
+    "pct_hisp_all" = "% Hispanic",
+    "mean_inc_house" = "Mean income",
+    "med_inc_house" = "Median income",
+    "pct_nhisp_asian" = "% Asian, non-Hispanic",
+    "pct_nhisp_white" = "% White, non-Hispanic",
+    "pct_nhisp_black" = "% Black, non-Hispanic",
+    "pct_nhisp_api" = "% API, non-Hispanic", 
+    "pct_nhisp_native" = "% Native, non-Hispanic",
+    "pct_pov_yes" = "% in poverty",
+    "pct_edu_baplus_all" = "% with BA+"
+  )
+  
+  # Main table creation pipeline
+  eps_table <- allyr_anal_tract_sf %>% 
+    as.data.frame() %>%
+    # Filter based on provided eps_codes
+    filter(eps %in% eps_codes) %>%
+    
+    # Create the eps_codename by concatenating eps_code and eps_name with a comma
+    mutate(eps_codename = str_c(eps, eps_name, sep = ", ")) %>%
+    
+    # Divide income variables by 1,000
+    mutate(across(contains("_inc"), ~ (.x / 1000))) %>%
+    
+    # Group by the new eps_codename and year
+    group_by(eps_codename, year) %>%
+    
+    # Summarize the data (mean, standard deviation, percentiles)
+    summarize(
+      across(all_of(table_vars), ~ mean(.x, na.rm = TRUE), .names = "mean_{.col}"),
+      across(all_of(table_vars), ~ sd(.x, na.rm = TRUE), .names = "sd_{.col}"),
+      across(all_of(table_vars), ~ quantile(.x, probs = 0.25, na.rm = TRUE), .names = "p25_{.col}"),
+      across(all_of(table_vars), ~ quantile(.x, probs = 0.50, na.rm = TRUE), .names = "p50_{.col}"),
+      across(all_of(table_vars), ~ quantile(.x, probs = 0.75, na.rm = TRUE), .names = "p75_{.col}")
+    ) %>%
+    
+    # Reshape variables from columns to rows
+    pivot_longer(
+      cols = starts_with("mean_") | starts_with("sd_") | starts_with("p25_") | starts_with("p50_") | starts_with("p75_"),
+      names_to = c("statistic", "variable"),
+      names_pattern = "(mean|sd|p25|p50|p75)_(.*)",  # Regex pattern to correctly split the names
+      values_to = "value"
+    ) %>%
+    
+    # Replace variable names with human-friendly names
+    mutate(variable = recode(variable, !!!table_var_names)) %>%
+    
+    # Set the order of the 'variable' column based on the provided table_vars
+    mutate(variable = factor(variable, levels = recode(table_vars, !!!table_var_names))) %>%
+    
+    # Reshape statistics and years from rows to columns
+    pivot_wider(
+      names_from = c(year, statistic),  # Pivot both year and statistic to columns
+      values_from = value,
+      names_glue = "{statistic}_{year}"  # Customize the new column names to include only statistic and year
+    ) %>%
+    
+    # Ungroup and arrange by variable and eps_codename
+    ungroup() %>%
+    arrange(variable, eps_codename) %>%
+    
+    # Apply integer formatting for income variables and 1 decimal point for percentage variables
+    mutate(
+      across(starts_with("mean_") | starts_with("sd_") | starts_with("p25_") | starts_with("p50_") | starts_with("p75_"),
+             ~ if_else(str_detect(variable, "income"), round(.x), .x)),
+      across(starts_with("mean_") | starts_with("sd_") | starts_with("p25_") | starts_with("p50_") | starts_with("p75_"),
+             ~ if_else(str_detect(variable, "^%"), round(.x, 1), .x))
+    )
+  
+  # Return the resulting table
+  return(eps_table)
+}
+
+# Example usage:
+chi_eps_table <- create_eps_table(chi_eps_codes, table_varlist)
+chi_eps_table
+
+
+
+
+
+
+# Example usage:
+chi_eps_table <- create_eps_table(chi_eps_codes, table_varlist)
+chi_eps_table
+
+# Example usage:
+  chi_eps_table <- create_eps_table(eps_codes = chi_eps_codes, table_vars = table_varlist)
+    chi_eps_table %>% print(n=100)
+    
+  bay_eps_table <- create_eps_table(eps_codes = bay_eps_codes, table_vars = table_varlist)
+    bay_eps_table %>% print(n=100)
+    
+  socal_eps_table <- create_eps_table(eps_codes = socal_eps_codes, table_vars = table_varlist)    
+    socal_eps_table %>% print(n=100)
+    
+########
+########
+
+
+format_eps_table <- function(df, years = c(1980, 2000, 2020), format = "html") {
+  
+  # Check that years are valid
+  if (!all(years %in% c(1980, 2000, 2020))) {
+    stop("Invalid year(s) provided. Only 1980, 2000, and 2020 are allowed.")
+  }
+  
+  # Create eps_codename by concatenating eps and eps_name
+  #df <- df %>% mutate(eps_codename = str_c(eps, eps_name, sep = ", "))
+  
+  # Create column names without years since the super-header will indicate the year
+  col_names <- c("Variable", "EPS name", rep(c("Mean", "SD", "P25", "P50", "P75"), times = length(years)))
+  
+  # Ensure the dataframe has the required columns for the selected years
+  selected_columns <- c("variable", "eps_codename")
+  for (year in years) {
+    selected_columns <- c(selected_columns, 
+                          paste0("mean_", year), paste0("sd_", year), 
+                          paste0("p25_", year), paste0("p50_", year), paste0("p75_", year))
+  }
+  
+  # Subset the dataframe to include only the relevant columns
+  df_selected <- df %>% select(all_of(selected_columns))
+  
+  # Get the indices of rows where a new variable starts for formatting purposes
+  new_variable_rows <- which(!duplicated(df_selected$variable))
+  
+  # Select the appropriate kable format
+  kable_format <- ifelse(format == "latex", "latex", "html")
+  
+  # Add header for years
+  header <- c(" " = 2)
+  for (year in years) {
+    header <- c(header, setNames(5, as.character(year)))
+  }
+  
+  # Create the table using kable
+  table <- df_selected %>%
+    kbl(format = kable_format, digits = 1, col.names = col_names, 
+        align = c("l", "l", rep("r", length(col_names) - 2))) %>%
+    kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed", "basic")) %>%
+    
+    # Add super-columns for the years
+    add_header_above(header, line = TRUE) %>%
+    
+    row_spec(0, bold = TRUE) %>%  # Bold header row
+    
+    # Add horizontal lines before each new variable
+    row_spec(new_variable_rows, hline_after = TRUE) %>%
+    
+    # Add vertical line after "EPS Codename" column
+    column_spec(2, border_right = TRUE)
+  
+  # Apply additional formatting for LaTeX tables if selected
+  if (format == "latex") {
+    table <- table %>% kable_styling(latex_options = c("striped", "hold_position"))
+  }
+  
+  return(table)
+}
+
+
+#format_eps_table <- function(df, years = c(1980, 2000, 2020), format = "html") {
+
+format_eps_table(df = socal_eps_table, years = c(2000,2020), format = "html")
+format_eps_table(df = socal_eps_table, years = c(2020), format = "html")
+
+socal_table <- format_eps_table(df = socal_eps_table, years = c(2000,2020), format = "latex")
+socal_table
+
+
+# Example call to the function
+socal_table <- format_eps_table(df = socal_eps_table, years = c(2000, 2020), format = "latex")
+socal_table
+
+writeLines(socal_table, file.path('.',tables_dir,'socal_table.tex'))
+
+
+# Example for HTML
+format_eps_table(df = bay_eps_table, years = c(1980, 2020), format = "html")
+
+# Example for LaTeX
+format_eps_table(bay_eps_table, years = c(1980, 2000), format = "latex")
+
+
+  
+    
+    
+#### should this code go in RMD file that has results?
 
 # Adjust the column names for display in the table
 col_names <- c("Variable", "EPS Name", "Mean", "SD", "P25", "P50", "P75",
@@ -286,9 +499,10 @@ col_names <- c("Variable", "EPS Name", "Mean", "SD", "P25", "P50", "P75",
                "Mean", "SD", "P25", "P50", "P75")
 
 # Get the indices of rows where a new variable starts
-new_variable_rows <- which(!duplicated(eps_table$variable))
+new_variable_rows <- which(!duplicated(bay_eps_table$variable))
 
-eps_table %>%
+
+bay_eps_table %>%
   kbl(format = "html", digits = 1, col.names = col_names, align = c("l", "l", rep("r", length(col_names) - 2))) %>% 
   kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed", "basic")) %>%
   
@@ -304,12 +518,7 @@ eps_table %>%
   column_spec(2, border_right = TRUE)
 
 
-THINGS TO ADD 9/11
-Create function for printing these tables
-Function takes arguments for:
-  Which eps codes to use
-Which variables to create statistics for
-Which years to include in the table
+
 
 
 # Print the table
