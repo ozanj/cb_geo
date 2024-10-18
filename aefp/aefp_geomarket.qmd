@@ -1,0 +1,446 @@
+---
+title: "Structuring College Access: The Market Segment Model and College Board Geo-markets"
+#author: ["Ozan Jaquette (UCLA)", "Karina Salazar (University of Arizona)"]
+bibliography: ./../assets/bib/cb_geomarket_bib.bib
+csl: ./../assets/bib/apa.csl
+format:
+  pdf:
+    documentclass: article
+    number-sections: true
+    number-depth: 2
+    #extensions: [andrewheiss/wordcount]
+    fig_caption: true
+    keep_tex: true  # Optional: Keeps the intermediate .tex file for debugging
+editor: visual
+geometry: "margin=1in"
+fontsize: 11pt
+header-includes:
+  - \usepackage{setspace}
+  - \doublespacing
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhf{}
+  - \cfoot{\thepage}
+  - \fancypagestyle{plain}{
+      \fancyhf{}
+      \cfoot{\thepage}
+    }
+  - \usepackage{booktabs}
+  - \usepackage{multirow}
+  - \usepackage{array}
+  - \usepackage{colortbl}
+  - \usepackage{longtable}
+  - \usepackage{caption}
+  - \usepackage{pdflscape} 
+  - \usepackage{rotating}
+  - \usepackage{float}       # Required for [ht] specifier
+  - \usepackage{graphicx}    # Required for \resizebox  
+  - |
+    \captionsetup{
+      justification=raggedright,
+      singlelinecheck=false
+    }
+  - \setlength{\aboverulesep}{0pt}
+  - \setlength{\belowrulesep}{0pt}
+  - \setlength{\extrarowheight}{0pt}
+  - \setlength{\cmidrulekern}{0pt}
+  - \renewcommand{\arraystretch}{1.0}
+---
+
+
+
+```{r setup, include=FALSE}
+library(knitr)
+library(bookdown)
+
+# https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_pdf.pdf
+library(kableExtra)
+library(tidyverse)
+#hey ho This many words: {{< words-total >}}
+
+
+```
+
+```{r load_objects, include = FALSE}
+getwd()
+#load(file = file.path('.','..','..','cb_geomarket_shape','list_data','list_sf.RData'))
+
+socal_eps_table <- readRDS(file.path('.','..','results','tables', "socal_eps_table.rds"))
+philly_eps_table <- readRDS(file.path('.','..','results','tables', "philly_eps_table.rds"))
+chi_eps_table <- readRDS(file.path('.','..','results','tables', "chi_eps_table.rds"))
+```
+
+```{r create_table_functions, include = FALSE}
+
+format_eps_table <- function(df, 
+                             years = c(1980, 2000, 2020), 
+                             metro_area, 
+                             format = "latex", 
+                             label = NULL) {
+  
+  # Load necessary libraries
+  library(dplyr)
+  library(kableExtra)
+  
+  # Validate the provided years
+  valid_years <- c(1980, 2000, 2020)
+  if (!all(years %in% valid_years)) {
+    stop("Invalid year(s) provided. Only 1980, 2000, and 2020 are allowed.")
+  }
+  
+  # Define column names for the table (excluding "Variable" and "EPS Name")
+  col_names <- c(
+    "Geomarket name", 
+    rep(c("Mean", "SD", "P25", "P50", "P75"), times = length(years))
+  )
+  
+  # Build a vector of selected columns based on the years provided
+  selected_columns <- c("variable", "eps_codename")
+  for (year in years) {
+    selected_columns <- c(
+      selected_columns, 
+      paste0("mean_", year), 
+      paste0("sd_", year), 
+      paste0("p25_", year), 
+      paste0("p50_", year), 
+      paste0("p75_", year)
+    )
+  }
+  
+  # Check if all selected columns exist in df
+  missing_columns <- setdiff(selected_columns, colnames(df))
+  if (length(missing_columns) > 0) {
+    stop(paste("The following required columns are missing in the data frame:", 
+               paste(missing_columns, collapse = ", ")))
+  }
+  
+  # Select only the relevant columns from the dataframe and add row number for grouping
+  df_selected <- df %>%
+    select(all_of(selected_columns)) %>%
+    mutate(
+      eps_codename = gsub("([%#&_{}])", "\\\\\\1", eps_codename), # Escape special characters in Geomarket names
+      row_num = row_number()
+    )
+  
+  # Create headers for the years, merging cells appropriately
+  year_header <- c(" " = 1)  # First column is "Geomarket name"
+  for (year in years) {
+    year_header <- c(year_header, setNames(5, as.character(year)))  # Each year spans 5 columns
+  }
+  
+  # Create alignment vector, adding a vertical line after the first column
+  align <- c("l|", rep("r", length(col_names) - 1))
+  
+  # Prepare group indices for grouping rows in the table
+  group_indices <- df_selected %>%
+    group_by(variable) %>%
+    summarize(
+      start_row = min(row_num),
+      end_row = max(row_num)
+    ) %>%
+    ungroup()
+  
+  # Remove 'variable' and 'row_num' columns before creating the table
+  df_kable <- df_selected %>%
+    select(-variable, -row_num)
+  
+  # Construct the caption with the LaTeX label if provided
+  if (!is.null(label)) {
+    # Use double backslash to ensure proper LaTeX command
+    caption_text <- paste0(
+      "Racial/ethnic and socioeconomic characteristics of Geomarkets around ", 
+      metro_area, 
+      " \\label{tab:", label, "}"
+    )
+  } else {
+    caption_text <- paste0(
+      "Racial/ethnic and socioeconomic characteristics of Geomarkets around ", 
+      metro_area
+    )
+  }
+  
+  # Generate the table using kable
+  table <- df_kable %>%
+    kbl(
+      format = format,
+      digits = 1,
+      col.names = col_names,
+      align = align,
+      caption = caption_text,
+      booktabs = TRUE,
+      longtable = TRUE,
+      escape = FALSE  # Prevent LaTeX from escaping the caption content
+    ) %>%
+    # Add a header row for the years
+    add_header_above(year_header, bold = TRUE, escape = FALSE) %>%
+    # Style the table with repeating header
+    kable_styling(
+      full_width = FALSE,
+      position = "left",
+      font_size = 10,
+      latex_options = c("hold_position", "repeat_header", "striped")
+    ) %>%
+    # Specify that the column names row is bold
+    row_spec(0, bold = TRUE)
+  
+  # Apply group_rows to add group labels and horizontal lines using kableExtra
+  for (i in seq_len(nrow(group_indices))) {
+    table <- table %>%
+      kableExtra::group_rows(
+        group_label = group_indices$variable[i],
+        start = group_indices$start_row[i],
+        end = group_indices$end_row[i]
+      )
+  }
+  
+  return(table)
+}
+
+
+```
+
+
+\thispagestyle{empty} 
+\newpage 
+\setcounter{page}{1}
+
+
+
+# PROPOSAL
+
+**BACKGROUND, RESEARCH QUESTIONS.** In 1983, Zemsky and Oedel authored *The Structure of College Choice*. Based on an analysis of 1980 SAT score-sending behavior and published by *The College Board*, @RN4982 developed the Market Segment Model and created "Geomarkets." The Market Segment Model predicts how demand for a particular institution varies across geographic regions based on household/student characteristics of geographic regions.
+
+Geomarkets are geographic borders that disaggregate states and large metropolitan areas into "community-based enrollment markets" [@RN4982, p. 14] for recruiting purposes. @fig-nyc-geomarkets shows New York City area Geomarkets. Geomarkets are the basis for the College Board Enrollment Planning Service (EPS), founded in 1984 and still active today. EPS software recommends which Geomarkets a college should recruit from and which schools/communities they should prioritize within targeted Geomarkets.^[In 1995, 37% of 4-year public institutions and 49% of 4-year private institutions used EPS [@RN5021].]
+
+Geomarkets were incorporated into the _College Board_ "student list" product named Student Search Service. Student lists have been the primary source of lead generation in U.S. higher education for over 50 years [@belkin2019-studata; @list_biz].^[@RN4895 reported that 87% of private and 86% of public four-year institutions purchase student lists.] Lists contain contact information for prospective students. The Student Search Service database consists of College Board test-takers. Colleges pay a fee for each prospect (e.g., \$0.50). Colleges control which prospect profiles they purchase by selecting search filters, such as high school graduation year, SAT score, AP score, state, etc. Geomarket filters enable colleges to include/exclude prospects from particular Geomarkets. An analysis of 830 student lists purchased by 14 public universities found that 16% of purchases filtered on Geomarket [@RN5012].
+
+We argue that Geomarket borders are substantially correlated with class and race. This correlation is partly intentional. @RN4982 viewed student demand as a function of class. @RN4982 sought to create Geomarkets that contained many high SES students willing to attend colleges far from home, for example "CT 3--Fairfield County." When colleges use the Market Segment Model, "the result is a natural reinforcing of the basic socioeconomic patterns that gave shape in the first place to the structure of college choice" [@RN4982, p. 44]. Considering the nature of U.S. segregation [@rothstein2017color], Geomarkets may also be correlated with race.
+
+<!--  
+we argue that utilizing Geomarket filters to purchase student lists can contribute to socioeconomic and racial inequality on college opportunity. 
+
+Using data about past correlations -- here, Geomarket borders created with reference to 1980 SAT score sending behaviors -- to make future recommendations amplifies the effects of historical structural inequalities. 
+-->
+
+We draw from "quantification" scholarship in sociology [@RN5007; @RN5005] and data studies [@RN4849; @RN4975]. To the extent that Geomarket borders are correlated with class and race, student list purchases that filter on Geomarkets can yield systematic socioeconomic and racial exclusion in college opportunity [@RN4887]. We address two research questions:
+
+1. What is the socioeconomic and racial variation between Geomarkets in metropolitan areas? How does this variation change over time? 
+1. How does the socioeconomic and racial composition of included versus excluded prospects vary when student list purchases filter on particular Geomarkets?
+
+Scholarship has not observed the mechanisms by which enrollment management products structure college access, funneling certain students to certain institutions. Showing how these products facilitate exclusion introduces new avenues for scholarship and policy discourse.
+
+**DATA SOURCES**. To answer RQ1, we utilize census tract-level data from the 1980 Decennial Census, 2000 Decennial Census, and 2020 5-year American Community Survey (ACS). Variables of interest include: race/ethnicity; mean and median household income; percent of households below poverty line; and BA attainment of people aged 25+. We obtained shapefiles for College Board Geomarkets from a 2012 *R-bloggers* post. We assigned census tracts to Geomarkets by implementing a partial spatial join.^[Census tracts that intersected multiple Geomarkets were partially assigned based on the proportion of land area. Currently, our spatial join for the 2020 ACS is causing some invalid geometries that we will fix prior to AEFP.]
+
+To answer RQ2, we issued public records requests about student lists purchased by 14 public universities from 2016 through 2020. For 414 College Board student list purchases, associated with about 2.6 million prospects, we received both (1) the order summary -- showing which search filters were utilized -- and (2) the de-identified prospect-level data, including race, ethnicity, zip code, and high school. @fig-asu-order-448922 shows the partial order summary, which we converted to tabular data, for a purchase by Arizona State University that filtered on the 2020 high school graduating class, PSAT scores of 1070 to 1180, and selected Geomarkets.^[Analyses for RQ2 additionally utilize data on public and private high schools from NCES.]
+
+**METHOD**. The methods are simultaneously descriptive and spatial. We utilize a case study design in which metropolitan areas are cases. Like @RN4759, we envision focusing on 2-4 metropolitan areas, including the historical context of segregation and gentrification. An appendix will show results for a larger number of metropolitan areas.
+
+To answer RQ1, we produce tables/graphs that show how Geomarkets around a metropolitan area vary on racial and socioeconomic characteristics and how they vary over time. We produce interactive maps at the census tract-level to show more granular variation within and between Geomarkets. We address RQ2 by analyzing actual student list purchases that encompass all Geomarkets around a given metropolitan area, showing which prospects would have been excluded/excluded had the purchase filtered on particular Geomarkets.
+
+**PRELIMINARY FINDINGS**. We are currently writing functions that create tables and/or maps for the metropolitan area chosen by the function call.
+
+For RQ1, Table \ref{tab:chi_eps_table_summary} shows racial and socioeconomic characteristics for Geomarkets around Chicago. @fig-socal-hispanic is a screenshot of an interactive choropleth map of Los Angeles, showing Geomarket borders and the tract-level %Hispanic in 2020. @fig-socal-med-inc shows tract-level median household income around Los Angeles.
+
+Results for RQ2 show how many purchased prospects from each racial/ethnic group live in each Geomarket. These prospects would have been excluded had the purchase filtered on Geomarkets and not selected that Geomarket. @tbl-philly-sim-count, @tbl-philly-sim-col-pct, and @tbl-philly-sim-row-pct, respectively, show counts, column percentages, and row percentages for the Philadelphia metropolitan area, based on a purchase that filters on students from the 2020 high school class who scored between 1070 and 1180 on the PSAT. @tbl-philly-sim-col-pct shows that "PA5--Philadelphia County" contains 15% of all purchased prospect profiles but 44% of Black prospects, indicating that opportunity for Black students is sensitive to the inclusion of this Geomarket. @fig-philly-black-prospects is a screenshot of a (very) preliminary interactive map for this purchase, with marker size indicating the number of purchased prospect profiles who attended that high school and separate markers by race/ethnicity.
+<!--  
+The size of the high school marker is a function of the number of prospects purchased and map users wil be able to select the race/ethnicity of purchased prospects as well as census variables that determine the chloropleth map.
+-->
+
+\newpage
+
+# References
+
+::: {#refs}
+:::
+
+\newpage
+\setcounter{page}{1}
+\renewcommand{\thepage}{A-\arabic{page}}
+
+# Appendix
+
+
+```{r socal_eps_table_summary, echo=FALSE, results='asis', eval = FALSE}
+# Generate the Los Angeles (socal) table with Bookdown label
+socal_table <- format_eps_table(
+  df = socal_eps_table, 
+  years = c(2020), 
+  metro_area = "Los Angeles", 
+  format = "latex",
+  label = "socal_eps_table_summary"  # This label matches the reference in your text
+)
+
+# Output the table directly
+cat(socal_table)
+```
+
+
+
+```{r philly_eps_table_summary, echo=FALSE, results='asis', eval = FALSE}
+# Wrap the table in the landscape environment
+cat("\\begin{landscape}\n")
+
+# Create the table for Philadelphia
+philly_table <- format_eps_table(
+  df = philly_eps_table, 
+  years = c(2000, 2020), 
+  metro_area = "Philadelphia metropolitan area", 
+  format = "latex",
+  label = "philly_eps_table_summary"  # This label matches the reference in your text  
+)
+
+# Output the tables directly
+cat(philly_table)
+cat("\n\\end{landscape}")
+```
+
+```{r chi_eps_table_summary, echo=FALSE, results='asis'}
+# Wrap the table in the landscape environment
+cat("\\begin{landscape}\n")
+
+# Create the table for Philadelphia
+chi_table <- format_eps_table(
+  df = chi_eps_table, 
+  years = c(2000, 2020), 
+  metro_area = "Chicago-land", 
+  format = "latex",
+  label = "chi_eps_table_summary"  # This label matches the reference in your text  
+)
+
+# Output the tables directly
+cat(chi_table)
+cat("\n\\end{landscape}")
+```
+
+\newpage
+
+```{r create_eps_sim_tables, echo = FALSE, results='asis', message = FALSE, warning = FALSE}
+# Load required packages and input data
+load(file = file.path('.', '..', 'results', 'tables', 'philly_asu_eps_lists.RData'))
+# str(philly_order448440_psat1270_1520)
+# str(philly_order448922_psat1070_1180)
+
+library(dplyr)
+library(knitr)
+library(kableExtra)
+library(scales)  # For adding commas to large numbers
+
+# Function to format three separate tables
+format_three_tables <- function(input_list) {
+  # Extract individual data frames from the input list
+  count_table <- input_list$count_table %>% 
+    rename(all = stu_all, race_known = stu_race_known, white = stu_white, asian = stu_asian, black = stu_black, hispanic = stu_hispanic, two_races = stu_tworaces) %>%
+    mutate(across(where(is.numeric), ~ if_else(. > 1000, comma(.), as.character(.))))  # Add commas to large numbers
+
+  # Modify race_known to be a column percentage of the race_known total
+  col_pct_table <- input_list$col_pct_table %>%
+    rename(all = stu_all, race_known = stu_race_known, white = col_pct_white, asian = col_pct_asian, black = col_pct_black, hispanic = col_pct_hispanic, two_races = col_pct_tworaces) %>%
+    select(-all) %>%
+    mutate(
+      race_known = (race_known / sum(race_known)) * 100,  # Convert race_known to a column percentage of the total
+      across(-eps_codename, ~ round(., 1))  # Round percentage values to one decimal point
+    )
+
+  # Set race_known to always be 100% in row_pct_table
+  row_pct_table <- input_list$row_pct_table %>%  
+    rename(all = stu_all, race_known = stu_race_known, white = row_pct_white, asian = row_pct_asian, black = row_pct_black, hispanic = row_pct_hispanic, two_races = row_pct_tworaces) %>%
+    select(-all) %>%
+    mutate(
+      race_known = 100.0,  # Set race_known to 100%
+      across(-eps_codename, ~ round(., 1))  # Round percentage values to one decimal point
+    )
+
+  # Format and display count table with caption
+  count_table_output <- count_table %>%
+    kbl(format = "latex", booktabs = TRUE, align = c("l", rep("r", ncol(count_table) - 1))) %>%
+    kable_styling(latex_options = c("striped", "hold_position"), position = "left", font_size = 10) %>%
+    row_spec(0, bold = TRUE, background = "#D3D3D3")
+
+  # Format and display column percentage table with caption
+  col_pct_table_output <- col_pct_table %>%
+    kbl(format = "latex", booktabs = TRUE, align = c("l", rep("r", ncol(col_pct_table) - 1))) %>%
+    kable_styling(latex_options = c("striped", "hold_position"), position = "left", font_size = 10) %>%
+    row_spec(0, bold = TRUE, background = "#D3D3D3")
+
+  # Format and display row percentage table with caption
+  row_pct_table_output <- row_pct_table %>%
+    kbl(format = "latex", booktabs = TRUE, align = c("l", rep("r", ncol(row_pct_table) - 1))) %>%
+    kable_styling(latex_options = c("striped", "hold_position"), position = "left", font_size = 10) %>%
+    row_spec(0, bold = TRUE, background = "#D3D3D3")
+
+  # Return formatted tables
+  list(count_table_output, col_pct_table_output, row_pct_table_output)
+}
+
+# Example usage
+formatted_tables <- format_three_tables(philly_order448922_psat1070_1180)
+
+
+# Print formatted tables with landscape mode in LaTeX
+#cat("\\begin{landscape}\n")
+#cat(as.character(formatted_tables[[1]]))
+#cat("\n\n")
+#cat(as.character(formatted_tables[[2]]))
+#cat("\n\n")
+#cat(as.character(formatted_tables[[3]]))
+#cat("\n\\end{landscape}")
+
+
+```
+
+\newpage
+
+```{r philly-sim-count, echo = FALSE, results='asis'}
+#| label: tbl-philly-sim-count
+#| tbl-cap: 'Count of Philadelphia area students included in student list purchase that filtered on 2020 high school class and PSAT scores 1070 -- 1180 (Not shown: American Indian/Alaska Native (AI/AN); and Native Hawaiian and other Pacific Islander (NHPI))'
+
+cat(as.character(formatted_tables[[1]]))
+```
+
+```{r philly-sim-col-pct, echo = FALSE, results='asis'}
+#| label: tbl-philly-sim-col-pct
+#| tbl-cap: 'Percent of total prospects purchased from each geomarket, Philadelphia area students included in student list purchase that filtered on 2020 high school class and PSAT scores 1070 -- 1180 (Not shown: AI/AN, NHPI)'
+
+cat(as.character(formatted_tables[[2]]))
+```
+
+```{r philly-sim-row-pct, echo = FALSE, results='asis'}
+#| label: tbl-philly-sim-row-pct
+#| tbl-cap: 'Racial composition of purchased prospects from each Geomarket, Philadelphia area students included in student list purchase that filtered on 2020 high school class and PSAT scores 1070 -- 1180 (Not shown: AI/AN, NHPI)'
+
+cat(as.character(formatted_tables[[3]]))
+```
+
+
+
+
+\newpage
+
+
+```{r fig-nyc-geomarkets, echo=FALSE, fig.cap="Geomarkets in New York City Area, NY state", fig.width=10, fig.height=7, out.extra='angle=90', out.width='110%'}
+knitr::include_graphics(path = file.path('.','..','results','figures','nyc_geomarkets.png'))
+```
+
+\newpage
+```{r fig-asu-order-448922, echo=FALSE, fig.cap="Partial order summary from a College Board student list purchase", fig.width=10, fig.height=7, out.extra='angle=90', out.width='110%'}
+knitr::include_graphics(path = file.path('.','..','results','figures','asu_order_448922_Redacted.pdf'))
+```
+
+
+\newpage
+```{r fig-socal-hispanic, echo=FALSE, fig.cap="Screenshot of Los Angeles area Geomarkets, showing 2020 percent Hispanic by census tract", fig.width=10, fig.height=7, out.extra='angle=90', out.width='110%'}
+knitr::include_graphics(path = file.path('.','..','results','figures','socal_hispanic.png'))
+```
+
+
+\newpage
+
+```{r fig-socal-med-inc, echo=FALSE, fig.cap="Screenshot of Los Angeles area Geomarkets, showing 2020 median household income by census tract", fig.width=10, fig.height=7, out.extra='angle=90', out.width='110%'}
+knitr::include_graphics(path = file.path('.','..','results','figures','socal_med_inc.png'))
+```
+
+\newpage
+
+```{r fig-philly-black-prospects, echo=FALSE, fig.cap="Screenshot of Philadelphia area Geomarkets, markers are high schools and marker size a function of number of Black student profiles purchased (2020 HS class, PSAT scores 1070 -- 1180)", fig.width=10, fig.height=7, out.extra='angle=90', out.width='110%'}
+knitr::include_graphics(path = file.path('.','..','results','figures','philly_black_prospects.png'))
+```

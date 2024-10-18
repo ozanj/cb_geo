@@ -1,6 +1,6 @@
 ################################################################################
 ## [ PROJ ] < College Board Geomarket >
-## [ FILE ] < mapping_eps.R >
+## [ FILE ] < leaflet_maps.R >
 ## [ AUTH ] < Ozan Jaquette >
 ## [ INIT ] < 8/22/2024
 ## [ DESC ] < work with EPS-level sf objects and other objects to create interactive maps of characteristics associated with geomarkets >
@@ -196,6 +196,14 @@ chi_eps_codes
 cleveland_eps_codes <- paste0("OH ", 2:6) #
 cleveland_eps_codes
 
+philly_eps_codes <- paste0("PA ", 1:5) #
+philly_eps_codes
+
+nj_eps_codes <- c(paste0("NJ ", 1:9), paste0("NJ", 10:12))
+nj_eps_codes
+
+nj_metro_eps_codes <- c('NJ 2','NJ 4','NJ 5',paste0('NJ ', 7:9),paste0("NJ", 10:11))
+nj_metro_eps_codes
 
 ############## CREATING GEOMARKET LEVEL TABLES
 #######################
@@ -221,83 +229,6 @@ table_var_names <- list(
 # Define table_vars in the desired order
 table_varlist <- c("pct_nhisp_white", "pct_nhisp_black", "pct_hisp_all", "pct_nhisp_api", "pct_nhisp_native", "pct_nhisp_multi", "med_inc_house", "mean_inc_house", "pct_pov_yes", "pct_edu_baplus_all")
 
-create_eps_table <- function(eps_codes, table_vars) {
-  # Human-readable names for the variables (you can modify this list based on the variables passed in)
-  table_var_names <- list(
-    "pct_hisp_all" = "% Hispanic",
-    "mean_inc_house" = "Mean income",
-    "med_inc_house" = "Median income",
-    "pct_nhisp_asian" = "% Asian, non-Hispanic",
-    "pct_nhisp_white" = "% White, non-Hispanic",
-    "pct_nhisp_black" = "% Black, non-Hispanic",
-    "pct_nhisp_api" = "% API, non-Hispanic", 
-    "pct_nhisp_native" = "% Native, non-Hispanic",
-    "pct_pov_yes" = "% in poverty",
-    "pct_edu_baplus_all" = "% with BA+"
-  )
-  
-  # Main table creation pipeline
-  eps_table <- allyr_anal_tract_sf %>% 
-    as.data.frame() %>%
-    # Filter based on provided eps_codes
-    filter(eps %in% eps_codes) %>%
-    
-    # Divide income variables by 1,000
-    mutate(across(contains("_inc"), ~ (.x / 1000))) %>%
-    
-    # Group by eps_name and year
-    group_by(eps_name, year) %>%
-    
-    # Summarize the data (mean, standard deviation, percentiles)
-    summarize(
-      across(all_of(table_vars), ~ mean(.x, na.rm = TRUE), .names = "mean_{.col}"),
-      across(all_of(table_vars), ~ sd(.x, na.rm = TRUE), .names = "sd_{.col}"),
-      across(all_of(table_vars), ~ quantile(.x, probs = 0.25, na.rm = TRUE), .names = "p25_{.col}"),
-      across(all_of(table_vars), ~ quantile(.x, probs = 0.50, na.rm = TRUE), .names = "p50_{.col}"),
-      across(all_of(table_vars), ~ quantile(.x, probs = 0.75, na.rm = TRUE), .names = "p75_{.col}")
-    ) %>%
-    
-    # Reshape variables from columns to rows
-    pivot_longer(
-      cols = starts_with("mean_") | starts_with("sd_") | starts_with("p25_") | starts_with("p50_") | starts_with("p75_"),
-      names_to = c("statistic", "variable"),
-      names_pattern = "(mean|sd|p25|p50|p75)_(.*)",  # Regex pattern to correctly split the names
-      values_to = "value"
-    ) %>%
-    
-    # Replace variable names with human-friendly names
-    mutate(variable = recode(variable, !!!table_var_names)) %>%
-    
-    # Set the order of the 'variable' column based on the provided table_vars
-    mutate(variable = factor(variable, levels = recode(table_vars, !!!table_var_names))) %>%
-    
-    # Reshape statistics and years from rows to columns
-    pivot_wider(
-      names_from = c(year, statistic),  # Pivot both year and statistic to columns
-      values_from = value,
-      names_glue = "{statistic}_{year}"  # Customize the new column names to include only statistic and year
-    ) %>%
-    
-    # Ungroup and arrange by variable and eps_name
-    ungroup() %>%
-    arrange(variable, eps_name) %>%
-    
-    # Apply integer formatting for income variables and 1 decimal point for percentage variables
-    mutate(
-      across(starts_with("mean_") | starts_with("sd_") | starts_with("p25_") | starts_with("p50_") | starts_with("p75_"),
-             ~ if_else(str_detect(variable, "income"), round(.x), .x)),
-      across(starts_with("mean_") | starts_with("sd_") | starts_with("p25_") | starts_with("p50_") | starts_with("p75_"),
-             ~ if_else(str_detect(variable, "^%"), round(.x, 1), .x))
-    )
-  
-  # Return the resulting table
-  return(eps_table)
-}
-
-
-library(dplyr)
-library(stringr)
-library(tidyr)
 
 create_eps_table <- function(eps_codes, table_vars) {
   
@@ -312,7 +243,8 @@ create_eps_table <- function(eps_codes, table_vars) {
     "pct_nhisp_api" = "% API, non-Hispanic", 
     "pct_nhisp_native" = "% Native, non-Hispanic",
     "pct_pov_yes" = "% in poverty",
-    "pct_edu_baplus_all" = "% with BA+"
+    "pct_edu_baplus_all" = "% with BA+",
+    "pct_nhisp_multi" = "% two+ races, non-Hispanic"
   )
   
   # Main table creation pipeline
@@ -380,11 +312,6 @@ create_eps_table <- function(eps_codes, table_vars) {
 chi_eps_table <- create_eps_table(chi_eps_codes, table_varlist)
 chi_eps_table
 
-
-
-
-
-
 # Example usage:
 chi_eps_table <- create_eps_table(chi_eps_codes, table_varlist)
 chi_eps_table
@@ -393,92 +320,167 @@ chi_eps_table
   chi_eps_table <- create_eps_table(eps_codes = chi_eps_codes, table_vars = table_varlist)
     chi_eps_table %>% print(n=100)
     
+    saveRDS(chi_eps_table, file.path(tables_dir, "chi_eps_table.rds"))
+
+        
   bay_eps_table <- create_eps_table(eps_codes = bay_eps_codes, table_vars = table_varlist)
     bay_eps_table %>% print(n=100)
     
   socal_eps_table <- create_eps_table(eps_codes = socal_eps_codes, table_vars = table_varlist)    
     socal_eps_table %>% print(n=100)
-    
-########
-########
-
-
-format_eps_table <- function(df, years = c(1980, 2000, 2020), format = "html") {
   
-  # Check that years are valid
-  if (!all(years %in% c(1980, 2000, 2020))) {
+  philly_eps_table <- create_eps_table(eps_codes = philly_eps_codes, table_vars = table_varlist)    
+    philly_eps_table %>% print(n=100)  
+    
+    saveRDS(socal_eps_table, file.path(tables_dir, "socal_eps_table.rds"))
+    saveRDS(philly_eps_table, file.path(tables_dir, "philly_eps_table.rds"))    
+########
+######## create function to format the descriptive table for insertion into .Rmd file
+
+format_eps_table <- function(df, years = c(1980, 2000, 2020), metro_area, format = "latex") {
+  
+  # Load necessary libraries
+  library(dplyr)
+  library(kableExtra)
+  
+  # Capture the name of the data frame passed to 'df'
+  df_name <- deparse(substitute(df))
+  
+  # Check that provided years are valid
+  valid_years <- c(1980, 2000, 2020)
+  if (!all(years %in% valid_years)) {
     stop("Invalid year(s) provided. Only 1980, 2000, and 2020 are allowed.")
   }
   
-  # Create eps_codename by concatenating eps and eps_name
-  #df <- df %>% mutate(eps_codename = str_c(eps, eps_name, sep = ", "))
+  # Define column names for the table (excluding "Variable" and "EPS Name")
+  col_names <- c(
+    "Geomarket name", 
+    rep(c("Mean", "SD", "P25", "P50", "P75"), times = length(years))
+  )
   
-  # Create column names without years since the super-header will indicate the year
-  col_names <- c("Variable", "EPS name", rep(c("Mean", "SD", "P25", "P50", "P75"), times = length(years)))
-  
-  # Ensure the dataframe has the required columns for the selected years
+  # Build a vector of selected columns based on the years provided
   selected_columns <- c("variable", "eps_codename")
   for (year in years) {
-    selected_columns <- c(selected_columns, 
-                          paste0("mean_", year), paste0("sd_", year), 
-                          paste0("p25_", year), paste0("p50_", year), paste0("p75_", year))
+    selected_columns <- c(
+      selected_columns, 
+      paste0("mean_", year), 
+      paste0("sd_", year), 
+      paste0("p25_", year), 
+      paste0("p50_", year), 
+      paste0("p75_", year)
+    )
   }
   
-  # Subset the dataframe to include only the relevant columns
-  df_selected <- df %>% select(all_of(selected_columns))
+  # Check if all selected columns exist in df
+  missing_columns <- setdiff(selected_columns, colnames(df))
+  if (length(missing_columns) > 0) {
+    stop(paste("The following required columns are missing in the data frame:", 
+               paste(missing_columns, collapse = ", ")))
+  }
   
-  # Get the indices of rows where a new variable starts for formatting purposes
-  new_variable_rows <- which(!duplicated(df_selected$variable))
+  # Select only the relevant columns from the dataframe
+  df_selected <- df %>%
+    select(all_of(selected_columns)) %>%
+    mutate(row_num = row_number())  # Add row number for grouping
   
-  # Select the appropriate kable format
+  # Determine the kable format based on the 'format' argument
   kable_format <- ifelse(format == "latex", "latex", "html")
   
-  # Add header for years
-  header <- c(" " = 2)
+  # Create headers for the years, merging cells appropriately
+  header <- c(" " = 1)  # First column is "Geomarket name"
   for (year in years) {
-    header <- c(header, setNames(5, as.character(year)))
+    header <- c(header, setNames(5, as.character(year)))  # Each year spans 5 columns
   }
   
-  # Create the table using kable
-  table <- df_selected %>%
-    kbl(format = kable_format, digits = 1, col.names = col_names, 
-        align = c("l", "l", rep("r", length(col_names) - 2))) %>%
-    kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed", "basic")) %>%
-    
-    # Add super-columns for the years
-    add_header_above(header, line = TRUE) %>%
-    
-    row_spec(0, bold = TRUE) %>%  # Bold header row
-    
-    # Add horizontal lines before each new variable
-    row_spec(new_variable_rows, hline_after = TRUE) %>%
-    
-    # Add vertical line after "EPS Codename" column
-    column_spec(2, border_right = TRUE)
+  # Create alignment vector, adding a vertical line after the first column
+  align <- c("l|", rep("r", length(col_names) - 1))
   
-  # Apply additional formatting for LaTeX tables if selected
-  if (format == "latex") {
-    table <- table %>% kable_styling(latex_options = c("striped", "hold_position"))
+  # Prepare group indices
+  group_indices <- df_selected %>%
+    group_by(variable) %>%
+    summarize(
+      start_row = min(row_num),
+      end_row = max(row_num)
+    ) %>%
+    ungroup()
+  
+  # Remove 'variable' and 'row_num' columns before creating the table
+  df_kable <- df_selected %>%
+    select(-variable, -row_num)
+  
+  # Generate the table using kable and kableExtra
+  table <- df_kable %>%
+    kbl(
+      format = kable_format,
+      digits = 1,
+      col.names = col_names,
+      align = align,
+      # Embed the label directly within the caption using {#tab:label} syntax
+      caption = paste0(
+        "Characteristics of Geomarkets around ", 
+        metro_area, 
+        " {#tab:", 
+        tolower(gsub(" ", "_", df_name)), 
+        "_summary}"
+      ),
+      booktabs = TRUE,
+      longtable = TRUE,
+      escape = FALSE  # Prevent LaTeX from escaping the caption content
+    ) %>%
+    kable_styling(
+      full_width = FALSE,
+      position = "left",
+      font_size = 10,
+      latex_options = c("hold_position", "repeat_header")
+    ) %>%
+    add_header_above(header, line = FALSE) %>%
+    row_spec(0, bold = TRUE, hline_after = FALSE)
+  
+  # Apply group_rows to add group labels and horizontal lines
+  for (i in seq_len(nrow(group_indices))) {
+    table <- table %>%
+      group_rows(
+        group_label = group_indices$variable[i],
+        start_row = group_indices$start_row[i],
+        end_row = group_indices$end_row[i],
+        latex_gap_space = "0.5em"
+      )
   }
   
   return(table)
 }
 
 
-#format_eps_table <- function(df, years = c(1980, 2000, 2020), format = "html") {
+
+# Create the table
+socal_table <- format_eps_table(df = socal_eps_table, years = c(2020), metro_area = "Los Angeles", format = "latex")
+# Write to a .tex file
+writeLines(socal_table, file.path('.', tables_dir, 'socal_table.tex'))
+
+# Create the table
+philly_table <- format_eps_table(df = philly_eps_table, years = c(2000,2020), metro_area = "the Philidelphia metropolitan area", format = "latex")
+# Write to a .tex file
+writeLines(philly_table, file.path('.', tables_dir, 'philly_table.tex'))
+
+   
+    format_eps_table(df = philly_eps_table, years = c(1980,2020), format = "html")    
+
+
+philly_table <- format_eps_table(df = philly_eps_table, years = c(2020), format = "html")
+philly_table
+
+
 
 format_eps_table(df = socal_eps_table, years = c(2000,2020), format = "html")
 format_eps_table(df = socal_eps_table, years = c(2020), format = "html")
 
-socal_table <- format_eps_table(df = socal_eps_table, years = c(2000,2020), format = "latex")
-socal_table
 
 
 # Example call to the function
 socal_table <- format_eps_table(df = socal_eps_table, years = c(2000, 2020), format = "latex")
 socal_table
 
-writeLines(socal_table, file.path('.',tables_dir,'socal_table.tex'))
+
 
 
 # Example for HTML
@@ -702,8 +704,49 @@ display_names <- list(
   "pct_nhisp_black" = "% Black, non-Hispanic"
 )
 
+# long island
+
+long_island_eps_codes <- c(paste0('NY',16:21))
+long_island_eps_codes
+
+create_eps_maps(long_island_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "mean_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
+
+# westchester and rockland counties
+create_eps_maps(c('NY13','NY15'), c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "mean_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
+
+
+# new jersey metro area
+nj_metro_eps_codes
+create_eps_maps(nj_metro_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "med_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
+
+
+
+# new jersey state
+create_eps_maps(nj_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "mean_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
+
+
+# greater dallas
+create_eps_maps(c('TX19','TX20','TX21','TX22','TX23','TX24'), c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "mean_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
+
+
+# greater houston
+create_eps_maps(c('TX15','TX16','TX17','TX18'), c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "mean_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
+
+
+# greater detroit
+create_eps_maps(c('MI 1','MI 2','MI 3'), c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "mean_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
+
+
 # Create Tract-level map with EPS borders
-create_eps_maps(socal_eps_codes, c("pct_hisp_all", "med_inc_house", "pct_nhisp_black"), mapping_level = "tract", display_names = display_names, eps_border_weight = 4)
+create_eps_maps(chi_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "mean_inc_house"), mapping_level = "tract", display_names = display_names, eps_border_weight = 4)
+
+
+create_eps_maps(philly_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "mean_inc_house"), mapping_level = "tract", display_names = display_names, eps_border_weight = 4)
+
+create_eps_maps(philly_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "mean_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
+
+# Create Tract-level map with EPS borders
+create_eps_maps(socal_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "med_inc_house"), mapping_level = "tract", display_names = display_names, eps_border_weight = 4)
 
 create_eps_maps(socal_eps_codes, c("pct_hisp_all", "med_inc_house", "pct_nhisp_black"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
 
@@ -726,282 +769,3 @@ allyr_anal_tract_sf %>% as.data.frame() %>% count(year)
 
 
 
-#######################
-####################### MODULAR APPROACH; THIS IS FOR BEFORE YOU TRIED ADDING TRACT-LEVEL DATA
-#######################
-
-
-# Modular function to create bins and palettes
-create_bins_and_palette <- function(var_name, all_years_data) {
-  if (grepl("_inc_", var_name, ignore.case = TRUE)) {
-    # Adjust bins to reflect the data in $1000s
-    bins <- c(0, 50, 75, 100, 125, 150, 175, 200, 225, 250)
-    palette <- colorBin(palette = 'YlGnBu', domain = all_years_data, bins = bins)
-    
-    # Custom label format for income variables in $1000s
-    label_format <- labelFormat(prefix = "$", suffix = "k", between = " - ")
-  } else {
-    bins <- pretty(range(all_years_data, na.rm = TRUE), n = 5)
-    palette <- colorBin(palette = 'YlGnBu', domain = all_years_data, bins = bins)
-    
-    # Standard label format for non-income variables
-    label_format <- labelFormat(suffix = "", between = " - ")
-  }
-  
-  return(list(palette = palette, bins = bins, label_format = label_format))
-}
-
-# Main function with display names
-create_eps_maps <- function(eps_codes, vars, display_names = NULL) {
-  
-  # Check for income variables and adjust by dividing by 1000
-  for (var_name in vars) {
-    if (grepl("_inc_", var_name)) {
-      # Apply the division to the relevant variable across all years
-      allyr_anal_eps_sf[[var_name]] <- allyr_anal_eps_sf[[var_name]] / 1000
-    }
-  }
-  
-  map <- leaflet() %>%
-    addProviderTiles(provider = providers$CartoDB.Positron)
-  
-  group_names <- c()
-  palettes <- list()  # Store palettes for each variable
-  data_ranges <- list()  # Store data ranges for each variable
-  label_formats <- list()  # Store label formats for each variable
-  
-  for (var_name in vars) {
-    all_years_data <- NULL
-    
-    # First, accumulate data across all years for each variable
-    for (yr in c(1980, 2000, 2020)) {
-      filtered_data <- allyr_anal_eps_sf %>% filter(year == yr, eps %in% eps_codes)
-      if (nrow(filtered_data) > 0 && !all(is.na(filtered_data[[var_name]]))) {
-        all_years_data <- c(all_years_data, filtered_data[[var_name]])
-      }
-    }
-    
-    # Ensure that the palette is created using the full range of data
-    if (!is.null(all_years_data)) {
-      palette_info <- create_bins_and_palette(var_name, all_years_data)
-      palettes[[var_name]] <- palette_info$palette
-      data_ranges[[var_name]] <- all_years_data
-      label_formats[[var_name]] <- palette_info$label_format  # Store the label format
-    }
-    
-    # Add layers for each year
-    for (yr in c(1980, 2000, 2020)) {
-      filtered_data <- allyr_anal_eps_sf %>% filter(year == yr, eps %in% eps_codes)
-      if (nrow(filtered_data) > 0 && !all(is.na(filtered_data[[var_name]]))) {
-        
-        # Display name for layer control with space after comma
-        display_name <- if (!is.null(display_names) && var_name %in% names(display_names)) {
-          paste(display_names[[var_name]], ", ", yr, sep = "")
-        } else {
-          paste(var_name, ", ", yr, sep = "")
-        }
-        
-        # Add the layer with the correct group
-        map <- map %>%
-          addPolygons(
-            data = filtered_data,
-            fillColor = ~palettes[[var_name]](filtered_data[[var_name]]),
-            weight = 1,
-            opacity = 1,
-            color = '#808080',
-            dashArray = '3',
-            fillOpacity = 0.7,
-            highlightOptions = highlightOptions(
-              weight = 4,
-              color = "#666",
-              dashArray = "",
-              fillOpacity = 0.7,
-              bringToFront = TRUE
-            ),
-            label = sprintf(
-              "<strong>%s</strong> - %s<br/>%g",
-              filtered_data$eps, filtered_data$eps_name, filtered_data[[var_name]]
-            ) %>% lapply(htmltools::HTML),
-            group = display_name  # Use display name as the group
-          )
-        
-        group_names <- c(group_names, display_name)
-      }
-    }
-  }
-  
-  # Add a single legend for each variable
-  for (var_name in vars) {
-    if (var_name %in% names(palettes)) {
-      display_name <- if (!is.null(display_names) && var_name %in% names(display_names)) {
-        display_names[[var_name]]
-      } else {
-        var_name
-      }
-      
-      # Use the label format based on variable type
-      label_format <- label_formats[[var_name]]
-      
-      map <- map %>%
-        addLegend(
-          pal = palettes[[var_name]], 
-          values = data_ranges[[var_name]],  # Use the combined data range for the variable
-          title = display_name,  
-          position = "topright",
-          opacity = 1,
-          labFormat = label_format  # Apply the custom label format
-        )
-    }
-  }
-  
-  # Add layers control
-  map <- map %>%
-    addLayersControl(
-      baseGroups = unique(group_names),  # Use baseGroups for mutually exclusive layers
-      position = 'bottomleft',
-      options = layersControlOptions(collapsed = FALSE)
-    )
-  
-  return(map)
-}
-
-
-# Example usage with display names:
-display_names <- list(
-  "pct_hisp_all" = "% Hispanic",
-  "mean_inc_house" = "Mean income",
-  "med_inc_house_med" = "Median income",
-  "pct_nhisp_asian" = "% Asian, non-Hispanic",
-  "pct_nhisp_white" = "% White, non-Hispanic",
-  "pct_nhisp_black" = "% Black, non-Hispanic"
-)
-
-
-
-# 
-create_eps_maps(chi_eps_codes, c("pct_hisp_all", "med_inc_house_med", "pct_nhisp_asian"), display_names)
-
-create_eps_maps(chi_eps_codes, c("pct_hisp_all", "mean_inc_house", "pct_nhisp_asian"), display_names)
-
-# Test with full set of variables
-create_eps_maps(chi_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian"), display_names)
-
-# Example usage:
-create_eps_maps(chi_eps_codes, c("pct_hisp_all", "mean_inc_house", "pct_nhisp_asian"))
-create_eps_maps(socal_eps_codes, c("pct_hisp_all", "mean_inc_house", "pct_nhisp_asian"))
-create_eps_maps(bay_eps_codes, c("pct_hisp_all", "mean_inc_house", "pct_nhisp_asian"))
-
-
-#################
-################# CREATE TRACT-LEVEL INTERACTIVE MAPS
-#################
-
-  
-# Main function with display names
-create_tract_maps <- function(eps_codes) {
-  
-  map <- leaflet() %>%
-    addProviderTiles(provider = providers$CartoDB.Positron)
-  
-  filtered_data_eps <- allyr_anal_eps_sf %>% filter(year == 1980, eps %in% eps_codes)
-
-  filtered_data_tract <- d1980_stf1f3_anal_tract_sf %>% filter(eps %in% eps_codes)
-  
-  # Add the layer with the correct group
-  map <- map %>%
-    addPolygons(
-      data = filtered_data_tract,
-      #fillColor = ~palettes[[var_name]](filtered_data[[var_name]]),
-      weight = 1,
-      opacity = 1,
-      color = '#808080',
-      dashArray = '3',
-      fillOpacity = 0.7,
-    )
-  
-  map <- map %>%
-    addPolygons(
-      data = filtered_data_eps,
-      #fillColor = ~palettes[[var_name]](filtered_data[[var_name]]),
-      weight = 3,
-      opacity = 1,
-      color = 'purple',
-      #dashArray = '3',
-      #fillOpacity = 0.7,
-    )
-  
-  return(map)
-  
-} 
-
-create_tract_maps(bay_eps_codes)
-
-
-###################
-################### these functions are not utilized by the modular approach; keeping them around in case
-###################
-###################
-
-create_layer <- function(map, data, var_name, yr, palette) {
-  group_name <- paste(var_name, yr)  # Group name must match exactly
-  
-  map <- map %>%
-    addPolygons(
-      data = data,
-      fillColor = ~palette(data[[var_name]]),
-      weight = 1,
-      opacity = 1,
-      color = '#808080',  # Line color
-      dashArray = '3',
-      fillOpacity = 0.7,
-      highlightOptions = highlightOptions(
-        weight = 4,
-        color = "#666",
-        dashArray = "",
-        fillOpacity = 0.7,
-        bringToFront = TRUE
-      ),
-      label = sprintf(
-        "<strong>%s</strong> - %s<br/>%g",
-        data$eps, data$eps_name, data[[var_name]]
-      ) %>% lapply(htmltools::HTML),
-      group = group_name  # Ensure the group name is correctly assigned
-    )
-  
-  return(map)
-}
-
-create_legend <- function(map, data, var_name, palette) {
-  breaks <- attr(palette, "breaks")
-  
-  if (is.null(breaks)) {
-    breaks <- pretty(data[[var_name]], n = 5)
-  }
-  
-  if (grepl("inc", var_name, ignore.case = TRUE)) {
-    labels <- sprintf("$%dk - $%dk", breaks[-length(breaks)]/1000, breaks[-1]/1000)
-  } else {
-    labels <- sprintf("%.2f", breaks[-length(breaks)])
-  }
-  
-  map <- map %>%
-    addLegend(pal = palette, values = data[[var_name]], 
-              title = var_name, 
-              position = "bottomright", 
-              labFormat = labelFormat(prefix = "", suffix = "", between = " - "),
-              opacity = 1,
-              layerId = paste0("legend-", var_name))
-  
-  return(map)
-}
-
-create_layers_control <- function(map, group_names) {
-  map <- map %>%
-    addLayersControl(
-      baseGroups = group_names,
-      position = 'bottomleft',
-      options = layersControlOptions(collapsed = FALSE)
-    )
-  
-  return(map)
-}

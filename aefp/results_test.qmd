@@ -1,0 +1,24 @@
+---
+title: "Analysis Results"
+output: 
+  pdf_document:
+    keep_tex: true
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{colortbl}
+  - \usepackage[table]{xcolor}
+  - \usepackage{array} # For custom column types if needed
+---
+
+
+## Results of the Analysis
+
+Here we present the summarized data for EPS variables across different years.
+
+```{r table-inclusion, echo=FALSE, results='asis'}
+#cat(readLines("eps_table.tex"), sep = "\n")
+getwd()
+#cat(readLines(file.path('.','..','results','tables',"socal_table.tex")), sep = "\n")
+#\input{../results/tables/socal_table.tex}
+```
+\input{../results/tables/socal_table.tex}
