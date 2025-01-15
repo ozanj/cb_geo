@@ -41,39 +41,10 @@ library(kableExtra)
 
 ### DIRECTORY PATHS
 
-getwd()
+# run script that creates directories
+source(file = file.path('scripts', 'directories.R'))
 
-data_dir <- file.path('.','data') # main data directory
-list.files(path = data_dir)
-
-d1980_data_dir <-   file.path('.',data_dir,'1980_decennial') # main data directory
-list.files(path = d1980_data_dir)
-
-d2000_data_dir <-   file.path('.',data_dir,'2000_decennial') # 
-list.files(path = d2000_data_dir)
-
-acs2020_data_dir <-   file.path('.',data_dir,'2020_acs') # 
-list.files(path = acs2020_data_dir)
-
-# can't save shape files in the repo cuz they too big
-shape_dir <-   file.path('.','..','cb_geomarket_shape') # main data directory
-list.files(path = shape_dir)
-
-# had to move analysis data files into shape folder because too big for git
-analysis_data_dir <- file.path('.',shape_dir,'analysis_data') # analysis data directory
-list.files(path = analysis_data_dir)
-
-eps_data_dir <- file.path(data_dir,'eps_market') # has eps geomarket data and spaical data files
-list.files(path = eps_data_dir)
-
-scripts_dir <- file.path('.','scripts') # 
-list.files(path = scripts_dir)
-
-tables_dir <- file.path('.','results','tables') # 
-list.files(path = tables_dir)
-
-figures_dir <- file.path('.','results','figures') # 
-list.files(path = figures_dir)
+######## DATA PREP
 
 # run script that appends data
 list.files(path = file.path('.',scripts_dir))
@@ -402,7 +373,7 @@ create_eps_graph <- function(eps_codes,
   
   # Save plot to file
   ggsave(
-    filename = file.path(figures_dir, str_c(file_prefix, '_', graph_type, '.png')),
+    filename = file.path(graphs_dir, str_c(file_prefix, '_', graph_type, '.png')),
     plot = plot,
     width = 10,
     height = 8,
@@ -419,7 +390,7 @@ create_eps_graph <- function(eps_codes,
   )
   
   # 3) Write that text to a file
-  writeLines(note_text, file.path(figures_dir, str_c(file_prefix, '_', graph_type, '.txt')))
+  writeLines(note_text, file.path(graphs_dir, str_c(file_prefix, '_', graph_type, '.txt')))
              
   # Return the plot
   return(plot)
@@ -428,9 +399,26 @@ create_eps_graph <- function(eps_codes,
 all_codes <- list(
   philly = philly_eps_codes,
   dallas = dallas_eps_codes,
-  atl = atl_eps_codes
+  atl = atl_eps_codes,
+  chicago = chi_eps_codes,
+  cleveland = cleveland_eps_codes,
+  northern_nj = nj_north_metro_eps_codes,
+  houston = htown_eps_codes,
+  bay_area = bay_eps_codes,
+  long_island = long_island_eps_codes,
+  ny_ny = nyny_metro_eps_codes,
+  detroit = detroit_eps_codes,
+  boston = boston_eps_codes,
+  miami = miami_eps_codes,
+  dmv = dmv_eps_codes,
+  orange_county = orange_county_eps_codes,
+  san_diego = san_diego_eps_codes,
+  los_angeles = los_angeles_eps_codes
 )
 all_codes
+
+graph_types = c('race','ses')
+graph_types
 
 for (metro_name in names(all_codes)) {
   metro_codes <- all_codes[[metro_name]]
@@ -448,8 +436,7 @@ for (metro_name in names(all_codes)) {
 philly_eps_codes
 dallas_eps_codes
 
-graph_types = c('race','ses')
-graph_types
+
 
   for (g in 1:length(graph_types)) {
     
