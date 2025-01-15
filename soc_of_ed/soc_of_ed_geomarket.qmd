@@ -1,5 +1,5 @@
 ---
-title: "Structuring College Access: The Market Segment Model and College Board Geo-markets"
+#title: "Structuring College Access: The Market Segment Model and College Board Geomarkets"
 #author: ["Ozan Jaquette (UCLA)", "Karina Salazar (University of Arizona)"]
 bibliography: ./../assets/bib/cb_geomarket_bib.bib
 csl: ./../assets/bib/apa.csl
@@ -11,8 +11,9 @@ format:
     #extensions: [andrewheiss/wordcount]
     fig_caption: true
     keep_tex: true  # Optional: Keeps the intermediate .tex file for debugging
+    titlepage: false
 editor: visual
-geometry: "margin=1in"
+geometry: "top=0.75in, bottom=0.5in, left=1in, right=1in"
 fontsize: 11pt
 header-includes:
   - \usepackage{setspace}
@@ -25,6 +26,8 @@ header-includes:
       \fancyhf{}
       \cfoot{\thepage}
     }
+  - \renewcommand{\headrulewidth}{0pt}  % Remove the top header line
+  #- \renewcommand{\footrulewidth}{0.4pt}  # Keeps the bottom line    
   - \usepackage{booktabs}
   - \usepackage{multirow}
   - \usepackage{array}
@@ -197,56 +200,69 @@ format_eps_table <- function(df,
 
 ```
 
+
+<!--  
 \thispagestyle{empty} 
 \newpage 
 \setcounter{page}{1}
+Please submit a detailed 2-page précis that includes a brief discussion of the topic, pertinent literature and
+theory, research methods, findings, and study significance
 
-# PROPOSAL
+EXPECTED OUTLINE
+- topic and RQs
+- literature and theory
+- methods
+- findings
+- significance
 
-**BACKGROUND, RESEARCH QUESTIONS.** In 1983, Zemsky and Oedel authored *The Structure of College Choice*. Based on an analysis of 1980 SAT score-sending behavior and published by *The College Board*, @RN4982 developed the Market Segment Model and created "Geomarkets." The Market Segment Model predicts how demand for a particular institution varies across geographic regions based on household/student characteristics of geographic regions.
+THEME
+- What can we do about it? Sociologists as change agents
 
-Geomarkets are geographic borders that disaggregate states and large metropolitan areas into "community-based enrollment markets" [@RN4982, p. 14] for recruiting purposes. @fig-nyc-geomarkets shows New York City area Geomarkets. Geomarkets are the basis for the College Board Enrollment Planning Service (EPS), founded in 1984 and still active today. EPS software recommends which Geomarkets a college should recruit from and which schools/communities they should prioritize within targeted Geomarkets.[^1]
+HOW TO CONNECT WITH THE THEME
+- sociology of organizations knows that regulating an industry requires understanding the organizational field, which includes third-party vendors and products. these third party vendors and agents structure college access in ways that benefit historically privileged groups and contribute to accumulation of capital
+- we must understand the field before we can regulate it; CFPB has 
+Education policy has been dominated by economists. economics doesn't have the theoretical concepts necessary 
+-->
+
+\setlength{\headsep}{0pt}
+\setlength{\headheight}{0pt}
+\begin{center} Structuring College Access: The Market Segment Model and College Board Geomarkets \end{center}
+\vspace{-0.5cm}
+
+# PRECIS
+
+**BACKGROUND.** In 1983, Zemsky and Oedel authored *The Structure of College Choice*. Based on an analysis of 1980 SAT score-sending behavior and published by *The College Board*, @RN4982 developed the Market Segment Model and created "Geomarkets." The Market Segment Model predicts how student demand for a particular college varies across local geographic markets based on the characteristics of students in those local markets.
+
+Geomarkets are geographic areas that divide states and large metropolitan areas into "community-based enrollment markets" [@RN4982, p. 14] for recruiting purposes. @fig-nyc-geomarkets shows New York City area Geomarkets. The Market Segment Model and Geomarkets are the basis for the College Board Enrollment Planning Service (EPS), founded in 1984 and still active today. EPS software recommends which Geomarkets a college should recruit from and which high schools within targeted Geomarkets a college should visit.[^1]
 
 [^1]: In 1995, 37% of 4-year public institutions and 49% of 4-year private institutions used EPS [@RN5021].
 
-Geomarkets were incorporated into the *College Board* "student list" product named Student Search Service. Student lists have been the primary source of lead generation in U.S. higher education for over 50 years [@belkin2019-studata; @list_biz].[^2] Lists contain contact information for prospective students. The Student Search Service database consists of College Board test-takers. Colleges pay a fee for each prospect (e.g., \$0.50). Colleges control which prospect profiles they purchase by selecting search filters, such as high school graduation year, SAT score, AP score, state, etc. Geomarket filters enable colleges to include/exclude prospects from particular Geomarkets. An analysis of 830 student lists purchased by 14 public universities found that 16% of purchases filtered on Geomarket [@RN5012].
+Geomarkets were incorporated into the *College Board* "student list" product named Student Search Service. Student lists have been the primary source of lead generation in U.S. higher education for over 50 years [@belkin2019-studata; @list_biz].[^2] Lists contain contact information for prospective students. The Student Search Service database consists of College Board test-takers. Colleges pay a fee for each prospect (e.g., \$0.50). Colleges control which prospect profiles they purchase by selecting search filters, such as high school graduation year, SAT score, AP score, state, etc. Geomarket filters enable colleges to target prospects living in particular Geomarkets.^[An analysis of 830 student lists purchased by 14 public universities found that 16% of purchases filtered on Geomarket [@RN5012].]
 
-[^2]: @RN4895 reported that 87% of private and 86% of public four-year institutions purchase student lists.
+[^2]: @RN4895 reported that 87% of private and 86% of public four-year institutions purchase lists.
 
-We argue that Geomarket borders are substantially correlated with class and race. This correlation is partly intentional. @RN4982 viewed student demand as a function of class. @RN4982 sought to create Geomarkets that contained many high SES students willing to attend colleges far from home, for example "CT 3--Fairfield County." When colleges use the Market Segment Model, "the result is a natural reinforcing of the basic socioeconomic patterns that gave shape in the first place to the structure of college choice" [@RN4982, p. 44]. Considering the nature of U.S. segregation [@rothstein2017color], Geomarkets may also be correlated with race.
 
-<!--  
-we argue that utilizing Geomarket filters to purchase student lists can contribute to socioeconomic and racial inequality on college opportunity. 
+**THEORY & RQs.** We analyze the Market Segment Model and Geomarkets using scholarship on quantification [e.g., @RN5003], particularly the discussions of correlation and homophily from @RN4975. Predictive analytics are based on correlation. The 1980 SAT score-sending data analyzed by @RN4982 can be conceived as "training data," which was used to define four "market segments" of students: "local" students, who send most SAT scores to colleges in their Geomarket; "in-state" students, who primarily send scores to colleges in their state; "regional" students, who send most scores to colleges outside their state but in their region (e.g., New England); and "national" students. @RN4982 analyzed the student characteristics correlated with student market segment and concluded that student demand was primarily a function of class. The overarching thesis of the Market Segment Model is homophily, the idea that similar colleges compete with one another for similar students. @RN4982[p. 42-45] states that selective colleges primarily draw from students in the "regional" and "national" segments and, therefore, their recruiting visits and student list purchases should focus on Geomarkets with large numbers of affluent, highly educated households. 
 
-Using data about past correlations -- here, Geomarket borders created with reference to 1980 SAT score sending behaviors -- to make future recommendations amplifies the effects of historical structural inequalities. 
--->
-
-We draw from "quantification" scholarship in sociology [@RN5007; @RN5005] and data studies [@RN4849; @RN4975]. To the extent that Geomarket borders are correlated with class and race, student list purchases that filter on Geomarkets can yield systematic socioeconomic and racial exclusion in college opportunity [@RN4887]. We address two research questions:
+When we use data on past correlations to make recommendations about the future, we amplify the effects of historic structural inequality [@RN4794]. A snapshot of student demand in 1980, itself a consequence of historical structural inequality, became inscribed into the EPS and Student Search Service products used by colleges to plan and implement recruiting strategy. The result is a supply-side that reinforces structural inequalities observed on the demand-side. We address two research questions:
 
 1.  What is the socioeconomic and racial variation between Geomarkets in metropolitan areas? How does this variation change over time?
 2.  How does the socioeconomic and racial composition of included versus excluded prospects vary when student list purchases filter on particular Geomarkets?
 
-Scholarship has not observed the mechanisms by which enrollment management products structure college access, funneling certain students to certain institutions. Showing how these products facilitate exclusion introduces new avenues for scholarship and policy discourse.
+**SIGNIFICANCE.** Scholarship on quantification in the sociology of education [e.g.,  @RN2356;@RN5005] has not analyzed third-party products that colleges use to classify and identify prospective students. More broadly, the concept of "organizational fields" includes all organizations that "constitute a recognized area of institutional life"  [@RN527, p. 143]. In the enrollment management industry, third-party vendors and their products structure college access in ways that funnel certain kinds of students to certain kinds of institutions. Higher education policy over the last 20 years -- dominated by economists -- has focused on regulating consumers (students) and direct providers (colleges). However, federal regulatory agencies (e.g., FTC, CFPB) are increasingly interested in regulating the entire organizational field because they know that third-party oligopolies can wield market power over consumers and providers [@philippon2019great]. Therefore, scholarship from sociology should guide which problems and actors become the focus of future federal regulation.
 
-**DATA SOURCES**. To answer RQ1, we utilize census tract-level data from the 1980 Decennial Census, 2000 Decennial Census, and 2020 5-year American Community Survey (ACS). Variables of interest include: race/ethnicity; mean and median household income; percent of households below poverty line; and BA attainment of people aged 25+. We obtained shapefiles for College Board Geomarkets from a 2012 *R-bloggers* post. We assigned census tracts to Geomarkets by implementing a partial spatial join.[^3]
 
-[^3]: Census tracts that intersected multiple Geomarkets were partially assigned based on the proportion of land area. Currently, our spatial join for the 2020 ACS is causing some invalid geometries that we will fix prior to AEFP.
+**DATA SOURCES**. To answer RQ1, we utilize census tract-level data from the 1980 Decennial Census, 2000 Decennial Census, and 2020 5-year American Community Survey (ACS). Variables of interest include: race/ethnicity; mean and median household income; percent of households below poverty line; and BA attainment of people aged 25+. We obtained shapefiles for College Board Geomarkets from a 2012 *R-bloggers* post. We assigned census tracts to Geomarkets by implementing a partial spatial join.
 
-To answer RQ2, we issued public records requests about student lists purchased by 14 public universities from 2016 through 2020. For 414 College Board student list purchases, associated with about 2.6 million prospects, we received both (1) the order summary -- showing which search filters were utilized -- and (2) the de-identified prospect-level data, including race, ethnicity, zip code, and high school. @fig-asu-order-448922 shows the partial order summary, which we converted to tabular data, for a purchase by Arizona State University that filtered on the 2020 high school graduating class, PSAT scores of 1070 to 1180, and selected Geomarkets.[^4]
-
-[^4]: Analyses for RQ2 additionally utilize data on public and private high schools from NCES.
+To answer RQ2, we issued public records requests about student lists purchased by 14 public universities from 2016 through 2020. For 414 College Board student list purchases, associated with about 2.6 million prospects, we received both (1) the order summary -- showing which search filters were utilized -- and (2) the de-identified prospect-level data, including race, ethnicity, zip code, and high school. @fig-asu-order-448922 shows the partial order summary, which we converted to tabular data, for a purchase by Arizona State University that filtered on the 2020 high school graduating class, PSAT scores of 1070 to 1180, and selected Geomarkets.
 
 **METHOD**. The methods are simultaneously descriptive and spatial. We utilize a case study design in which metropolitan areas are cases. Like @RN4759, we envision focusing on 2-4 metropolitan areas, including the historical context of segregation and gentrification. An appendix will show results for a larger number of metropolitan areas.
 
-To answer RQ1, we produce tables/graphs that show how Geomarkets around a metropolitan area vary on racial and socioeconomic characteristics and how they vary over time. We produce interactive maps at the census tract-level to show more granular variation within and between Geomarkets. We address RQ2 by analyzing actual student list purchases that encompass all Geomarkets around a given metropolitan area, showing which prospects would have been excluded/excluded had the purchase filtered on particular Geomarkets.
+To answer RQ1, we produce tables/graphs that show how Geomarkets around a metropolitan area vary on racial and socioeconomic characteristics and how they vary over time. We produce interactive maps at the census tract-level to show more granular variation within and between Geomarkets. We address RQ2 by analyzing actual student list purchases that encompass all Geomarkets around a given metropolitan area, showing which prospects would have been excluded if had the purchase had filtered on particular Geomarkets.
 
-**PRELIMINARY FINDINGS**. We are currently writing functions that create tables and/or maps for the metropolitan area chosen by the function call.
+**PRELIMINARY FINDINGS**. For RQ1, Table \ref{tab:chi_eps_table_summary} shows racial and socioeconomic characteristics for Geomarkets around Chicago. @fig-socal-hispanic is a screenshot of an interactive choropleth map of Los Angeles, showing Geomarket borders and the tract-level %Hispanic in 2020. @fig-socal-med-inc shows tract-level median household income around Los Angeles.
 
-For RQ1, Table \ref{tab:chi_eps_table_summary} shows racial and socioeconomic characteristics for Geomarkets around Chicago. @fig-socal-hispanic is a screenshot of an interactive choropleth map of Los Angeles, showing Geomarket borders and the tract-level %Hispanic in 2020. @fig-socal-med-inc shows tract-level median household income around Los Angeles.
-
-Results for RQ2 show how many purchased prospects from each racial/ethnic group live in each Geomarket. These prospects would have been excluded had the purchase filtered on Geomarkets and not selected that Geomarket. @tbl-philly-sim-count, @tbl-philly-sim-col-pct, and @tbl-philly-sim-row-pct, respectively, show counts, column percentages, and row percentages for the Philadelphia metropolitan area, based on a purchase that filters on students from the 2020 high school class who scored between 1070 and 1180 on the PSAT. @tbl-philly-sim-col-pct shows that "PA5--Philadelphia County" contains 15% of all purchased prospect profiles but 44% of Black prospects, indicating that opportunity for Black students is sensitive to the inclusion of this Geomarket. @fig-philly-black-prospects is a screenshot of a (very) preliminary interactive map for this purchase, with marker size indicating the number of purchased prospect profiles who attended that high school and separate markers by race/ethnicity. <!--  
-The size of the high school marker is a function of the number of prospects purchased and map users wil be able to select the race/ethnicity of purchased prospects as well as census variables that determine the chloropleth map.
--->
+Results for RQ2 show how many purchased prospects from each racial/ethnic group live in each Geomarket. These prospects would have been excluded had the purchase filtered on Geomarkets and not selected that Geomarket. @tbl-philly-sim-count, @tbl-philly-sim-col-pct, and @tbl-philly-sim-row-pct, respectively, show counts, column percentages, and row percentages for the Philadelphia metropolitan area, based on a purchase that filtered on students from the 2020 high school class who scored between 1070 and 1180 on the PSAT. @tbl-philly-sim-col-pct shows that "PA5--Philadelphia County" contains 15% of all purchased prospect profiles but 44% of Black prospects, indicating that opportunity for Black students is sensitive to the inclusion of this Geomarket. @fig-philly-black-prospects is a screenshot of a (very) preliminary interactive map for this purchase, with marker size indicating the number of purchased prospect profiles who attended that high school and separate markers by race/ethnicity.
 
 \newpage
 

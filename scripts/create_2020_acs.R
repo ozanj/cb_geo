@@ -124,6 +124,7 @@ variables <- c(
 variables <- c(variables,edu_var_names)
 variables
 
+
 acs2020_vars %>% filter(name %in% variables) %>% print()
 
 # READ IN TRACT-LEVEL 2016-2020 ACS DATA FROM TIDYCENSUS

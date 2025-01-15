@@ -1,0 +1,490 @@
+################################################################################
+## [ PROJ ] < College Board Geomarket >
+## [ FILE ] < rq1_tables_graphs.R >
+## [ AUTH ] < Ozan Jaquette >
+## [ INIT ] < 1/13/2025
+## [ DESC ] < functions that create tables and graphs for RQ1 (differences between geomarkets, based on census data) >
+################################################################################
+
+### SETTINGS
+rm(list = ls()) # remove all objects
+options(max.print=1000)
+#options(width = 160)
+# Set the scipen option to a high value to avoid scientific notation
+options(scipen = 999)
+
+### LIBRARIES
+library(tidyverse)
+library(ggh4x) # additional graphing capabilities
+library(readxl)
+library(lubridate)
+library(haven)
+library(labelled)
+library(tidycensus)
+# get census api key
+#http://api.census.gov/data/key_signup.html
+# set census api key, and install for future use
+#census_api_key('aff360d1fe8a919619776f48e975f03b8bb1379e', install = TRUE)
+#Sys.getenv("CENSUS_API_KEY") # retreive API key
+
+library(sf)
+# Enable caching for tigris
+options(tigris_use_cache = TRUE)
+library(tigris)
+#library(stars)
+#library(spatstat)
+#library(rgeos)
+library(lwgeom) # library has checks/vixes for valid geometries
+library(leaflet)
+library(shiny)
+library(kableExtra)
+
+### DIRECTORY PATHS
+
+getwd()
+
+data_dir <- file.path('.','data') # main data directory
+list.files(path = data_dir)
+
+d1980_data_dir <-   file.path('.',data_dir,'1980_decennial') # main data directory
+list.files(path = d1980_data_dir)
+
+d2000_data_dir <-   file.path('.',data_dir,'2000_decennial') # 
+list.files(path = d2000_data_dir)
+
+acs2020_data_dir <-   file.path('.',data_dir,'2020_acs') # 
+list.files(path = acs2020_data_dir)
+
+# can't save shape files in the repo cuz they too big
+shape_dir <-   file.path('.','..','cb_geomarket_shape') # main data directory
+list.files(path = shape_dir)
+
+# had to move analysis data files into shape folder because too big for git
+analysis_data_dir <- file.path('.',shape_dir,'analysis_data') # analysis data directory
+list.files(path = analysis_data_dir)
+
+eps_data_dir <- file.path(data_dir,'eps_market') # has eps geomarket data and spaical data files
+list.files(path = eps_data_dir)
+
+scripts_dir <- file.path('.','scripts') # 
+list.files(path = scripts_dir)
+
+tables_dir <- file.path('.','results','tables') # 
+list.files(path = tables_dir)
+
+figures_dir <- file.path('.','results','figures') # 
+list.files(path = figures_dir)
+
+# run script that appends data
+list.files(path = file.path('.',scripts_dir))
+source(file = file.path(scripts_dir, 'append_census.R'))
+
+# script that creates character vectors for EPS codes
+source(file = file.path(scripts_dir, 'metro_eps_codes.R'))
+
+# functions for TableX
+
+########## FUNCTION TO CREATE TABLE OF STATS FOR GEOMARKETS IN A METRO AREA
+
+allyr_anal_tract_sf %>% glimpse()
+
+table_var_names <- list(
+  "pct_hisp_all" = "% Hispanic",
+  "mean_inc_house" = "Mean income",
+  "med_inc_house" = "Median income",
+  "pct_nhisp_asian" = "% Asian, non-Hispanic",
+  "pct_nhisp_white" = "% White, non-Hispanic",
+  "pct_nhisp_black" = "% Black, non-Hispanic",
+  "pct_nhisp_api" = "% API, non-Hispanic", 
+  "pct_nhisp_native" = "% Native, non-Hispanic",
+  "pct_pov_yes" = "% in poverty",
+  "pct_edu_baplus_all" = "% with BA+"
+)
+
+# Define table_vars in the desired order
+table_varlist <- c("pct_nhisp_white", "pct_nhisp_black", "pct_hisp_all", "pct_nhisp_api", "pct_nhisp_native", "pct_nhisp_multi", "med_inc_house", "mean_inc_house", "pct_pov_yes", "pct_edu_baplus_all")
+
+create_eps_table <- function(eps_codes, table_vars) {
+  
+  # Human-readable names for the variables (you can modify this list based on the variables passed in)
+  table_var_names <- list(
+    "pct_hisp_all" = "% Hispanic",
+    "mean_inc_house" = "Mean income",
+    "med_inc_house" = "Median income",
+    "pct_nhisp_asian" = "% Asian, non-Hispanic",
+    "pct_nhisp_white" = "% White, non-Hispanic",
+    "pct_nhisp_black" = "% Black, non-Hispanic",
+    "pct_nhisp_api" = "% API, non-Hispanic", 
+    "pct_nhisp_native" = "% Native, non-Hispanic",
+    "pct_pov_yes" = "% in poverty",
+    "pct_edu_baplus_all" = "% with BA+",
+    "pct_nhisp_multi" = "% two+ races, non-Hispanic"
+  )
+  
+  # Main table creation pipeline
+  eps_table <- allyr_anal_tract_sf %>% 
+    as.data.frame() %>%
+    # Filter based on provided eps_codes
+    filter(eps %in% eps_codes) %>%
+    
+    # Create the eps_codename by concatenating eps_code and eps_name with a comma
+    mutate(eps_codename = str_c(eps, eps_name, sep = ", ")) %>%
+    
+    # Divide income variables by 1,000
+    mutate(across(contains("_inc"), ~ (.x / 1000))) %>%
+    
+    # Group by the new eps_codename and year
+    group_by(eps_codename, year) %>%
+    
+    # Summarize the data (mean, standard deviation, percentiles)
+    summarize(
+      across(all_of(table_vars), ~ mean(.x, na.rm = TRUE), .names = "mean_{.col}"),
+      across(all_of(table_vars), ~ sd(.x, na.rm = TRUE), .names = "sd_{.col}"),
+      across(all_of(table_vars), ~ quantile(.x, probs = 0.25, na.rm = TRUE), .names = "p25_{.col}"),
+      across(all_of(table_vars), ~ quantile(.x, probs = 0.50, na.rm = TRUE), .names = "p50_{.col}"),
+      across(all_of(table_vars), ~ quantile(.x, probs = 0.75, na.rm = TRUE), .names = "p75_{.col}")
+    ) %>%
+    
+    # Reshape variables from columns to rows
+    pivot_longer(
+      cols = starts_with("mean_") | starts_with("sd_") | starts_with("p25_") | starts_with("p50_") | starts_with("p75_"),
+      names_to = c("statistic", "variable"),
+      names_pattern = "(mean|sd|p25|p50|p75)_(.*)",  # Regex pattern to correctly split the names
+      values_to = "value"
+    ) %>%
+    
+    # Replace variable names with human-friendly names
+    mutate(variable = recode(variable, !!!table_var_names)) %>%
+    
+    # Set the order of the 'variable' column based on the provided table_vars
+    mutate(variable = factor(variable, levels = recode(table_vars, !!!table_var_names))) %>%
+    
+    # Reshape statistics and years from rows to columns
+    pivot_wider(
+      names_from = c(year, statistic),  # Pivot both year and statistic to columns
+      values_from = value,
+      names_glue = "{statistic}_{year}"  # Customize the new column names to include only statistic and year
+    ) %>%
+    
+    # Ungroup and arrange by variable and eps_codename
+    ungroup() %>%
+    arrange(variable, eps_codename) %>%
+    
+    # Apply integer formatting for income variables and 1 decimal point for percentage variables
+    mutate(
+      across(starts_with("mean_") | starts_with("sd_") | starts_with("p25_") | starts_with("p50_") | starts_with("p75_"),
+             ~ if_else(str_detect(variable, "income"), round(.x), .x)),
+      across(starts_with("mean_") | starts_with("sd_") | starts_with("p25_") | starts_with("p50_") | starts_with("p75_"),
+             ~ if_else(str_detect(variable, "^%"), round(.x, 1), .x))
+    )
+  
+  # Return the resulting table
+  return(eps_table)
+}
+
+# Example usage:
+chi_eps_table <- create_eps_table(chi_eps_codes, table_varlist)
+
+# Example usage:
+chi_eps_table <- create_eps_table(chi_eps_codes, table_varlist)
+chi_eps_table
+
+# Example usage:
+chi_eps_table <- create_eps_table(eps_codes = chi_eps_codes, table_vars = table_varlist)
+chi_eps_table %>% print(n=100)
+
+saveRDS(chi_eps_table, file.path(tables_dir, "chi_eps_table.rds"))
+
+
+bay_eps_table <- create_eps_table(eps_codes = bay_eps_codes, table_vars = table_varlist)
+bay_eps_table %>% print(n=100)
+
+socal_eps_table <- create_eps_table(eps_codes = socal_eps_codes, table_vars = table_varlist)    
+socal_eps_table %>% print(n=100)
+
+philly_eps_table <- create_eps_table(eps_codes = philly_eps_codes, table_vars = table_varlist)    
+philly_eps_table %>% print(n=100)  
+
+saveRDS(socal_eps_table, file.path(tables_dir, "socal_eps_table.rds"))
+saveRDS(philly_eps_table, file.path(tables_dir, "philly_eps_table.rds"))
+
+########## FUNCTION TO CREATE (INPUT DATA FRAME FOR) GRAPHS RELEVANT TO RQ1
+
+# Human-readable names for the variables (you can modify this list based on the variables passed in)
+graph_var_names <- list(
+  "nhisp_white" = "White, non-Hispanic",
+  "nhisp_black" = "Black, non-Hispanic",
+  "hisp_all" = "Hispanic",
+  "nhisp_asian" = "Asian, non-Hispanic",
+  "nhisp_nhpi" = "NHPI, non-Hispanic",
+  "nhisp_api" = "API, non-Hispanic", 
+  "nhisp_native" = "AIAN, non-Hispanic",
+  "nhisp_multi" = "two+ races, non-Hispanic",
+  "pct_nhisp_white" = "% White, non-Hispanic",
+  "pct_nhisp_black" = "% Black, non-Hispanic",
+  "pct_hisp_all" = "% Hispanic",
+  "pct_nhisp_asian" = "% Asian, non-Hispanic",
+  "pct_nhisp_nhpi" = "% NHPI, non-Hispanic",
+  "pct_nhisp_api" = "% API, non-Hispanic", 
+  "pct_nhisp_native" = "% AIAN, non-Hispanic",
+  "pct_nhisp_multi" = "% two+ races, non-Hispanic",
+  "mean_inc_house" = "Mean income",
+  "med_inc_house" = "Median income",
+  "pct_pov_yes" = "% in poverty",
+  "pct_edu_baplus_all" = "% with BA+"
+)
+graph_var_names
+
+# Define graph_vars in the desired order
+graph_varlist <- c("nhisp_white", "nhisp_black", "hisp_all", "nhisp_asian", "nhisp_nhpi", "nhisp_api", "nhisp_native", "nhisp_multi", "pct_nhisp_white", "pct_nhisp_black", "pct_hisp_all", "pct_nhisp_asian", "pct_nhisp_nhpi", "pct_nhisp_api", "pct_nhisp_native", "pct_nhisp_multi", "med_inc_house", "mean_inc_house", "pct_pov_yes", "pct_edu_baplus_all")
+
+create_eps_graph <- function(eps_codes, 
+                             prefix = NULL,
+                             graph_vars = graph_varlist, 
+                             graph_type = "ses", 
+                             stat = ifelse(graph_type == "race", "sum", "p50"), 
+                             facet_rows = vars(year), 
+                             facet_cols = vars(variable), 
+                             x_label = NULL, 
+                             y_label = NULL, 
+                             plot_title = NULL, 
+                             plot_subtitle = NULL,
+                             theme_custom = theme_minimal(), 
+                             fill_palette = NULL, 
+                             debug = FALSE,
+                             note = NULL) {
+  
+  # Validate inputs
+  if (!graph_type %in% c("race", "ses")) {
+    stop("Invalid `graph_type`. Please specify 'race' or 'ses'.")
+  }
+  if (missing(eps_codes) || length(eps_codes) == 0) {
+    stop("Please provide a valid `eps_codes` vector.")
+  }
+  
+  # create string for pathname
+  # If `prefix` isn't provided, fall back to the old logic:
+  if (is.null(prefix)) {
+    file_prefix <- str_replace(deparse(substitute(eps_codes)), '_eps_codes', '')
+  } else {
+    file_prefix <- prefix
+  }
+  
+  # Main table creation pipeline
+  eps_table <- allyr_anal_tract_sf %>% 
+    as.data.frame() %>%
+    filter(eps %in% eps_codes) %>%
+    mutate(eps_codename = str_c(eps, eps_name, sep = ", ")) %>%
+    mutate(across(contains("_inc"), ~ (.x / 1000))) %>%
+    group_by(eps_codename, year) %>%
+    summarize(
+      across(all_of(graph_vars), ~ sum(.x, na.rm = TRUE), .names = "sum_{.col}"),
+      across(all_of(graph_vars), ~ mean(.x, na.rm = TRUE), .names = "mean_{.col}"),
+      across(all_of(graph_vars), ~ sd(.x, na.rm = TRUE), .names = "sd_{.col}"),
+      across(all_of(graph_vars), ~ quantile(.x, probs = 0.25, na.rm = TRUE), .names = "p25_{.col}"),
+      across(all_of(graph_vars), ~ quantile(.x, probs = 0.50, na.rm = TRUE), .names = "p50_{.col}"),
+      across(all_of(graph_vars), ~ quantile(.x, probs = 0.75, na.rm = TRUE), .names = "p75_{.col}")
+    ) %>% 
+    ungroup() %>%
+    mutate(
+      sum_has_race = rowSums(
+        select(., sum_nhisp_white, sum_nhisp_black, sum_hisp_all, sum_nhisp_asian, 
+               sum_nhisp_nhpi, sum_nhisp_native, sum_nhisp_multi),
+        na.rm = TRUE
+      )
+    ) %>% 
+    relocate(eps_codename, year, sum_has_race) %>% 
+    pivot_longer(
+      cols = starts_with("sum_") | starts_with("mean_") | starts_with("sd_") | 
+        starts_with("p25_") | starts_with("p50_") | starts_with("p75_"),
+      names_to = c("statistic", "variable"),
+      names_pattern = "(sum|mean|sd|p25|p50|p75)_(.*)",
+      values_to = "value"
+    ) %>%
+    mutate(variable = recode(variable, !!!graph_var_names)) %>%
+    mutate(
+      variable = factor(
+        variable,
+        levels = c(
+          "White, non-Hispanic", "Asian, non-Hispanic", "API, non-Hispanic",
+          "Black, non-Hispanic", "Hispanic", "two+ races, non-Hispanic", 
+          "NHPI, non-Hispanic", "AIAN, non-Hispanic",
+          "% White, non-Hispanic", "% Asian, non-Hispanic", "% API, non-Hispanic", 
+          "% Black, non-Hispanic", "% Hispanic", "% two+ races, non-Hispanic", 
+          "% NHPI, non-Hispanic", "% AIAN, non-Hispanic",
+          "Median income", "Mean income", "% in poverty", "% with BA+"
+        )
+      )
+    ) %>%
+    mutate(eps_codename = fct_rev(factor(eps_codename))) %>%
+    mutate(year = factor(year, levels = c(2020, 2000, 1980)))
+  
+  # Debugging: Print intermediate table if debug is TRUE
+  if (debug) {
+    print(paste("Using statistic:", stat))
+    print(head(eps_table))
+  }
+  
+  # Filter and create plots based on graph type
+  if (graph_type == "race") {
+    
+    eps_table <- eps_table %>%
+      filter(
+        statistic == stat,
+        variable %in% c(
+          "White, non-Hispanic", "Black, non-Hispanic", "Hispanic", 
+          "Asian, non-Hispanic", "two+ races, non-Hispanic", 
+          "NHPI, non-Hispanic", "AIAN, non-Hispanic"
+        )
+      )
+    
+    plot <- eps_table %>%
+      ggplot(aes(x = eps_codename, y = value, fill = variable)) +
+      geom_col(position = position_fill(reverse = TRUE)) +
+      coord_flip() +
+      labs(
+        x = x_label, y = y_label,
+        title = plot_title, subtitle = plot_subtitle,
+        fill = "Race/Ethnicity"
+      ) +
+      scale_y_continuous(labels = scales::percent_format()) +
+      facet_wrap(~ year, ncol = 1, scales = "free_y") +
+      theme_custom
+    
+    if (!is.null(fill_palette)) {
+      plot <- plot + scale_fill_manual(values = fill_palette)
+    }
+    
+  } else if (graph_type == "ses") {
+    
+    eps_table <- eps_table %>%
+      filter(
+        statistic == stat,
+        variable %in% c("Median income", "% in poverty", "% with BA+")
+      )
+    
+    plot <- eps_table %>%
+      ggplot(aes(x = eps_codename, y = value)) +
+      geom_col(fill = "grey50", position = position_dodge(width = 0.8), width = 0.7) +
+      coord_flip() +
+      labs(
+        x = x_label, y = y_label,
+        title = plot_title, subtitle = plot_subtitle
+      ) +
+      facet_grid2(
+        rows = facet_rows,
+        cols = facet_cols,
+        scales = "free",
+        space = "fixed"
+      ) +
+      theme_custom +
+      theme(
+        strip.text.x = element_text(size = 12, face = "bold"),
+        strip.text.y = element_text(size = 12, face = "bold", angle = 90),
+        axis.text.y = element_text(size = 10),
+        axis.text.x = element_text(size = 10),
+        panel.spacing = unit(1, "lines"),
+        legend.position = "none"
+      ) +
+      facetted_pos_scales(
+        y = list(
+          # For Median income
+          (variable == "Median income") ~ scale_y_continuous(
+            labels = scales::label_number(suffix = "k")
+          ),
+          # For the percentage variables
+          (variable %in% c("% in poverty", "% with BA+")) ~ scale_y_continuous(
+            labels = scales::label_number(suffix = "%")
+          )
+        )
+      )
+  }
+  
+  # Save plot to file
+  ggsave(
+    filename = file.path(figures_dir, str_c(file_prefix, '_', graph_type, '.png')),
+    plot = plot,
+    width = 10,
+    height = 8,
+    bg = 'white'
+  )
+  
+  # 2) Create the text you want to store [REVISE NOTE TEXT LATER!]
+  note_text <- c(
+    "Figure Notes:",
+    "- Median income is shown in thousands ($k).",
+    "- '% in poverty' is the share of individuals below the federal poverty line.",
+    "- Data sources: US Census, etc.",
+    note
+  )
+  
+  # 3) Write that text to a file
+  writeLines(note_text, file.path(figures_dir, str_c(file_prefix, '_', graph_type, '.txt')))
+             
+  # Return the plot
+  return(plot)
+}
+
+all_codes <- list(
+  philly = philly_eps_codes,
+  dallas = dallas_eps_codes,
+  atl = atl_eps_codes
+)
+all_codes
+
+for (metro_name in names(all_codes)) {
+  metro_codes <- all_codes[[metro_name]]
+  
+  for (g in seq_along(graph_types)) {
+    create_eps_graph(
+      eps_codes  = metro_codes,
+      prefix     = metro_name,        # <--- pass "philly" or "dallas"
+      graph_type = graph_types[g],
+      note       = "some note"
+    )
+  }
+}
+
+philly_eps_codes
+dallas_eps_codes
+
+graph_types = c('race','ses')
+graph_types
+
+  for (g in 1:length(graph_types)) {
+    
+    # call function
+    create_eps_graph(
+      eps_codes = philly_eps_codes, 
+      graph_type = graph_types[g], 
+      note = "additional text for my note!"
+    )  
+  }
+
+for (g in 1:length(graph_types)) {
+  
+  # call function
+  create_eps_graph(
+    eps_codes = dallas_eps_codes, 
+    graph_type = graph_types[g], 
+    note = "additional text for my note!"
+  )  
+}
+
+
+create_eps_graph(
+  eps_codes = dallas_eps_codes, 
+  graph_type = "ses", 
+  note = "additional text for my note!"
+)
+
+vec <- c(a = 5, b = -10, c = 30)
+vec
+length(vec)  # View length of atomic vector object
+1:length(vec)  # Create sequence from `1` to `length(vec)`
+
+
+for (i in 1:length(vec)) {
+  writeLines(str_c("\nvalue of object i=", i, "; type=", typeof(i)))
+  #str(vec[[i]])  # Access element contents using [[]]
+}

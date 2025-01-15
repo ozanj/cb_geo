@@ -24,7 +24,7 @@ library(tidycensus)
 #http://api.census.gov/data/key_signup.html
 # set census api key, and install for future use
 #census_api_key('aff360d1fe8a919619776f48e975f03b8bb1379e', install = TRUE)
-Sys.getenv("CENSUS_API_KEY") # retreive API key
+#Sys.getenv("CENSUS_API_KEY") # retreive API key
 
 
 library(sf)
@@ -284,7 +284,7 @@ create_eps_table <- function(eps_codes, table_vars) {
     
     # Set the order of the 'variable' column based on the provided table_vars
     mutate(variable = factor(variable, levels = recode(table_vars, !!!table_var_names))) %>%
-    
+
     # Reshape statistics and years from rows to columns
     pivot_wider(
       names_from = c(year, statistic),  # Pivot both year and statistic to columns
@@ -310,7 +310,7 @@ create_eps_table <- function(eps_codes, table_vars) {
 
 # Example usage:
 chi_eps_table <- create_eps_table(chi_eps_codes, table_varlist)
-chi_eps_table
+chi_eps_table %>% filter(year == 2020) %>%  print(n=100)
 
 # Example usage:
 chi_eps_table <- create_eps_table(chi_eps_codes, table_varlist)
@@ -333,7 +333,291 @@ chi_eps_table
     philly_eps_table %>% print(n=100)  
     
     saveRDS(socal_eps_table, file.path(tables_dir, "socal_eps_table.rds"))
-    saveRDS(philly_eps_table, file.path(tables_dir, "philly_eps_table.rds"))    
+    saveRDS(philly_eps_table, file.path(tables_dir, "philly_eps_table.rds"))
+    
+########
+######## EXPERIMENT W/ CREATING GRAPHS FROM TABLE 
+########
+    
+chi_eps_table <- create_eps_table(chi_eps_codes, table_varlist)
+chi_eps_table %>% glimpse()
+
+# uniquely identify rows
+chi_eps_table %>% # start with data frame object
+  group_by(eps_codename, variable) %>% # group by unitid
+  summarise(n_per_group=n()) %>% # create measure of number of obs per group
+  ungroup %>% # ungroup (otherwise frequency table [next step] created) separately for each group (i.e., separate frequency table for each value of unitid)
+  count(n_per_group) # frequency of number of observations per group
+
+# does this data frame satisfy the rules for tidy data
+chi_eps_table %>% select(eps_codename, variable, mean_1980, mean_2000, mean_2020)  
+
+#Tidy data always follow these 3 interrelated rules:
+  #Each variable must have its own column
+    # is mean_YYYY a variable? if so, statement is TRUE
+    # is mean a variable? if not, variable is spread out over three columns
+  #Each observation must have its own row
+    # is each observation a geomarket, variable? if so, statement is TRUE
+    # is each observation a geomarket, variable, year? if so, current columns must be turned into rows
+    # is each observation a geomarket, 
+  #Each value must have its own cell
+  
+# TRY CREATING GRAPHING FUNCTION FROM RAW DATA
+
+allyr_anal_tract_sf %>% glimpse()
+allyr_anal_tract_sf %>% select(starts_with('pct')) %>% glimpse()
+
+# Human-readable names for the variables (you can modify this list based on the variables passed in)
+graph_var_names <- list(
+  "nhisp_white" = "White, non-Hispanic",
+  "nhisp_black" = "Black, non-Hispanic",
+  "hisp_all" = "Hispanic",
+  "nhisp_asian" = "Asian, non-Hispanic",
+  "nhisp_nhpi" = "NHPI, non-Hispanic",
+  "nhisp_api" = "API, non-Hispanic", 
+  "nhisp_native" = "AIAN, non-Hispanic",
+  "nhisp_multi" = "two+ races, non-Hispanic",
+  "pct_nhisp_white" = "% White, non-Hispanic",
+  "pct_nhisp_black" = "% Black, non-Hispanic",
+  "pct_hisp_all" = "% Hispanic",
+  "pct_nhisp_asian" = "% Asian, non-Hispanic",
+  "pct_nhisp_nhpi" = "% NHPI, non-Hispanic",
+  "pct_nhisp_api" = "% API, non-Hispanic", 
+  "pct_nhisp_native" = "% AIAN, non-Hispanic",
+  "pct_nhisp_multi" = "% two+ races, non-Hispanic",
+  "mean_inc_house" = "Mean income",
+  "med_inc_house" = "Median income",
+  "pct_pov_yes" = "% in poverty",
+  "pct_edu_baplus_all" = "% with BA+"
+)
+graph_var_names
+
+# Define graph_vars in the desired order
+graph_varlist <- c("nhisp_white", "nhisp_black", "hisp_all", "nhisp_asian", "nhisp_nhpi", "nhisp_api", "nhisp_native", "nhisp_multi", "pct_nhisp_white", "pct_nhisp_black", "pct_hisp_all", "pct_nhisp_asian", "pct_nhisp_nhpi", "pct_nhisp_api", "pct_nhisp_native", "pct_nhisp_multi", "med_inc_house", "mean_inc_house", "pct_pov_yes", "pct_edu_baplus_all")
+
+create_eps_graph <- function(eps_codes, graph_vars) {
+  
+  # Main table creation pipeline
+  eps_table <- allyr_anal_tract_sf %>% 
+    as.data.frame() %>%
+    # Filter based on provided eps_codes
+    filter(eps %in% eps_codes) %>%
+    
+    # Create the eps_codename by concatenating eps_code and eps_name with a comma
+    mutate(eps_codename = str_c(eps, eps_name, sep = ", ")) %>%
+    
+    # Divide income variables by 1,000
+    mutate(across(contains("_inc"), ~ (.x / 1000))) %>%
+    
+    # Group by the new eps_codename and year
+    group_by(eps_codename, year) %>%
+    
+    # Summarize the data (mean, standard deviation, percentiles)
+    summarize(
+      across(all_of(graph_vars), ~ sum(.x, na.rm = TRUE), .names = "sum_{.col}"),
+      across(all_of(graph_vars), ~ mean(.x, na.rm = TRUE), .names = "mean_{.col}"),
+      across(all_of(graph_vars), ~ sd(.x, na.rm = TRUE), .names = "sd_{.col}"),
+      across(all_of(graph_vars), ~ quantile(.x, probs = 0.25, na.rm = TRUE), .names = "p25_{.col}"),
+      across(all_of(graph_vars), ~ quantile(.x, probs = 0.50, na.rm = TRUE), .names = "p50_{.col}"),
+      across(all_of(graph_vars), ~ quantile(.x, probs = 0.75, na.rm = TRUE), .names = "p75_{.col}")
+    ) %>% ungroup() %>% 
+  
+    # create a measure that adds number of students across racial groups, only for the sum vars
+    mutate(
+      sum_has_race = rowSums(select(.,sum_nhisp_white, sum_nhisp_black, sum_hisp_all, sum_nhisp_asian, sum_nhisp_nhpi, sum_nhisp_native, sum_nhisp_multi), na.rm = TRUE)
+    ) %>% relocate(eps_codename,year,sum_has_race) %>% 
+  
+    # Reshape variables from columns to rows
+    pivot_longer(
+      cols = starts_with("sum_") | starts_with("mean_") | starts_with("sd_") | starts_with("p25_") | starts_with("p50_") | starts_with("p75_"),
+      names_to = c("statistic", "variable"),
+      names_pattern = "(sum|mean|sd|p25|p50|p75)_(.*)",  # Regex pattern to correctly split the names
+      values_to = "value"
+    ) %>%
+    
+    # Replace variable names with human-friendly names
+    mutate(variable = recode(variable, !!!graph_var_names)) %>%  
+ 
+    mutate(
+      variable = factor(
+        variable,
+        levels = c(
+          "White, non-Hispanic",
+          "Asian, non-Hispanic",
+          "API, non-Hispanic",
+          "Black, non-Hispanic",
+          "Hispanic",
+          "two+ races, non-Hispanic",
+          "NHPI, non-Hispanic",
+          "AIAN, non-Hispanic",
+          "% White, non-Hispanic",
+          "% Asian, non-Hispanic",
+          "% API, non-Hispanic",
+          "% Black, non-Hispanic",
+          "% Hispanic",
+          "% two+ races, non-Hispanic",
+          "% NHPI, non-Hispanic",
+          "% AIAN, non-Hispanic",
+          "Median income",
+          "Mean income",
+          "% in poverty",
+          "% with BA+"
+        )
+      )
+    )       
+  
+  # Return the resulting table
+  return(eps_table)
+}
+
+chi_eps_graph <- create_eps_graph(eps_codes = chi_eps_codes, graph_vars = graph_varlist)
+
+#chi_eps_graph %>% filter(year == 2020, statistic == 'sum') %>% print(n=200)
+
+chi_eps_graph %>% 
+  filter(statistic == 'sum',
+         variable %in% c('White, non-Hispanic', 'Black, non-Hispanic', 'Hispanic', 'Asian, non-Hispanic', 'two+ races, non-Hispanic', 'NHPI, non-Hispanic', 'AIAN, non-Hispanic')
+  ) %>% 
+  # Reverse the factor order of eps_codename
+  mutate(eps_codename = fct_rev(factor(eps_codename))) %>%  
+  mutate(year = factor(year, levels = c(2020, 2000, 1980))) %>% # turn year into a factor variable so that you can more easily control order of year sub-graphs
+  ggplot(aes(x = eps_codename, y = value, fill = variable)) +
+  # geom_col(position = position_stack(reverse = TRUE)) +
+  geom_col(position = position_fill(reverse = TRUE)) +         # <-- 'fill' creates 100% stacked bars
+    coord_flip() +
+    labs(
+      x = NULL,
+      y = "Population",
+      fill = "Race/Ethnicity"      # Legend title
+    ) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  facet_wrap(~ year, ncol = 1, scales = "free_y") +  # Stacks panels for each year
+  theme_minimal()
+
+# CREATE BASIC GRAPHS FOR SOME CANDIDATE CASE STUDY METRO AREAS
+
+chi_eps_codes
+philly_eps_codes
+htown_eps_codes <- str_c("TX",15:18)
+dallas_eps_codes <- c('TX19','TX20','TX21','TX22','TX23','TX24')
+
+
+
+dallas_eps_codes <- 
+  
+# race graph
+  
+create_eps_graph(eps_codes = dallas_eps_codes, graph_vars = graph_varlist) %>% # 
+  filter(statistic == 'sum',
+         variable %in% c('White, non-Hispanic', 'Black, non-Hispanic', 'Hispanic', 'Asian, non-Hispanic', 'two+ races, non-Hispanic', 'NHPI, non-Hispanic', 'AIAN, non-Hispanic')
+  ) %>% 
+  # Reverse the factor order of eps_codename
+  mutate(eps_codename = fct_rev(factor(eps_codename))) %>%  
+  mutate(year = factor(year, levels = c(2020, 2000, 1980))) %>% # turn year into a factor variable so that you can more easily control order of year sub-graphs
+  ggplot(aes(x = eps_codename, y = value, fill = variable)) +
+  # geom_col(position = position_stack(reverse = TRUE)) +
+  geom_col(position = position_fill(reverse = TRUE)) +         # <-- 'fill' creates 100% stacked bars
+  coord_flip() +
+  labs(
+    x = NULL,
+    y = "Population",
+    fill = "Race/Ethnicity"      # Legend title
+  ) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  facet_wrap(~ year, ncol = 1, scales = "free_y") +  # Stacks panels for each year
+  theme_minimal()
+
+# THINGS TO DO ON THURSDAY:
+  # START TWEAKING WITH COLOR PALETTES; GET GREYSCALE TO WORK
+  # AFTER YOU GET ALL OF THE RACE AND NON-RACE VARIABLES WORKING, SEE IF THERE IS A FUNCTION THAT CAN BE CREATED THAT MAKES ALL OF THEM; 
+    # OR AT LEAST ONE THAT DOES MOST OF THE PROCESSING EFFICIENTLY
+
+# create percent in poverty
+
+  create_eps_graph(eps_codes = dallas_eps_codes, graph_vars = graph_varlist) %>% 
+    filter(variable== '% in poverty', statistic == 'p50') %>% 
+    # Reverse the factor order of eps_codename
+    mutate(eps_codename = fct_rev(factor(eps_codename))) %>%  
+    mutate(year = factor(year, levels = c(2020, 2000, 1980))) %>% # turn year into a factor variable so that you can more easily control order of year sub-graphs
+    ggplot(aes(x = eps_codename, y = value)) +
+    geom_col() +
+    coord_flip() +
+    labs(
+      x = NULL,
+      y = "Median % in poverty",
+    ) +
+    facet_wrap(~ year, ncol = 1, scales = "free_y") +  # Stacks panels for each year
+    theme_minimal()
+  
+# create median percent with BA+
+  
+  create_eps_graph(eps_codes = dallas_eps_codes, graph_vars = graph_varlist) %>% 
+    filter(variable== '% with BA+', statistic == 'p50') %>% 
+    # Reverse the factor order of eps_codename
+    mutate(eps_codename = fct_rev(factor(eps_codename))) %>%  
+    mutate(year = factor(year, levels = c(2020, 2000, 1980))) %>% # turn year into a factor variable so that you can more easily control order of year sub-graphs
+    ggplot(aes(x = eps_codename, y = value)) +
+    geom_col() +
+    coord_flip() +
+    labs(
+      x = NULL,
+      y = "Median % with BA+",
+    ) +
+    facet_wrap(~ year, ncol = 1, scales = "free_y") +  # Stacks panels for each year
+    theme_minimal()
+  
+# median income
+  
+  create_eps_graph(eps_codes = dallas_eps_codes, graph_vars = graph_varlist) %>% 
+    filter(variable== 'Median income', statistic == 'p50') %>% 
+    # Reverse the factor order of eps_codename
+    mutate(eps_codename = fct_rev(factor(eps_codename))) %>%  
+    mutate(year = factor(year, levels = c(2020, 2000, 1980))) %>% # turn year into a factor variable so that you can more easily control order of year sub-graphs
+    ggplot(aes(x = eps_codename, y = value)) +
+    geom_col() +
+    coord_flip() +
+    labs(
+      x = NULL,
+      y = "Median household income",
+    ) +
+    facet_wrap(~ year, ncol = 1, scales = "free_y") +  # Stacks panels for each year
+    theme_minimal()  
+  
+
+  
+chi_eps_graph %>% select(year,sum_has_race,sum_nhisp_white, sum_nhisp_black, sum_hisp_all, sum_nhisp_asian, sum_nhisp_nhpi, sum_nhisp_native, sum_nhisp_multi) %>% print(n=100)
+chi_eps_graph %>% glimpse()
+
+# geomarket and year uniquely identify obs
+chi_eps_graph %>% # start with data frame object
+  group_by(eps_codename, year) %>% # group by unitid
+  summarise(n_per_group=n()) %>% # create measure of number of obs per group
+  ungroup %>% # ungroup (otherwise frequency table [next step] created) separately for each group (i.e., separate frequency table for each value of unitid)
+  count(n_per_group) # frequency of number of observations per group
+
+
+# looking at race graph for socal; a little busy; could get rid of orange county/inland empire
+
+create_eps_graph(eps_codes = socal_eps_codes, graph_vars = graph_varlist) %>% # 
+  filter(statistic == 'sum',
+         variable %in% c('White, non-Hispanic', 'Black, non-Hispanic', 'Hispanic', 'Asian, non-Hispanic', 'two+ races, non-Hispanic', 'NHPI, non-Hispanic', 'AIAN, non-Hispanic')
+  ) %>% 
+  # Reverse the factor order of eps_codename
+  mutate(eps_codename = fct_rev(factor(eps_codename))) %>%  
+  mutate(year = factor(year, levels = c(2020, 2000, 1980))) %>% # turn year into a factor variable so that you can more easily control order of year sub-graphs
+  ggplot(aes(x = eps_codename, y = value, fill = variable)) +
+  # geom_col(position = position_stack(reverse = TRUE)) +
+  geom_col(position = position_fill(reverse = TRUE)) +         # <-- 'fill' creates 100% stacked bars
+  coord_flip() +
+  labs(
+    x = NULL,
+    y = "Population",
+    fill = "Race/Ethnicity"      # Legend title
+  ) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  facet_wrap(~ year, ncol = 1, scales = "free_y") +  # Stacks panels for each year
+  theme_minimal()
+
 ########
 ######## create function to format the descriptive table for insertion into .Rmd file
 
@@ -704,6 +988,30 @@ display_names <- list(
   "pct_nhisp_black" = "% Black, non-Hispanic"
 )
 
+create_eps_maps(chi_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian", "med_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
+create_eps_maps(chi_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian", "med_inc_house"), mapping_level = "tract", display_names = display_names, eps_border_weight = 4)
+
+
+create_eps_maps(philly_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian", "med_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
+create_eps_maps(philly_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian", "med_inc_house"), mapping_level = "tract", display_names = display_names, eps_border_weight = 4)
+
+
+# bay area
+create_eps_maps(bay_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian", "med_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
+create_eps_maps(bay_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian", "med_inc_house"), mapping_level = "tract", display_names = display_names, eps_border_weight = 4)
+
+
+# Create Tract-level map with EPS borders
+create_eps_maps(socal_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian", "med_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
+
+create_eps_maps(socal_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian", "med_inc_house"), mapping_level = "tract", display_names = display_names, eps_border_weight = 4)
+
+# ga
+create_eps_maps(c('GA 1','GA 2','GA 3', 'GA 4'), c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian", "med_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
+
+create_eps_maps(c('GA 1','GA 2','GA 3', 'GA 4'), c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian", "med_inc_house"), mapping_level = "tract", display_names = display_names, eps_border_weight = 4)
+
+
 # long island
 
 long_island_eps_codes <- c(paste0('NY',16:21))
@@ -719,8 +1027,34 @@ create_eps_maps(c('NY13','NY15'), c("pct_nhisp_white","pct_nhisp_black","pct_his
 nj_metro_eps_codes
 create_eps_maps(nj_metro_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "med_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
 
+# DALLAS
+create_eps_maps(c('TX19','TX20','TX21','TX22','TX23','TX24'), c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "med_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
 
+create_eps_maps(c('TX19','TX20','TX21','TX22','TX23','TX24'), c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "med_inc_house"), mapping_level = "tract", display_names = display_names, eps_border_weight = 4)
 
+# HOUSTON
+create_eps_maps(c('TX15','TX16','TX17','TX18'), c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian", "med_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
+
+create_eps_maps(c('TX15','TX16','TX17','TX18'), c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian", "med_inc_house"), mapping_level = "tract", display_names = display_names, eps_border_weight = 4)
+
+# CHICAGO
+create_eps_maps(chi_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian", "med_inc_house"), mapping_level = "eps", display_names = display_names)
+create_eps_maps(chi_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian", "med_inc_house"), mapping_level = "tract", display_names = display_names, eps_border_weight = 4)
+
+# DMV
+  # MARYLAND
+    # Baltimore metro: 'MD 3','MD 7'
+    # DC metro: 'MD 2','MD 5'
+    create_eps_maps(c('MD 3','MD 7','MD 2','MD 5'), c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian", "med_inc_house"), mapping_level = "eps", display_names = display_names)
+
+  # VIRGINA
+    # Greater Alexandria: 'VA 1','VA 2'
+      # VA 1 = Arlington and Alexandria
+      # VA 2 = Fairfax county
+      # VA 3 = North central Virginia
+    
+    create_eps_maps(c('VA 1','VA 2','VA 3','DC 1'), c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian", "med_inc_house"), mapping_level = "eps", display_names = display_names)
+    
 # new jersey state
 create_eps_maps(nj_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "mean_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
 
@@ -746,20 +1080,15 @@ create_eps_maps(philly_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_his
 create_eps_maps(philly_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "mean_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
 
 # Create Tract-level map with EPS borders
-create_eps_maps(socal_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "med_inc_house"), mapping_level = "tract", display_names = display_names, eps_border_weight = 4)
+create_eps_maps(socal_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian", "med_inc_house"), mapping_level = "tract", display_names = display_names, eps_border_weight = 4)
 
-create_eps_maps(socal_eps_codes, c("pct_hisp_all", "med_inc_house", "pct_nhisp_black"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
+create_eps_maps(socal_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian", "med_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
 
 create_eps_maps(cleveland_eps_codes, c("pct_hisp_all", "med_inc_house", "pct_nhisp_black"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
 
 create_eps_maps(c('OK 1','OK 2'), c("pct_hisp_all", "med_inc_house", "pct_nhisp_native"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
 
 
-# Create Tract-level map with EPS borders
-create_eps_maps(chi_eps_codes, c("pct_hisp_all", "med_inc_house", "pct_nhisp_black"), mapping_level = "tract", display_names = display_names, eps_border_weight = 4)
-
-# Create EPS-level map
-create_eps_maps(chi_eps_codes, c("pct_hisp_all", "mean_inc_house", "pct_nhisp_black"), mapping_level = "eps", display_names = display_names)
 
 # Create Tract-level map with EPS borders
 create_eps_maps(cleveland_eps_codes, c("pct_hisp_all", "med_inc_house", "pct_nhisp_black"), mapping_level = "tract", display_names = display_names, eps_border_weight = 4)
