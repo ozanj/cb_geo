@@ -237,6 +237,11 @@ display_names <- list(
 create_eps_maps(socal_eps_codes, c("med_inc_house","pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
 
 
+create_eps_maps(orange_county_eps_codes, c("med_inc_house","pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
+create_eps_maps(orange_county_eps_codes, c("med_inc_house","pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian"), mapping_level = "tract", display_names = display_names, eps_border_weight = 4)
+
+
+###
 create_eps_maps(chi_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian", "med_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
 create_eps_maps(chi_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian", "med_inc_house"), mapping_level = "tract", display_names = display_names, eps_border_weight = 4)
 
