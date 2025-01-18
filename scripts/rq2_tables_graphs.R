@@ -7,7 +7,7 @@
 ################################################################################
 
 ### SETTINGS
-rm(list = ls()) # remove all objects
+#rm(list = ls()) # remove all objects
 options(max.print=1000)
 #options(width = 160)
 # Set the scipen option to a high value to avoid scientific notation
@@ -15,6 +15,9 @@ options(scipen = 999)
 
 ### LIBRARIES
 library(tidyverse)
+library(formattable)
+library(patchwork)
+library(scales)
 library(readxl)
 library(lubridate)
 library(haven)
@@ -1093,88 +1096,63 @@ create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = 
 
 ######### GRAPHS BASED ON OUTPUT OF RACE FUNCTION create_sim_eps_race_table()
 
-# [from count table] total students by EPS code, stacked by Race,
-create_sim_eps_race_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('448922'), eps_codes = c('PA 1','PA 2','PA 3','PA 4','PA 5'))[[1]]
-
-count_table_long <- create_sim_eps_race_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('448922'), eps_codes = c('PA 1','PA 2','PA 3','PA 4','PA 5'))[[1]] %>%
-  pivot_longer(
-    cols = c(stu_white, stu_asian, stu_black, stu_hispanic, stu_multi, stu_aian, stu_nhpi),
-    names_to = "race",
-    values_to = "count"
-  )
-count_table_long %>% print(n=50)
-
-count_table_long %>% filter(eps_codename != "All") %>% ggplot(aes(x = eps_codename, y = count, fill = race)) +
-  geom_bar(stat = "identity", position = "stack") +
-  labs(title = "Total Students by EPS Code (Stacked by Race)",
-       x = "EPS Code", y = "Number of Students") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-# from row percent table. goal: how known-race students are distributed across race categories
-df <- create_sim_eps_race_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('448922'), eps_codes = philly_eps_codes)[[2]] %>%
-  pivot_longer(
-    cols = c(r_white, r_asian, r_black, r_hispanic, r_multi, r_aian, r_nhpi),
-    names_to = "race",
-    values_to = "value"
-  ) %>% 
-  # some data processing
-  mutate(
-    # Recode pivoted names to your desired labels
-    race = dplyr::recode(race,
-                         "r_white"    = "White, non-Hispanic",
-                         "r_asian"    = "Asian, non-Hispanic",
-                         "r_black"    = "Black, non-Hispanic",
-                         "r_hispanic" = "Hispanic",
-                         "r_multi"    = "two+ races, non-Hispanic",
-                         "r_aian"     = "AIAN, non-Hispanic",
-                         "r_nhpi"     = "NHPI, non-Hispanic"
-    ),
-    # Now apply factor() with those levels
-    race = factor(race, levels = c(
-      "White, non-Hispanic",
-      "Asian, non-Hispanic",
-      "Black, non-Hispanic",
-      "Hispanic",
-      "two+ races, non-Hispanic",
-      "AIAN, non-Hispanic",
-      "NHPI, non-Hispanic"
-    )),
-    eps_codename = forcats::fct_rev(factor(eps_codename)),
-    eps_codename = fct_relevel(factor(eps_codename), "All", after = 0L)
-  )
-
+#### NEXT STEPS: THURSDAY? MODIFY FUNCTION TO CREATE GRAPHS FOR FIRSTGEN.
+    
+create_sim_eps_race_graph <- function(data_graph, ord_nums_graph, eps_codes_graph) {
+  
+  # Row percent plots
+  df_r <- create_sim_eps_race_table(data = data_graph, ord_nums = ord_nums_graph, eps_codes = eps_codes_graph)[[2]] %>%
+    pivot_longer(
+      cols = c(r_white, r_asian, r_black, r_hispanic, r_multi, r_aian, r_nhpi),
+      names_to = "race",
+      values_to = "value"
+    ) %>% 
+    # some data processing
+    mutate(
+      # Recode pivoted names to your desired labels
+      race = dplyr::recode(race,
+                           "r_white"    = "White, non-Hispanic",
+                           "r_asian"    = "Asian, non-Hispanic",
+                           "r_black"    = "Black, non-Hispanic",
+                           "r_hispanic" = "Hispanic",
+                           "r_multi"    = "two+ races, non-Hispanic",
+                           "r_aian"     = "AIAN, non-Hispanic",
+                           "r_nhpi"     = "NHPI, non-Hispanic"
+      ),
+      # Now apply factor() with those levels
+      race = factor(race, levels = c(
+        "White, non-Hispanic",
+        "Asian, non-Hispanic",
+        "Black, non-Hispanic",
+        "Hispanic",
+        "two+ races, non-Hispanic",
+        "AIAN, non-Hispanic",
+        "NHPI, non-Hispanic"
+      )),
+      eps_codename = forcats::fct_rev(factor(eps_codename)),
+      eps_codename = fct_relevel(factor(eps_codename), "All", after = 0L)
+    )
+  
   # begin plotting
-  df %>%  ggplot(aes(x = eps_codename, y = value, fill = race)) + 
-  geom_bar(stat = "identity", position = position_fill(reverse = TRUE)) +
+  plot_r <- df %>%  ggplot(aes(x = eps_codename, y = value, fill = race)) + 
+    geom_bar(stat = "identity", position = position_fill(reverse = TRUE)) +
     # Add labels, one per EPS code, placed at the right edge of the bar
     geom_text(
       data = df %>% distinct(eps_codename, race_known),
       aes(x = eps_codename, y = 1, 
-          #label = paste0("N=", comma(race_known))),
-          label = paste0("N=", race_known)),
+          label = paste0("N=", formattable::comma(race_known, digits = 0))),
+      #label = paste0("N=", race_known)),
       hjust = -0.1,      # shift text a bit to the right
       size = 3,
       inherit.aes = FALSE
     )  +   
-  scale_y_continuous(labels = scales::percent_format(scale = 100)) + 
-  labs(title = "Race Distribution Within Each EPS Code (Row %)",
-       x = NULL, y = NULL) +
-  theme_minimal() + coord_flip(clip = 'off')
-
-
-
-####### column percent table
-
-  # START HERE: FRIDAY 1/17
-    # COLUMN PERCENT GRAPH MIGHT BE BETTER AS SEPARATE LITTLE BARS RATHER THAN STACKED BARS
-    # ?ADD NUMBERS TO THE RIGHT OF BARS, LIKE YOU DID FOR ROW PERCENT GRAPH???
-
+    scale_y_continuous(labels = scales::percent_format(scale = 100)) + 
+    labs(title = "Race Distribution Within Each EPS Code (Row %)",
+         x = NULL, y = NULL) +
+    theme_minimal() + coord_flip(clip = 'off')  
   
-  
-#####  HMMM. THIS ONE MIGHT BE BETTER AS SEPARATE LITTLE BARS RATHER THAN STACKED BARS
-  
-create_sim_eps_race_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('448922'), eps_codes = philly_eps_codes)[[3]] %>%
+  # Column percent plots
+  df_c <- create_sim_eps_race_table(data = data_graph, ord_nums = ord_nums_graph, eps_codes = eps_codes_graph)[[3]] %>%
   pivot_longer(
     cols = c(c_known,c_white, c_asian, c_black, c_hispanic, c_multi, c_aian, c_nhpi),
     names_to = "race",
@@ -1209,20 +1187,200 @@ create_sim_eps_race_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('448922
     race = forcats::fct_rev(factor(race)),
     eps_codename = forcats::fct_rev(factor(eps_codename)),
     #eps_codename = fct_relevel(factor(eps_codename), "All", after = 0L)
+  ) 
+
+  # Extract totals for each race group
+  race_totals <- create_sim_eps_race_table(data = data_graph, ord_nums = ord_nums_graph, eps_codes = eps_codes_graph)[[1]] %>%
+    filter(eps_codename == "All") %>%
+    pivot_longer(
+      cols = c(race_known, starts_with("stu_")),
+      names_to = "race",
+      values_to = "total_race"
+    ) %>% select(-all,-eps_codename) %>% 
+    mutate(
+      race = dplyr::recode(race,
+                           "stu_white"    = "White, non-Hispanic",
+                           "stu_asian"    = "Asian, non-Hispanic",
+                           "stu_black"    = "Black, non-Hispanic",
+                           "stu_hispanic" = "Hispanic",
+                           "stu_multi"    = "two+ races, non-Hispanic",
+                           "stu_aian"     = "AIAN, non-Hispanic",
+                           "stu_nhpi"     = "NHPI, non-Hispanic",
+                           "race_known"   = "All (race known)"
+      ),
+      total_race = scales::comma(total_race, accuracy = 1)
+    )
+  
+  # Combine totals with transformed data
+  df_c <- df_c %>%
+    left_join(race_totals, by = "race") %>% 
+    mutate(
+      # Reapply factor levels to race
+      race = factor(race, levels = c(
+        "All (race known)",      
+        "White, non-Hispanic",
+        "Asian, non-Hispanic",
+        "Black, non-Hispanic",
+        "Hispanic",
+        "two+ races, non-Hispanic",
+        "AIAN, non-Hispanic",
+        "NHPI, non-Hispanic"
+      )),    
+      # Reverse levels for race_label
+      race_label = factor(
+        paste0(race, "\n(N = ", total_race, ")"),
+        levels = rev(paste0(c(
+          "All (race known)",      
+          "White, non-Hispanic",
+          "Asian, non-Hispanic",
+          "Black, non-Hispanic",
+          "Hispanic",
+          "two+ races, non-Hispanic",
+          "AIAN, non-Hispanic",
+          "NHPI, non-Hispanic"
+        ), "\n(N = ", race_totals$total_race, ")"))
+      )
+    )  
+  #remove AIAN or NHPI
+  df_c <- df_c %>% filter(race != 'AIAN, non-Hispanic', race != 'NHPI, non-Hispanic')
+
+  # Plot with updated race labels
+  plot_c <- df_c %>% ggplot(aes(x = race_label, y = value, fill = eps_codename)) +
+    geom_bar(stat = "identity", position = "dodge") +
+    labs(
+      title = "Distribution of Each Race Across EPS Codes (Column %)",
+      x = NULL,
+      y = NULL,
+      fill = "Geomarket"
+    ) +
+    scale_y_continuous(labels = percent_format(scale = 1), expand = expansion(mult = c(0, 0.1))) +
+    scale_fill_discrete(guide = guide_legend(reverse = TRUE)) + # Reverse legend order
+    theme_minimal() +
+    theme(
+      axis.text.x = element_text(angle = 0, vjust = 1, hjust = 0.5),
+      axis.title.x = element_blank(),
+      panel.grid.major.x = element_blank()
+    ) # + coord_flip(clip = 'off')
+
+  # create list object that stores both plots
+  plots = list(
+    plot_r = plot_r,
+    plot_c = plot_c
+  )
+  return(plots)
+
+}
+
+
+# 1 487984  16926 # Illinois standard 2020; ordered 7/19/2019; HS class 2020, 2021; IL; SAT 1020-1150;  GPA A+ to B-
+# 5 488035  12842 # Illinois HS 2020; ordered 7/19/2019; HS class 2020, 2021; SAT 1160 - 1300; GPA A+ to B-
+# 9 488053   7259 # Illinois GPPA 2020 (no cf);ordered 7/19/2019; HS class 2020, 2021; SAT 1310-1600; GPA A+ to B-
+chi_plot <- create_sim_eps_race_graph(lists_orders_zip_hs_df_sf, c('487984'), chi_eps_codes) # 
+chi_plot[[1]]
+chi_plot[[2]]
+
+plot1 + plot2 + plot_layout(ncol = 1)
+
+(chi_plot[[1]] / chi_plot[[2]]) + plot_layout(heights = c(1, 2))
+
+
+create_sim_eps_race_graph(lists_orders_zip_hs_df_sf, c('488035'), chi_eps_codes) # 
+create_sim_eps_race_graph(lists_orders_zip_hs_df_sf, c('488053'), chi_eps_codes) # 
+
+plot2 <- create_sim_eps_race_graph(data_graph = lists_orders_zip_hs_df_sf, ord_nums_graph = c('448922'), eps_codes_graph = philly_eps_codes)
+
+plot2 <- create_sim_eps_race_graph(lists_orders_zip_hs_df_sf, c('487984'), chi_eps_codes) # 
+plot2
+
+plot1
+plot2
+
+library(patchwork)
+class(plot1)
+class(plot2)
+plot1 / plot2
+
+
+
+
+create_sim_eps_race_graph(data_graph = lists_orders_zip_hs_df_sf, ord_nums_graph = c('448427','448440'), eps_codes_graph = philly_eps_codes)
+
+create_sim_eps_race_graph(data_graph = lists_orders_zip_hs_df_sf, ord_nums_graph = c('448922'), eps_codes_graph = dallas_eps_codes)
+create_sim_eps_race_graph(data_graph = lists_orders_zip_hs_df_sf, ord_nums_graph = c('448427','448440'), eps_codes_graph = dallas_eps_codes)
+
+
+
+
+
+create_sim_eps_race_graph(data_graph = lists_orders_zip_hs_df_sf, ord_nums_graph = c('366935'), eps_codes_graph = bay_eps_codes) # PSAT 1110 - 1210
+create_sim_eps_race_graph(data_graph = lists_orders_zip_hs_df_sf, ord_nums_graph = c('366934'), eps_codes_graph = bay_eps_codes) # PSAT 1220-1290    
+create_sim_eps_race_graph(data_graph = lists_orders_zip_hs_df_sf, ord_nums_graph = c('366932'), eps_codes_graph = bay_eps_codes) # PSAT 1300 - 1520
+
+### this is the graph for the count plot when it is not in a function
+
+# [from count table] total students by EPS code, stacked by Race,
+
+create_sim_eps_race_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('448922'), eps_codes = c('PA 1','PA 2','PA 3','PA 4','PA 5'))[[1]] %>%
+  pivot_longer(
+    cols = c(stu_white, stu_asian, stu_black, stu_hispanic, stu_multi, stu_aian, stu_nhpi),
+    names_to = "race",
+    values_to = "count"
+  ) %>% filter(eps_codename != "All") %>% ggplot(aes(x = eps_codename, y = count, fill = race)) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(title = "Total Students by EPS Code (Stacked by Race)",
+       x = "EPS Code", y = "Number of Students") +
+  theme_minimal() + coord_flip(clip = 'off')
+
+### this is the graph for row percent plot when it is not in a function
+
+
+# from row percent table. goal: how known-race students are distributed across race categories
+df <- create_sim_eps_race_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('448922'), eps_codes = philly_eps_codes)[[2]] %>%
+  pivot_longer(
+    cols = c(r_white, r_asian, r_black, r_hispanic, r_multi, r_aian, r_nhpi),
+    names_to = "race",
+    values_to = "value"
   ) %>% 
-  # start plotting
-  ggplot(aes(x = race, y = value, fill = eps_codename)) +
-  geom_bar(stat = "identity", position = "stack") +
-  labs(title = "Distribution of Each Race Across EPS Codes (Column %)",
-       x = "Race Group", y = "Percentage (%)") +
-  scale_y_continuous(labels = scales::percent_format(scale = 1)) +
-  theme_minimal()  + coord_flip(clip = 'off')
+  # some data processing
+  mutate(
+    # Recode pivoted names to your desired labels
+    race = dplyr::recode(race,
+                         "r_white"    = "White, non-Hispanic",
+                         "r_asian"    = "Asian, non-Hispanic",
+                         "r_black"    = "Black, non-Hispanic",
+                         "r_hispanic" = "Hispanic",
+                         "r_multi"    = "two+ races, non-Hispanic",
+                         "r_aian"     = "AIAN, non-Hispanic",
+                         "r_nhpi"     = "NHPI, non-Hispanic"
+    ),
+    # Now apply factor() with those levels
+    race = factor(race, levels = c(
+      "White, non-Hispanic",
+      "Asian, non-Hispanic",
+      "Black, non-Hispanic",
+      "Hispanic",
+      "two+ races, non-Hispanic",
+      "AIAN, non-Hispanic",
+      "NHPI, non-Hispanic"
+    )),
+    eps_codename = forcats::fct_rev(factor(eps_codename)),
+    eps_codename = fct_relevel(factor(eps_codename), "All", after = 0L)
+  )
 
-ggplot(col_pct_table_long, aes(x = race, y = pct, fill = eps_codename)) +
-  geom_bar(stat = "identity", position = "stack") +
-  labs(title = "Distribution of Each Race Across EPS Codes (Column %)",
-       x = "Race Group", y = "Percentage (%)") +
-  scale_y_continuous(labels = scales::percent_format(scale = 1)) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
+# begin plotting
+plot1 <- df %>%  ggplot(aes(x = eps_codename, y = value, fill = race)) + 
+  geom_bar(stat = "identity", position = position_fill(reverse = TRUE)) +
+  # Add labels, one per EPS code, placed at the right edge of the bar
+  geom_text(
+    data = df %>% distinct(eps_codename, race_known),
+    aes(x = eps_codename, y = 1, 
+        label = paste0("N=", formattable::comma(race_known, digits = 0))),
+    #label = paste0("N=", race_known)),
+    hjust = -0.1,      # shift text a bit to the right
+    size = 3,
+    inherit.aes = FALSE
+  )  +   
+  scale_y_continuous(labels = scales::percent_format(scale = 100)) + 
+  labs(title = "Race Distribution Within Each EPS Code (Row %)",
+       x = NULL, y = NULL) +
+  theme_minimal() + coord_flip(clip = 'off')
