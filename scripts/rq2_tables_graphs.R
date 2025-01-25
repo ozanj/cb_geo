@@ -1097,187 +1097,576 @@ create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = 
 ######### GRAPHS BASED ON OUTPUT OF RACE FUNCTION create_sim_eps_race_table()
 
 #### NEXT STEPS: THURSDAY? MODIFY FUNCTION TO CREATE GRAPHS FOR FIRSTGEN.
+
+##----------------------------------------------------------------
+## 1) Reusable: map raw race column names to final race labels
+##----------------------------------------------------------------
+
+
+# FIXES TO MAKE
+  # write loop that runs functions for each combination of metro and order number
+  # save graph to disk
+  # think about how you will combine graphs or not
+    # same graph [e.g., only row percent graph], but different order [test scores]?
+    # different graphs [row_pct and col_pct graph], but same order
+
+
+##------------------------------------------
+## A) Setup: define factor level orders & recode helpers
+##------------------------------------------
+
+# We'll define the factor levels in a "human" top→bottom order.
+# Then, in the code where we build the plots, we'll apply fct_rev()
+# if we want to invert them for the flipped coordinates.
+
+# Race column factor levels (top→bottom)
+# e.g. "All (race known)" at top, then "White, ...", down to "NHPI, non-Hispanic".
+race_col_levels <- c(
+  "All (race known)",
+  "White, non-Hispanic",
+  "Asian, non-Hispanic",
+  "Black, non-Hispanic",
+  "Hispanic",
+  "two+ races, non-Hispanic",
+  "AIAN, non-Hispanic",
+  "NHPI, non-Hispanic"
+)
+
+# Race row factor levels (top→bottom)
+# e.g. "White" at top, then "Asian", etc. down to "NHPI".
+race_row_levels <- c(
+  "White, non-Hispanic",
+  "Asian, non-Hispanic",
+  "Black, non-Hispanic",
+  "Hispanic",
+  "two+ races, non-Hispanic",
+  "AIAN, non-Hispanic",
+  "NHPI, non-Hispanic"
+)
+
+# First-gen column factor levels (top→bottom)
+# e.g. "All (first-gen known)" at top, then "No college", etc.
+firstgen_col_levels <- c(
+  "All (first-gen known)",
+  "No college",
+  "Some college",
+  "Not first-gen"
+)
+
+# First-gen row factor levels (top→bottom)
+# e.g. "No college" at the top, then "Some college", then "Not first-gen".
+firstgen_row_levels <- c(
+  "No college",
+  "Some college",
+  "Not first-gen"
+)
+
+# Helper function that moves "All" to the top in the row plot,
+# keeping original order for the other EPS codes.
+move_all_to_top_in_row <- function(vec) {
+  # We'll reverse it so that "All" becomes first in the factor,
+  # which ends up at top once we do fct_rev() or coordinate flipping.
+  # Or just reorder explicitly: "All" => front, others after.
+  
+  # For your code: you wanted "All" to appear at the top in the flipped chart,
+  # which is the last factor level if you do *not* reverse. 
+  # But if you do want to define it in a top→bottom sense, you might just do:
+  
+  # 1) Remove "All"
+  remainder <- setdiff(vec, "All")
+  # 2) Put "All" as the first item in top→bottom sense
+  c("All", remainder)
+}
+
+## -- recode helpers as you had them --
+recode_race <- function(x) {
+  dplyr::recode(
+    x,
+    "r_white"    = "White, non-Hispanic",
+    "r_asian"    = "Asian, non-Hispanic",
+    "r_black"    = "Black, non-Hispanic",
+    "r_hispanic" = "Hispanic",
+    "r_multi"    = "two+ races, non-Hispanic",
+    "r_aian"     = "AIAN, non-Hispanic",
+    "r_nhpi"     = "NHPI, non-Hispanic",
     
-create_sim_eps_race_graph <- function(data_graph, ord_nums_graph, eps_codes_graph) {
-  
-  # Row percent plots
-  df_r <- create_sim_eps_race_table(data = data_graph, ord_nums = ord_nums_graph, eps_codes = eps_codes_graph)[[2]] %>%
-    pivot_longer(
-      cols = c(r_white, r_asian, r_black, r_hispanic, r_multi, r_aian, r_nhpi),
-      names_to = "race",
-      values_to = "value"
-    ) %>% 
-    # some data processing
-    mutate(
-      # Recode pivoted names to your desired labels
-      race = dplyr::recode(race,
-                           "r_white"    = "White, non-Hispanic",
-                           "r_asian"    = "Asian, non-Hispanic",
-                           "r_black"    = "Black, non-Hispanic",
-                           "r_hispanic" = "Hispanic",
-                           "r_multi"    = "two+ races, non-Hispanic",
-                           "r_aian"     = "AIAN, non-Hispanic",
-                           "r_nhpi"     = "NHPI, non-Hispanic"
-      ),
-      # Now apply factor() with those levels
-      race = factor(race, levels = c(
-        "White, non-Hispanic",
-        "Asian, non-Hispanic",
-        "Black, non-Hispanic",
-        "Hispanic",
-        "two+ races, non-Hispanic",
-        "AIAN, non-Hispanic",
-        "NHPI, non-Hispanic"
-      )),
-      eps_codename = forcats::fct_rev(factor(eps_codename)),
-      eps_codename = fct_relevel(factor(eps_codename), "All", after = 0L)
-    )
-  
-  # begin plotting
-  plot_r <- df %>%  ggplot(aes(x = eps_codename, y = value, fill = race)) + 
-    geom_bar(stat = "identity", position = position_fill(reverse = TRUE)) +
-    # Add labels, one per EPS code, placed at the right edge of the bar
-    geom_text(
-      data = df %>% distinct(eps_codename, race_known),
-      aes(x = eps_codename, y = 1, 
-          label = paste0("N=", formattable::comma(race_known, digits = 0))),
-      #label = paste0("N=", race_known)),
-      hjust = -0.1,      # shift text a bit to the right
-      size = 3,
-      inherit.aes = FALSE
-    )  +   
-    scale_y_continuous(labels = scales::percent_format(scale = 100)) + 
-    labs(title = "Race Distribution Within Each EPS Code (Row %)",
-         x = NULL, y = NULL) +
-    theme_minimal() + coord_flip(clip = 'off')  
-  
-  # Column percent plots
-  df_c <- create_sim_eps_race_table(data = data_graph, ord_nums = ord_nums_graph, eps_codes = eps_codes_graph)[[3]] %>%
-  pivot_longer(
-    cols = c(c_known,c_white, c_asian, c_black, c_hispanic, c_multi, c_aian, c_nhpi),
-    names_to = "race",
-    values_to = "value"
-  ) %>% 
-  # some data processing
-  filter(eps_codename != 'All') %>% 
-  mutate(
-    # Recode pivoted names to your desired labels
-    race = dplyr::recode(race,
-                         "c_white"    = "White, non-Hispanic",
-                         "c_asian"    = "Asian, non-Hispanic",
-                         "c_black"    = "Black, non-Hispanic",
-                         "c_hispanic" = "Hispanic",
-                         "c_multi"    = "two+ races, non-Hispanic",
-                         "c_aian"     = "AIAN, non-Hispanic",
-                         "c_nhpi"     = "NHPI, non-Hispanic",
-                         'c_known'    = "All (race known)"
-    ),
-    # Now apply factor() with those levels
-    race = factor(race, levels = c(
-      "All (race known)",      
-      "White, non-Hispanic",
-      "Asian, non-Hispanic",
-      "Black, non-Hispanic",
-      "Hispanic",
-      "two+ races, non-Hispanic",
-      "AIAN, non-Hispanic",
-      "NHPI, non-Hispanic"
-
-    )),
-    race = forcats::fct_rev(factor(race)),
-    eps_codename = forcats::fct_rev(factor(eps_codename)),
-    #eps_codename = fct_relevel(factor(eps_codename), "All", after = 0L)
-  ) 
-
-  # Extract totals for each race group
-  race_totals <- create_sim_eps_race_table(data = data_graph, ord_nums = ord_nums_graph, eps_codes = eps_codes_graph)[[1]] %>%
-    filter(eps_codename == "All") %>%
-    pivot_longer(
-      cols = c(race_known, starts_with("stu_")),
-      names_to = "race",
-      values_to = "total_race"
-    ) %>% select(-all,-eps_codename) %>% 
-    mutate(
-      race = dplyr::recode(race,
-                           "stu_white"    = "White, non-Hispanic",
-                           "stu_asian"    = "Asian, non-Hispanic",
-                           "stu_black"    = "Black, non-Hispanic",
-                           "stu_hispanic" = "Hispanic",
-                           "stu_multi"    = "two+ races, non-Hispanic",
-                           "stu_aian"     = "AIAN, non-Hispanic",
-                           "stu_nhpi"     = "NHPI, non-Hispanic",
-                           "race_known"   = "All (race known)"
-      ),
-      total_race = scales::comma(total_race, accuracy = 1)
-    )
-  
-  # Combine totals with transformed data
-  df_c <- df_c %>%
-    left_join(race_totals, by = "race") %>% 
-    mutate(
-      # Reapply factor levels to race
-      race = factor(race, levels = c(
-        "All (race known)",      
-        "White, non-Hispanic",
-        "Asian, non-Hispanic",
-        "Black, non-Hispanic",
-        "Hispanic",
-        "two+ races, non-Hispanic",
-        "AIAN, non-Hispanic",
-        "NHPI, non-Hispanic"
-      )),    
-      # Reverse levels for race_label
-      race_label = factor(
-        paste0(race, "\n(N = ", total_race, ")"),
-        levels = rev(paste0(c(
-          "All (race known)",      
-          "White, non-Hispanic",
-          "Asian, non-Hispanic",
-          "Black, non-Hispanic",
-          "Hispanic",
-          "two+ races, non-Hispanic",
-          "AIAN, non-Hispanic",
-          "NHPI, non-Hispanic"
-        ), "\n(N = ", race_totals$total_race, ")"))
-      )
-    )  
-  #remove AIAN or NHPI
-  df_c <- df_c %>% filter(race != 'AIAN, non-Hispanic', race != 'NHPI, non-Hispanic')
-
-  # Plot with updated race labels
-  plot_c <- df_c %>% ggplot(aes(x = race_label, y = value, fill = eps_codename)) +
-    geom_bar(stat = "identity", position = "dodge") +
-    labs(
-      title = "Distribution of Each Race Across EPS Codes (Column %)",
-      x = NULL,
-      y = NULL,
-      fill = "Geomarket"
-    ) +
-    scale_y_continuous(labels = percent_format(scale = 1), expand = expansion(mult = c(0, 0.1))) +
-    scale_fill_discrete(guide = guide_legend(reverse = TRUE)) + # Reverse legend order
-    theme_minimal() +
-    theme(
-      axis.text.x = element_text(angle = 0, vjust = 1, hjust = 0.5),
-      axis.title.x = element_blank(),
-      panel.grid.major.x = element_blank()
-    ) # + coord_flip(clip = 'off')
-
-  # create list object that stores both plots
-  plots = list(
-    plot_r = plot_r,
-    plot_c = plot_c
+    "c_white"    = "White, non-Hispanic",
+    "c_asian"    = "Asian, non-Hispanic",
+    "c_black"    = "Black, non-Hispanic",
+    "c_hispanic" = "Hispanic",
+    "c_multi"    = "two+ races, non-Hispanic",
+    "c_aian"     = "AIAN, non-Hispanic",
+    "c_nhpi"     = "NHPI, non-Hispanic",
+    "c_known"    = "All (race known)",
+    
+    "stu_white"    = "White, non-Hispanic",
+    "stu_asian"    = "Asian, non-Hispanic",
+    "stu_black"    = "Black, non-Hispanic",
+    "stu_hispanic" = "Hispanic",
+    "stu_multi"    = "two+ races, non-Hispanic",
+    "stu_aian"     = "AIAN, non-Hispanic",
+    "stu_nhpi"     = "NHPI, non-Hispanic",
+    "race_known"   = "All (race known)"
   )
-  return(plots)
+}
 
+recode_firstgen <- function(x) {
+  dplyr::recode(
+    x,
+    "r_no_col"     = "No college",
+    "r_some_col"   = "Some college",
+    "r_not_first"  = "Not first-gen",
+    
+    "c_no_col"     = "No college",
+    "c_some_col"   = "Some college",
+    "c_not_first"  = "Not first-gen",
+    "c_known"      = "All (first-gen known)",
+    
+    "stu_no_col"   = "No college",
+    "stu_some_col" = "Some college",
+    "stu_not_first"= "Not first-gen",
+    "stu_known"    = "All (first-gen known)"
+  )
+}
+
+##------------------------------------------
+## B) Main function with Approach A (top→bottom + fct_rev)
+##------------------------------------------
+create_sim_eps_graph <- function(data_graph,
+                                 ord_nums_graph,
+                                 eps_codes_graph,
+                                 variable = c("race", "firstgen"),
+                                 title = "") {
+  
+  # Match user input to "race" or "firstgen"
+  variable <- match.arg(variable)
+  
+  if (variable == "race") {
+    table_list <- create_sim_eps_race_table(
+      data      = data_graph,
+      ord_nums  = ord_nums_graph,
+      eps_codes = eps_codes_graph
+    )
+    
+    # -- Row pivot code (unchanged logic) --
+    df_r <- table_list[[2]] %>%
+      tidyr::pivot_longer(
+        cols = c(r_white, r_asian, r_black, r_hispanic, r_multi, r_aian, r_nhpi),
+        names_to  = "group",
+        values_to = "value"
+      ) %>%
+      dplyr::mutate(
+        group = recode_race(group),
+        group = factor(group, levels = race_row_levels)
+      )
+    
+    # Reorder eps_codename so "All" is top
+    all_eps <- unique(df_r$eps_codename)
+    new_eps <- move_all_to_top_in_row(all_eps)
+    df_r <- df_r %>%
+      dplyr::mutate(
+        eps_codename = factor(eps_codename, levels = new_eps)
+      )
+    
+    # -- Column pivot code (unchanged logic) --
+    df_c <- table_list[[3]] %>%
+      tidyr::pivot_longer(
+        cols = c(c_known, c_white, c_asian, c_black, c_hispanic, c_multi, c_aian, c_nhpi),
+        names_to  = "group",
+        values_to = "value"
+      ) %>%
+      dplyr::filter(eps_codename != "All") %>%
+      dplyr::mutate(
+        group = recode_race(group),
+        group = factor(group, levels = race_col_levels),
+        eps_codename = factor(eps_codename)
+      ) %>%
+      dplyr::mutate(
+        group       = forcats::fct_rev(group),
+        eps_codename = forcats::fct_rev(eps_codename)
+      )
+    
+    # Totals & labeling
+    totals <- table_list[[1]] %>%
+      dplyr::filter(eps_codename == "All") %>%
+      tidyr::pivot_longer(
+        cols = c(race_known, dplyr::starts_with("stu_")),
+        names_to  = "group",
+        values_to = "total_group"
+      ) %>%
+      dplyr::select(-all, -eps_codename) %>%
+      dplyr::mutate(
+        group       = recode_race(group),
+        total_group = scales::comma(total_group, accuracy = 1)
+      )
+    
+    df_c <- df_c %>%
+      dplyr::left_join(totals, by = "group") %>%
+      dplyr::mutate(
+        group = factor(group, levels = rev(race_col_levels)),
+        group_label = factor(
+          paste0(group, "\n(N = ", total_group, ")"),
+          levels = rev(
+            paste0(race_col_levels, "\n(N = ", totals$total_group, ")")
+          )
+        )
+      ) %>%
+      dplyr::filter(!group %in% c("AIAN, non-Hispanic", "NHPI, non-Hispanic"))
+    
+    # Original titles
+    row_plot_title <- "Race Distribution Within Each EPS Code (Row %)"
+    col_plot_title <- "Distribution of Each Race Across EPS Codes (Column %)"
+    fill_legend    <- "Geomarket"
+    
+  } else {
+    # -- FIRST-GEN BRANCH --
+    table_list <- create_sim_eps_firstgen_table(
+      data = data_graph,
+      ord_nums = ord_nums_graph,
+      eps_codes = eps_codes_graph
+    )
+    
+    # Row pivot
+    df_r <- table_list[[2]] %>%
+      tidyr::pivot_longer(
+        cols = c(r_no_col, r_some_col, r_not_first),
+        names_to  = "group",
+        values_to = "value"
+      ) %>%
+      dplyr::mutate(
+        group = recode_firstgen(group),
+        group = factor(group, levels = firstgen_row_levels)
+      )
+    
+    all_eps <- unique(df_r$eps_codename)
+    new_eps <- move_all_to_top_in_row(all_eps)
+    df_r <- df_r %>%
+      dplyr::mutate(
+        eps_codename = factor(eps_codename, levels = new_eps)
+      )
+    
+    # Column pivot
+    df_c <- table_list[[3]] %>%
+      tidyr::pivot_longer(
+        cols = c(c_known, c_no_col, c_some_col, c_not_first),
+        names_to  = "group",
+        values_to = "value"
+      ) %>%
+      dplyr::filter(eps_codename != "All") %>%
+      dplyr::mutate(
+        group = recode_firstgen(group),
+        group = factor(group, levels = firstgen_col_levels),
+        eps_codename = factor(eps_codename)
+      ) %>%
+      dplyr::mutate(
+        group       = forcats::fct_rev(group),
+        eps_codename = forcats::fct_rev(eps_codename)
+      )
+    
+    # Totals & labeling
+    totals <- table_list[[1]] %>%
+      dplyr::filter(eps_codename == "All") %>%
+      tidyr::pivot_longer(
+        cols = c(stu_known, stu_no_col, stu_some_col, stu_not_first),
+        names_to  = "group",
+        values_to = "total_group"
+      ) %>%
+      dplyr::select(-eps_codename) %>%
+      dplyr::mutate(
+        group       = recode_firstgen(group),
+        total_group = scales::comma(total_group, accuracy = 1)
+      )
+    
+    df_c <- df_c %>%
+      dplyr::left_join(totals, by = "group") %>%
+      dplyr::mutate(
+        group = factor(group, levels = rev(firstgen_col_levels)),
+        label_str = paste0(group, "\n(N = ", total_group, ")")
+      )
+    
+    label_levels <- rev(
+      sapply(firstgen_col_levels, function(g) {
+        val <- totals %>%
+          dplyr::filter(group == g) %>%
+          dplyr::pull(total_group)
+        paste0(g, "\n(N = ", val, ")")
+      })
+    )
+    
+    df_c <- df_c %>%
+      dplyr::mutate(
+        group_label = factor(label_str, levels = label_levels)
+      )
+    
+    # Original titles
+    row_plot_title <- "First-Gen Distribution Within Each EPS Code (Row %)"
+    col_plot_title <- "Distribution of First-Gen Groups Across EPS Codes (Column %)"
+    fill_legend    <- "Geomarket"
+  }
+  
+  # ----------------------------------------------------------------
+  # (A) Append the user-supplied 'title' to each existing plot title
+  # ----------------------------------------------------------------
+  if (!is.null(title) && nzchar(title)) {
+    row_plot_title <- paste0(row_plot_title, " - ", title)
+    col_plot_title <- paste0(col_plot_title, " - ", title)
+  }
+  
+  # ----------------------------------------------------------------
+  # 3) Build the row-percent Plot
+  # ----------------------------------------------------------------
+  known_col <- if (variable == "race") "race_known" else "stu_known"
+  
+  plot_r <- df_r %>%
+    ggplot2::ggplot(ggplot2::aes(x = fct_rev(eps_codename), y = value, fill = group)) +
+    ggplot2::geom_bar(stat = "identity", position = ggplot2::position_fill(reverse = TRUE)) +
+    
+    ggplot2::geom_text(
+      data = df_r %>% dplyr::distinct(eps_codename, .keep_all = TRUE),
+      ggplot2::aes(
+        x = eps_codename,
+        y = 1,
+        label = paste0("N=", formattable::comma(.data[[known_col]], digits = 0))
+      ),
+      hjust       = -0.1,
+      size        = 3,
+      inherit.aes = FALSE
+    ) +
+    
+    ggplot2::scale_y_continuous(labels = scales::percent_format(scale = 100)) +
+    ggplot2::labs(
+      title = row_plot_title,
+      x     = NULL,
+      y     = NULL
+    ) +
+    ggplot2::theme_minimal() +
+    ggplot2::coord_flip(clip = "off")
+  
+  # ----------------------------------------------------------------
+  # 4) Build the column-percent Plot
+  # ----------------------------------------------------------------
+  plot_c <- df_c %>%
+    ggplot2::ggplot(ggplot2::aes(x = group_label, y = value, fill = eps_codename)) +
+    ggplot2::geom_bar(stat = "identity", position = "dodge") +
+    ggplot2::labs(
+      title = col_plot_title,
+      x     = NULL,
+      y     = NULL,
+      fill  = fill_legend
+    ) +
+    ggplot2::scale_y_continuous(
+      labels = scales::percent_format(scale = 1),
+      expand = ggplot2::expansion(mult = c(0, 0.1))
+    ) +
+    ggplot2::scale_fill_discrete(guide = ggplot2::guide_legend(reverse = TRUE)) +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(
+      axis.text.x        = ggplot2::element_text(angle = 0, vjust = 1, hjust = 0.5),
+      axis.title.x       = ggplot2::element_blank(),
+      panel.grid.major.x = ggplot2::element_blank()
+    ) +
+    ggplot2::coord_flip(clip = "off")
+  
+  # ----------------------------------------------------------------
+  # 5) Return both plots
+  # ----------------------------------------------------------------
+  list(plot_r = plot_r, plot_c = plot_c)
 }
 
 
 # 1 487984  16926 # Illinois standard 2020; ordered 7/19/2019; HS class 2020, 2021; IL; SAT 1020-1150;  GPA A+ to B-
 # 5 488035  12842 # Illinois HS 2020; ordered 7/19/2019; HS class 2020, 2021; SAT 1160 - 1300; GPA A+ to B-
 # 9 488053   7259 # Illinois GPPA 2020 (no cf);ordered 7/19/2019; HS class 2020, 2021; SAT 1310-1600; GPA A+ to B-
-chi_plot <- create_sim_eps_race_graph(lists_orders_zip_hs_df_sf, c('487984'), chi_eps_codes) # 
-chi_plot[[1]]
-chi_plot[[2]]
+
+# philly metro area
+# order 448922: PSAT 1070 - 1180; order 448427: PSAT 1190 - 1260; order 448440: PSAT 1270 - 1520
+
+# FIXES TO MAKE
+  # add an argument that can create a custom title
+
+all_orders <- list(
+  chicago = c('chicago', 'chi_eps_codes', 'SAT score 1020 - 1150', '487984'),
+  chicago = c('chicago', 'chi_eps_codes', 'SAT score 1160 - 1600', '488035', '488053'),
+  philadelphia = c('philadelphia', 'philly_eps_codes', 'PSAT score 1070 - 1180', '448922'),
+  philadelphia = c('philadelphia', 'philly_eps_codes', 'PSAT score 1190 - 1520', '448427', '448440')
+)
+all_orders
+
+for (orders in all_orders) {
+  
+  metro_name_graph <- orders[1]
+  eps_codes_graph <- get(orders[2])  # First element as eps_codes_graph
+  graph_title <- orders[3]  # second element as graph title
+  ord_nums_graph <- orders[-c(1, 2, 3)]  # Remaining elements as ord_nums_graph
+  
+  for (g in c('race', 'firstgen')) {
+    
+    plot_name <- str_c(metro_name_graph, g, "plot_order", str_c(ord_nums_graph, collapse = "_"), sep = '_')
+    writeLines(str_c(plot_name))
+    
+    # Remove the object if it exists
+    if (exists(plot_name, envir = .GlobalEnv)) {
+      rm(list = plot_name, envir = .GlobalEnv)
+    }
+    
+    # Create the object
+    assign(
+      plot_name,
+      create_sim_eps_graph(
+        data_graph    = lists_orders_zip_hs_df_sf,
+        ord_nums_graph = ord_nums_graph,
+        eps_codes_graph = eps_codes_graph,
+        variable = g
+      )
+    )
+  }
+}
+
+### Philly
+philadelphia_race_plot_order_448922$plot_r
+philadelphia_race_plot_order_448922$plot_c
+
+philadelphia_firstgen_plot_order_448922$plot_r
+philadelphia_firstgen_plot_order_448922$plot_c
+
+philadelphia_race_plot_order_448427_448440$plot_r
+philadelphia_race_plot_order_448427_448440$plot_c
+
+philadelphia_firstgen_plot_order_448427_448440$plot_r
+philadelphia_firstgen_plot_order_448427_448440$plot_c
+
+# combined graphs
+# race row pct. for lower SAT score and higher SAT score
+philadelphia_race_plot_order_448922$plot_r + philadelphia_race_plot_order_448427_448440$plot_r + plot_layout(ncol = 1)
+# firstgen row pct. for lower SAT score and higher SAT score
+philadelphia_firstgen_plot_order_448922$plot_r + philadelphia_firstgen_plot_order_448427_448440$plot_r + plot_layout(ncol = 1)
+# race column pct. for lower SAT score and higher SAT score
+philadelphia_race_plot_order_448922$plot_c + philadelphia_race_plot_order_448427_448440$plot_c + plot_layout(ncol = 1)
+# firstgen column pct. for lower SAT score and higher SAT score
+philadelphia_firstgen_plot_order_448922$plot_c + philadelphia_firstgen_plot_order_448427_448440$plot_c + plot_layout(ncol = 1)
+
+# saving plots to disk
+# Combine the two plots using patchwork
+combined_plot <- philadelphia_race_plot_order_448922$plot_r + 
+  philadelphia_race_plot_order_448427_448440$plot_r + 
+  patchwork::plot_layout(ncol = 1)
+
+# Save the combined plot to disk
+ggsave(
+  filename = file.path(graphs_dir, "rq2_philadelphia_race_rowpct_low_high_psat.png"),
+  plot = combined_plot,
+  width = 16,
+  height = 10,  # Adjusted height to accommodate the combined plots
+  bg = 'white'
+)
+
+#### chicago
+
+chicago_race_plot_order_487984$plot_r
+chicago_race_plot_order_487984$plot_c
+
+chicago_firstgen_plot_order_487984$plot_r
+chicago_firstgen_plot_order_487984$plot_c
+
+chicago_race_plot_order_488035_488053$plot_r
+chicago_race_plot_order_488035_488053$plot_c
+
+chicago_firstgen_plot_order_488035_488053$plot_r
+chicago_firstgen_plot_order_488035_488053$plot_c
+
+# combined graphs
+# race row pct. for lower SAT score and higher SAT score
+chicago_race_plot_order_487984$plot_r + chicago_race_plot_order_488035_488053$plot_r + plot_layout(ncol = 1)
+# firstgen row pct. for lower SAT score and higher SAT score
+chicago_firstgen_plot_order_487984$plot_r + chicago_firstgen_plot_order_488035_488053$plot_r + plot_layout(ncol = 1)
+# race column pct. for lower SAT score and higher SAT score
+chicago_race_plot_order_487984$plot_c + chicago_race_plot_order_488035_488053$plot_c + plot_layout(ncol = 1)
+# firstgen column pct. for lower SAT score and higher SAT score
+chicago_firstgen_plot_order_487984$plot_c + chicago_firstgen_plot_order_488035_488053$plot_c + plot_layout(ncol = 1)
+
+
+
+
+chicago_firstgen_plot_order_488035_488053$plot_r
+chicago_firstgen_plot_order_488035_488053$plot_c
+
+
+
+
+
+chi_firstgen_plot_order_488035_488053$plot_c
+chi_race_plot_order_487984$plot_r
+chi_race_plot_order_488035_488053$plot_r
+
+chi_race_plot_order_487984$plot_c
+chi_race_plot_order_488035_488053$plot_c
+
+chi_race_plot$plot_c
+
+chi_race_plot <- create_sim_eps_graph(
+  data_graph    = lists_orders_zip_hs_df_sf,
+  ord_nums_graph = c('487984'),
+  eps_codes_graph = chi_eps_codes,
+  variable = "race"
+)
+
+chi_race_plot$plot_r
+chi_race_plot$plot_c
+
+
+plot1 + plot2 + plot_layout(ncol = 1)
+
+(chi_race_plot$plot_r / chi_firstgen_plot$plot_r) + plot_layout(heights = c(1, 1))
+
+(chi_race_plot$plot_c / chi_firstgen_plot$plot_c) + plot_layout(heights = c(1, 1))
+
+# chi_race_plot$plot_r / chi_race_plot$plot_c # this is fugly
+
+
+# For Race
+chi_race_plot <- create_sim_eps_graph(
+  data_graph    = lists_orders_zip_hs_df_sf,
+  ord_nums_graph = c('487984'),
+  eps_codes_graph = chi_eps_codes,
+  variable = "race"
+)
+chi_race_plot$plot_r
+chi_race_plot$plot_c
+
+# For First-Gen
+chi_firstgen_plot <- create_sim_eps_graph(
+  data_graph     = lists_orders_zip_hs_df_sf,
+  ord_nums_graph = c('487984'),
+  eps_codes_graph = chi_eps_codes,
+  variable = "firstgen"
+)
+chi_firstgen_plot$plot_r # order: no college, some college, not first-gen
+chi_firstgen_plot$plot_c
+
+# philly
+# For Race
+philly_race_plot <- create_sim_eps_graph(
+  data_graph    = lists_orders_zip_hs_df_sf,
+  ord_nums_graph = c('448922'),
+  eps_codes_graph = philly_eps_codes,
+  variable = "race"
+)
+philly_race_plot$plot_r
+philly_race_plot$plot_c
+
+# For First-Gen
+philly_firstgen_plot <- create_sim_eps_graph(
+  data_graph     = lists_orders_zip_hs_df_sf,
+  ord_nums_graph = c('448922'),
+  eps_codes_graph = philly_eps_codes,
+  variable = "firstgen"
+)
+philly_firstgen_plot$plot_r # order: no college, some college, not first-gen
+philly_firstgen_plot$plot_c
+
+philly_plot <- create_sim_eps_race_graph(lists_orders_zip_hs_df_sf, c('448922'), philly_eps_codes) # 
+philly_plot[[1]]
+philly_plot[[2]]
 
 plot1 + plot2 + plot_layout(ncol = 1)
 
@@ -1316,71 +1705,268 @@ create_sim_eps_race_graph(data_graph = lists_orders_zip_hs_df_sf, ord_nums_graph
 create_sim_eps_race_graph(data_graph = lists_orders_zip_hs_df_sf, ord_nums_graph = c('366934'), eps_codes_graph = bay_eps_codes) # PSAT 1220-1290    
 create_sim_eps_race_graph(data_graph = lists_orders_zip_hs_df_sf, ord_nums_graph = c('366932'), eps_codes_graph = bay_eps_codes) # PSAT 1300 - 1520
 
-### this is the graph for the count plot when it is not in a function
+## previous function, before you added the title argument
+  # note: this one is 20 lines LONGER than the one above, so I am keeping it around in case chatgpt eliminated any functionality.
 
-# [from count table] total students by EPS code, stacked by Race,
-
-create_sim_eps_race_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('448922'), eps_codes = c('PA 1','PA 2','PA 3','PA 4','PA 5'))[[1]] %>%
-  pivot_longer(
-    cols = c(stu_white, stu_asian, stu_black, stu_hispanic, stu_multi, stu_aian, stu_nhpi),
-    names_to = "race",
-    values_to = "count"
-  ) %>% filter(eps_codename != "All") %>% ggplot(aes(x = eps_codename, y = count, fill = race)) +
-  geom_bar(stat = "identity", position = "stack") +
-  labs(title = "Total Students by EPS Code (Stacked by Race)",
-       x = "EPS Code", y = "Number of Students") +
-  theme_minimal() + coord_flip(clip = 'off')
-
-### this is the graph for row percent plot when it is not in a function
-
-
-# from row percent table. goal: how known-race students are distributed across race categories
-df <- create_sim_eps_race_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('448922'), eps_codes = philly_eps_codes)[[2]] %>%
-  pivot_longer(
-    cols = c(r_white, r_asian, r_black, r_hispanic, r_multi, r_aian, r_nhpi),
-    names_to = "race",
-    values_to = "value"
-  ) %>% 
-  # some data processing
-  mutate(
-    # Recode pivoted names to your desired labels
-    race = dplyr::recode(race,
-                         "r_white"    = "White, non-Hispanic",
-                         "r_asian"    = "Asian, non-Hispanic",
-                         "r_black"    = "Black, non-Hispanic",
-                         "r_hispanic" = "Hispanic",
-                         "r_multi"    = "two+ races, non-Hispanic",
-                         "r_aian"     = "AIAN, non-Hispanic",
-                         "r_nhpi"     = "NHPI, non-Hispanic"
-    ),
-    # Now apply factor() with those levels
-    race = factor(race, levels = c(
-      "White, non-Hispanic",
-      "Asian, non-Hispanic",
-      "Black, non-Hispanic",
-      "Hispanic",
-      "two+ races, non-Hispanic",
-      "AIAN, non-Hispanic",
-      "NHPI, non-Hispanic"
-    )),
-    eps_codename = forcats::fct_rev(factor(eps_codename)),
-    eps_codename = fct_relevel(factor(eps_codename), "All", after = 0L)
-  )
-
-# begin plotting
-plot1 <- df %>%  ggplot(aes(x = eps_codename, y = value, fill = race)) + 
-  geom_bar(stat = "identity", position = position_fill(reverse = TRUE)) +
-  # Add labels, one per EPS code, placed at the right edge of the bar
-  geom_text(
-    data = df %>% distinct(eps_codename, race_known),
-    aes(x = eps_codename, y = 1, 
-        label = paste0("N=", formattable::comma(race_known, digits = 0))),
-    #label = paste0("N=", race_known)),
-    hjust = -0.1,      # shift text a bit to the right
-    size = 3,
-    inherit.aes = FALSE
-  )  +   
-  scale_y_continuous(labels = scales::percent_format(scale = 100)) + 
-  labs(title = "Race Distribution Within Each EPS Code (Row %)",
-       x = NULL, y = NULL) +
-  theme_minimal() + coord_flip(clip = 'off')
+create_sim_eps_graph <- function(data_graph,
+                                 ord_nums_graph,
+                                 eps_codes_graph,
+                                 variable = c("race", "firstgen")) {
+  
+  variable <- match.arg(variable)
+  
+  if (variable == "race") {
+    table_list <- create_sim_eps_race_table(
+      data      = data_graph,
+      ord_nums  = ord_nums_graph,
+      eps_codes = eps_codes_graph
+    )
+    
+    ##----------------------
+    ## 1) Row-Percent pivot
+    ##----------------------
+    df_r <- table_list[[2]] %>%
+      tidyr::pivot_longer(
+        cols = c(r_white, r_asian, r_black, r_hispanic, r_multi, r_aian, r_nhpi),
+        names_to  = "group",
+        values_to = "value"
+      ) %>%
+      dplyr::mutate(
+        group = recode_race(group),
+        # Define row factor in top→bottom sense (race_row_levels),
+        group = factor(group, levels = race_row_levels)
+      )
+    
+    # Reorder eps_codename so "All" is top in final flipped chart 
+    # -> put "All" at the front in top→bottom sense,
+    # then we will apply fct_rev() later.
+    all_eps <- unique(df_r$eps_codename)
+    # define a top->bottom vector where "All" is first
+    new_eps <- move_all_to_top_in_row(all_eps)
+    df_r <- df_r %>%
+      dplyr::mutate(
+        eps_codename = factor(eps_codename, levels = new_eps)
+      )
+    
+    ##------------------------
+    ## 2) Column-Percent pivot
+    ##------------------------
+    df_c <- table_list[[3]] %>%
+      tidyr::pivot_longer(
+        cols = c(c_known, c_white, c_asian, c_black, c_hispanic, c_multi, c_aian, c_nhpi),
+        names_to  = "group",
+        values_to = "value"
+      ) %>%
+      dplyr::filter(eps_codename != "All") %>%
+      dplyr::mutate(
+        group = recode_race(group),
+        # We define the factor in top->bottom order (race_col_levels),
+        # then we do fct_rev() below to invert it for flipping.
+        group = factor(group, levels = race_col_levels),
+        
+        # For the eps_codename, we also define in top->bottom 
+        # then use fct_rev() to get final orientation
+        eps_codename = factor(eps_codename)
+      )
+    
+    # Now apply fct_rev() for the column chart's group & eps_codename
+    # so that "All (race known)" is truly at the top in the flipped axis
+    df_c <- df_c %>%
+      dplyr::mutate(
+        group       = forcats::fct_rev(group),
+        eps_codename = forcats::fct_rev(eps_codename)
+      )
+    
+    # Then handle totals & labeling
+    totals <- table_list[[1]] %>%
+      dplyr::filter(eps_codename == "All") %>%
+      tidyr::pivot_longer(
+        cols = c(race_known, dplyr::starts_with("stu_")),
+        names_to  = "group",
+        values_to = "total_group"
+      ) %>%
+      dplyr::select(-all, -eps_codename) %>%
+      dplyr::mutate(
+        group       = recode_race(group),
+        total_group = scales::comma(total_group, accuracy = 1)
+      )
+    
+    df_c <- df_c %>%
+      dplyr::left_join(totals, by = "group") %>%
+      # re-apply factor just in case
+      dplyr::mutate(
+        group = factor(group, levels = rev(race_col_levels)),
+        group_label = factor(
+          paste0(group, "\n(N = ", total_group, ")"),
+          levels = rev(
+            paste0(race_col_levels, "\n(N = ", totals$total_group, ")")
+          )
+        )
+      ) %>%
+      dplyr::filter(!group %in% c("AIAN, non-Hispanic", "NHPI, non-Hispanic"))
+    
+    row_plot_title <- "Race Distribution Within Each EPS Code (Row %)"
+    col_plot_title <- "Distribution of Each Race Across EPS Codes (Column %)"
+    fill_legend    <- "Geomarket"
+    
+  } else {
+    ##==================================
+    ## FIRST-GEN BRANCH (Approach A)
+    ##==================================
+    table_list <- create_sim_eps_firstgen_table(
+      data = data_graph,
+      ord_nums = ord_nums_graph,
+      eps_codes = eps_codes_graph
+    )
+    
+    ##----------------------
+    ## 1) Row-Percent pivot
+    ##----------------------
+    df_r <- table_list[[2]] %>%
+      tidyr::pivot_longer(
+        cols = c(r_no_col, r_some_col, r_not_first),
+        names_to  = "group",
+        values_to = "value"
+      ) %>%
+      dplyr::mutate(
+        group = recode_firstgen(group),
+        # define top->bottom for the row usage
+        group = factor(group, levels = firstgen_row_levels)
+      )
+    
+    # reorder eps_codename so "All" is top in final chart
+    all_eps <- unique(df_r$eps_codename)
+    new_eps <- move_all_to_top_in_row(all_eps)
+    df_r <- df_r %>%
+      dplyr::mutate(
+        eps_codename = factor(eps_codename, levels = new_eps)
+      )
+    
+    ##------------------------
+    ## 2) Column-Percent pivot
+    ##------------------------
+    df_c <- table_list[[3]] %>%
+      tidyr::pivot_longer(
+        cols = c(c_known, c_no_col, c_some_col, c_not_first),
+        names_to  = "group",
+        values_to = "value"
+      ) %>%
+      dplyr::filter(eps_codename != "All") %>%
+      dplyr::mutate(
+        group = recode_firstgen(group),
+        # define top->bottom 
+        group = factor(group, levels = firstgen_col_levels),
+        eps_codename = factor(eps_codename)
+      )
+    
+    # Apply fct_rev() so "All (first-gen known)" is truly top in final flipped chart
+    df_c <- df_c %>%
+      dplyr::mutate(
+        group       = forcats::fct_rev(group),
+        eps_codename = forcats::fct_rev(eps_codename)
+      )
+    
+    # totals & labeling
+    totals <- table_list[[1]] %>%
+      dplyr::filter(eps_codename == "All") %>%
+      tidyr::pivot_longer(
+        cols = c(stu_known, stu_no_col, stu_some_col, stu_not_first),
+        names_to  = "group",
+        values_to = "total_group"
+      ) %>%
+      dplyr::select(-eps_codename) %>%
+      dplyr::mutate(
+        group       = recode_firstgen(group),
+        total_group = scales::comma(total_group, accuracy = 1)
+      )
+    
+    df_c <- df_c %>%
+      dplyr::left_join(totals, by = "group") %>%
+      dplyr::mutate(
+        group = factor(group, levels = rev(firstgen_col_levels)),
+        label_str = paste0(group, "\n(N = ", total_group, ")")
+      )
+    
+    # build factor for group_label
+    label_levels <- rev(
+      sapply(firstgen_col_levels, function(g) {
+        val <- totals %>%
+          dplyr::filter(group == g) %>%
+          dplyr::pull(total_group)
+        paste0(g, "\n(N = ", val, ")")
+      })
+    )
+    
+    df_c <- df_c %>%
+      dplyr::mutate(
+        group_label = factor(label_str, levels = label_levels)
+      )
+    
+    row_plot_title <- "First-Gen Distribution Within Each EPS Code (Row %)"
+    col_plot_title <- "Distribution of First-Gen Groups Across EPS Codes (Column %)"
+    fill_legend    <- "Geomarket"
+  }
+  
+  ##-------------------------------------------------------------
+  ## 3) Build the row-percent Plot
+  ##-------------------------------------------------------------
+  known_col <- if (variable == "race") "race_known" else "stu_known"
+  
+  plot_r <- df_r %>%
+    ggplot2::ggplot(ggplot2::aes(x = fct_rev(eps_codename), y = value, fill = group)) +
+    # We might apply fct_rev(eps_codename) here if we want to invert 
+    # that top->bottom logic one more time, but let's assume not.
+    ggplot2::geom_bar(stat = "identity", position = ggplot2::position_fill(reverse = TRUE)) +
+    
+    # label with N=, referencing the known_col
+    ggplot2::geom_text(
+      data = df_r %>% dplyr::distinct(eps_codename, .keep_all = TRUE),
+      ggplot2::aes(
+        x = eps_codename,
+        y = 1,
+        label = paste0("N=", formattable::comma(.data[[known_col]], digits = 0))
+      ),
+      hjust       = -0.1,
+      size        = 3,
+      inherit.aes = FALSE
+    ) +
+    
+    ggplot2::scale_y_continuous(labels = scales::percent_format(scale = 100)) +
+    ggplot2::labs(
+      title = row_plot_title,
+      x     = NULL,
+      y     = NULL
+    ) +
+    ggplot2::theme_minimal() +
+    ggplot2::coord_flip(clip = "off")
+  
+  ##-------------------------------------------------------------
+  ## 4) Build the column-percent Plot
+  ##-------------------------------------------------------------
+  plot_c <- df_c %>%
+    ggplot2::ggplot(ggplot2::aes(x = group_label, y = value, fill = eps_codename)) +
+    ggplot2::geom_bar(stat = "identity", position = "dodge") +
+    ggplot2::labs(
+      title = col_plot_title,
+      x     = NULL,
+      y     = NULL,
+      fill  = fill_legend
+    ) +
+    ggplot2::scale_y_continuous(
+      labels = scales::percent_format(scale = 1),
+      expand = ggplot2::expansion(mult = c(0, 0.1))
+    ) +
+    ggplot2::scale_fill_discrete(guide = ggplot2::guide_legend(reverse = TRUE)) +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(
+      axis.text.x        = ggplot2::element_text(angle = 0, vjust = 1, hjust = 0.5),
+      axis.title.x       = ggplot2::element_blank(),
+      panel.grid.major.x = ggplot2::element_blank()
+    ) +
+    ggplot2::coord_flip(clip = "off")
+  
+  ##-------------------------------------------------------------
+  ## 5) Return both plots
+  ##-------------------------------------------------------------
+  list(plot_r = plot_r, plot_c = plot_c)
+}
