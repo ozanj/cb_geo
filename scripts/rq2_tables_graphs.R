@@ -943,38 +943,62 @@ create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = 
 create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('488035'), eps_codes = chi_eps_codes) %>% print(n=50) # 
 create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('488053','488035'), eps_codes = chi_eps_codes) %>% print(n=50) # 
 
+library(dplyr)
+library(ggplot2)
+library(forcats)
+library(scales)
+library(tidyr)
+
+# Custom orders and labels
 custom_race_order <- c("White", "Black", "Asian", "Hispanic", "Other")
 custom_group_order <- c("row_no_col", "row_some_col", "row_not_first_gen")
 
+custom_group_labels <- c(
+  "row_no_col" = "No college",
+  "row_some_col" = "Some college",
+  "row_not_first_gen" = "Not first-gen"
+)
+
+# Custom orders and labels for race
+custom_race_labels <- c(
+  "white"    = "White, non-Hispanic",
+  "Asian"    = "Asian, non-Hispanic",
+  "Black/African American"    = "Black, non-Hispanic",
+  "Hispanic/Latino" = "Hispanic",
+  "two or more races, non-Hispanic"    = "Multi-race, non-Hispanic",
+  "All"     = "All"
+) # add aian, and nhpi
+  
+# Prepare the data
 df <- create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('487984'), eps_codes = chi_eps_codes) %>%
   tidyr::pivot_longer(
     cols = c(all, row_no_col, row_some_col, row_not_first_gen),
     names_to  = "group",
     values_to = "value"
-  ) %>% mutate(
-    # Reorder stu_race_cb according to the custom order
-    stu_race_cb = fct_relevel(stu_race_cb, custom_race_order),
-    # Reorder group to ensure consistent fill order
-    group = factor(group, levels = custom_group_order)
+  ) %>%
+  mutate(
+    # Map and relabel stu_race_cb
+    stu_race_cb = factor(stu_race_cb, levels = names(custom_race_labels), labels = custom_race_labels),
+    # Reorder group and apply labels
+    group = factor(group, levels = custom_group_order, labels = custom_group_labels)
   ) %>%
   filter(group != "all")
-  
 
-df %>% filter(group != 'all') %>% print(n=200)
+# Check the prepared data
+df %>% print(n = 200)
 
-# Create plot
+# Create the plot
 df %>%
-  filter(group != "all") %>% 
   ggplot(aes(
-    x    = eps_codename, # Use eps_codename on x-axis
+    x    = eps_codename, 
     y    = value,
     fill = group
   )) +
-  geom_bar(stat = "identity", position = ggplot2::position_fill(reverse = TRUE)) +
+  geom_bar(stat = "identity", position = position_fill(reverse = TRUE)) +
   coord_flip(clip = "off") +
   facet_grid(
-    rows = vars(stu_race_cb), # Use facet_grid to position race group on the left
-    switch = "y"             # Move facet strip to the left
+    rows = vars(stu_race_cb), 
+    switch = "y"
   ) +
   labs(
     title = "Side-by-Side Bars by EPS Codename, Grouped by Race",
@@ -982,27 +1006,25 @@ df %>%
     y     = NULL,
     fill  = NULL
   ) +
-  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) + # Format y-axis as percentages
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
   theme_minimal() +
   theme(
-    strip.text.y.left = element_text(size = 12, face = "plain", angle = 0, hjust = 0), # Left-align facet labels
-    strip.placement = "outside",       # Place labels outside the panel
-    panel.spacing = unit(0.25, "lines"),  # Reduce spacing between panels
-    axis.text.y = element_text(size = 10), # Adjust EPS codename label size
-    plot.title = element_text(hjust = 0.5), # Center-align title
-    legend.position = "right",         # Move legend to the right
-    legend.key.size = unit(0.8, "lines"), # Adjust legend key size to save space
-    legend.title = element_text(size = 10, face = "bold"), # Customize legend title
-    legend.text = element_text(size = 9) # Customize legend text size
+    strip.text.y.left = element_text(size = 12, face = "plain", angle = 0, hjust = 0),
+    strip.placement = "outside",
+    panel.spacing = unit(0.25, "lines"),
+    axis.text.y = element_text(size = 10),
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "right",
+    legend.key.size = unit(0.8, "lines"),
+    legend.title = element_text(size = 10, face = "bold"),
+    legend.text = element_text(size = 9)
   )
-
 
 
 ##### CHANGES TO MAKE ON TUESDAY 1/28
   # reverse order of geomarkets (all goes on top)
-  # change order of fill: no_col, some_col, not_first
-  # change legend text so that it is "No college", "Some college" "Not first-gen"
   # maybe decrease size of font for EPS codenames
+  # add sample size to each. would go to the right of the eps_codename as part of the eps_codename using (N= x,xxx)
 
 ###################################
 ################################### PREVIOUS VERSION OF GRAPH
