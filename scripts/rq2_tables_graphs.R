@@ -285,8 +285,20 @@ create_sim_eps_firstgen_table <- function(data, ord_nums, eps_codes) {
 # run function that creates row and column tables for first-gen
 
 # RACE X FIRSTGEN TABLE FUNCTION. CREATE TABLE OF RACE X FIRSTGEN STATUS GROUP THAT ARE IN EACH GEOMARKET
+#stu_race_cb                                 n
+#<dbl+lbl>                               <int>
+#1  0 [no response]                       135083
+#2  1 [American Indian/Alaska Native]      19196
+#3  2 [Asian]                             656927
+#4  3 [Black/African American]            182284
+#5  4 [Hispanic/Latino]                   758051
+#6  8 [Native Hawaiian/Pacific Islander]    4497
+#7  9 [white]                            1706890
+#8 10 [other]                               1561
+#9 12 [two or more races, non-Hispanic]   183166
+#10 NA                                      17800
 
-create_sim_eps_race_firstgen_table <- function(data, ord_nums, eps_codes) {
+create_sim_eps_race_firstgen_table <- function(data, ord_nums, eps_codes, exclude_race = c(1,8)) {
   
   # First, create the main processed data frame
   # <- lists_orders_zip_hs_df_sf %>%  as_tibble() %>% filter(ord_num %in% c('448922'), eps %in% c('PA 1','PA 2','PA 3','PA 4','PA 5')) %>%
@@ -295,12 +307,12 @@ create_sim_eps_race_firstgen_table <- function(data, ord_nums, eps_codes) {
     filter(ord_num %in% ord_nums, eps %in% eps_codes) %>%
     # get rid of obs where race is not known or first-generation status is not known
     filter(!is.na(stu_race_cb), stu_race_cb != 0, stu_first_gen != 4) %>% 
-    filter(stu_race_cb %in% c(2,3,4,9,12)) %>% # only some racial groups
+    filter(stu_race_cb %in% c(1,2,3,4,8,9,12)) %>% # only some racial groups. excludes: no-response; other; and NA
+    filter(!stu_race_cb %in% exclude_race) %>% 
     mutate(
       eps_codename = str_c(eps, eps_name, sep = ", "),
       stu_race_cb = as_factor(stu_race_cb)
-    )
-  
+    ) 
   
   #df_work %>% count(stu_race_cb)
   
@@ -418,7 +430,9 @@ create_sim_eps_race_firstgen_table <- function(data, ord_nums, eps_codes) {
         "Black/African American", 
         "Hispanic/Latino",
         "white",
-        "two or more races, non-Hispanic"
+        "two or more races, non-Hispanic",
+        'American Indian/Alaska Native',
+        'Native Hawaiian/Pacific Islander'
       )
     ) %>%
     # Then arrange by stu_race_cb and eps_codename
@@ -433,6 +447,10 @@ create_sim_eps_race_firstgen_table <- function(data, ord_nums, eps_codes) {
 # philly metro area
 # order 448922: PSAT 1070 - 1180; order 448427: PSAT 1190 - 1260; order 448440: PSAT 1270 - 1520
 
+create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('487984'), eps_codes = chi_eps_codes) %>% print(n=70) # 
+create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('487984'), eps_codes = chi_eps_codes, exclude_race = '') %>% print(n=70) # 
+create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('487984'), eps_codes = chi_eps_codes, exclude_race = c(1,8,12)) %>% print(n=70) # 
+lists_orders_zip_hs_df_sf %>% as_tibble() %>% count(stu_race_cb)
 
 ###################################
 ################################### CREATE GRAPH FOR RQ2, SEPARATE GRAPH FOR RACE AND FOR FIRST-GEN STATUS
@@ -878,6 +896,9 @@ philadelphia_race_plot_order_448427_448440$plot_c
 philadelphia_firstgen_plot_order_448427_448440$plot_r
 philadelphia_firstgen_plot_order_448427_448440$plot_c
 
+
+
+
 # combined graphs
 # race row pct. for lower SAT score and higher SAT score
 philadelphia_race_plot_order_448922$plot_r + philadelphia_race_plot_order_448427_448440$plot_r + plot_layout(ncol = 1)
@@ -931,100 +952,208 @@ chicago_firstgen_plot_order_487984$plot_c + chicago_firstgen_plot_order_488035_4
 ################################### CREATE GRAPH FOR RQ2 RACE X SES
 ###################################
 
+
+# These graphs based on the table-creating function: 
+  create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('487984'), eps_codes = chi_eps_codes) %>% print(n=70) # 
+  create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('488035'), eps_codes = chi_eps_codes) %>% print(n=70) # 
+  create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('488053','488035'), eps_codes = chi_eps_codes) %>% print(n=70) # 
+
+# 1) Define the custom orders/labels for group
+custom_group_order <- c("all","row_no_col", "row_some_col", "row_not_first_gen")
+custom_group_labels <- c(
+  "all"               = "All",
+  "row_no_col"        = "No college",
+  "row_some_col"      = "Some college",
+  "row_not_first_gen" = "Not first-gen"
+)
+
+# 2) Define the custom orders/labels for race
+custom_race_labels <- c(
+  "All"     = "All",  
+  "white"   = "White, non-Hispanic",
+  "Asian"   = "Asian, non-Hispanic",
+  "Black/African American" = "Black, non-Hispanic",
+  "Hispanic/Latino"        = "Hispanic",
+  "two or more races, non-Hispanic" = "Multi-race, non-Hispanic",
+  "American Indian/Alaska Native" = "AIAN, non-Hispanic",
+  "Native Hawaiian/Pacific Islander" = "NHPI, non-Hispanic"
+  # optionally add more if needed
+)
+
+
+create_race_by_firstgen_graph <- function(data_graph,
+                                          ord_nums_graph,
+                                          eps_codes_graph,
+                                          metro_name = '',
+                                          exclude_race_graph = c(1,8,12),
+                                          title_suf = '') {
+
+  # 3) Create & pivot the table
+  df <- create_sim_eps_race_firstgen_table(
+    data      = data_graph, 
+    ord_nums  = ord_nums_graph, 
+    eps_codes = eps_codes_graph,
+    exclude_race = exclude_race_graph
+  ) %>% 
+    pivot_longer(
+      cols      = c(all, row_no_col, row_some_col, row_not_first_gen),
+      names_to  = "group",
+      values_to = "value"
+    ) %>%
+    mutate(
+      # Relabel race
+      stu_race_cb = factor(
+        stu_race_cb, 
+        levels = names(custom_race_labels), 
+        labels = custom_race_labels
+      ),      
+      # Relabel group
+      group = factor(
+        group, 
+        levels = custom_group_order, 
+        labels = custom_group_labels
+      ),
+      # Reverse the order of eps_codename globally
+      eps_codename = factor(
+        eps_codename,
+        levels = rev(unique(eps_codename))  # reverse the unique order
+      )
+    )
+  
+  df %>% print(n=250)
+  
+  # 4) Split out the subgroup vs. total N
+  df_plot <- df %>%
+    filter(group != "All")
+  
+  df_totals <- df %>%
+    filter(group == "All") %>%
+    distinct(stu_race_cb, eps_codename, value) %>%  # <--- ensure no duplicates
+    rename(total_n = value)
+  
+  # 5) Join the total N onto the plotting data (and remove any exact duplicates)
+  df_plot <- df_plot %>%
+    left_join(df_totals, by = c("stu_race_cb", "eps_codename")) %>%
+    distinct()
+  
+  # 6) Create a new label (N=xxxx) & factor it once
+  df_plot <- df_plot %>%
+    mutate(
+      # character label with “(N=...)”
+      eps_label = str_c(
+        as.character(eps_codename), 
+        " (n=", format(total_n, big.mark = ",", trim = TRUE), ")"
+      ),
+    ) %>%
+    mutate(
+      # single factor across the entire data
+      eps_label_factor = factor(
+        eps_label,
+        levels = rev(unique(eps_label))
+      )
+    )
+  
+  # 7) Plot, with "free_y" so each facet only shows relevant codes
+  plot <- ggplot(df_plot, aes(
+    x    = eps_label_factor, 
+    y    = value,
+    fill = group
+  )) +
+    geom_bar(stat = "identity", position = position_fill(reverse = TRUE)) +
+    coord_flip(clip = "off") +
+    facet_grid(
+      rows = vars(stu_race_cb), 
+      switch = "y",
+      scales = "free_y",          # <--- each race can drop labels it doesn't use
+      space  = "free_y"     # each facet’s height will scale to number of bars
+    ) +
+    scale_x_discrete(drop = TRUE) +  # <--- drop unused factor levels
+    scale_y_continuous(labels = percent_format(accuracy = 1)) +
+    labs(
+      title = NULL,
+      x     = NULL,
+      y     = NULL,
+      fill  = NULL
+    ) +
+    theme_minimal() +
+    theme(
+      strip.text.y.left = element_text(size = 10, face = "plain", angle = 0, hjust = 0),
+      strip.placement   = "outside",
+      panel.spacing     = unit(0.2, "lines"),
+      axis.text.y       = element_text(size = 8),
+      plot.title        = element_text(hjust = 0.5),
+      legend.position   = "right",
+      legend.key.size   = unit(0.8, "lines"),
+      legend.title      = element_text(size = 10, face = "bold"),
+      legend.text       = element_text(size = 10)
+    )
+
+  # create strings for file names
+  metro <- str_replace(string = deparse(substitute(eps_codes_graph)), pattern = '_eps_codes', replacement = '')
+  plot_name <- str_c('rq2',metro,'order',str_c(ord_nums_graph, collapse = '_'),'race_by_firstgen', sep = '_')
+  writeLines(plot_name)
+  
+  # Define the figure title
+  figure_title <- str_c(
+    "First-generation status by race for ", metro_name, " Geomarkets", title_suf
+  )
+  
+  writeLines(figure_title)
+  
+  # Save the title to a .txt file
+  writeLines(figure_title, file.path(graphs_dir, str_c(plot_name, '_title.txt')))  
+  
+  # Save plot to file
+  ggsave(
+    filename = file.path(graphs_dir, str_c(plot_name, '.png', sep = '_')),
+    plot = plot,
+    width = 14,
+    height = 8,
+    bg = 'white'
+  )
+  
+  # 2) Create the text you want to store [REVISE NOTE TEXT LATER!]
+  note_text <- c(
+    "Figure Notes:",
+    "- Median income is shown in thousands ($k).",
+    "- '% in poverty' is the share of individuals below the federal poverty line.",
+    "- Data sources: US Census, etc."
+  )
+  
+  # 3) Write that text to a file
+  #writeLines(note_text, file.path(graphs_dir, str_c(file_prefix, '_', graph_type, '.txt')))
+  
+  # Return the plot
+  return(plot)
+  
+}
+
+#stu_race_cb                                 n
+#1  0 [no response]                       135083
+#2  1 [American Indian/Alaska Native]      19196
+#3  2 [Asian]                             656927
+#4  3 [Black/African American]            182284
+#5  4 [Hispanic/Latino]                   758051
+#6  8 [Native Hawaiian/Pacific Islander]    4497
+#7  9 [white]                            1706890
+#8 10 [other]                               1561
+#9 12 [two or more races, non-Hispanic]   183166
+#10 NA                                      17800
+
 # 1 487984  16926 # Illinois standard 2020; ordered 7/19/2019; HS class 2020, 2021; IL; SAT 1020-1150;  GPA A+ to B-
 # 5 488035  12842 # Illinois HS 2020; ordered 7/19/2019; HS class 2020, 2021; SAT 1160 - 1300; GPA A+ to B-
 # 9 488053   7259 # Illinois GPPA 2020 (no cf);ordered 7/19/2019; HS class 2020, 2021; SAT 1310-1600; GPA A+ to B-
+#create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('487984'), eps_codes = chi_eps_codes) %>% print(n=50) # 
 
 # philly metro area
 # order 448922: PSAT 1070 - 1180; order 448427: PSAT 1190 - 1260; order 448440: PSAT 1270 - 1520
 
-# These graphs based on the table-creating function: 
-create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('487984'), eps_codes = chi_eps_codes) %>% print(n=50) # 
-create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('488035'), eps_codes = chi_eps_codes) %>% print(n=50) # 
-create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('488053','488035'), eps_codes = chi_eps_codes) %>% print(n=50) # 
+create_race_by_firstgen_graph(lists_orders_zip_hs_df_sf, c('487984'), chi_eps_codes, 'Chicago', exclude_race = c(1,8,12), title_suf = ', SAT score 1020 - 1150')
+create_race_by_firstgen_graph(lists_orders_zip_hs_df_sf, c('488035','488053'), chi_eps_codes, 'Chicago', exclude_race = c(1,8,12), title_suf = ', SAT score 1160 - 1600')
 
-library(dplyr)
-library(ggplot2)
-library(forcats)
-library(scales)
-library(tidyr)
-
-# Custom orders and labels
-custom_race_order <- c("White", "Black", "Asian", "Hispanic", "Other")
-custom_group_order <- c("row_no_col", "row_some_col", "row_not_first_gen")
-
-custom_group_labels <- c(
-  "row_no_col" = "No college",
-  "row_some_col" = "Some college",
-  "row_not_first_gen" = "Not first-gen"
-)
-
-# Custom orders and labels for race
-custom_race_labels <- c(
-  "white"    = "White, non-Hispanic",
-  "Asian"    = "Asian, non-Hispanic",
-  "Black/African American"    = "Black, non-Hispanic",
-  "Hispanic/Latino" = "Hispanic",
-  "two or more races, non-Hispanic"    = "Multi-race, non-Hispanic",
-  "All"     = "All"
-) # add aian, and nhpi
-  
-# Prepare the data
-df <- create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('487984'), eps_codes = chi_eps_codes) %>%
-  tidyr::pivot_longer(
-    cols = c(all, row_no_col, row_some_col, row_not_first_gen),
-    names_to  = "group",
-    values_to = "value"
-  ) %>%
-  mutate(
-    # Map and relabel stu_race_cb
-    stu_race_cb = factor(stu_race_cb, levels = names(custom_race_labels), labels = custom_race_labels),
-    # Reorder group and apply labels
-    group = factor(group, levels = custom_group_order, labels = custom_group_labels)
-  ) %>%
-  filter(group != "all")
-
-# Check the prepared data
-df %>% print(n = 200)
-
-# Create the plot
-df %>%
-  ggplot(aes(
-    x    = eps_codename, 
-    y    = value,
-    fill = group
-  )) +
-  geom_bar(stat = "identity", position = position_fill(reverse = TRUE)) +
-  coord_flip(clip = "off") +
-  facet_grid(
-    rows = vars(stu_race_cb), 
-    switch = "y"
-  ) +
-  labs(
-    title = "Side-by-Side Bars by EPS Codename, Grouped by Race",
-    x     = NULL,
-    y     = NULL,
-    fill  = NULL
-  ) +
-  scale_y_continuous(labels = percent_format(accuracy = 1)) +
-  theme_minimal() +
-  theme(
-    strip.text.y.left = element_text(size = 12, face = "plain", angle = 0, hjust = 0),
-    strip.placement = "outside",
-    panel.spacing = unit(0.25, "lines"),
-    axis.text.y = element_text(size = 10),
-    plot.title = element_text(hjust = 0.5),
-    legend.position = "right",
-    legend.key.size = unit(0.8, "lines"),
-    legend.title = element_text(size = 10, face = "bold"),
-    legend.text = element_text(size = 9)
-  )
+create_race_by_firstgen_graph(lists_orders_zip_hs_df_sf, c('448922'), philly_eps_codes, 'Philadelphia', exclude_race = c(1,8,12), title_suf = ', SAT score 1070 - 1180')
 
 
-##### CHANGES TO MAKE ON TUESDAY 1/28
-  # reverse order of geomarkets (all goes on top)
-  # maybe decrease size of font for EPS codenames
-  # add sample size to each. would go to the right of the eps_codename as part of the eps_codename using (N= x,xxx)
 
 ###################################
 ################################### PREVIOUS VERSION OF GRAPH

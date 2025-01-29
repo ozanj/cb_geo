@@ -246,3 +246,125 @@ create_sim_eps_graph <- function(data_graph,
   # ----------------------------------------------------------------
   list(plot_r = plot_r, plot_c = plot_c)
 }
+
+
+############# RQ2 PLOT; ###################################
+################################### PREVIOUS VERSION OF GRAPH
+###################################
+
+# 1) Define the custom orders/labels for group
+custom_group_order <- c("all","row_no_col", "row_some_col", "row_not_first_gen")
+custom_group_labels <- c(
+  "all"               = "All",
+  "row_no_col"        = "No college",
+  "row_some_col"      = "Some college",
+  "row_not_first_gen" = "Not first-gen"
+)
+
+# 2) Define the custom orders/labels for race
+custom_race_labels <- c(
+  "All"     = "All",  
+  "white"   = "White, non-Hispanic",
+  "Asian"   = "Asian, non-Hispanic",
+  "Black/African American" = "Black, non-Hispanic",
+  "Hispanic/Latino"        = "Hispanic",
+  "two or more races, non-Hispanic" = "Multi-race, non-Hispanic"
+  # optionally add more if needed
+)
+
+# 3) Create & pivot the table
+df <- create_sim_eps_race_firstgen_table(
+  data      = lists_orders_zip_hs_df_sf, 
+  ord_nums  = c('488053','488035'), 
+  eps_codes = chi_eps_codes
+) %>%
+  pivot_longer(
+    cols      = c(all, row_no_col, row_some_col, row_not_first_gen),
+    names_to  = "group",
+    values_to = "value"
+  ) %>%
+  mutate(
+    # Relabel race
+    stu_race_cb = factor(
+      stu_race_cb, 
+      levels = names(custom_race_labels), 
+      labels = custom_race_labels
+    ),
+    # Relabel group
+    group = factor(
+      group, 
+      levels = custom_group_order, 
+      labels = custom_group_labels
+    ),
+    # Reverse the order of eps_codename globally
+    eps_codename = factor(
+      eps_codename,
+      levels = rev(unique(eps_codename))  # reverse the unique order
+    )
+  )
+
+# 4) Split out the subgroup vs. total N
+df_plot <- df %>%
+  filter(group != "All")
+
+df_totals <- df %>%
+  filter(group == "All") %>%
+  distinct(stu_race_cb, eps_codename, value) %>%  # <--- ensure no duplicates
+  rename(total_n = value)
+
+# 5) Join the total N onto the plotting data (and remove any exact duplicates)
+df_plot <- df_plot %>%
+  left_join(df_totals, by = c("stu_race_cb", "eps_codename")) %>%
+  distinct()
+
+# 6) Create a new label (N=xxxx) & factor it once
+df_plot <- df_plot %>%
+  mutate(
+    # character label with “(N=...)”
+    eps_label = str_c(
+      as.character(eps_codename), 
+      " (n=", format(total_n, big.mark = ",", trim = TRUE), ")"
+    ),
+  ) %>%
+  mutate(
+    # single factor across the entire data
+    eps_label_factor = factor(
+      eps_label,
+      levels = rev(unique(eps_label))
+    )
+  )
+
+
+# 7) Plot, with "free_y" so each facet only shows relevant codes
+ggplot(df_plot, aes(
+  x    = eps_label_factor, 
+  y    = value,
+  fill = group
+)) +
+  geom_bar(stat = "identity", position = position_fill(reverse = TRUE)) +
+  coord_flip(clip = "off") +
+  facet_grid(
+    rows = vars(stu_race_cb), 
+    switch = "y",
+    scales = "free_y"          # <--- each race can drop labels it doesn't use
+  ) +
+  scale_x_discrete(drop = TRUE) +  # <--- drop unused factor levels
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  labs(
+    title = NULL,
+    x     = NULL,
+    y     = NULL,
+    fill  = NULL
+  ) +
+  theme_minimal() +
+  theme(
+    strip.text.y.left = element_text(size = 12, face = "plain", angle = 0, hjust = 0),
+    strip.placement   = "outside",
+    panel.spacing     = unit(0.25, "lines"),
+    axis.text.y       = element_text(size = 9),
+    plot.title        = element_text(hjust = 0.5),
+    legend.position   = "right",
+    legend.key.size   = unit(0.8, "lines"),
+    legend.title      = element_text(size = 10, face = "bold"),
+    legend.text       = element_text(size = 10)
+  )
