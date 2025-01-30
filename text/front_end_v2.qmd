@@ -37,9 +37,17 @@ library(kableExtra)
 \pagenumbering{gobble}
 \pagenumbering{arabic}
 
+**ABSTRACT**
+
+In 1984, the College Board created "Geomarkets," which carve states and metropolitan areas into smaller geographic units meant to define local recruiting markets. Geomarkets are an input in two College Board products. First, the Enrollment Planning Service (EPS) software makes recommendations about which Geomarkets and high schools admissions recruiters should recruit from. Second, Geomarkets became a search filter within the Student Search Service product, which enables colleges to buy "student lists" containing the contact information of prospective students. The concept of Geomarkets was introduced by *The Structure of College Choice* [@RN4982]. This book develops the "Market Segment Model," which argues that student demand for a particular college is a function of class and geography. We conceptualize Geomarkets and the Market Segment Model by drawing from scholarship on quantification, particularly the discussions of correlation and homophily by @RN4975. We address two research questions: First, what is the socioeconomic and racial variation between Geomarkets and how does this variation change over time? Second, how does the socioeconomic and racial composition of included versus excluded prospects vary when student list purchases filter on particular Geomarkets? We answer RQ1 by analyzing Census data from 1980, 2000, and 2020. We answer RQ2 by analyzing data from actual student lists purchased by public universities. Metropolitan areas are cases. Analyses consist of graphs of descriptive statistics and interactive maps.
+
+
+
 # Introduction
 
 In 1983, Robert Zemsky and Penney Oedel authored *The Structure of College Choice*. Based on an analysis of 1980 SAT score-sending behavior and published by *The College Board*, @RN4982 developed the Market Segment Model to help colleges recruit students. The underlying idea of the Market Segment Model is that student demand for your institution is fundamentally a function of class. Therefore, the key to recruitment is identifying territories where large numbers of your class live. @RN4982 [p. 11] describe the Market Segment Model as an effort to "quantify" the knowledge that college admissions officers have about the geography of student demand:
+
+@list_empirics say this:
 
 > A good recruiter knows where to look for prospective applicants, as seen in the students' willingness or eluctance to travel. It is necessary to identify not only the most promising communities or poools, but also the specific neighborhoods within those communities -- hence the recruiter's emphasis on feeder high schools. From the beginning, we have sought to mold our research to these concepts, to capture and quantify the phenomenon behind the folklore. Thus, it is the admissions officers' notion of admissions pools that dictates the geographic units of our analysis." \[p. 11\]
 

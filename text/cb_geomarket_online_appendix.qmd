@@ -1,0 +1,67 @@
+---
+title: "Online appendix"
+format:
+  pdf:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+---
+
+
+# header 1
+
+```{r}
+getwd()
+```
+
+```{r}
+# You can load libraries, set options, define your list of metros, etc.
+library(tools)  # for toTitleCase() if desired
+
+# Example lists
+metros <- c("chicago", "denver")
+RQs <- c("RQ1", "RQ2")
+
+# Define the function to insert a figure, given a metro + RQ.
+# 'base_path' is where your .png and .txt files live.
+insert_figure <- function(metro, rq, base_path = "../results/graphs") {
+  
+  # Construct file paths
+  fig_file    <- file.path(base_path, paste0(metro, "_", rq, ".png"))
+  cap_file    <- file.path(base_path, paste0(metro, "_", rq, "_caption.txt"))
+  note_file   <- file.path(base_path, paste0(metro, "_", rq, "_note.txt"))
+
+  # Read the caption (if missing, use a default)
+  if (file.exists(cap_file)) {
+    caption_text <- paste(readLines(cap_file, warn = FALSE), collapse = " ")
+  } else {
+    caption_text <- paste("No caption found for", metro, rq)
+  }
+
+  # Read the note (if missing, it remains empty)
+  if (file.exists(note_file)) {
+    note_text <- paste(readLines(note_file, warn = FALSE), collapse = " ")
+    # Format the note to appear after the figure
+    note_string <- paste0("\n\n**Note**: ", note_text)
+  } else {
+    note_string <- ""
+  }
+
+  # Build the Quarto figure block as a string
+  # - We use fig-cap= for the caption
+  # - We can specify width, alignment, etc.
+  # - Insert the note at the bottom if present
+  fig_block <- paste0(
+    "::: {float='figure' fig-align='center' fig-cap='", caption_text, "'}\n\n",
+    "![](", fig_file, "){width='70%'}\n",
+    note_string, "\n",
+    ":::\n"
+  )
+
+  return(fig_block)
+}
+
+```
+
+
+

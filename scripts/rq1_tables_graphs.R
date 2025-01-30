@@ -371,14 +371,36 @@ create_eps_graph <- function(eps_codes,
       )
   }
   
+  file_prefix_underscore <- str_replace_all(string = file_prefix, pattern = ' ', replacement = '_')
+  writeLines(file_prefix)
+  
+  # create strings for file names
+  plot_name <- str_c('rq1',file_prefix_underscore,graph_type, sep = '_')
+  writeLines(plot_name)
+  
   # Save plot to file
   ggsave(
-    filename = file.path(graphs_dir, str_c(file_prefix, '_', graph_type, '.png')),
+    filename = file.path(graphs_dir, str_c(plot_name, '.png')),
     plot = plot,
-    width = 10,
+    width = 14,
     height = 8,
     bg = 'white'
   )
+  
+  # Define the figure title
+  if (graph_type == "race") {
+    which_characteristics <- 'Racial/ethnic composition' 
+  } else if (graph_type == "ses") {
+    which_characteristics <- 'Socioeconomic characteristics' 
+  }
+  figure_title <- str_c(
+    which_characteristics, "of", str_to_title(file_prefix), "area Geomarkets", sep = ' '
+  )
+  
+  writeLines(figure_title)
+  
+  # Save the title to a .txt file
+  writeLines(figure_title, file.path(graphs_dir, str_c(plot_name, 'title.txt', sep = '_')))    
   
   # 2) Create the text you want to store [REVISE NOTE TEXT LATER!]
   note_text <- c(
@@ -390,35 +412,44 @@ create_eps_graph <- function(eps_codes,
   )
   
   # 3) Write that text to a file
-  writeLines(note_text, file.path(graphs_dir, str_c(file_prefix, '_', graph_type, '.txt')))
+  writeLines(note_text, file.path(graphs_dir, str_c(plot_name, 'note.txt', sep = '_')))    
              
   # Return the plot
   return(plot)
 }
 
+create_eps_graph(
+  eps_codes = dallas_eps_codes, 
+  prefix = 'dallas',
+  graph_type = "ses", 
+  note = "additional text for my note!"
+)
+
+
 all_codes <- list(
-  philly = philly_eps_codes,
-  dallas = dallas_eps_codes,
-  atl = atl_eps_codes,
-  chicago = chi_eps_codes,
-  cleveland = cleveland_eps_codes,
-  northern_nj = nj_north_metro_eps_codes,
-  houston = htown_eps_codes,
-  bay_area = bay_eps_codes,
-  long_island = long_island_eps_codes,
-  ny_ny = nyny_metro_eps_codes,
-  detroit = detroit_eps_codes,
-  boston = boston_eps_codes,
-  miami = miami_eps_codes,
-  dmv = dmv_eps_codes,
-  orange_county = orange_county_eps_codes,
-  san_diego = san_diego_eps_codes,
-  los_angeles = los_angeles_eps_codes
+  'philadelphia' = philly_eps_codes,
+  'dallas' = dallas_eps_codes,
+  'atlanta' = atl_eps_codes,
+  'chicago' = chi_eps_codes,
+  'cleveland' = cleveland_eps_codes,
+  'northern new jersey' = nj_north_metro_eps_codes,
+  'houston' = htown_eps_codes,
+  'bay area' = bay_eps_codes,
+  'long island' = long_island_eps_codes,
+  'new york city' = nyny_metro_eps_codes,
+  'detroit' = detroit_eps_codes,
+  'boston' = boston_eps_codes,
+  'miami' = miami_eps_codes,
+  'dc maryland virginia' = dmv_eps_codes,
+  'orange county' = orange_county_eps_codes,
+  'san diego' = san_diego_eps_codes,
+  'los angeles' = los_angeles_eps_codes
 )
 all_codes
 
 graph_types = c('race','ses')
 graph_types
+
 
 for (metro_name in names(all_codes)) {
   metro_codes <- all_codes[[metro_name]]
@@ -459,11 +490,7 @@ for (g in 1:length(graph_types)) {
 }
 
 
-create_eps_graph(
-  eps_codes = dallas_eps_codes, 
-  graph_type = "ses", 
-  note = "additional text for my note!"
-)
+
 
 vec <- c(a = 5, b = -10, c = 30)
 vec
