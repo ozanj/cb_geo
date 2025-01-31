@@ -5,31 +5,71 @@ format:
     toc: true
     toc-depth: 3
     number-sections: true
+    documentclass: article
+    classoption: landscape
+    geometry: margin=0.1in
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}    
+header-includes:
+  - |
+    \usepackage{ragged2e}
+    \usepackage{caption}
+    \captionsetup[figure]{justification=RaggedRight, singlelinecheck=false}    
 ---
 
 
-# header 1
-
-```{r}
+```{r, include = FALSE, eval=FALSE}
 getwd()
-```
+file.exists("../results/graphs/rq1_chicago_ses.png")
 
-```{r}
+```
+<!-- this code run in markdown would include the graph: ![](../results/graphs/rq1_chicago_ses.png){width=70%} -->
+
+```{r, include = FALSE}
 # You can load libraries, set options, define your list of metros, etc.
 library(tools)  # for toTitleCase() if desired
+library(tidyverse)
 
 # Example lists
-metros <- c("chicago", "denver")
-RQs <- c("RQ1", "RQ2")
+metros <- c(
+  "atlanta",
+  "bay area",
+  "boston",
+  "chicago",
+  "cleveland",
+  "dallas",
+  "dc maryland virginia",
+  "detroit",
+  "houston",
+  "long island",
+  "los angeles",
+  "miami",
+  "new york city",
+  "northern new jersey",
+  "orange county",
+  "philadelphia",
+  "san diego"
+)
+
+metros <- c(
+  "atlanta",
+  "chicago",
+  "philadelphia"
+)
+
+rqs <- c("rq1",'rq2')
+graph_types = c('race','ses')
 
 # Define the function to insert a figure, given a metro + RQ.
 # 'base_path' is where your .png and .txt files live.
-insert_figure <- function(metro, rq, base_path = "../results/graphs") {
+insert_figure <- function(rq, metro, graph_type,base_path = "../results/graphs") {
   
+  metro <- str_replace_all(string = metro, pattern = ' ', replacement = '_')
   # Construct file paths
-  fig_file    <- file.path(base_path, paste0(metro, "_", rq, ".png"))
-  cap_file    <- file.path(base_path, paste0(metro, "_", rq, "_caption.txt"))
-  note_file   <- file.path(base_path, paste0(metro, "_", rq, "_note.txt"))
+  fig_file    <- file.path(base_path, str_c(rq,'_',metro,'_',graph_type, ".png"))
+  cap_file    <- file.path(base_path, str_c(rq,'_',metro,'_',graph_type,"_title.txt"))
+  note_file    <- file.path(base_path, str_c(rq,'_',metro,'_',graph_type,"_note.txt"))
 
   # Read the caption (if missing, use a default)
   if (file.exists(cap_file)) {
@@ -42,7 +82,7 @@ insert_figure <- function(metro, rq, base_path = "../results/graphs") {
   if (file.exists(note_file)) {
     note_text <- paste(readLines(note_file, warn = FALSE), collapse = " ")
     # Format the note to appear after the figure
-    note_string <- paste0("\n\n**Note**: ", note_text)
+    note_string <- paste0("\n**Note**: ", note_text)
   } else {
     note_string <- ""
   }
@@ -51,17 +91,108 @@ insert_figure <- function(metro, rq, base_path = "../results/graphs") {
   # - We use fig-cap= for the caption
   # - We can specify width, alignment, etc.
   # - Insert the note at the bottom if present
-  fig_block <- paste0(
-    "::: {float='figure' fig-align='center' fig-cap='", caption_text, "'}\n\n",
-    "![](", fig_file, "){width='70%'}\n",
-    note_string, "\n",
-    ":::\n"
-  )
+fig_block <- str_c(
+  "::: {.figure}\n\n",
+  "![", caption_text, "](", fig_file, "){fig-align='left' width='101%'}\n",
+  note_string, "\n",
+  ":::\n"
+)
 
   return(fig_block)
 }
 
+#rq2_philadelphia_order_448922_race_by_firstgen
+#rq1_philadelphia_ses
+#rq2_philadelphia_firstgen_row_plot
+
+#insert_figure(rq = 'rq2', metro = 'philadelphia', graph_type = 'firstgen_row_plot',base_path = "../results/graphs")
+#insert_figure(rq = 'rq2', metro = 'philadelphia', graph_type = 'order_448922_race_by_firstgen',base_path = "../results/graphs")
+#insert_figure(rq = 'rq1', metro = 'dallas', graph_type = 'ses',base_path = "../results/graphs")
 ```
 
+```{r, results = 'asis', echo = FALSE}
+# results='asis' so that the text we "cat()" is interpreted as Markdown.
 
+for (m in metros) {
+  
+  # Print a top-level heading for the metro area
+  cat("\n# ", toTitleCase(m), " area\n", sep="")
+  
+  for (rq in rqs) {
+    
+    rq_num <- str_replace(string = rq, pattern = "rq", replacement = "")
+    
+    
+    if (rq == 'rq1') { # rq1 run for every metro area
+      
+      # Print a second-level heading for the RQ
+      cat("## Research question ", rq_num, "\n", sep="")
+      
+      for (g in graph_types) {  
+        
+        # Call our figure-inserting function
+        figure_md <- insert_figure(metro = m, rq = rq, graph_type = g)
+        
+        # Output the figure block to the doc
+        cat(figure_md, "\n")
+      } # for (g in graph_types) {  
+
+    } else if (rq == 'rq2' & (m %in% c('chicago','philadelphia'))) { # rq2 run only for specific metro areas and orders
+
+      # Print a second-level heading for the RQ
+      cat("## Research question ", rq_num, "\n", sep="")
+      
+      if (m == 'chicago') {
+
+        # Call our figure-inserting function
+        figure_md <- insert_figure(metro = m, rq = rq, graph_type = 'order_487984_race_by_firstgen')
+        
+        # Output the figure block to the doc
+        cat(figure_md, "\n")
+        
+        figure_md <- insert_figure(metro = m, rq = rq, graph_type = 'order_488035_488053_race_by_firstgen')
+
+        # Output the figure block to the doc
+        cat(figure_md, "\n")
+      
+      } else if (m == 'philadelphia') {
+
+        figure_md <- insert_figure(metro = m, rq = rq, graph_type = 'race_row_plot')
+        cat(figure_md, "\n")
+
+        figure_md <- insert_figure(metro = m, rq = rq, graph_type = 'race_col_plot')
+        cat(figure_md, "\n")
+                      
+        figure_md <- insert_figure(metro = m, rq = rq, graph_type = 'firstgen_row_plot')
+        cat(figure_md, "\n")
+        
+        figure_md <- insert_figure(metro = m, rq = rq, graph_type = 'firstgen_col_plot')
+        cat(figure_md, "\n")
+        
+        # Call our figure-inserting function
+        figure_md <- insert_figure(metro = m, rq = rq, graph_type = 'order_448922_race_by_firstgen')
+        
+        # Output the figure block to the doc
+        cat(figure_md, "\n")
+        
+        figure_md <- insert_figure(metro = m, rq = rq, graph_type = 'order_448427_448440_race_by_firstgen')
+        
+        # Output the figure block to the doc
+        cat(figure_md, "\n")
+        
+      } #else if (condition3) {
+        # Code block for condition3
+      #}
+      
+    }
+  
+      
+    
+  } # for (rq in rqs) {
+  
+  
+}
+
+
+```
 
