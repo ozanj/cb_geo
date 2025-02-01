@@ -109,9 +109,7 @@ rq2_philadelphia_firstgen_plot_order_448427_448440$plot_r
 rq2_philadelphia_firstgen_plot_order_448427_448440$plot_c
 
 
-
-
-# combined graphs
+# Create combined graphs for Philadelphia
 # race row pct. for lower SAT score and higher SAT score
 rq2_philadelphia_race_row_plot <- rq2_philadelphia_race_plot_order_448922$plot_r + rq2_philadelphia_race_plot_order_448427_448440$plot_r + plot_layout(ncol = 1)
 # race column pct. for lower SAT score and higher SAT score
@@ -122,16 +120,53 @@ rq2_philadelphia_firstgen_row_plot <- rq2_philadelphia_firstgen_plot_order_44892
 # firstgen column pct. for lower SAT score and higher SAT score
 rq2_philadelphia_firstgen_col_plot <- rq2_philadelphia_firstgen_plot_order_448922$plot_c + rq2_philadelphia_firstgen_plot_order_448427_448440$plot_c + plot_layout(ncol = 1)
 
+# create combined graphs for Chicago
+
+# race row pct. for lower SAT score and higher SAT score
+rq2_chicago_race_row_plot <- rq2_chicago_race_plot_order_487984$plot_r + rq2_chicago_race_plot_order_488035_488053$plot_r + plot_layout(ncol = 1)
+# race column pct. for lower SAT score and higher SAT score
+rq2_chicago_race_col_plot <- rq2_chicago_race_plot_order_487984$plot_c + rq2_chicago_race_plot_order_488035_488053$plot_c + plot_layout(ncol = 1)
+
+# firstgen row pct. for lower SAT score and higher SAT score
+rq2_chicago_firstgen_row_plot <- rq2_chicago_firstgen_plot_order_487984$plot_r + rq2_chicago_firstgen_plot_order_488035_488053$plot_r + plot_layout(ncol = 1)
+# firstgen column pct. for lower SAT score and higher SAT score
+rq2_chicago_firstgen_col_plot <- rq2_chicago_firstgen_plot_order_487984$plot_c + rq2_chicago_firstgen_plot_order_488035_488053$plot_c + plot_layout(ncol = 1)
+
+
 # loop that saves combined graphs as .png and creates title.txt and note.txt
-for (m in c('philadelphia')) {
+for (m in c('chicago','philadelphia')) {
   
   for (g in c('race', 'firstgen')) {
+
+    if (g == 'race') {
+      g_prefix <- 'Racial/ethnic'
+    } else if (g == 'firstgen') {
+      g_prefix <- 'First-generation status'
+    }
     
-    for (rc in c('row', 'col')) {    
-      plot_name <- str_c('rq2',m,g,rc,'plot', sep = '_')    
+    for (rc in c('row', 'col')) {  
+
       
+      if (rc == 'row') {
+        figure_title <- str_c(
+          g_prefix,'composition of purchased student profiles by Geomarket,', str_to_title(m), 'area', sep = ' '
+        )
+        
+      } else if (rc == 'col') {
+        figure_title <- str_c(
+          'Geomarket contribution to purchased student profiles by', g_prefix, 'group,', str_to_title(m), 'area', sep = ' '
+        )
+        #writeLines(figure_title)
+        #writeLines(figure_title, file.path(graphs_dir, str_c(plot_name, '_title.txt')))  
+        
+      }
+      
+      plot_name <- str_c('rq2',m,g,rc,'plot', sep = '_')    
       writeLines(plot_name)
 
+      writeLines(figure_title)
+      writeLines(figure_title, file.path(graphs_dir, str_c(plot_name, '_title.txt')))  
+      
       # Retrieve the actual plot object
       plot_obj <- get(plot_name, envir = .GlobalEnv)  # Fetch the ggplot object
       
@@ -144,15 +179,6 @@ for (m in c('philadelphia')) {
         bg = 'white'
       )
       
-      # Define the figure title
-      figure_title <- str_c(
-        'metro =', m, 'variable=', g, rc, 'percent', sep = ' '
-      )
-      
-      writeLines(figure_title)
-      
-      # Save the title to a .txt file
-      writeLines(figure_title, file.path(graphs_dir, str_c(plot_name, '_title.txt')))  
  
       # 2) Create the text you want to store [REVISE NOTE TEXT LATER!]
       note_text <- c(
@@ -169,15 +195,6 @@ for (m in c('philadelphia')) {
   }
 }
   
-# Save the combined plot to disk
-ggsave(
-  filename = file.path(graphs_dir, "rq2_philadelphia_race_rowpct_low_high_psat.png"),
-  plot = combined_plot,
-  width = 16,
-  height = 10,  # Adjusted height to accommodate the combined plots
-  bg = 'white'
-)
-
 #### chicago
 
 chicago_race_plot_order_487984$plot_r
@@ -193,14 +210,6 @@ chicago_firstgen_plot_order_488035_488053$plot_r
 chicago_firstgen_plot_order_488035_488053$plot_c
 
 # combined graphs
-# race row pct. for lower SAT score and higher SAT score
-chicago_race_plot_order_487984$plot_r + chicago_race_plot_order_488035_488053$plot_r + plot_layout(ncol = 1)
-# firstgen row pct. for lower SAT score and higher SAT score
-chicago_firstgen_plot_order_487984$plot_r + chicago_firstgen_plot_order_488035_488053$plot_r + plot_layout(ncol = 1)
-# race column pct. for lower SAT score and higher SAT score
-chicago_race_plot_order_487984$plot_c + chicago_race_plot_order_488035_488053$plot_c + plot_layout(ncol = 1)
-# firstgen column pct. for lower SAT score and higher SAT score
-chicago_firstgen_plot_order_487984$plot_c + chicago_firstgen_plot_order_488035_488053$plot_c + plot_layout(ncol = 1)
 
 ###########################
 ############################ RUN FUNCTION create_race_by_firstgen_graph TO CREATE GRAPH OF RACE X FIRSTGEN
@@ -214,11 +223,11 @@ chicago_firstgen_plot_order_487984$plot_c + chicago_firstgen_plot_order_488035_4
 # philly metro area
 # order 448922: PSAT 1070 - 1180; order 448427: PSAT 1190 - 1260; order 448440: PSAT 1270 - 1520
 
-create_race_by_firstgen_graph(lists_orders_zip_hs_df_sf, c('487984'), chi_eps_codes, 'chicago', exclude_race = c(1,8,12), title_suf = ', SAT score 1020 - 1150')
-create_race_by_firstgen_graph(lists_orders_zip_hs_df_sf, c('488035','488053'), chi_eps_codes, 'chicago', exclude_race = c(1,8,12), title_suf = ', SAT score 1160 - 1600')
+#create_race_by_firstgen_graph(lists_orders_zip_hs_df_sf, c('487984'), chi_eps_codes, 'chicago', exclude_race = c(1,8,12), title_suf = ', SAT score 1020 - 1150')
+#create_race_by_firstgen_graph(lists_orders_zip_hs_df_sf, c('488035','488053'), chi_eps_codes, 'chicago', exclude_race = c(1,8,12), title_suf = ', SAT score 1160 - 1600')
 
-create_race_by_firstgen_graph(lists_orders_zip_hs_df_sf, c('448922'), philly_eps_codes, 'philadelphia', exclude_race = c(1,8,12), title_suf = ', SAT score 1070 - 1180')
-create_race_by_firstgen_graph(lists_orders_zip_hs_df_sf, c('448427','448440'), philly_eps_codes, 'philadelphia', exclude_race = c(1,8,12), title_suf = ', SAT score 1190 - 1520')
+#create_race_by_firstgen_graph(lists_orders_zip_hs_df_sf, c('448922'), philly_eps_codes, 'philadelphia', exclude_race = c(1,8,12), title_suf = ', SAT score 1070 - 1180')
+#create_race_by_firstgen_graph(lists_orders_zip_hs_df_sf, c('448427','448440'), philly_eps_codes, 'philadelphia', exclude_race = c(1,8,12), title_suf = ', SAT score 1190 - 1520')
 
 
 all_orders <- list(
@@ -251,6 +260,24 @@ for (orders in all_orders) {
     )
   
 }
+
+###### NEXT STEP ADD RQ2 ANALYSES FOR SELECTED COMBINATIONS OF METROS/ORDER NUMBERS### WHICH METROS TO DO:
+  # RUN THEM IN THIS SCRIPT AND THEN ADD THEM TO THE ONLINE APPENDIX.QMD FILE ONE AT A TIME.
+    # NOTE: SOME MIGHT ONLY HAVE ONE PURCHASE, NOT HAVE A LOW AND A HIGH SCORE PURCHASE; 
+    # ALSO CHECK THE RQ2_EDA SCRIPT
+
+  # DETROIT
+  # NORTHERN NEW JERSEY
+  # DALLAS
+  # LONG ISLAND
+  # BAY AREA
+  # SOCAL/LOST ANGELES
+  # ATL
+  # HOUSTON
+
+
+
+#### NOTE: SOMETHING WEIRD HAPPENING TO PHILLY FOR THE 1070-1180 BLACK STUDENTS GROUP; PA3 BAR IS ABOVE ALL BAR FOR SOME REASON
 
 #create_race_by_firstgen_graph(data_graph,ord_nums_graph,eps_codes_graph,metro_name = '',exclude_race_graph = c(1,8,12),title_suf = '')
 
@@ -1951,9 +1978,6 @@ create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = 
 create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('448427'), eps_codes = c('PA 1','PA 2','PA 3','PA 4','PA 5')) %>% print(n=50)
 create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('448440'), eps_codes = c('PA 1','PA 2','PA 3','PA 4','PA 5')) %>% print(n=50)
 
-
-2 University of California-San Diego, univ_id=110680 ord_num=479243  2248
-3 University of California-San Diego, univ_id=110680 ord_num=479299  2033
 
 
 # looking for:

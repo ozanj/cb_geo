@@ -52,11 +52,11 @@ metros <- c(
   "san diego"
 )
 
-metros <- c(
-  "atlanta",
-  "chicago",
-  "philadelphia"
-)
+#metros <- c(
+#  "atlanta",
+#  "chicago",
+#  "philadelphia"
+#)
 
 rqs <- c("rq1",'rq2')
 graph_types = c('race','ses')
@@ -142,6 +142,14 @@ for (m in metros) {
       # Print a second-level heading for the RQ
       cat("## Research question ", rq_num, "\n", sep="")
       
+      # separate rq2 graphs for race and for firstgen status; they apply to all above metro areas
+      for (suffix in c('race_row_plot','race_col_plot','firstgen_row_plot','firstgen_col_plot')) {
+          
+        figure_md <- insert_figure(metro = m, rq = rq, graph_type = suffix)
+        cat(figure_md, "\n")
+
+        }
+      
       if (m == 'chicago') {
 
         # Call our figure-inserting function
@@ -157,18 +165,6 @@ for (m in metros) {
       
       } else if (m == 'philadelphia') {
 
-        figure_md <- insert_figure(metro = m, rq = rq, graph_type = 'race_row_plot')
-        cat(figure_md, "\n")
-
-        figure_md <- insert_figure(metro = m, rq = rq, graph_type = 'race_col_plot')
-        cat(figure_md, "\n")
-                      
-        figure_md <- insert_figure(metro = m, rq = rq, graph_type = 'firstgen_row_plot')
-        cat(figure_md, "\n")
-        
-        figure_md <- insert_figure(metro = m, rq = rq, graph_type = 'firstgen_col_plot')
-        cat(figure_md, "\n")
-        
         # Call our figure-inserting function
         figure_md <- insert_figure(metro = m, rq = rq, graph_type = 'order_448922_race_by_firstgen')
         
