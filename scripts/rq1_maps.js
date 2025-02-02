@@ -37,13 +37,13 @@ function(el, x, choices) {
     yearControlHTML += '<div' + (idx === 0 ? '' : ' style="margin-left: 5px;"') + '><input type="radio" class="leaflet-control-layers-selector" name="year-choice" data-year="' + curr + '"><span>' + curr + '</span></div>';
   });
   
-  yearControlHTML += '</div>';
+  yearControlHTML += '</div><p style="margin: 5px; font-weight: 600;">Variables</p>';
   
-  $('.leaflet-control-layers-base').append(yearControlHTML);
+  $('.leaflet-control-layers-base').prepend(yearControlHTML);
   
   // level selection options
   
-  let levelControlHTML = '<p style="margin: 5px; font-weight: 600;">Level</p><div style="display: flex;">';
+  let levelControlHTML = '<p style="margin: 5px; font-weight: 600;">Level</p><div style="display: flex; margin-bottom: 5px;">';
   
   ['EPS', 'Tract'].forEach(function(curr, idx) {
     levelControlHTML += '<div' + (idx === 0 ? '' : ' style="margin-left: 5px;"') + '><input type="radio" class="leaflet-control-layers-selector" name="level-choice" data-level="' + curr.toLowerCase() + '"><span>' + curr + '</span></div>';
