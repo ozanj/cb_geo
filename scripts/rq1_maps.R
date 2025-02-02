@@ -47,13 +47,16 @@ regions_data <- data.frame(
 
 base_vars <- list(
   sum_tot_all = list(name = 'Total Population', abbrev = 'pop'),
-  med_inc_house = list(name = 'Median Household Income', abbrev = 'income'),
   pct_nhisp_white = list(name = '% White, non-Hispanic', abbrev = 'nhisp_white'),
   pct_nhisp_black = list(name = '% Black, non-Hispanic', abbrev = 'nhisp_black'),
   pct_hisp_all = list(name = '% Hispanic', abbrev = 'hisp_all'),
   pct_nhisp_asian = list(name = '% Asian, non-Hispanic', abbrev = 'nhisp_asian'),
-  pct_pov_yes = list(name = '% Poverty', abbrev = 'pov'),
-  pct_edu_baplus_all = list(name = '% Bachelors', abbrev = 'edu')
+  pct_nhisp_nhpi = list(name = '% NHPI, non-Hispanic', abbrev = 'nhisp_nhpi'),
+  pct_nhisp_native = list(name = '% AIAN, non-Hispanic', abbrev = 'nhisp_native'),
+  pct_nhisp_multi = list(name = '% Two+ Races, non-Hispanic', abbrev = 'nhisp_multi'),
+  med_inc_house = list(name = 'Median Income', abbrev = 'income'),
+  pct_pov_yes = list(name = '% in Poverty', abbrev = 'pov'),
+  pct_edu_baplus_all = list(name = '% with BA+', abbrev = 'edu')
 )
 
 format_vars <- function(data_df) {
@@ -65,6 +68,9 @@ format_vars <- function(data_df) {
       pct_nhisp_black_text = if_else(is.na(pct_nhisp_black), 'NA', paste0(sprintf('%.1f', pct_nhisp_black), '%')),
       pct_hisp_all_text = if_else(is.na(pct_hisp_all), 'NA', paste0(sprintf('%.1f', pct_hisp_all), '%')),
       pct_nhisp_asian_text = if_else(is.na(pct_nhisp_asian), 'NA', paste0(sprintf('%.1f', pct_nhisp_asian), '%')),
+      pct_nhisp_nhpi_text = if_else(is.na(pct_nhisp_nhpi), 'NA', paste0(sprintf('%.1f', pct_nhisp_nhpi), '%')),
+      pct_nhisp_native_text = if_else(is.na(pct_nhisp_native), 'NA', paste0(sprintf('%.1f', pct_nhisp_native), '%')),
+      pct_nhisp_multi_text = if_else(is.na(pct_nhisp_multi), 'NA', paste0(sprintf('%.1f', pct_nhisp_multi), '%')),
       pct_pov_yes_text = if_else(is.na(pct_pov_yes), 'NA', paste0(sprintf('%.1f', pct_pov_yes), '%')),
       pct_edu_baplus_all_text = if_else(is.na(pct_edu_baplus_all), 'NA', paste0(sprintf('%.1f', pct_edu_baplus_all), '%'))
     )
@@ -81,7 +87,7 @@ eps_shapes_from_tract <- allyr_anal_tract_sf %>%
 
 eps_data <- allyr_anal_eps_sf %>% 
   filter(eps %in% flatten_chr(regions_data$eps)) %>%
-  select(year, eps, eps_name, n_tracts, sum_tot_all, med_inc_house, pct_nhisp_white, pct_nhisp_black, pct_hisp_all, pct_nhisp_asian, pct_pov_yes, pct_edu_baplus_all, geometry) %>% 
+  select(year, eps, eps_name, n_tracts, sum_tot_all, med_inc_house, pct_nhisp_white, pct_nhisp_black, pct_hisp_all, pct_nhisp_asian, pct_nhisp_nhpi, pct_nhisp_native, pct_nhisp_multi, pct_pov_yes, pct_edu_baplus_all, geometry) %>% 
   rename('geometry_eps' = 'geometry') %>% 
   as.data.frame() %>% 
   left_join(as.data.frame(eps_shapes_from_tract), by = c('year', 'eps')) %>%
@@ -92,11 +98,11 @@ eps_data %>% as.data.frame() %>%
   group_by(year) %>% 
   summarise(
      across(sum_tot_all:pct_edu_baplus_all, ~sum(!is.na(.x)))
-  ) %>% View()  # Asian in 1980 data missing
+  ) %>% View()  # Asian, NHPI, AIAN, 2+ races in 1980 data missing
 
 tract_data <- allyr_anal_tract_sf %>% 
   filter(eps %in% flatten_chr(regions_data$eps)) %>% 
-  select(year, eps, eps_name, proportion, tot_all, med_inc_house, pct_nhisp_white, pct_nhisp_black, pct_hisp_all, pct_nhisp_asian, pct_pov_yes, pct_edu_baplus_all, geometry) %>% 
+  select(year, eps, eps_name, proportion, tot_all, med_inc_house, pct_nhisp_white, pct_nhisp_black, pct_hisp_all, pct_nhisp_asian, pct_nhisp_nhpi, pct_nhisp_native, pct_nhisp_multi, pct_pov_yes, pct_edu_baplus_all, geometry) %>% 
   rename('sum_tot_all' = 'tot_all') %>% 
   format_vars()
 
@@ -104,7 +110,7 @@ tract_data %>% as.data.frame() %>%
   group_by(year) %>% 
   summarise(
     across(sum_tot_all:pct_edu_baplus_all, ~sum(!is.na(.x)))
-  ) %>% View()  # Asian in 1980 data missing
+  ) %>% View()  # Asian, NHPI, AIAN, 2+ races in 1980 data missing
 
 
 # Map functions
@@ -201,12 +207,14 @@ create_rq1_map <- function(metros) {
       color_pal_eps <- get_palette(v, eps[[v]], 'eps')
       color_pal_tract <- get_palette(v, tract[[v]], 'tract')
       
+      group_name <- if_else(str_detect(base_vars[[v]]$name, 'Hispanic'), base_vars[[v]]$name, paste0('MSA by ', base_vars[[v]]$name))
+      
       for (y in yrs) {
         m <- m %>% 
           
           # Shapes
-          addPolygons(data = eps %>% filter(year == y), opacity = 1, color = '#808080', weight = 1, dashArray = '3', fillOpacity = 0.8, smoothFactor = 0.2, fillColor = ~color_pal_eps$palette(get(v)), label = ~paste0('<b>', eps, ' - ', eps_name, '</b><br>', get(paste0(v, '_text'))) %>% lapply(htmltools::HTML), group = paste0('MSA by ', base_vars[[v]]$name), highlightOptions = highlight_shp, options = pathOptions(className = paste0('metro-shape metro-', metro, ' level-eps year-', y))) %>% 
-          addPolygons(data = tract %>% filter(year == y), opacity = 1, color = '#808080', weight = 1, dashArray = '3', fillOpacity = 0.8, smoothFactor = 0.2, fillColor = ~color_pal_tract$palette(get(v)), label = ~paste0('<b>', eps, ' - ', eps_name, '</b><br>', get(paste0(v, '_text'))) %>% lapply(htmltools::HTML), group = paste0('MSA by ', base_vars[[v]]$name), highlightOptions = highlight_shp, options = pathOptions(className = paste0('metro-shape metro-', metro, ' level-tract year-', y)))
+          addPolygons(data = eps %>% filter(year == y), opacity = 1, color = '#808080', weight = 1, dashArray = '3', fillOpacity = 0.8, smoothFactor = 0.2, fillColor = ~color_pal_eps$palette(get(v)), label = ~paste0('<b>', eps, ' - ', eps_name, '</b><br>', get(paste0(v, '_text'))) %>% lapply(htmltools::HTML), group = group_name, highlightOptions = highlight_shp, options = pathOptions(className = paste0('metro-shape metro-', metro, ' level-eps year-', y))) %>% 
+          addPolygons(data = tract %>% filter(year == y), opacity = 1, color = '#808080', weight = 1, dashArray = '3', fillOpacity = 0.8, smoothFactor = 0.2, fillColor = ~color_pal_tract$palette(get(v)), label = ~paste0('<b>', eps, ' - ', eps_name, '</b><br>', get(paste0(v, '_text'))) %>% lapply(htmltools::HTML), group = group_name, highlightOptions = highlight_shp, options = pathOptions(className = paste0('metro-shape metro-', metro, ' level-tract year-', y)))
       }
       
       metro_specific_vars <- c('sum_tot_all', 'med_inc_house')
@@ -240,7 +248,7 @@ create_rq1_map <- function(metros) {
   m %>% 
     addLayersControl(
       position = c('bottomleft'),
-      baseGroups = c('MSA', str_c('MSA by ', flatten_chr(map(names(base_vars), \(x) base_vars[[x]]$name)))),
+      baseGroups = c('MSA', flatten_chr(map(names(base_vars), \(x) if_else(str_detect(base_vars[[x]]$name, 'Hispanic'), base_vars[[x]]$name, str_c('MSA by ', base_vars[[x]]$name))))),
       options = layersControlOptions(collapsed = F)
     ) %>% 
     htmlwidgets::onRender(js, choices)
