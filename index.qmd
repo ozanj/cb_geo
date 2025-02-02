@@ -1,0 +1,153 @@
+---
+title: 'Title'
+subtitle: 'Subtitle'
+author: ['Author', 'Author']
+bibliography: ./assets/bib/cb_geomarket_bib.bib
+format:
+  revealjs: 
+    theme: [default, ./assets/css/custom.scss]
+    controls: true
+    controls-layout: bottom-right
+    controls-tutorial: true
+    transition: slide
+    background-transition: fade
+    auto-stretch: false
+    slide-level: 3
+    template-partials:
+      - ./assets/html/title-slide.html
+include-in-header: ./assets/html/header.html
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+library(kableExtra)  # For collapse_rows() to work: https://stackoverflow.com/a/67803915/6373540
+library(tools)
+
+knitr::opts_chunk$set(echo = F, message = F)
+
+results_dir <- file.path('.', 'results')
+graphs_dir <- file.path(results_dir, 'graphs')
+
+metros <- c(
+  'atlanta',
+  'bay area',
+  'boston',
+  'chicago',
+  'cleveland',
+  'dallas',
+  'dc maryland virginia',
+  'detroit',
+  'houston',
+  'long island',
+  'los angeles',
+  'miami',
+  'new york city',
+  'northern new jersey',
+  'orange county',
+  'philadelphia',
+  'san diego'
+)
+
+rqs <- c('rq1', 'rq2')
+graph_types <- c('race', 'ses')
+```
+
+
+# Level-1 heading
+
+## Level-2 heading
+
+### Level-3 heading
+
+### Level-3 heading
+#### Level-4 subheading
+
+### Test map
+
+<iframe src="https://comforting-kashata-600ce0.netlify.app/" width=100% height=100% allowtransparency="true"></iframe>
+
+# Results
+
+```{r, echo=FALSE, results='asis'}
+insert_figure <- function(rq, metro, graph_type, base_path = graphs_dir) {
+  metro <- str_replace_all(string = metro, pattern = ' ', replacement = '_')
+
+  fig_file <- file.path(base_path, str_c(rq, '_', metro, '_', graph_type, '.png'))
+  cap_file <- file.path(base_path, str_c(rq, '_', metro, '_', graph_type, '_title.txt'))
+  note_file <- file.path(base_path, str_c(rq, '_', metro, '_', graph_type, '_note.txt'))
+  
+  # Print caption
+  writeLines(paste0('#### ', readLines(cap_file, warn = F)))
+
+  # Output the figure block to the doc
+  writeLines(paste0('![](', fig_file, ')\n'))
+  
+  # Print footnotes
+  writeLines(paste0('<div class="footnote">', paste0(readLines(note_file, warn = F), collapse = '</br>'), '</div>'))
+}
+
+for (m in metros) {
+  
+  # Print a top-level heading for the metro area
+  writeLines(paste0('## ', toTitleCase(m), ' area'))
+  
+  for (rq in rqs) {
+    rq_num <- str_replace(string = rq, pattern = 'rq', replacement = '')
+    
+    if (rq == 'rq1') { # rq1 run for every metro area
+
+      for (g in graph_types) {
+        
+        # Print a heading for the RQ
+        writeLines(paste0('### Research question ', rq_num))
+        
+        insert_figure(metro = m, rq = rq, graph_type = g)
+      }
+
+    } else if (rq == 'rq2' & (m %in% c('chicago','philadelphia'))) { # rq2 run only for specific metro areas and orders
+      
+      # Separate rq2 graphs for race and for firstgen status; they apply to all above metro areas
+      for (suffix in c('race_row_plot', 'race_col_plot', 'firstgen_row_plot', 'firstgen_col_plot')) {
+        
+        # Print a heading for the RQ
+        writeLines(paste0('### Research question ', rq_num))
+        
+        insert_figure(metro = m, rq = rq, graph_type = suffix)
+        
+      }
+      
+      if (m == 'chicago') {
+        
+        # Print a heading for the RQ
+        writeLines(paste0('### Research question ', rq_num))
+
+        insert_figure(metro = m, rq = rq, graph_type = 'order_487984_race_by_firstgen')
+        
+        # Print a heading for the RQ
+        writeLines(paste0('### Research question ', rq_num))
+        
+        insert_figure(metro = m, rq = rq, graph_type = 'order_488035_488053_race_by_firstgen')
+
+      
+      } else if (m == 'philadelphia') {
+
+        # Print a heading for the RQ
+        writeLines(paste0('### Research question ', rq_num))
+        
+        insert_figure(metro = m, rq = rq, graph_type = 'order_448922_race_by_firstgen')
+        
+        # Print a heading for the RQ
+        writeLines(paste0('### Research question ', rq_num))
+        
+        insert_figure(metro = m, rq = rq, graph_type = 'order_448427_448440_race_by_firstgen')
+        
+      }
+    }
+  }
+}
+```
+
+### References
+
+::: {#refs}
+:::
