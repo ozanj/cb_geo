@@ -188,8 +188,8 @@ create_rq1_map <- function(metros) {
     m <- m %>%
       
       # Metro outline
-      addPolylines(data = region$geometry, color = 'black', weight = 2, group = 'MSA', options = c(className = paste0('metro-shape metro-line metro-', metro)))
-    
+      addPolylines(data = eps %>% filter(year == 2020), opacity = 1, color = '#707070', weight = 1.2, group = 'MSA', options = c(className = paste0('metro-shape metro-line metro-', metro)))
+
     for (y in yrs) {
       m <- m %>%
         
