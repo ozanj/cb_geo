@@ -175,31 +175,31 @@ function(el, x, choices) {
         $('.legend-income-' + active_attr.active_metro + '-' + active_attr.active_level).css('display', 'inherit');
         break;
       case '% White, non-Hispanic':
-        $('.legend-nhisp_white-' + active_attr.active_level).css('display', 'inherit');
+        $('.legend-nhisp_white-' + active_attr.active_metro + '-' + active_attr.active_level).css('display', 'inherit');
         break;
       case '% Black, non-Hispanic':
-        $('.legend-nhisp_black-' + active_attr.active_level).css('display', 'inherit');
+        $('.legend-nhisp_black-' + active_attr.active_metro + '-' + active_attr.active_level).css('display', 'inherit');
         break;
       case '% Hispanic':
-        $('.legend-hisp_all-' + active_attr.active_level).css('display', 'inherit');
+        $('.legend-hisp_all-' + active_attr.active_metro + '-' + active_attr.active_level).css('display', 'inherit');
         break;
       case '% Asian, non-Hispanic':
-        $('.legend-nhisp_asian-' + active_attr.active_level).css('display', 'inherit');
+        $('.legend-nhisp_asian-' + active_attr.active_metro + '-' + active_attr.active_level).css('display', 'inherit');
         break;
       case '% NHPI, non-Hispanic':
-        $('.legend-nhisp_nhpi-' + active_attr.active_level).css('display', 'inherit');
+        $('.legend-nhisp_nhpi-' + active_attr.active_metro + '-' + active_attr.active_level).css('display', 'inherit');
         break;
       case '% AIAN, non-Hispanic':
-        $('.legend-nhisp_native-' + active_attr.active_level).css('display', 'inherit');
+        $('.legend-nhisp_native-' + active_attr.active_metro + '-' + active_attr.active_level).css('display', 'inherit');
         break;
       case '% 2+ Races, non-Hispanic':
-        $('.legend-nhisp_multi-' + active_attr.active_level).css('display', 'inherit');
+        $('.legend-nhisp_multi-' + active_attr.active_metro + '-' + active_attr.active_level).css('display', 'inherit');
         break;
       case 'MSA by % in Poverty':
-        $('.legend-pov-' + active_attr.active_level).css('display', 'inherit');
+        $('.legend-pov-' + active_attr.active_metro + '-' + active_attr.active_level).css('display', 'inherit');
         break;
       case 'MSA by % with BA+':
-        $('.legend-edu-' + active_attr.active_level).css('display', 'inherit');
+        $('.legend-edu-' + active_attr.active_metro + '-' + active_attr.active_level).css('display', 'inherit');
         break;
     }
   };

@@ -97,7 +97,7 @@ eps_data <- allyr_anal_eps_sf %>%
 eps_data %>% as.data.frame() %>% 
   group_by(year) %>% 
   summarise(
-     across(sum_tot_all:pct_edu_baplus_all, ~sum(!is.na(.x)))
+    across(sum_tot_all:pct_edu_baplus_all, ~sum(!is.na(.x)))
   ) %>% View()  # Asian, NHPI, AIAN, 2+ races in 1980 data missing
 
 tract_data <- allyr_anal_tract_sf %>% 
@@ -123,7 +123,7 @@ get_palette <- function(variable, domain, level, pal = 'YlGnBu') {
     if (level == 'tract') {
       bins <- pretty(range(domain, na.rm = T), n = 6)
     } else {
-      bins <- c(0, 50, 75, 100, 125, 150, 175, 200, 225, 250) * 1000
+      bins <- c(0, 25, 50, 75, 100, 125, 150, 175, 200, 1000) * 1000
     }
     palette <- colorBin(pal, domain, bins)
     
@@ -142,16 +142,17 @@ get_palette <- function(variable, domain, level, pal = 'YlGnBu') {
       cuts
     }
   } else if (str_detect(variable, 'pct_')) {
-    bins <- pretty(range(0, 100), n = 5)
+    bins <- pretty(range(0, max(domain, na.rm = T)), n = 5)
     palette <- colorBin(pal, domain, bins)
     
     label_format <- function(type, cuts) {
       f <- cuts[[2]]
       l <- cuts[[length(cuts) - 1]]
       delta <- cuts[[2]] - cuts[[1]]
+      d <- if_else(delta > 1, 1, 0)
       
-      cuts <- paste0(cuts, '-', cuts + delta - 1, '%')
-      cuts[[length(cuts) - 1]] <- '80-100%'
+      cuts <- paste0(cuts, '-', cuts + delta - d, '%')
+      cuts[[length(cuts) - 1]] <- paste0(l, '%+')
       cuts[[length(cuts)]] <- 'NA'
       
       cuts
@@ -161,7 +162,7 @@ get_palette <- function(variable, domain, level, pal = 'YlGnBu') {
   list(palette = palette, label_format = label_format)
 }
 
-create_rq1_map <- function(metros) {
+create_rq1_map <- function(metros, shared_legend = F) {
   js <- read_file(file.path(scripts_dir, 'rq1_maps.js'))
   
   choices <- list(region_choices = regions_data %>% filter(region %in% metros) %>% select(region, region_name, latitude, longitude))
@@ -183,7 +184,7 @@ create_rq1_map <- function(metros) {
     addEasyButton(easyButton(
       icon = 'fa-globe', title = 'Select Metro Area',
       onClick = JS("function(btn, map){ $('.custom-control').not('#metro-control').slideUp(); $('#metro-control').slideToggle(); }")))
-    
+  
   for (metro in metros) {
     print(metro)
     
@@ -195,7 +196,7 @@ create_rq1_map <- function(metros) {
       
       # Metro outline
       addPolylines(data = eps %>% filter(year == 2020), opacity = 1, color = '#707070', weight = 1.2, group = 'MSA', options = c(className = paste0('metro-shape metro-line metro-', metro)))
-
+    
     for (y in yrs) {
       m <- m %>%
         
@@ -204,8 +205,15 @@ create_rq1_map <- function(metros) {
     }
     
     for (v in names(base_vars)) {
-      color_pal_eps <- get_palette(v, eps[[v]], 'eps')
-      color_pal_tract <- get_palette(v, tract[[v]], 'tract')
+      
+      if (shared_legend && v != 'sum_tot_all') {
+        color_pal_shared <- get_palette(v, c(eps[[v]], tract[[v]]), 'tract')
+        color_pal_eps <- color_pal_shared
+        color_pal_tract <- color_pal_shared
+      } else {
+        color_pal_eps <- get_palette(v, eps[[v]], 'eps')
+        color_pal_tract <- get_palette(v, tract[[v]], 'tract')
+      }
       
       group_name <- if_else(str_detect(base_vars[[v]]$name, 'Hispanic'), base_vars[[v]]$name, paste0('MSA by ', base_vars[[v]]$name))
       
@@ -217,34 +225,27 @@ create_rq1_map <- function(metros) {
           addPolygons(data = tract %>% filter(year == y), opacity = 1, color = '#808080', weight = 1, dashArray = '3', fillOpacity = 0.8, smoothFactor = 0.2, fillColor = ~color_pal_tract$palette(get(v)), label = ~paste0('<b>', eps, ' - ', eps_name, '</b><br>', get(paste0(v, '_text'))) %>% lapply(htmltools::HTML), group = group_name, highlightOptions = highlight_shp, options = pathOptions(className = paste0('metro-shape metro-', metro, ' level-tract year-', y)))
       }
       
-      metro_specific_vars <- c('sum_tot_all', 'med_inc_house')
-      class_name <- paste0('info legend legend-', base_vars[[v]]$abbrev)
+      class_name <- paste0('info legend legend-', base_vars[[v]]$abbrev, '-', metro)
       
-      if (v %in% metro_specific_vars) {
-        class_name <- paste0(class_name, '-', metro)
-      }
-      
-      if (v %in% metro_specific_vars || metro == metros[[1]]) {
-        m <- m %>%
-          addLegend(data = eps,
-                    position = 'topright', pal = color_pal_eps$palette, values = ~get(v),
-                    title = base_vars[[v]]$name,
-                    className = paste0(class_name, '-eps'),
-                    labFormat = color_pal_eps$label_format,
-                    na.label = 'N/A',
-                    opacity = 1) %>%
-  
-          addLegend(data = tract,
-                    position = 'topright', pal = color_pal_tract$palette, values = ~get(v),
-                    title = base_vars[[v]]$name,
-                    className = paste0(class_name, '-tract'),
-                    labFormat = color_pal_tract$label_format,
-                    na.label = 'N/A',
-                    opacity = 1)
-      }
+      m <- m %>%
+        addLegend(data = eps,
+                  position = 'topright', pal = color_pal_eps$palette, values = ~get(v),
+                  title = base_vars[[v]]$name,
+                  className = paste0(class_name, '-eps'),
+                  labFormat = color_pal_eps$label_format,
+                  na.label = 'N/A',
+                  opacity = 1) %>%
+        
+        addLegend(data = tract,
+                  position = 'topright', pal = color_pal_tract$palette, values = ~get(v),
+                  title = base_vars[[v]]$name,
+                  className = paste0(class_name, '-tract'),
+                  labFormat = color_pal_tract$label_format,
+                  na.label = 'N/A',
+                  opacity = 1)
     }
   }
-    
+  
   m %>% 
     addLayersControl(
       position = c('bottomleft'),
@@ -260,6 +261,7 @@ create_rq1_map <- function(metros) {
 names(all_codes)
 
 create_rq1_map(c('bay_area'))
+create_rq1_map(c('bay_area'), shared_legend = T)
 
 create_rq1_map(c('bay_area', 'philly', 'chicago'))
 saveWidget(create_rq1_map(c('bay_area', 'philly', 'chicago')), file.path('.', 'results', 'maps', 'rq1_map_bayarea_philly_chicago.html'), background = 'transparent', selfcontained = T)
