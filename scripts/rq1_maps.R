@@ -53,7 +53,7 @@ base_vars <- list(
   pct_nhisp_asian = list(name = '% Asian, non-Hispanic', abbrev = 'nhisp_asian'),
   pct_nhisp_nhpi = list(name = '% NHPI, non-Hispanic', abbrev = 'nhisp_nhpi'),
   pct_nhisp_native = list(name = '% AIAN, non-Hispanic', abbrev = 'nhisp_native'),
-  pct_nhisp_multi = list(name = '% Two+ Races, non-Hispanic', abbrev = 'nhisp_multi'),
+  pct_nhisp_multi = list(name = '% 2+ Races, non-Hispanic', abbrev = 'nhisp_multi'),
   med_inc_house = list(name = 'Median Income', abbrev = 'income'),
   pct_pov_yes = list(name = '% in Poverty', abbrev = 'pov'),
   pct_edu_baplus_all = list(name = '% with BA+', abbrev = 'edu')

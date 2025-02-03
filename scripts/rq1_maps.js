@@ -8,6 +8,8 @@ function(el, x, choices) {
       region_name = choices.region_choices.region_name,
       latitude = choices.region_choices.latitude,
       longitude = choices.region_choices.longitude;
+      
+  $(String.raw`<style>#race-label span::before { content: "➕"; margin-right: 2.5px; margin-left: 5.5px; width: 13px; display: inline-block; transition: transform 0.25s ease-out; } #race-label.active span::before { content: "➖" } #race-label:not(.active) span::before { transform: rotate(90deg); } .leaflet-control-layers-base { width: 190px; }</style>`).appendTo('head');
   
   // buttons
   
@@ -47,11 +49,28 @@ function(el, x, choices) {
   
   ['EPS', 'Tract'].forEach(function(curr, idx) {
     levelControlHTML += '<div' + (idx === 0 ? '' : ' style="margin-left: 5px;"') + '><input type="radio" class="leaflet-control-layers-selector" name="level-choice" data-level="' + curr.toLowerCase() + '"><span>' + curr + '</span></div>';
-  })
+  });
   
   levelControlHTML += '</div>';
   
   $('.leaflet-control-layers-base').append(levelControlHTML);
+  
+  // race/ethnicity selection options
+  
+  let raceOptions = $('.leaflet-control-layers-base label').filter(function() {
+    return $(this).text().trim().startsWith('%');
+  });
+  
+  raceControlHTML = '<label id="race-label" style="cursor: pointer;"><div><span style="font-weight: 500;"> MSA by Race/Ethnicity</span></div></label><div id="race-container" style="padding-left: 20px;"></div>';
+  
+  $('.leaflet-control-layers-base label:nth-child(5)').after(raceControlHTML);
+  
+  $('#race-container').append(raceOptions).slideUp();
+  
+  $('#race-label').on('click', function(e) {
+    $(this).toggleClass('active');
+    $('#race-container').slideToggle();
+  })
     
   // selection text
   
@@ -128,7 +147,7 @@ function(el, x, choices) {
       $('input[data-year], input[data-level]').prop('disabled', true);
     }
     
-    if (['% Asian, non-Hispanic', '% NHPI, non-Hispanic', '% AIAN, non-Hispanic', '% Two+ Races, non-Hispanic'].includes(active_attr.active_base)) {
+    if (['% Asian, non-Hispanic', '% NHPI, non-Hispanic', '% AIAN, non-Hispanic', '% 2+ Races, non-Hispanic'].includes(active_attr.active_base)) {
       $('input[data-year="1980"]').prop('disabled', true);
       if (active_attr.active_year === '1980') {
         $('input[data-year="2000"]').trigger('click');
@@ -173,7 +192,7 @@ function(el, x, choices) {
       case '% AIAN, non-Hispanic':
         $('.legend-nhisp_native-' + active_attr.active_level).css('display', 'inherit');
         break;
-      case '% Two+ Races, non-Hispanic':
+      case '% 2+ Races, non-Hispanic':
         $('.legend-nhisp_multi-' + active_attr.active_level).css('display', 'inherit');
         break;
       case 'MSA by % in Poverty':
