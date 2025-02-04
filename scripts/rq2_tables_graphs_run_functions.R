@@ -60,9 +60,50 @@ all_orders <- list(
   chicago = c('chicago', 'chi_eps_codes', 'SAT score 1020 - 1150', '487984'),
   chicago = c('chicago', 'chi_eps_codes', 'SAT score 1160 - 1600', '488035', '488053'),
   philadelphia = c('philadelphia', 'philly_eps_codes', 'PSAT score 1070 - 1180', '448922'),
-  philadelphia = c('philadelphia', 'philly_eps_codes', 'PSAT score 1190 - 1520', '448427', '448440')
+  philadelphia = c('philadelphia', 'philly_eps_codes', 'PSAT score 1190 - 1520', '448427', '448440'),
+  #los_angeles = c('los_angeles', 'los_angeles_eps_codes', 'PSAT score 1110 - 1210', '366935'), # ordered jan 2018; don't like these cutpoints as much
+  #los_angeles = c('los_angeles', 'los_angeles_eps_codes', 'PSAT score 1220 - 1520', '366934', '366932'),
+  los_angeles = c('los_angeles', 'los_angeles_eps_codes', 'PSAT score 1070 - 1180', '448375'), # ordered jan 2019
+  los_angeles = c('los_angeles', 'los_angeles_eps_codes', 'PSAT score 1220 - 1520', '448374', '448420'),
+  #los_angeles = c('los_angeles', 'los_angeles_eps_codes', 'PSAT score 1070 - 1180', '546954'), # ordered jan 2020; much smaller sample size than orders from jan 2019
+  #los_angeles = c('los_angeles', 'los_angeles_eps_codes', 'PSAT score 1220 - 1520', '546946', '546945'),
+  #orange_county = c('orange_county', 'orange_county_eps_codes', 'PSAT score 1110 - 1210', '366935'), # ordered jan 2018; don't like these cutpoints as much
+  #orange_county = c('orange_county', 'orange_county_eps_codes', 'PSAT score 1220 - 1520', '366934', '366932'),
+  orange_county = c('orange_county', 'orange_county_eps_codes', 'PSAT score 1070 - 1180', '448375'), # ordered jan 2019
+  orange_county = c('orange_county', 'orange_county_eps_codes', 'PSAT score 1220 - 1520', '448374', '448420'),
+  #orange_county = c('orange_county', 'orange_county_eps_codes', 'PSAT score 1070 - 1180', '546954'), # ordered jan 2020; much smaller sample size than orders from jan 2019
+  #orange_county = c('orange_county', 'orange_county_eps_codes', 'PSAT score 1220 - 1520', '546946', '546945'),
+  #san_diego = c('san_diego', 'san_diego_eps_codes', 'PSAT score 1110 - 1210', '366935'), # ordered jan 2018; don't like these cutpoints as much
+  #san_diego = c('san_diego', 'san_diego_eps_codes', 'PSAT score 1220 - 1520', '366934', '366932'),
+  san_diego = c('san_diego', 'san_diego_eps_codes', 'PSAT score 1070 - 1180', '448375'), # ordered jan 2019
+  san_diego = c('san_diego', 'san_diego_eps_codes', 'PSAT score 1220 - 1520', '448374', '448420'),
+  #san_diego = c('san_diego', 'san_diego_eps_codes', 'PSAT score 1070 - 1180', '546954'), # ordered jan 2020; much smaller sample size than orders from jan 2019
+  #san_diego = c('san_diego', 'san_diego_eps_codes', 'PSAT score 1220 - 1520', '546946', '546945'),
+  #bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1110 - 1210', '366935'), # ordered jan 2018; don't like these cutpoints as much
+  #bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1220 - 1520', '366934', '366932'),
+  bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1070 - 1180', '448375'), # ordered jan 2019
+  bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1220 - 1520', '448374', '448420')
+  #bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1070 - 1180', '546954'), # ordered jan 2020; much smaller sample size than orders from jan 2019
+  #bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1220 - 1520', '546946', '546945')  
 )
+
 all_orders %>% str()
+
+orange_county_eps_codes
+
+
+# 1 366935  42790 FA19 - CA PSAT AD {JAN18); ordered 1/17/2018; 2019/20/21 HS grad class; CA; PSAT 1110 - 1210
+# 8 366934  15806 FA19 - CA PSAT SE (JAN18); ordered 1/17/2018; 2019/20/21 hs grad class; CA; PSAT 1220-1290    
+# 7 366932  15931 FA19 - CA PSAT BE (JAN18); ordered 1/17/2018; 2019/20/21 hs grad class; CA; PSAT 1300 - 1520
+
+# 2 448375  33893 FA20 - CA PSAT AD {JAN19); ordered 1/8/2019; 2020 HS grad class; CA; PSAT 1070 - 1180
+# 5 448374  19775; FA20 - CA PSAT BE (JAN19); ordered 1/8/2019; 2020/21 hs grad class; CA; PSAT 1270-1520
+# 6 448420  19437; FA20 - CA PSAT SE (JAN19); ordered 1/8/2019; 2020/21 hs grad class; CA; PSAT 1190-1260
+
+# 4 546954  21102 FA21 - CA PSAT AD (JAN20); ordered 1/6/2020; 2021 HS grad class; CA; PSAT 1070-1180
+#12 546946  12061 FA21 - CA PSAT SE (JAN20); ordered 1/6/2020; 2021/2022 hs grad class; CA; PSAT 1190-1260
+#13 546945  11041 FA21 - CA PSAT BE (JAN20); ordered 1/6/2020; 2021/22 hs grad class; CA; PSAT 1270-1520
+
 
 for (orders in all_orders) {
   
@@ -95,121 +136,374 @@ for (orders in all_orders) {
   }
 }
 
-### Philly
-rq2_philadelphia_race_plot_order_448922$plot_r
-rq2_philadelphia_race_plot_order_448922$plot_c
+### Los angeles
 
-rq2_philadelphia_firstgen_plot_order_448922$plot_r
-rq2_philadelphia_firstgen_plot_order_448922$plot_c
-
-rq2_philadelphia_race_plot_order_448427_448440$plot_r
-rq2_philadelphia_race_plot_order_448427_448440$plot_c
-
-rq2_philadelphia_firstgen_plot_order_448427_448440$plot_r
-rq2_philadelphia_firstgen_plot_order_448427_448440$plot_c
-
-
-# Create combined graphs for Philadelphia
-# race row pct. for lower SAT score and higher SAT score
-rq2_philadelphia_race_row_plot <- rq2_philadelphia_race_plot_order_448922$plot_r + rq2_philadelphia_race_plot_order_448427_448440$plot_r + plot_layout(ncol = 1)
-# race column pct. for lower SAT score and higher SAT score
-rq2_philadelphia_race_col_plot <- rq2_philadelphia_race_plot_order_448922$plot_c + rq2_philadelphia_race_plot_order_448427_448440$plot_c + plot_layout(ncol = 1)
-
-# firstgen row pct. for lower SAT score and higher SAT score
-rq2_philadelphia_firstgen_row_plot <- rq2_philadelphia_firstgen_plot_order_448922$plot_r + rq2_philadelphia_firstgen_plot_order_448427_448440$plot_r + plot_layout(ncol = 1)
-# firstgen column pct. for lower SAT score and higher SAT score
-rq2_philadelphia_firstgen_col_plot <- rq2_philadelphia_firstgen_plot_order_448922$plot_c + rq2_philadelphia_firstgen_plot_order_448427_448440$plot_c + plot_layout(ncol = 1)
-
-# create combined graphs for Chicago
-
-# race row pct. for lower SAT score and higher SAT score
-rq2_chicago_race_row_plot <- rq2_chicago_race_plot_order_487984$plot_r + rq2_chicago_race_plot_order_488035_488053$plot_r + plot_layout(ncol = 1)
-# race column pct. for lower SAT score and higher SAT score
-rq2_chicago_race_col_plot <- rq2_chicago_race_plot_order_487984$plot_c + rq2_chicago_race_plot_order_488035_488053$plot_c + plot_layout(ncol = 1)
-
-# firstgen row pct. for lower SAT score and higher SAT score
-rq2_chicago_firstgen_row_plot <- rq2_chicago_firstgen_plot_order_487984$plot_r + rq2_chicago_firstgen_plot_order_488035_488053$plot_r + plot_layout(ncol = 1)
-# firstgen column pct. for lower SAT score and higher SAT score
-rq2_chicago_firstgen_col_plot <- rq2_chicago_firstgen_plot_order_487984$plot_c + rq2_chicago_firstgen_plot_order_488035_488053$plot_c + plot_layout(ncol = 1)
-
-
-# loop that saves combined graphs as .png and creates title.txt and note.txt
-for (m in c('chicago','philadelphia')) {
+  ## los angeles [ordered 2018]
+  # 1 366935  42790 FA19 - CA PSAT AD {JAN18); ordered 1/17/2018; 2019/20/21 HS grad class; CA; PSAT 1110 - 1210
+  # 8 366934  15806 FA19 - CA PSAT SE (JAN18); ordered 1/17/2018; 2019/20/21 hs grad class; CA; PSAT 1220-1290    
+  # 7 366932  15931 FA19 - CA PSAT BE (JAN18); ordered 1/17/2018; 2019/20/21 hs grad class; CA; PSAT 1300 - 1520
   
-  for (g in c('race', 'firstgen')) {
+  rq2_los_angeles_race_plot_order_366935$plot_r
+  rq2_los_angeles_race_plot_order_366935$plot_c
+  
+  rq2_los_angeles_firstgen_plot_order_366935$plot_r
+  rq2_los_angeles_firstgen_plot_order_366935$plot_c
+  
+  rq2_los_angeles_race_plot_order_366934_366932$plot_r
+  rq2_los_angeles_race_plot_order_366934_366932$plot_c
+  
+  rq2_los_angeles_firstgen_plot_order_366934_366932$plot_r
+  rq2_los_angeles_firstgen_plot_order_366934_366932$plot_c
+  
+  ## los angeles [ordered 2019]
+  # 2 448375  33893 FA20 - CA PSAT AD {JAN19); ordered 1/8/2019; 2020 HS grad class; CA; PSAT 1070 - 1180
+  # 5 448374  19775; FA20 - CA PSAT BE (JAN19); ordered 1/8/2019; 2020/21 hs grad class; CA; PSAT 1270-1520
+  # 6 448420  19437; FA20 - CA PSAT SE (JAN19); ordered 1/8/2019; 2020/21 hs grad class; CA; PSAT 1190-1260
+  
+  rq2_los_angeles_race_plot_order_448375$plot_r
+  rq2_los_angeles_race_plot_order_448375$plot_c
+  
+  rq2_los_angeles_firstgen_plot_order_448375$plot_r
+  rq2_los_angeles_firstgen_plot_order_448375$plot_c
+  
+  rq2_los_angeles_race_plot_order_448374_448420$plot_r
+  rq2_los_angeles_race_plot_order_448374_448420$plot_c
+  
+  rq2_los_angeles_firstgen_plot_order_448374_448420$plot_r
+  rq2_los_angeles_firstgen_plot_order_448374_448420$plot_c
+  
+  ## los angeles [ordered 2020]
+  # 4 546954  21102 FA21 - CA PSAT AD (JAN20); ordered 1/6/2020; 2021 HS grad class; CA; PSAT 1070-1180
+  #12 546946  12061 FA21 - CA PSAT SE (JAN20); ordered 1/6/2020; 2021/2022 hs grad class; CA; PSAT 1190-1260
+  #13 546945  11041 FA21 - CA PSAT BE (JAN20); ordered 1/6/2020; 2021/22 hs grad class; CA; PSAT 1270-1520
+  
+  rq2_los_angeles_race_plot_order_546954$plot_r
+  rq2_los_angeles_race_plot_order_546954$plot_c
+  
+  rq2_los_angeles_firstgen_plot_order_546954$plot_r
+  rq2_los_angeles_firstgen_plot_order_546954$plot_c
+  
+  rq2_los_angeles_race_plot_order_546946_546945$plot_r
+  rq2_los_angeles_race_plot_order_546946_546945$plot_c
+  
+  rq2_los_angeles_firstgen_plot_order_546946_546945$plot_r
+  rq2_los_angeles_firstgen_plot_order_546946_546945$plot_c
 
-    if (g == 'race') {
-      g_prefix <- 'Racial/ethnic'
-    } else if (g == 'firstgen') {
-      g_prefix <- 'First-generation status'
-    }
+#### orange county
+
+  ##  [ordered 2018]
+  # 1 366935  42790 FA19 - CA PSAT AD {JAN18); ordered 1/17/2018; 2019/20/21 HS grad class; CA; PSAT 1110 - 1210
+  # 8 366934  15806 FA19 - CA PSAT SE (JAN18); ordered 1/17/2018; 2019/20/21 hs grad class; CA; PSAT 1220-1290    
+  # 7 366932  15931 FA19 - CA PSAT BE (JAN18); ordered 1/17/2018; 2019/20/21 hs grad class; CA; PSAT 1300 - 1520
+  
+  rq2_orange_county_race_plot_order_366935$plot_r
+  rq2_orange_county_race_plot_order_366935$plot_c
+  
+  rq2_orange_county_firstgen_plot_order_366935$plot_r
+  rq2_orange_county_firstgen_plot_order_366935$plot_c
+  
+  rq2_orange_county_race_plot_order_366934_366932$plot_r
+  rq2_orange_county_race_plot_order_366934_366932$plot_c
+  
+  rq2_orange_county_firstgen_plot_order_366934_366932$plot_r
+  rq2_orange_county_firstgen_plot_order_366934_366932$plot_c
+  
+  ## [ordered 2019]
+  # 2 448375  33893 FA20 - CA PSAT AD {JAN19); ordered 1/8/2019; 2020 HS grad class; CA; PSAT 1070 - 1180
+  # 5 448374  19775; FA20 - CA PSAT BE (JAN19); ordered 1/8/2019; 2020/21 hs grad class; CA; PSAT 1270-1520
+  # 6 448420  19437; FA20 - CA PSAT SE (JAN19); ordered 1/8/2019; 2020/21 hs grad class; CA; PSAT 1190-1260
+  
+  rq2_orange_county_race_plot_order_448375$plot_r
+  rq2_orange_county_race_plot_order_448375$plot_c
+  
+  rq2_orange_county_firstgen_plot_order_448375$plot_r
+  rq2_orange_county_firstgen_plot_order_448375$plot_c
+  
+  rq2_orange_county_race_plot_order_448374_448420$plot_r
+  rq2_orange_county_race_plot_order_448374_448420$plot_c
+  
+  rq2_orange_county_firstgen_plot_order_448374_448420$plot_r
+  rq2_orange_county_firstgen_plot_order_448374_448420$plot_c
+  
+  ## ordered 2020]
+  # 4 546954  21102 FA21 - CA PSAT AD (JAN20); ordered 1/6/2020; 2021 HS grad class; CA; PSAT 1070-1180
+  #12 546946  12061 FA21 - CA PSAT SE (JAN20); ordered 1/6/2020; 2021/2022 hs grad class; CA; PSAT 1190-1260
+  #13 546945  11041 FA21 - CA PSAT BE (JAN20); ordered 1/6/2020; 2021/22 hs grad class; CA; PSAT 1270-1520
+  
+  rq2_orange_county_race_plot_order_546954$plot_r
+  rq2_orange_county_race_plot_order_546954$plot_c
+  
+  rq2_orange_county_firstgen_plot_order_546954$plot_r
+  rq2_orange_county_firstgen_plot_order_546954$plot_c
+  
+  rq2_orange_county_race_plot_order_546946_546945$plot_r
+  rq2_orange_county_race_plot_order_546946_546945$plot_c
+  
+  rq2_orange_county_firstgen_plot_order_546946_546945$plot_r
+  rq2_orange_county_firstgen_plot_order_546946_546945$plot_c
+  
+  
+### san diego
+  ## [ordered 2018]
+  # 1 366935  42790 FA19 - CA PSAT AD {JAN18); ordered 1/17/2018; 2019/20/21 HS grad class; CA; PSAT 1110 - 1210
+  # 8 366934  15806 FA19 - CA PSAT SE (JAN18); ordered 1/17/2018; 2019/20/21 hs grad class; CA; PSAT 1220-1290    
+  # 7 366932  15931 FA19 - CA PSAT BE (JAN18); ordered 1/17/2018; 2019/20/21 hs grad class; CA; PSAT 1300 - 1520
+  
+  rq2_san_diego_race_plot_order_366935$plot_r
+  rq2_san_diego_race_plot_order_366935$plot_c
+  
+  rq2_san_diego_firstgen_plot_order_366935$plot_r
+  rq2_san_diego_firstgen_plot_order_366935$plot_c
+  
+  rq2_san_diego_race_plot_order_366934_366932$plot_r
+  rq2_san_diego_race_plot_order_366934_366932$plot_c
+  
+  rq2_san_diego_firstgen_plot_order_366934_366932$plot_r
+  rq2_san_diego_firstgen_plot_order_366934_366932$plot_c
+  
+  ## [ordered 2019]
+  # 2 448375  33893 FA20 - CA PSAT AD {JAN19); ordered 1/8/2019; 2020 HS grad class; CA; PSAT 1070 - 1180
+  # 5 448374  19775; FA20 - CA PSAT BE (JAN19); ordered 1/8/2019; 2020/21 hs grad class; CA; PSAT 1270-1520
+  # 6 448420  19437; FA20 - CA PSAT SE (JAN19); ordered 1/8/2019; 2020/21 hs grad class; CA; PSAT 1190-1260
+  
+  rq2_san_diego_race_plot_order_448375$plot_r
+  rq2_san_diego_race_plot_order_448375$plot_c
+  
+  rq2_san_diego_firstgen_plot_order_448375$plot_r
+  rq2_san_diego_firstgen_plot_order_448375$plot_c
+  
+  rq2_san_diego_race_plot_order_448374_448420$plot_r
+  rq2_san_diego_race_plot_order_448374_448420$plot_c
+  
+  rq2_san_diego_firstgen_plot_order_448374_448420$plot_r
+  rq2_san_diego_firstgen_plot_order_448374_448420$plot_c
+  
+  ##  [ordered 2020]
+  # 4 546954  21102 FA21 - CA PSAT AD (JAN20); ordered 1/6/2020; 2021 HS grad class; CA; PSAT 1070-1180
+  #12 546946  12061 FA21 - CA PSAT SE (JAN20); ordered 1/6/2020; 2021/2022 hs grad class; CA; PSAT 1190-1260
+  #13 546945  11041 FA21 - CA PSAT BE (JAN20); ordered 1/6/2020; 2021/22 hs grad class; CA; PSAT 1270-1520
+  
+  rq2_san_diego_race_plot_order_546954$plot_r
+  rq2_san_diego_race_plot_order_546954$plot_c
+  
+  rq2_san_diego_firstgen_plot_order_546954$plot_r
+  rq2_san_diego_firstgen_plot_order_546954$plot_c
+  
+  rq2_san_diego_race_plot_order_546946_546945$plot_r
+  rq2_san_diego_race_plot_order_546946_546945$plot_c
+  
+  rq2_san_diego_firstgen_plot_order_546946_546945$plot_r
+  rq2_san_diego_firstgen_plot_order_546946_546945$plot_c
+  
+### bay area
+  
+  ##  [ordered 2018]
+  # 1 366935  42790 FA19 - CA PSAT AD {JAN18); ordered 1/17/2018; 2019/20/21 HS grad class; CA; PSAT 1110 - 1210
+  # 8 366934  15806 FA19 - CA PSAT SE (JAN18); ordered 1/17/2018; 2019/20/21 hs grad class; CA; PSAT 1220-1290    
+  # 7 366932  15931 FA19 - CA PSAT BE (JAN18); ordered 1/17/2018; 2019/20/21 hs grad class; CA; PSAT 1300 - 1520
+  
+  rq2_bay_area_race_plot_order_366935$plot_r
+  rq2_bay_area_race_plot_order_366935$plot_c
+  
+  rq2_bay_area_firstgen_plot_order_366935$plot_r
+  rq2_bay_area_firstgen_plot_order_366935$plot_c
+  
+  rq2_bay_area_race_plot_order_366934_366932$plot_r
+  rq2_bay_area_race_plot_order_366934_366932$plot_c
+  
+  rq2_bay_area_firstgen_plot_order_366934_366932$plot_r
+  rq2_bay_area_firstgen_plot_order_366934_366932$plot_c
+  
+  ##  [ordered 2019]
+  # 2 448375  33893 FA20 - CA PSAT AD {JAN19); ordered 1/8/2019; 2020 HS grad class; CA; PSAT 1070 - 1180
+  # 5 448374  19775; FA20 - CA PSAT BE (JAN19); ordered 1/8/2019; 2020/21 hs grad class; CA; PSAT 1270-1520
+  # 6 448420  19437; FA20 - CA PSAT SE (JAN19); ordered 1/8/2019; 2020/21 hs grad class; CA; PSAT 1190-1260
+  
+  rq2_bay_area_race_plot_order_448375$plot_r
+  rq2_bay_area_race_plot_order_448375$plot_c
+  
+  rq2_bay_area_firstgen_plot_order_448375$plot_r
+  rq2_bay_area_firstgen_plot_order_448375$plot_c
+  
+  rq2_bay_area_race_plot_order_448374_448420$plot_r
+  rq2_bay_area_race_plot_order_448374_448420$plot_c
+  
+  rq2_bay_area_firstgen_plot_order_448374_448420$plot_r
+  rq2_bay_area_firstgen_plot_order_448374_448420$plot_c
+  
+  ##  [ordered 2020]
+  # 4 546954  21102 FA21 - CA PSAT AD (JAN20); ordered 1/6/2020; 2021 HS grad class; CA; PSAT 1070-1180
+  #12 546946  12061 FA21 - CA PSAT SE (JAN20); ordered 1/6/2020; 2021/2022 hs grad class; CA; PSAT 1190-1260
+  #13 546945  11041 FA21 - CA PSAT BE (JAN20); ordered 1/6/2020; 2021/22 hs grad class; CA; PSAT 1270-1520
+  
+  rq2_bay_area_race_plot_order_546954$plot_r
+  rq2_bay_area_race_plot_order_546954$plot_c
+  
+  rq2_bay_area_firstgen_plot_order_546954$plot_r
+  rq2_bay_area_firstgen_plot_order_546954$plot_c
+  
+  rq2_bay_area_race_plot_order_546946_546945$plot_r
+  rq2_bay_area_race_plot_order_546946_546945$plot_c
+  
+  rq2_bay_area_firstgen_plot_order_546946_546945$plot_r
+  rq2_bay_area_firstgen_plot_order_546946_546945$plot_c
+
+  
+################
+  
+# 2) Main loop to create & save the plots
+for (m in c("chicago", "philadelphia", "los angeles", 
+            "orange county", "san diego", "bay area")) {
+  
+  # Replace spaces with underscores for object/file naming
+  m_underscore <- str_replace_all(m, " ", "_")
+  
+  # Retrieve the two order IDs for this metro
+  orders       <- get_order_ids(m)
+  first_order  <- orders$first_order
+  second_order <- orders$second_order
+  
+  for (g in c("race", "firstgen")) {
     
-    for (rc in c('row', 'col')) {  
-
+    # For more readable figure titles:
+    g_prefix <- if (g == "race") "Racial/ethnic" else "First-generation status"
+    
+    for (rc in c("row", "col")) {
       
-      if (rc == 'row') {
+      # "plot_r" for row-percent, or "plot_c" for column-percent
+      subslot <- if (rc == "row") "plot_r" else "plot_c"
+      
+      # We'll use this base name for saving or identifying the figure
+      plot_name_base <- str_c("rq2_", m_underscore, "_", g, "_", rc, "_plot")
+      
+      # Build a figure title (used for both combined or separate saves)
+      if (rc == "row") {
         figure_title <- str_c(
-          g_prefix,'composition of purchased student profiles by Geomarket,', str_to_title(m), 'area', sep = ' '
+          g_prefix,
+          " composition of purchased student profiles by Geomarket, ",
+          tools::toTitleCase(m),
+          " area"
         )
-        
-      } else if (rc == 'col') {
+      } else {
         figure_title <- str_c(
-          'Geomarket contribution to purchased student profiles by', g_prefix, 'group,', str_to_title(m), 'area', sep = ' '
+          "Geomarket contribution to purchased student profiles by ",
+          g_prefix,
+          " group, ",
+          tools::toTitleCase(m),
+          " area"
         )
-        #writeLines(figure_title)
-        #writeLines(figure_title, file.path(graphs_dir, str_c(plot_name, '_title.txt')))  
-        
       }
       
-      plot_name <- str_c('rq2',m,g,rc,'plot', sep = '_')    
-      writeLines(plot_name)
-
-      writeLines(figure_title)
-      writeLines(figure_title, file.path(graphs_dir, str_c(plot_name, '_title.txt')))  
+      # -------------------------------
+      # IF METRO IS LA or BAY AREA => SAVE *SEPARATE* PLOTS
+      # -------------------------------
+      if (m %in% c("los angeles", "bay area")) {
+        
+        # We make two separate plots, one for each order ID
+        for (order_id in c(first_order, second_order)) {
+          
+          # Construct the name of the sub-plot object in .GlobalEnv
+          # e.g. "rq2_los_angeles_race_plot_order_448375"
+          single_plot_obj_name <- str_c("rq2_", m_underscore, "_", g, "_plot_order_", order_id)
+          
+          # Grab that sub-plot (row or col version)
+          single_subplot <- get(single_plot_obj_name, envir = .GlobalEnv)[[ subslot ]]
+          
+          # The final filename includes the order ID
+          # e.g. "rq2_los_angeles_race_row_plot_448375.png"
+          plot_name <- str_c(plot_name_base, "_", order_id)
+          
+          # For clarity in console/log
+          writeLines(plot_name)
+          writeLines(figure_title)
+          
+          # Write the figure title to a .txt file
+          writeLines(
+            figure_title, 
+            file.path(graphs_dir, str_c(plot_name, "_title.txt"))
+          )
+          
+          # Save the separate plot
+          ggsave(
+            filename = file.path(graphs_dir, str_c(plot_name, ".png")),
+            plot     = single_subplot,
+            width    = 16,
+            height   = 10,
+            bg       = "white"
+          )
+          
+          # Write out a .txt file with the footnotes
+          note_text <- c(
+            "Figure Notes:",
+            "- Median income is shown in thousands ($k).",
+            "- '% in poverty' is the share of individuals below the federal poverty line.",
+            "- Data sources: US Census, etc."
+          )
+          
+          writeLines(
+            note_text, 
+            file.path(graphs_dir, str_c(plot_name, "_note.txt"))
+          )
+        }
+        
+      # -------------------------------
+      # ELSE => COMBINE THE TWO PLOTS WITH PATCHWORK
+      # -------------------------------
+      } else {
+        
+        # Build object names for the first + second subplots
+        first_plot_obj_name  <- str_c("rq2_", m_underscore, "_", g, "_plot_order_", first_order)
+        second_plot_obj_name <- str_c("rq2_", m_underscore, "_", g, "_plot_order_", second_order)
+        
+        # Retrieve sub-plot objects
+        first_sub  <- get(first_plot_obj_name,  envir = .GlobalEnv)[[ subslot ]]
+        second_sub <- get(second_plot_obj_name, envir = .GlobalEnv)[[ subslot ]]
+        
+        # Combine the two sub-plots in a single column
+        combined_plot <- first_sub + second_sub + plot_layout(ncol = 1)
+        
+        # e.g. "rq2_chicago_race_row_plot.png"
+        plot_name <- plot_name_base
+        
+        # For clarity in console/log
+        writeLines(plot_name)
+        writeLines(figure_title)
+        
+        # Write the figure title to a .txt file
+        writeLines(
+          figure_title, 
+          file.path(graphs_dir, str_c(plot_name, "_title.txt"))
+        )
+        
+        # Save the combined ggplot object
+        ggsave(
+          filename = file.path(graphs_dir, str_c(plot_name, ".png")),
+          plot     = combined_plot,
+          width    = 16,
+          height   = 10,
+          bg       = "white"
+        )
+        
+        # Write out a .txt file with the footnotes
+        note_text <- c(
+          "Figure Notes:",
+          "- Median income is shown in thousands ($k).",
+          "- '% in poverty' is the share of individuals below the federal poverty line.",
+          "- Data sources: US Census, etc."
+        )
+        
+        writeLines(
+          note_text, 
+          file.path(graphs_dir, str_c(plot_name, "_note.txt"))
+        )
+        
+      } # end if/else (combine vs separate)
       
-      # Retrieve the actual plot object
-      plot_obj <- get(plot_name, envir = .GlobalEnv)  # Fetch the ggplot object
-      
-      # Save the combined plot to disk
-      ggsave(
-        filename = file.path(graphs_dir, str_c(plot_name,'.png', sep = '')),
-        plot = plot_obj,
-        width = 16,
-        height = 10,  # Adjusted height to accommodate the combined plots
-        bg = 'white'
-      )
-      
- 
-      # 2) Create the text you want to store [REVISE NOTE TEXT LATER!]
-      note_text <- c(
-        "Figure Notes:",
-        "- Median income is shown in thousands ($k).",
-        "- '% in poverty' is the share of individuals below the federal poverty line.",
-        "- Data sources: US Census, etc."
-      )
-      
-      # 3) Write that text to a file
-      writeLines(note_text, file.path(graphs_dir, str_c(plot_name, '_note.txt')))  
-      
-    }
-  }
-}
+    } # end rc loop
+    
+  }   # end g (race/firstgen) loop
   
-#### chicago
-
-chicago_race_plot_order_487984$plot_r
-chicago_race_plot_order_487984$plot_c
-
-chicago_firstgen_plot_order_487984$plot_r
-chicago_firstgen_plot_order_487984$plot_c
-
-chicago_race_plot_order_488035_488053$plot_r
-chicago_race_plot_order_488035_488053$plot_c
-
-chicago_firstgen_plot_order_488035_488053$plot_r
-chicago_firstgen_plot_order_488035_488053$plot_c
-
-# combined graphs
+}     # end m (city) loop
 
 ###########################
 ############################ RUN FUNCTION create_race_by_firstgen_graph TO CREATE GRAPH OF RACE X FIRSTGEN
@@ -228,15 +522,6 @@ chicago_firstgen_plot_order_488035_488053$plot_c
 
 #create_race_by_firstgen_graph(lists_orders_zip_hs_df_sf, c('448922'), philly_eps_codes, 'philadelphia', exclude_race = c(1,8,12), title_suf = ', SAT score 1070 - 1180')
 #create_race_by_firstgen_graph(lists_orders_zip_hs_df_sf, c('448427','448440'), philly_eps_codes, 'philadelphia', exclude_race = c(1,8,12), title_suf = ', SAT score 1190 - 1520')
-
-
-all_orders <- list(
-  chicago = c('chicago', 'chi_eps_codes', 'SAT score 1020 - 1150', '487984'),
-  chicago = c('chicago', 'chi_eps_codes', 'SAT score 1160 - 1600', '488035','488053'),
-  philadelphia = c('philadelphia', 'philly_eps_codes', 'PSAT score 1070 - 1180', '448922'),
-  philadelphia = c('philadelphia', 'philly_eps_codes', 'PSAT score 1190 - 1520', '448427','448440')
-)
-all_orders %>% str()
 
 
 for (orders in all_orders) {
@@ -260,6 +545,7 @@ for (orders in all_orders) {
     )
   
 }
+
 
 ###### NEXT STEP ADD RQ2 ANALYSES FOR SELECTED COMBINATIONS OF METROS/ORDER NUMBERS### WHICH METROS TO DO:
   # RUN THEM IN THIS SCRIPT AND THEN ADD THEM TO THE ONLINE APPENDIX.QMD FILE ONE AT A TIME.
@@ -1787,18 +2073,20 @@ create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = 
 # SOCAL
 socal_eps_codes
 
-create_sim_eps_race_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('366935'), eps_codes = socal_eps_codes) # PSAT 1110 - 1210
-create_sim_eps_race_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('366934'), eps_codes = socal_eps_codes) # PSAT 1220-1290    
-create_sim_eps_race_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('366932'), eps_codes = socal_eps_codes) # PSAT 1300 - 1520
+create_sim_eps_race_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('366935'), eps_codes = los_angeles_eps_codes) # PSAT 1110 - 1210
+create_sim_eps_race_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('366934','366932'), eps_codes = los_angeles_eps_codes) # PSAT 1110 - 1210
 
-create_sim_eps_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('366935'), eps_codes = socal_eps_codes) # PSAT 1110 - 1210
-create_sim_eps_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('366934'), eps_codes = socal_eps_codes) # PSAT 1220-1290    
-create_sim_eps_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('366932'), eps_codes = socal_eps_codes) # PSAT 1300 - 1520
+create_sim_eps_race_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('366934'), eps_codes = los_angeles_eps_codes) # PSAT 1220-1290    
+create_sim_eps_race_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('366932'), eps_codes = los_angeles_eps_codes) # PSAT 1300 - 1520
+
+create_sim_eps_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('366935'), eps_codes = los_angeles_eps_codes) # PSAT 1110 - 1210
+create_sim_eps_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('366934'), eps_codes = los_angeles_eps_codes) # PSAT 1220-1290    
+create_sim_eps_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('366932'), eps_codes = los_angeles_eps_codes) # PSAT 1300 - 1520
 
 # interesting results for Hispanic by first gen status; some interesting results for white by first gen status; 
-create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('366935'), eps_codes = socal_eps_codes) %>% print(n=100) # PSAT 1110 - 1210 
-create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('366934'), eps_codes = socal_eps_codes) %>% print(n=100) # PSAT 1220-1290    
-create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('366932'), eps_codes = socal_eps_codes) %>% print(n=100) # PSAT 1300 - 1520
+create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('366935'), eps_codes = los_angeles_eps_codes) %>% print(n=100) # PSAT 1110 - 1210 
+create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('366934'), eps_codes = los_angeles_eps_codes) %>% print(n=100) # PSAT 1220-1290    
+create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('366932'), eps_codes = los_angeles_eps_codes) %>% print(n=100) # PSAT 1300 - 1520
 
 create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('366932','366934'), eps_codes = socal_eps_codes) %>% print(n=100) # PSAT 1220-1290 ,1300 - 1520
 

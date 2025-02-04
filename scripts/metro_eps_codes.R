@@ -10,8 +10,8 @@ library(tidyverse)
 
 
 
-bay_eps_codes <- c(paste0("CA ", 4:9), paste0("CA", 10:11)) # bay area
-bay_eps_codes 
+bay_area_eps_codes <- c(paste0("CA ", 4:9), paste0("CA", 10:11)) # bay area
+bay_area_eps_codes
 
 ca_eps_codes <- c(paste0("CA ", 1:9), paste0("CA", 10:34))
 chi_eps_codes <- c(paste0("IL ", 7:9), paste0("IL", 10:13))

@@ -1,0 +1,4 @@
+Figure Notes:
+- Median income is shown in thousands ($k).
+- '% in poverty' is the share of individuals below the federal poverty line.
+- Data sources: US Census, etc.

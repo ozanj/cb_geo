@@ -70,81 +70,116 @@ graph_types <- c('race', 'ses')
 
 ```{r, echo=FALSE, results='asis'}
 insert_figure <- function(rq, metro, graph_type, base_path = graphs_dir) {
-  metro <- str_replace_all(string = metro, pattern = ' ', replacement = '_')
+  # Convert spaces -> underscores for filenames
+  metro <- str_replace_all(string = metro, pattern = " ", replacement = "_")
 
-  fig_file <- file.path(base_path, str_c(rq, '_', metro, '_', graph_type, '.png'))
-  cap_file <- file.path(base_path, str_c(rq, '_', metro, '_', graph_type, '_title.txt'))
-  note_file <- file.path(base_path, str_c(rq, '_', metro, '_', graph_type, '_note.txt'))
+  fig_file  <- file.path(base_path, str_c(rq, "_", metro, "_", graph_type, ".png"))
+  cap_file  <- file.path(base_path, str_c(rq, "_", metro, "_", graph_type, "_title.txt"))
+  note_file <- file.path(base_path, str_c(rq, "_", metro, "_", graph_type, "_note.txt"))
   
   # Print caption
-  writeLines(paste0('#### ', readLines(cap_file, warn = F)))
-
+  writeLines(paste0("#### ", readLines(cap_file, warn = FALSE)))
+  
   # Output the figure block to the doc
-  writeLines(paste0('![](', fig_file, ')\n'))
+  writeLines(str_c("![](", fig_file, ")\n"))
   
   # Print footnotes
-  writeLines(paste0('<div class="footnote">', paste0(readLines(note_file, warn = F), collapse = '</br>'), '</div>'))
+  writeLines(
+    str_c("<div class=\"footnote\">",
+          paste0(readLines(note_file, warn = FALSE), collapse = "</br>"),
+          "</div>")
+  )
 }
 
 for (m in metros) {
   
   # Print a top-level heading for the metro area
-  writeLines(paste0('## ', toTitleCase(m), ' area'))
+  writeLines(str_c("## ", toTitleCase(m), " area"))
   
   for (rq in rqs) {
-    rq_num <- str_replace(string = rq, pattern = 'rq', replacement = '')
+    rq_num <- str_replace(string = rq, pattern = "rq", replacement = "")
     
-    if (rq == 'rq1') { # rq1 run for every metro area
-
+    if (rq == "rq1") { 
+      # ---------------------------------------
+      #  rq1 => run for every metro area 
+      # ---------------------------------------
       for (g in graph_types) {
-        
         # Print a heading for the RQ
-        writeLines(paste0('### Research question ', rq_num))
+        writeLines(str_c("### Research question ", rq_num))
         
         insert_figure(metro = m, rq = rq, graph_type = g)
       }
-
-    } else if (rq == 'rq2' & (m %in% c('chicago','philadelphia'))) { # rq2 run only for specific metro areas and orders
       
-      # Separate rq2 graphs for race and for firstgen status; they apply to all above metro areas
-      for (suffix in c('race_row_plot', 'race_col_plot', 'firstgen_row_plot', 'firstgen_col_plot')) {
+    } else if (rq == "rq2" & (m %in% c("chicago","philadelphia","los angeles","orange county","san diego","bay area"))) {
+      # -------------------------------------------------
+      # rq2 => run only for the specified metro areas
+      # -------------------------------------------------
+      
+      # 1) For LA & Bay Area, we have SEPARATE row/col plots per order (2 files each).
+      # 2) For all other metros in this subset, we still do the old "combined" row/col plots.
+      
+      # If LA or Bay Area => do the "separate" approach
+      if (m %in% c("los angeles","bay area")) {
         
-        # Print a heading for the RQ
-        writeLines(paste0('### Research question ', rq_num))
+        # We'll insert each of the 8 new plots: race_row_plot_..., race_col_plot_...,
+        # and firstgen_row_plot_..., firstgen_col_plot_...
+        # Each suffix also ends with the order ID.
+        for (suffix in c(
+          "race_row_plot_448375", "race_row_plot_448374_448420",
+          "race_col_plot_448375", "race_col_plot_448374_448420",
+          "firstgen_row_plot_448375", "firstgen_row_plot_448374_448420",
+          "firstgen_col_plot_448375", "firstgen_col_plot_448374_448420"
+        )) {
+          writeLines(str_c("### Research question ", rq_num))
+          insert_figure(metro = m, rq = rq, graph_type = suffix)
+        }
         
-        insert_figure(metro = m, rq = rq, graph_type = suffix)
+      } else {
+        # For the other metros in the same set
+        # (chicago, philadelphia, orange county, san diego):
+        # we still show the combined row/col figure:
         
+        for (suffix in c("race_row_plot", "race_col_plot",
+                         "firstgen_row_plot", "firstgen_col_plot")) {
+          writeLines(str_c("### Research question ", rq_num))
+          insert_figure(metro = m, rq = rq, graph_type = suffix)
+        }
       }
       
-      if (m == 'chicago') {
+      # -------------------------------------------------
+      # Then your custom calls by city:
+      # -------------------------------------------------
+      if (m == "chicago") {
+        # two separate calls for 'chicago' order IDs
+        writeLines(str_c("### Research question ", rq_num))
+        insert_figure(metro = m, rq = rq, graph_type = "order_487984_race_by_firstgen")
         
-        # Print a heading for the RQ
-        writeLines(paste0('### Research question ', rq_num))
-
-        insert_figure(metro = m, rq = rq, graph_type = 'order_487984_race_by_firstgen')
+        writeLines(str_c("### Research question ", rq_num))
+        insert_figure(metro = m, rq = rq, graph_type = "order_488035_488053_race_by_firstgen")
         
-        # Print a heading for the RQ
-        writeLines(paste0('### Research question ', rq_num))
+      } else if (m == "philadelphia") {
+        # likewise for 'philadelphia'
+        writeLines(str_c("### Research question ", rq_num))
+        insert_figure(metro = m, rq = rq, graph_type = "order_448922_race_by_firstgen")
         
-        insert_figure(metro = m, rq = rq, graph_type = 'order_488035_488053_race_by_firstgen')
-
-      
-      } else if (m == 'philadelphia') {
-
-        # Print a heading for the RQ
-        writeLines(paste0('### Research question ', rq_num))
+        writeLines(str_c("### Research question ", rq_num))
+        insert_figure(metro = m, rq = rq, graph_type = "order_448427_448440_race_by_firstgen")
         
-        insert_figure(metro = m, rq = rq, graph_type = 'order_448922_race_by_firstgen')
+      } else if (m %in% c("los angeles","orange county","san diego","bay area")) {
+        # likewise for these 4 metros
+        writeLines(str_c("### Research question ", rq_num))
+        insert_figure(metro = m, rq = rq, graph_type = "order_448375_race_by_firstgen")
         
-        # Print a heading for the RQ
-        writeLines(paste0('### Research question ', rq_num))
-        
-        insert_figure(metro = m, rq = rq, graph_type = 'order_448427_448440_race_by_firstgen')
-        
+        writeLines(str_c("### Research question ", rq_num))
+        insert_figure(metro = m, rq = rq, graph_type = "order_448374_448420_race_by_firstgen")
       }
-    }
-  }
-}
+      
+    } # end of rq==rq2 section
+    
+  } # end of rqs
+  
+} # end of metros
+
 ```
 
 ### References
