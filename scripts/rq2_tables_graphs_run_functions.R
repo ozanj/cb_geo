@@ -91,7 +91,7 @@ all_orders %>% str()
 
 orange_county_eps_codes
 
-
+# CA ORDER NUMBERS
 # 1 366935  42790 FA19 - CA PSAT AD {JAN18); ordered 1/17/2018; 2019/20/21 HS grad class; CA; PSAT 1110 - 1210
 # 8 366934  15806 FA19 - CA PSAT SE (JAN18); ordered 1/17/2018; 2019/20/21 hs grad class; CA; PSAT 1220-1290    
 # 7 366932  15931 FA19 - CA PSAT BE (JAN18); ordered 1/17/2018; 2019/20/21 hs grad class; CA; PSAT 1300 - 1520
@@ -136,220 +136,35 @@ for (orders in all_orders) {
   }
 }
 
-### Los angeles
 
-  ## los angeles [ordered 2018]
-  # 1 366935  42790 FA19 - CA PSAT AD {JAN18); ordered 1/17/2018; 2019/20/21 HS grad class; CA; PSAT 1110 - 1210
-  # 8 366934  15806 FA19 - CA PSAT SE (JAN18); ordered 1/17/2018; 2019/20/21 hs grad class; CA; PSAT 1220-1290    
-  # 7 366932  15931 FA19 - CA PSAT BE (JAN18); ordered 1/17/2018; 2019/20/21 hs grad class; CA; PSAT 1300 - 1520
-  
-  rq2_los_angeles_race_plot_order_366935$plot_r
-  rq2_los_angeles_race_plot_order_366935$plot_c
-  
-  rq2_los_angeles_firstgen_plot_order_366935$plot_r
-  rq2_los_angeles_firstgen_plot_order_366935$plot_c
-  
-  rq2_los_angeles_race_plot_order_366934_366932$plot_r
-  rq2_los_angeles_race_plot_order_366934_366932$plot_c
-  
-  rq2_los_angeles_firstgen_plot_order_366934_366932$plot_r
-  rq2_los_angeles_firstgen_plot_order_366934_366932$plot_c
-  
-  ## los angeles [ordered 2019]
-  # 2 448375  33893 FA20 - CA PSAT AD {JAN19); ordered 1/8/2019; 2020 HS grad class; CA; PSAT 1070 - 1180
-  # 5 448374  19775; FA20 - CA PSAT BE (JAN19); ordered 1/8/2019; 2020/21 hs grad class; CA; PSAT 1270-1520
-  # 6 448420  19437; FA20 - CA PSAT SE (JAN19); ordered 1/8/2019; 2020/21 hs grad class; CA; PSAT 1190-1260
-  
-  rq2_los_angeles_race_plot_order_448375$plot_r
-  rq2_los_angeles_race_plot_order_448375$plot_c
-  
-  rq2_los_angeles_firstgen_plot_order_448375$plot_r
-  rq2_los_angeles_firstgen_plot_order_448375$plot_c
-  
-  rq2_los_angeles_race_plot_order_448374_448420$plot_r
-  rq2_los_angeles_race_plot_order_448374_448420$plot_c
-  
-  rq2_los_angeles_firstgen_plot_order_448374_448420$plot_r
-  rq2_los_angeles_firstgen_plot_order_448374_448420$plot_c
-  
-  ## los angeles [ordered 2020]
-  # 4 546954  21102 FA21 - CA PSAT AD (JAN20); ordered 1/6/2020; 2021 HS grad class; CA; PSAT 1070-1180
-  #12 546946  12061 FA21 - CA PSAT SE (JAN20); ordered 1/6/2020; 2021/2022 hs grad class; CA; PSAT 1190-1260
-  #13 546945  11041 FA21 - CA PSAT BE (JAN20); ordered 1/6/2020; 2021/22 hs grad class; CA; PSAT 1270-1520
-  
-  rq2_los_angeles_race_plot_order_546954$plot_r
-  rq2_los_angeles_race_plot_order_546954$plot_c
-  
-  rq2_los_angeles_firstgen_plot_order_546954$plot_r
-  rq2_los_angeles_firstgen_plot_order_546954$plot_c
-  
-  rq2_los_angeles_race_plot_order_546946_546945$plot_r
-  rq2_los_angeles_race_plot_order_546946_546945$plot_c
-  
-  rq2_los_angeles_firstgen_plot_order_546946_546945$plot_r
-  rq2_los_angeles_firstgen_plot_order_546946_546945$plot_c
-
-#### orange county
-
-  ##  [ordered 2018]
-  # 1 366935  42790 FA19 - CA PSAT AD {JAN18); ordered 1/17/2018; 2019/20/21 HS grad class; CA; PSAT 1110 - 1210
-  # 8 366934  15806 FA19 - CA PSAT SE (JAN18); ordered 1/17/2018; 2019/20/21 hs grad class; CA; PSAT 1220-1290    
-  # 7 366932  15931 FA19 - CA PSAT BE (JAN18); ordered 1/17/2018; 2019/20/21 hs grad class; CA; PSAT 1300 - 1520
-  
-  rq2_orange_county_race_plot_order_366935$plot_r
-  rq2_orange_county_race_plot_order_366935$plot_c
-  
-  rq2_orange_county_firstgen_plot_order_366935$plot_r
-  rq2_orange_county_firstgen_plot_order_366935$plot_c
-  
-  rq2_orange_county_race_plot_order_366934_366932$plot_r
-  rq2_orange_county_race_plot_order_366934_366932$plot_c
-  
-  rq2_orange_county_firstgen_plot_order_366934_366932$plot_r
-  rq2_orange_county_firstgen_plot_order_366934_366932$plot_c
-  
-  ## [ordered 2019]
-  # 2 448375  33893 FA20 - CA PSAT AD {JAN19); ordered 1/8/2019; 2020 HS grad class; CA; PSAT 1070 - 1180
-  # 5 448374  19775; FA20 - CA PSAT BE (JAN19); ordered 1/8/2019; 2020/21 hs grad class; CA; PSAT 1270-1520
-  # 6 448420  19437; FA20 - CA PSAT SE (JAN19); ordered 1/8/2019; 2020/21 hs grad class; CA; PSAT 1190-1260
-  
-  rq2_orange_county_race_plot_order_448375$plot_r
-  rq2_orange_county_race_plot_order_448375$plot_c
-  
-  rq2_orange_county_firstgen_plot_order_448375$plot_r
-  rq2_orange_county_firstgen_plot_order_448375$plot_c
-  
-  rq2_orange_county_race_plot_order_448374_448420$plot_r
-  rq2_orange_county_race_plot_order_448374_448420$plot_c
-  
-  rq2_orange_county_firstgen_plot_order_448374_448420$plot_r
-  rq2_orange_county_firstgen_plot_order_448374_448420$plot_c
-  
-  ## ordered 2020]
-  # 4 546954  21102 FA21 - CA PSAT AD (JAN20); ordered 1/6/2020; 2021 HS grad class; CA; PSAT 1070-1180
-  #12 546946  12061 FA21 - CA PSAT SE (JAN20); ordered 1/6/2020; 2021/2022 hs grad class; CA; PSAT 1190-1260
-  #13 546945  11041 FA21 - CA PSAT BE (JAN20); ordered 1/6/2020; 2021/22 hs grad class; CA; PSAT 1270-1520
-  
-  rq2_orange_county_race_plot_order_546954$plot_r
-  rq2_orange_county_race_plot_order_546954$plot_c
-  
-  rq2_orange_county_firstgen_plot_order_546954$plot_r
-  rq2_orange_county_firstgen_plot_order_546954$plot_c
-  
-  rq2_orange_county_race_plot_order_546946_546945$plot_r
-  rq2_orange_county_race_plot_order_546946_546945$plot_c
-  
-  rq2_orange_county_firstgen_plot_order_546946_546945$plot_r
-  rq2_orange_county_firstgen_plot_order_546946_546945$plot_c
-  
-  
-### san diego
-  ## [ordered 2018]
-  # 1 366935  42790 FA19 - CA PSAT AD {JAN18); ordered 1/17/2018; 2019/20/21 HS grad class; CA; PSAT 1110 - 1210
-  # 8 366934  15806 FA19 - CA PSAT SE (JAN18); ordered 1/17/2018; 2019/20/21 hs grad class; CA; PSAT 1220-1290    
-  # 7 366932  15931 FA19 - CA PSAT BE (JAN18); ordered 1/17/2018; 2019/20/21 hs grad class; CA; PSAT 1300 - 1520
-  
-  rq2_san_diego_race_plot_order_366935$plot_r
-  rq2_san_diego_race_plot_order_366935$plot_c
-  
-  rq2_san_diego_firstgen_plot_order_366935$plot_r
-  rq2_san_diego_firstgen_plot_order_366935$plot_c
-  
-  rq2_san_diego_race_plot_order_366934_366932$plot_r
-  rq2_san_diego_race_plot_order_366934_366932$plot_c
-  
-  rq2_san_diego_firstgen_plot_order_366934_366932$plot_r
-  rq2_san_diego_firstgen_plot_order_366934_366932$plot_c
-  
-  ## [ordered 2019]
-  # 2 448375  33893 FA20 - CA PSAT AD {JAN19); ordered 1/8/2019; 2020 HS grad class; CA; PSAT 1070 - 1180
-  # 5 448374  19775; FA20 - CA PSAT BE (JAN19); ordered 1/8/2019; 2020/21 hs grad class; CA; PSAT 1270-1520
-  # 6 448420  19437; FA20 - CA PSAT SE (JAN19); ordered 1/8/2019; 2020/21 hs grad class; CA; PSAT 1190-1260
-  
-  rq2_san_diego_race_plot_order_448375$plot_r
-  rq2_san_diego_race_plot_order_448375$plot_c
-  
-  rq2_san_diego_firstgen_plot_order_448375$plot_r
-  rq2_san_diego_firstgen_plot_order_448375$plot_c
-  
-  rq2_san_diego_race_plot_order_448374_448420$plot_r
-  rq2_san_diego_race_plot_order_448374_448420$plot_c
-  
-  rq2_san_diego_firstgen_plot_order_448374_448420$plot_r
-  rq2_san_diego_firstgen_plot_order_448374_448420$plot_c
-  
-  ##  [ordered 2020]
-  # 4 546954  21102 FA21 - CA PSAT AD (JAN20); ordered 1/6/2020; 2021 HS grad class; CA; PSAT 1070-1180
-  #12 546946  12061 FA21 - CA PSAT SE (JAN20); ordered 1/6/2020; 2021/2022 hs grad class; CA; PSAT 1190-1260
-  #13 546945  11041 FA21 - CA PSAT BE (JAN20); ordered 1/6/2020; 2021/22 hs grad class; CA; PSAT 1270-1520
-  
-  rq2_san_diego_race_plot_order_546954$plot_r
-  rq2_san_diego_race_plot_order_546954$plot_c
-  
-  rq2_san_diego_firstgen_plot_order_546954$plot_r
-  rq2_san_diego_firstgen_plot_order_546954$plot_c
-  
-  rq2_san_diego_race_plot_order_546946_546945$plot_r
-  rq2_san_diego_race_plot_order_546946_546945$plot_c
-  
-  rq2_san_diego_firstgen_plot_order_546946_546945$plot_r
-  rq2_san_diego_firstgen_plot_order_546946_546945$plot_c
-  
-### bay area
-  
-  ##  [ordered 2018]
-  # 1 366935  42790 FA19 - CA PSAT AD {JAN18); ordered 1/17/2018; 2019/20/21 HS grad class; CA; PSAT 1110 - 1210
-  # 8 366934  15806 FA19 - CA PSAT SE (JAN18); ordered 1/17/2018; 2019/20/21 hs grad class; CA; PSAT 1220-1290    
-  # 7 366932  15931 FA19 - CA PSAT BE (JAN18); ordered 1/17/2018; 2019/20/21 hs grad class; CA; PSAT 1300 - 1520
-  
-  rq2_bay_area_race_plot_order_366935$plot_r
-  rq2_bay_area_race_plot_order_366935$plot_c
-  
-  rq2_bay_area_firstgen_plot_order_366935$plot_r
-  rq2_bay_area_firstgen_plot_order_366935$plot_c
-  
-  rq2_bay_area_race_plot_order_366934_366932$plot_r
-  rq2_bay_area_race_plot_order_366934_366932$plot_c
-  
-  rq2_bay_area_firstgen_plot_order_366934_366932$plot_r
-  rq2_bay_area_firstgen_plot_order_366934_366932$plot_c
-  
-  ##  [ordered 2019]
-  # 2 448375  33893 FA20 - CA PSAT AD {JAN19); ordered 1/8/2019; 2020 HS grad class; CA; PSAT 1070 - 1180
-  # 5 448374  19775; FA20 - CA PSAT BE (JAN19); ordered 1/8/2019; 2020/21 hs grad class; CA; PSAT 1270-1520
-  # 6 448420  19437; FA20 - CA PSAT SE (JAN19); ordered 1/8/2019; 2020/21 hs grad class; CA; PSAT 1190-1260
-  
-  rq2_bay_area_race_plot_order_448375$plot_r
-  rq2_bay_area_race_plot_order_448375$plot_c
-  
-  rq2_bay_area_firstgen_plot_order_448375$plot_r
-  rq2_bay_area_firstgen_plot_order_448375$plot_c
-  
-  rq2_bay_area_race_plot_order_448374_448420$plot_r
-  rq2_bay_area_race_plot_order_448374_448420$plot_c
-  
-  rq2_bay_area_firstgen_plot_order_448374_448420$plot_r
-  rq2_bay_area_firstgen_plot_order_448374_448420$plot_c
-  
-  ##  [ordered 2020]
-  # 4 546954  21102 FA21 - CA PSAT AD (JAN20); ordered 1/6/2020; 2021 HS grad class; CA; PSAT 1070-1180
-  #12 546946  12061 FA21 - CA PSAT SE (JAN20); ordered 1/6/2020; 2021/2022 hs grad class; CA; PSAT 1190-1260
-  #13 546945  11041 FA21 - CA PSAT BE (JAN20); ordered 1/6/2020; 2021/22 hs grad class; CA; PSAT 1270-1520
-  
-  rq2_bay_area_race_plot_order_546954$plot_r
-  rq2_bay_area_race_plot_order_546954$plot_c
-  
-  rq2_bay_area_firstgen_plot_order_546954$plot_r
-  rq2_bay_area_firstgen_plot_order_546954$plot_c
-  
-  rq2_bay_area_race_plot_order_546946_546945$plot_r
-  rq2_bay_area_race_plot_order_546946_546945$plot_c
-  
-  rq2_bay_area_firstgen_plot_order_546946_546945$plot_r
-  rq2_bay_area_firstgen_plot_order_546946_546945$plot_c
-
-  
 ################
+get_order_ids <- function(metro) {
+  
+  # Initialize a result list
+  result <- list()
+  
+  # Chicago
+  if (metro == "chicago") {
+    result$first_order  <- 487984
+    result$second_order <- "488035_488053"
+  
+  # Philadelphia
+  } else if (metro == "philadelphia") {
+    result$first_order  <- 448922
+    result$second_order <- "448427_448440"
+  
+  # Los Angeles, Orange County, San Diego, Bay Area
+  } else if (metro %in% c("los angeles", "orange county", "san diego", "bay area")) {
+    result$first_order  <- 448375
+    result$second_order <- "448374_448420"
+  
+  # If we ever pass in a metro not covered above, throw error
+  } else {
+    stop("No matching order logic for metro: ", metro)
+  }
+  
+  return(result)
+}
   
 # 2) Main loop to create & save the plots
 for (m in c("chicago", "philadelphia", "los angeles", 
@@ -508,6 +323,8 @@ for (m in c("chicago", "philadelphia", "los angeles",
 ###########################
 ############################ RUN FUNCTION create_race_by_firstgen_graph TO CREATE GRAPH OF RACE X FIRSTGEN
 ###########################
+
+# NEXT 2/5: NEED TO MODIFY THE FONT SIZES FOR THIS
 
 # 1 487984  16926 # Illinois standard 2020; ordered 7/19/2019; HS class 2020, 2021; IL; SAT 1020-1150;  GPA A+ to B-
 # 5 488035  12842 # Illinois HS 2020; ordered 7/19/2019; HS class 2020, 2021; SAT 1160 - 1300; GPA A+ to B-

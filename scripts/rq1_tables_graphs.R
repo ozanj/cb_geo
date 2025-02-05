@@ -7,7 +7,7 @@
 ################################################################################
 
 ### SETTINGS
-rm(list = ls()) # remove all objects
+#rm(list = ls()) # remove all objects
 options(max.print=1000)
 #options(width = 160)
 # Set the scipen option to a high value to avoid scientific notation
@@ -89,7 +89,7 @@ create_eps_table <- function(eps_codes, table_vars) {
     "pct_nhisp_native" = "% Native, non-Hispanic",
     "pct_pov_yes" = "% in poverty",
     "pct_edu_baplus_all" = "% with BA+",
-    "pct_nhisp_multi" = "% two+ races, non-Hispanic"
+    "pct_nhisp_multi" = "% Two+, non-Hispanic"
   )
   
   # Main table creation pipeline
@@ -167,8 +167,8 @@ chi_eps_table %>% print(n=100)
 saveRDS(chi_eps_table, file.path(tables_dir, "chi_eps_table.rds"))
 
 
-bay_eps_table <- create_eps_table(eps_codes = bay_eps_codes, table_vars = table_varlist)
-bay_eps_table %>% print(n=100)
+bay_area_eps_table <- create_eps_table(eps_codes = bay_area_eps_codes, table_vars = table_varlist)
+bay_area_eps_table %>% print(n=100)
 
 socal_eps_table <- create_eps_table(eps_codes = socal_eps_codes, table_vars = table_varlist)    
 socal_eps_table %>% print(n=100)
@@ -190,7 +190,7 @@ graph_var_names <- list(
   "nhisp_nhpi" = "NHPI, non-Hispanic",
   "nhisp_api" = "API, non-Hispanic", 
   "nhisp_native" = "AIAN, non-Hispanic",
-  "nhisp_multi" = "two+ races, non-Hispanic",
+  "nhisp_multi" = "Two+, non-Hispanic",
   "pct_nhisp_white" = "% White, non-Hispanic",
   "pct_nhisp_black" = "% Black, non-Hispanic",
   "pct_hisp_all" = "% Hispanic",
@@ -198,7 +198,7 @@ graph_var_names <- list(
   "pct_nhisp_nhpi" = "% NHPI, non-Hispanic",
   "pct_nhisp_api" = "% API, non-Hispanic", 
   "pct_nhisp_native" = "% AIAN, non-Hispanic",
-  "pct_nhisp_multi" = "% two+ races, non-Hispanic",
+  "pct_nhisp_multi" = "% Two+, non-Hispanic",
   "mean_inc_house" = "Mean income",
   "med_inc_house" = "Median income",
   "pct_pov_yes" = "% in poverty",
@@ -278,10 +278,10 @@ create_eps_graph <- function(eps_codes,
         variable,
         levels = c(
           "White, non-Hispanic", "Asian, non-Hispanic", "API, non-Hispanic",
-          "Black, non-Hispanic", "Hispanic", "two+ races, non-Hispanic", 
+          "Black, non-Hispanic", "Hispanic", "Two+, non-Hispanic", 
           "NHPI, non-Hispanic", "AIAN, non-Hispanic",
           "% White, non-Hispanic", "% Asian, non-Hispanic", "% API, non-Hispanic", 
-          "% Black, non-Hispanic", "% Hispanic", "% two+ races, non-Hispanic", 
+          "% Black, non-Hispanic", "% Hispanic", "% Two+, non-Hispanic", 
           "% NHPI, non-Hispanic", "% AIAN, non-Hispanic",
           "Median income", "Mean income", "% in poverty", "% with BA+"
         )
@@ -304,7 +304,7 @@ create_eps_graph <- function(eps_codes,
         statistic == stat,
         variable %in% c(
           "White, non-Hispanic", "Black, non-Hispanic", "Hispanic", 
-          "Asian, non-Hispanic", "two+ races, non-Hispanic", 
+          "Asian, non-Hispanic", "Two+, non-Hispanic", 
           "NHPI, non-Hispanic", "AIAN, non-Hispanic"
         )
       )
@@ -320,7 +320,19 @@ create_eps_graph <- function(eps_codes,
       ) +
       scale_y_continuous(labels = scales::percent_format()) +
       facet_wrap(~ year, ncol = 1, scales = "free_y") +
-      theme_custom
+      theme_custom + 
+      # Add/modify this theme() call:
+      theme(
+        # Increase legend text/title size
+        legend.text  = element_text(size = 14),
+        legend.title = element_text(size = 14),
+        # Increase size of geomarket names (on y-axis after coord_flip)
+        axis.text.y  = element_text(size = 12),
+        # Increase size of percentages (on x-axis after coord_flip)
+        axis.text.x  = element_text(size = 12),
+        # Increase size of facet labels (i.e., the year labels)
+        strip.text   = element_text(size = 14)
+      )
     
     if (!is.null(fill_palette)) {
       plot <- plot + scale_fill_manual(values = fill_palette)
@@ -352,8 +364,8 @@ create_eps_graph <- function(eps_codes,
       theme(
         strip.text.x = element_text(size = 12, face = "bold"),
         strip.text.y = element_text(size = 12, face = "bold", angle = 90),
-        axis.text.y = element_text(size = 10),
-        axis.text.x = element_text(size = 10),
+        axis.text.y = element_text(size = 12),
+        axis.text.x = element_text(size = 12),
         panel.spacing = unit(1, "lines"),
         legend.position = "none"
       ) +
@@ -434,7 +446,7 @@ all_codes <- list(
   'cleveland' = cleveland_eps_codes,
   'northern new jersey' = nj_north_metro_eps_codes,
   'houston' = htown_eps_codes,
-  'bay area' = bay_eps_codes,
+  'bay area' = bay_area_eps_codes,
   'long island' = long_island_eps_codes,
   'new york city' = nyny_metro_eps_codes,
   'detroit' = detroit_eps_codes,

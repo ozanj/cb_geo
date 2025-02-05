@@ -488,7 +488,7 @@ race_col_levels <- c(
   "Asian, non-Hispanic",
   "Black, non-Hispanic",
   "Hispanic",
-  "two+ races, non-Hispanic",
+  "Two+, non-Hispanic",
   "AIAN, non-Hispanic",
   "NHPI, non-Hispanic"
 )
@@ -500,7 +500,7 @@ race_row_levels <- c(
   "Asian, non-Hispanic",
   "Black, non-Hispanic",
   "Hispanic",
-  "two+ races, non-Hispanic",
+  "Two+, non-Hispanic",
   "AIAN, non-Hispanic",
   "NHPI, non-Hispanic"
 )
@@ -547,7 +547,7 @@ recode_race <- function(x) {
     "r_asian"    = "Asian, non-Hispanic",
     "r_black"    = "Black, non-Hispanic",
     "r_hispanic" = "Hispanic",
-    "r_multi"    = "two+ races, non-Hispanic",
+    "r_multi"    = "Two+, non-Hispanic",
     "r_aian"     = "AIAN, non-Hispanic",
     "r_nhpi"     = "NHPI, non-Hispanic",
     
@@ -555,7 +555,7 @@ recode_race <- function(x) {
     "c_asian"    = "Asian, non-Hispanic",
     "c_black"    = "Black, non-Hispanic",
     "c_hispanic" = "Hispanic",
-    "c_multi"    = "two+ races, non-Hispanic",
+    "c_multi"    = "Two+, non-Hispanic",
     "c_aian"     = "AIAN, non-Hispanic",
     "c_nhpi"     = "NHPI, non-Hispanic",
     "c_known"    = "All (race known)",
@@ -564,7 +564,7 @@ recode_race <- function(x) {
     "stu_asian"    = "Asian, non-Hispanic",
     "stu_black"    = "Black, non-Hispanic",
     "stu_hispanic" = "Hispanic",
-    "stu_multi"    = "two+ races, non-Hispanic",
+    "stu_multi"    = "Two+, non-Hispanic",
     "stu_aian"     = "AIAN, non-Hispanic",
     "stu_nhpi"     = "NHPI, non-Hispanic",
     "race_known"   = "All (race known)"
@@ -643,7 +643,7 @@ create_sim_eps_graph <- function(data_graph,
         eps_codename = factor(eps_codename)
       ) %>%
       dplyr::mutate(
-        group       = forcats::fct_rev(group),
+        group        = forcats::fct_rev(group),
         eps_codename = forcats::fct_rev(eps_codename)
       )
     
@@ -674,10 +674,11 @@ create_sim_eps_graph <- function(data_graph,
       ) %>%
       dplyr::filter(!group %in% c("AIAN, non-Hispanic", "NHPI, non-Hispanic"))
     
-    # Original titles
-    row_plot_title <- "Race Distribution Within Each EPS Code (Row %)"
-    col_plot_title <- "Distribution of Each Race Across EPS Codes (Column %)"
-    fill_legend    <- "Geomarket"
+    # Titles
+    row_plot_title    <- "Race Distribution Within Each EPS Code (Row %)"
+    col_plot_title    <- "Distribution of Each Race Across EPS Codes (Column %)"
+    fill_legend       <- "Geomarket"        # for the column plot
+    row_legend_title  <- "Race/ethnicity"   # for the row plot
     
   } else {
     # -- FIRST-GEN BRANCH --
@@ -720,7 +721,7 @@ create_sim_eps_graph <- function(data_graph,
         eps_codename = factor(eps_codename)
       ) %>%
       dplyr::mutate(
-        group       = forcats::fct_rev(group),
+        group        = forcats::fct_rev(group),
         eps_codename = forcats::fct_rev(eps_codename)
       )
     
@@ -759,15 +760,14 @@ create_sim_eps_graph <- function(data_graph,
         group_label = factor(label_str, levels = label_levels)
       )
     
-    # Original titles
-    row_plot_title <- "First-Gen Distribution Within Each EPS Code (Row %)"
-    col_plot_title <- "Distribution of First-Gen Groups Across EPS Codes (Column %)"
-    fill_legend    <- "Geomarket"
+    # Titles
+    row_plot_title    <- "First-Gen Distribution Within Each EPS Code (Row %)"
+    col_plot_title    <- "Distribution of First-Gen Groups Across EPS Codes (Column %)"
+    fill_legend       <- "Geomarket"          # for the column plot
+    row_legend_title  <- "Parental education" # for the row plot
   }
   
-  # ----------------------------------------------------------------
   # (A) Append the user-supplied 'title' to each existing plot title
-  # ----------------------------------------------------------------
   if (!is.null(title) && nzchar(title)) {
     row_plot_title <- paste0(title)
     col_plot_title <- paste0(title)
@@ -779,9 +779,14 @@ create_sim_eps_graph <- function(data_graph,
   known_col <- if (variable == "race") "race_known" else "stu_known"
   
   plot_r <- df_r %>%
-    ggplot2::ggplot(ggplot2::aes(x = fct_rev(eps_codename), y = value, fill = group)) +
+    ggplot2::ggplot(
+      ggplot2::aes(
+        x = forcats::fct_rev(eps_codename),
+        y = value,
+        fill = group
+      )
+    ) +
     ggplot2::geom_bar(stat = "identity", position = ggplot2::position_fill(reverse = TRUE)) +
-    
     ggplot2::geom_text(
       data = df_r %>% dplyr::distinct(eps_codename, .keep_all = TRUE),
       ggplot2::aes(
@@ -790,24 +795,42 @@ create_sim_eps_graph <- function(data_graph,
         label = paste0("N=", formattable::comma(.data[[known_col]], digits = 0))
       ),
       hjust       = -0.1,
-      size        = 3,
+      size        = 5,
       inherit.aes = FALSE
     ) +
-    
     ggplot2::scale_y_continuous(labels = scales::percent_format(scale = 100)) +
     ggplot2::labs(
       title = row_plot_title,
       x     = NULL,
-      y     = NULL
+      y     = NULL,
+      fill  = row_legend_title
     ) +
     ggplot2::theme_minimal() +
+    ggplot2::theme(
+      # Add more right margin & spacing so legend does not overlap text
+      plot.margin         = ggplot2::margin(t = 20, r = 10, b = 20, l = 20), # increasing r = in plot margin increase the amount of white space around the plot
+      legend.position     = "right",
+      legend.box.spacing  = grid::unit(4, "line"),  # space between legend & plot  Increase to 3 or 4 if you want even more distance between the legend box and the bar area.
+      legend.text         = ggplot2::element_text(size = 14),
+      legend.title        = ggplot2::element_text(size = 14),
+      axis.text.y         = ggplot2::element_text(size = 13),
+      axis.text.x         = ggplot2::element_text(size = 13),
+      strip.text          = ggplot2::element_text(size = 14),
+      plot.title          = ggplot2::element_text(size = 16, face = "bold")
+    ) +
     ggplot2::coord_flip(clip = "off")
   
   # ----------------------------------------------------------------
   # 4) Build the column-percent Plot
   # ----------------------------------------------------------------
   plot_c <- df_c %>%
-    ggplot2::ggplot(ggplot2::aes(x = group_label, y = value, fill = eps_codename)) +
+    ggplot2::ggplot(
+      ggplot2::aes(
+        x = group_label,
+        y = value,
+        fill = eps_codename
+      )
+    ) +
     ggplot2::geom_bar(stat = "identity", position = "dodge") +
     ggplot2::labs(
       title = col_plot_title,
@@ -819,12 +842,20 @@ create_sim_eps_graph <- function(data_graph,
       labels = scales::percent_format(scale = 1),
       expand = ggplot2::expansion(mult = c(0, 0.1))
     ) +
-    ggplot2::scale_fill_discrete(guide = ggplot2::guide_legend(reverse = TRUE)) +
+    ggplot2::scale_fill_discrete(
+      guide = ggplot2::guide_legend(reverse = TRUE)
+    ) +
     ggplot2::theme_minimal() +
     ggplot2::theme(
-      axis.text.x        = ggplot2::element_text(angle = 0, vjust = 1, hjust = 0.5),
-      axis.title.x       = ggplot2::element_blank(),
+      legend.text       = ggplot2::element_text(size = 14),
+      legend.title      = ggplot2::element_text(size = 14),
+      axis.text.x       = ggplot2::element_text(size = 13),
+      axis.text.y       = ggplot2::element_text(size = 13),
+      strip.text        = ggplot2::element_text(size = 14),
+      axis.text.x.top   = ggplot2::element_text(size = 13),
+      plot.title        = ggplot2::element_text(size = 16, face = "bold"),
       panel.grid.major.x = ggplot2::element_blank()
+      # for column plot, keep default legend
     ) +
     ggplot2::coord_flip(clip = "off")
   
@@ -833,7 +864,6 @@ create_sim_eps_graph <- function(data_graph,
   # ----------------------------------------------------------------
   list(plot_r = plot_r, plot_c = plot_c)
 }
-
 
 # 1 487984  16926 # Illinois standard 2020; ordered 7/19/2019; HS class 2020, 2021; IL; SAT 1020-1150;  GPA A+ to B-
 # 5 488035  12842 # Illinois HS 2020; ordered 7/19/2019; HS class 2020, 2021; SAT 1160 - 1300; GPA A+ to B-
