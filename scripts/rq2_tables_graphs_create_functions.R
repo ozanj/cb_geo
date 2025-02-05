@@ -593,6 +593,7 @@ recode_firstgen <- function(x) {
 ##------------------------------------------
 ## B) Main function with Approach A (top→bottom + fct_rev)
 ##------------------------------------------
+
 create_sim_eps_graph <- function(data_graph,
                                  ord_nums_graph,
                                  eps_codes_graph,
@@ -609,10 +610,12 @@ create_sim_eps_graph <- function(data_graph,
       eps_codes = eps_codes_graph
     )
     
-    # -- Row pivot code (unchanged logic) --
+    # ----------------------------
+    # Build the row data (df_r)
+    # ----------------------------
     df_r <- table_list[[2]] %>%
       tidyr::pivot_longer(
-        cols = c(r_white, r_asian, r_black, r_hispanic, r_multi, r_aian, r_nhpi),
+        cols      = c(r_white, r_asian, r_black, r_hispanic, r_multi, r_aian, r_nhpi),
         names_to  = "group",
         values_to = "value"
       ) %>%
@@ -621,7 +624,7 @@ create_sim_eps_graph <- function(data_graph,
         group = factor(group, levels = race_row_levels)
       )
     
-    # Reorder eps_codename so "All" is top
+    # Reorder eps_codename so that "All" appears at the top (for flipped coordinates)
     all_eps <- unique(df_r$eps_codename)
     new_eps <- move_all_to_top_in_row(all_eps)
     df_r <- df_r %>%
@@ -629,29 +632,30 @@ create_sim_eps_graph <- function(data_graph,
         eps_codename = factor(eps_codename, levels = new_eps)
       )
     
-    # -- Column pivot code (unchanged logic) --
+    # ----------------------------
+    # Build the column data (df_c)
+    # ----------------------------
     df_c <- table_list[[3]] %>%
       tidyr::pivot_longer(
-        cols = c(c_known, c_white, c_asian, c_black, c_hispanic, c_multi, c_aian, c_nhpi),
+        cols      = c(c_known, c_white, c_asian, c_black, c_hispanic, c_multi, c_aian, c_nhpi),
         names_to  = "group",
         values_to = "value"
       ) %>%
       dplyr::filter(eps_codename != "All") %>%
       dplyr::mutate(
-        group = recode_race(group),
-        group = factor(group, levels = race_col_levels),
+        group       = recode_race(group),
+        group       = factor(group, levels = race_col_levels),
         eps_codename = factor(eps_codename)
       ) %>%
       dplyr::mutate(
-        group        = forcats::fct_rev(group),
+        group       = forcats::fct_rev(group),
         eps_codename = forcats::fct_rev(eps_codename)
       )
     
-    # Totals & labeling
     totals <- table_list[[1]] %>%
       dplyr::filter(eps_codename == "All") %>%
       tidyr::pivot_longer(
-        cols = c(race_known, dplyr::starts_with("stu_")),
+        cols      = c(race_known, dplyr::starts_with("stu_")),
         names_to  = "group",
         values_to = "total_group"
       ) %>%
@@ -664,7 +668,7 @@ create_sim_eps_graph <- function(data_graph,
     df_c <- df_c %>%
       dplyr::left_join(totals, by = "group") %>%
       dplyr::mutate(
-        group = factor(group, levels = rev(race_col_levels)),
+        group       = factor(group, levels = rev(race_col_levels)),
         group_label = factor(
           paste0(group, "\n(N = ", total_group, ")"),
           levels = rev(
@@ -674,24 +678,22 @@ create_sim_eps_graph <- function(data_graph,
       ) %>%
       dplyr::filter(!group %in% c("AIAN, non-Hispanic", "NHPI, non-Hispanic"))
     
-    # Titles
-    row_plot_title    <- "Race Distribution Within Each EPS Code (Row %)"
-    col_plot_title    <- "Distribution of Each Race Across EPS Codes (Column %)"
-    fill_legend       <- "Geomarket"        # for the column plot
-    row_legend_title  <- "Race/ethnicity"   # for the row plot
+    # Titles and legend labels
+    row_plot_title   <- "Race Distribution Within Each EPS Code (Row %)"
+    col_plot_title   <- "Distribution of Each Race Across EPS Codes (Column %)"
+    fill_legend      <- "Geomarket"        # for the column plot
+    row_legend_title <- "Race/ethnicity"   # for the row plot
     
-  } else {
-    # -- FIRST-GEN BRANCH --
+  } else {  # variable == "firstgen"
     table_list <- create_sim_eps_firstgen_table(
-      data = data_graph,
-      ord_nums = ord_nums_graph,
+      data      = data_graph,
+      ord_nums  = ord_nums_graph,
       eps_codes = eps_codes_graph
     )
     
-    # Row pivot
     df_r <- table_list[[2]] %>%
       tidyr::pivot_longer(
-        cols = c(r_no_col, r_some_col, r_not_first),
+        cols      = c(r_no_col, r_some_col, r_not_first),
         names_to  = "group",
         values_to = "value"
       ) %>%
@@ -707,29 +709,27 @@ create_sim_eps_graph <- function(data_graph,
         eps_codename = factor(eps_codename, levels = new_eps)
       )
     
-    # Column pivot
     df_c <- table_list[[3]] %>%
       tidyr::pivot_longer(
-        cols = c(c_known, c_no_col, c_some_col, c_not_first),
+        cols      = c(c_known, c_no_col, c_some_col, c_not_first),
         names_to  = "group",
         values_to = "value"
       ) %>%
       dplyr::filter(eps_codename != "All") %>%
       dplyr::mutate(
-        group = recode_firstgen(group),
-        group = factor(group, levels = firstgen_col_levels),
+        group       = recode_firstgen(group),
+        group       = factor(group, levels = firstgen_col_levels),
         eps_codename = factor(eps_codename)
       ) %>%
       dplyr::mutate(
-        group        = forcats::fct_rev(group),
+        group       = forcats::fct_rev(group),
         eps_codename = forcats::fct_rev(eps_codename)
       )
     
-    # Totals & labeling
     totals <- table_list[[1]] %>%
       dplyr::filter(eps_codename == "All") %>%
       tidyr::pivot_longer(
-        cols = c(stu_known, stu_no_col, stu_some_col, stu_not_first),
+        cols      = c(stu_known, stu_no_col, stu_some_col, stu_not_first),
         names_to  = "group",
         values_to = "total_group"
       ) %>%
@@ -742,7 +742,7 @@ create_sim_eps_graph <- function(data_graph,
     df_c <- df_c %>%
       dplyr::left_join(totals, by = "group") %>%
       dplyr::mutate(
-        group = factor(group, levels = rev(firstgen_col_levels)),
+        group    = factor(group, levels = rev(firstgen_col_levels)),
         label_str = paste0(group, "\n(N = ", total_group, ")")
       )
     
@@ -760,44 +760,45 @@ create_sim_eps_graph <- function(data_graph,
         group_label = factor(label_str, levels = label_levels)
       )
     
-    # Titles
-    row_plot_title    <- "First-Gen Distribution Within Each EPS Code (Row %)"
-    col_plot_title    <- "Distribution of First-Gen Groups Across EPS Codes (Column %)"
-    fill_legend       <- "Geomarket"          # for the column plot
-    row_legend_title  <- "Parental education" # for the row plot
+    row_plot_title   <- "First-Gen Distribution Within Each EPS Code (Row %)"
+    col_plot_title   <- "Distribution of First-Gen Groups Across EPS Codes (Column %)"
+    fill_legend      <- "Geomarket"          # for the column plot
+    row_legend_title <- "Parental education" # for the row plot
   }
   
-  # (A) Append the user-supplied 'title' to each existing plot title
+  # (A) Append the user-supplied title to each plot title if provided
   if (!is.null(title) && nzchar(title)) {
     row_plot_title <- paste0(title)
     col_plot_title <- paste0(title)
   }
   
-  # ----------------------------------------------------------------
-  # 3) Build the row-percent Plot
-  # ----------------------------------------------------------------
+  # Determine which column contains the overall sample size.
   known_col <- if (variable == "race") "race_known" else "stu_known"
   
+  # ----------------------------------------------------------------
+  # (B) Create a new label that combines the EPS code and its sample size
+  # ----------------------------------------------------------------
+  df_r <- df_r %>%
+    dplyr::group_by(eps_codename) %>%
+    dplyr::mutate(
+      eps_label = paste0(as.character(eps_codename),
+                         " (n=", formattable::comma(first(.data[[known_col]]), digits = 0), ")")
+    ) %>%
+    dplyr::ungroup()
+  
+  # ----------------------------------------------------------------
+  # (C) Build the Row-Percent Plot using the new eps_label
+  # ----------------------------------------------------------------
   plot_r <- df_r %>%
     ggplot2::ggplot(
       ggplot2::aes(
-        x = forcats::fct_rev(eps_codename),
-        y = value,
+        x    = forcats::fct_rev(eps_label),
+        y    = value,
         fill = group
       )
     ) +
-    ggplot2::geom_bar(stat = "identity", position = ggplot2::position_fill(reverse = TRUE)) +
-    ggplot2::geom_text(
-      data = df_r %>% dplyr::distinct(eps_codename, .keep_all = TRUE),
-      ggplot2::aes(
-        x = eps_codename,
-        y = 1,
-        label = paste0("N=", formattable::comma(.data[[known_col]], digits = 0))
-      ),
-      hjust       = -0.1,
-      size        = 5,
-      inherit.aes = FALSE
-    ) +
+    ggplot2::geom_bar(stat = "identity", 
+                      position = ggplot2::position_fill(reverse = TRUE)) +
     ggplot2::scale_y_continuous(labels = scales::percent_format(scale = 100)) +
     ggplot2::labs(
       title = row_plot_title,
@@ -807,27 +808,25 @@ create_sim_eps_graph <- function(data_graph,
     ) +
     ggplot2::theme_minimal() +
     ggplot2::theme(
-      # Add more right margin & spacing so legend does not overlap text
-      plot.margin         = ggplot2::margin(t = 20, r = 10, b = 20, l = 20), # increasing r = in plot margin increase the amount of white space around the plot
-      legend.position     = "right",
-      legend.box.spacing  = grid::unit(4, "line"),  # space between legend & plot  Increase to 3 or 4 if you want even more distance between the legend box and the bar area.
-      legend.text         = ggplot2::element_text(size = 14),
-      legend.title        = ggplot2::element_text(size = 14),
-      axis.text.y         = ggplot2::element_text(size = 13),
-      axis.text.x         = ggplot2::element_text(size = 13),
-      strip.text          = ggplot2::element_text(size = 14),
-      plot.title          = ggplot2::element_text(size = 16, face = "bold")
+      plot.margin = ggplot2::margin(t = 20, r = 0, b = 20, l = 20),  # Lower the right margin (r=2) so the plot takes up more horizontal space. Increase 'r' to add more white space.
+      legend.box.spacing = grid::unit(0, "line"),  # Reduce spacing between the plot and the legend. Increase this value for a larger gap.
+      legend.text        = ggplot2::element_text(size = 14),
+      legend.title       = ggplot2::element_text(size = 14),
+      axis.text.y        = ggplot2::element_text(size = 13),
+      axis.text.x        = ggplot2::element_text(size = 13),
+      strip.text         = ggplot2::element_text(size = 14),
+      plot.title         = ggplot2::element_text(size = 16, face = "bold")
     ) +
     ggplot2::coord_flip(clip = "off")
   
   # ----------------------------------------------------------------
-  # 4) Build the column-percent Plot
+  # (D) Build the Column-Percent Plot (unchanged)
   # ----------------------------------------------------------------
   plot_c <- df_c %>%
     ggplot2::ggplot(
       ggplot2::aes(
-        x = group_label,
-        y = value,
+        x    = group_label,
+        y    = value,
         fill = eps_codename
       )
     ) +
@@ -855,12 +854,11 @@ create_sim_eps_graph <- function(data_graph,
       axis.text.x.top   = ggplot2::element_text(size = 13),
       plot.title        = ggplot2::element_text(size = 16, face = "bold"),
       panel.grid.major.x = ggplot2::element_blank()
-      # for column plot, keep default legend
     ) +
     ggplot2::coord_flip(clip = "off")
   
   # ----------------------------------------------------------------
-  # 5) Return both plots
+  # (E) Return both plots as a list
   # ----------------------------------------------------------------
   list(plot_r = plot_r, plot_c = plot_c)
 }
@@ -871,8 +869,6 @@ create_sim_eps_graph <- function(data_graph,
 
 # philly metro area
 # order 448922: PSAT 1070 - 1180; order 448427: PSAT 1190 - 1260; order 448440: PSAT 1270 - 1520
-
-
 
 ###################################
 ################################### CREATE GRAPH FOR RQ2 RACE X SES
@@ -999,19 +995,20 @@ create_race_by_firstgen_graph <- function(data_graph,
       title = NULL,
       x     = NULL,
       y     = NULL,
-      fill  = NULL
+      fill  = "Parental education"  # <-- Set legend title here
     ) +
     theme_minimal() +
     theme(
-      strip.text.y.left = element_text(size = 10, face = "plain", angle = 0, hjust = 0),
+      strip.text.y.left = element_text(size = 12, face = "plain", angle = 0, hjust = 0), # these are the labels for race/ethnicity that appear to the left of the labels for geomarket
       strip.placement   = "outside",
       panel.spacing     = unit(0.2, "lines"),
-      axis.text.y       = element_text(size = 8),
+      axis.text.y       = element_text(size = 10.5), # these are the labels for geomarket name that appear to the right of the labels for race ethnicity
       plot.title        = element_text(hjust = 0.5),
       legend.position   = "right",
       legend.key.size   = unit(0.8, "lines"),
-      legend.title      = element_text(size = 10, face = "bold"),
-      legend.text       = element_text(size = 10)
+      legend.title      = element_text(size = 12, face = "bold"),
+      legend.text       = element_text(size = 12),
+      axis.text.x = element_text(size = 12) # Controls the size of "0% 25% 50% 75% 100%" labels  
     )
 
   # create strings for file names
