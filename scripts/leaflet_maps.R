@@ -7,7 +7,7 @@
 ################################################################################
 
 ### SETTINGS
-rm(list = ls()) # remove all objects
+#rm(list = ls()) # remove all objects
 options(max.print=1000)
 #options(width = 160)
 # Set the scipen option to a high value to avoid scientific notation
@@ -233,6 +233,14 @@ display_names <- list(
   "pct_nhisp_black" = "% Black, non-Hispanic"
 )
 
+# new jersey metro area
+nj_north_metro_eps_codes
+create_eps_maps(nj_north_metro_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "med_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
+
+create_eps_maps(nj_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "med_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
+
+
+
 # figuring out socal
 create_eps_maps(socal_eps_codes, c("med_inc_house","pct_nhisp_white","pct_nhisp_black","pct_hisp_all","pct_nhisp_asian"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
 
@@ -277,11 +285,6 @@ create_eps_maps(long_island_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pc
 create_eps_maps(c('NY13','NY15'), c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "mean_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
 
 
-# new jersey metro area
-nj_metro_eps_codes
-create_eps_maps(nj_metro_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "med_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
-
-create_eps_maps(nj_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "med_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
 
 # DALLAS
 create_eps_maps(c('TX19','TX20','TX21','TX22','TX23','TX24'), c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "med_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)

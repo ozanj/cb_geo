@@ -1036,11 +1036,11 @@ create_race_by_firstgen_graph <- function(data_graph,
   writeLines(figure_title)
   
   # Save the title to a .txt file
-  writeLines(figure_title, file.path(graphs_dir, str_c(plot_name, '_title.txt')))  
+  writeLines(figure_title, file.path(graphs_dir,'rq2', str_c(plot_name, '_title.txt')))  
   
   # Save plot to file
   ggsave(
-    filename = file.path(graphs_dir, str_c(plot_name, '.png', sep = '')),
+    filename = file.path(graphs_dir,'rq2', str_c(plot_name, '.png', sep = '')),
     plot = plot,
     width = 14,
     height = 8,
@@ -1056,7 +1056,7 @@ create_race_by_firstgen_graph <- function(data_graph,
   )
   
   # 3) Write that text to a file
-  writeLines(note_text, file.path(graphs_dir, str_c(plot_name, '_note.txt')))  
+  writeLines(note_text, file.path(graphs_dir,'rq2', str_c(plot_name, '_note.txt')))  
   
   # Return the plot
   return(plot)

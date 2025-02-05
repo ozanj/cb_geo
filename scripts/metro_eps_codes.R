@@ -42,7 +42,8 @@ dallas_eps_codes <- c('TX19','TX20','TX21','TX22','TX23','TX24')
 nj_eps_codes <- c(paste0("NJ ", 1:9), paste0("NJ", 10:12))
 nj_eps_codes
 
-nj_north_metro_eps_codes <- c(paste0('NJ ', 4:9),paste0("NJ", 10:11))
+#nj_north_metro_eps_codes <- c(paste0('NJ ', 4:9),paste0("NJ", 10:11))
+nj_north_metro_eps_codes <- c(paste0('NJ ',c(4,6,7,8,9)),paste0("NJ", 10:11)) # taking monmouth out!
 nj_north_metro_eps_codes
 
 ######    # GO THROUGH NEW JERSEY

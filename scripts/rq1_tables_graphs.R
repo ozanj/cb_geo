@@ -392,7 +392,7 @@ create_eps_graph <- function(eps_codes,
   
   # Save plot to file
   ggsave(
-    filename = file.path(graphs_dir, str_c(plot_name, '.png')),
+    filename = file.path(graphs_dir,'rq1', str_c(plot_name, '.png')),
     plot = plot,
     width = 14,
     height = 8,
@@ -412,7 +412,7 @@ create_eps_graph <- function(eps_codes,
   writeLines(figure_title)
   
   # Save the title to a .txt file
-  writeLines(figure_title, file.path(graphs_dir, str_c(plot_name, 'title.txt', sep = '_')))    
+  writeLines(figure_title, file.path(graphs_dir,'rq1', str_c(plot_name, 'title.txt', sep = '_')))    
   
   # 2) Create the text you want to store [REVISE NOTE TEXT LATER!]
   note_text <- c(
@@ -424,7 +424,7 @@ create_eps_graph <- function(eps_codes,
   )
   
   # 3) Write that text to a file
-  writeLines(note_text, file.path(graphs_dir, str_c(plot_name, 'note.txt', sep = '_')))    
+  writeLines(note_text, file.path(graphs_dir,'rq1', str_c(plot_name, 'note.txt', sep = '_')))    
              
   # Return the plot
   return(plot)
@@ -476,41 +476,3 @@ for (metro_name in names(all_codes)) {
   }
 }
 
-philly_eps_codes
-dallas_eps_codes
-
-
-
-  for (g in 1:length(graph_types)) {
-    
-    # call function
-    create_eps_graph(
-      eps_codes = philly_eps_codes, 
-      graph_type = graph_types[g], 
-      note = "additional text for my note!"
-    )  
-  }
-
-for (g in 1:length(graph_types)) {
-  
-  # call function
-  create_eps_graph(
-    eps_codes = dallas_eps_codes, 
-    graph_type = graph_types[g], 
-    note = "additional text for my note!"
-  )  
-}
-
-
-
-
-vec <- c(a = 5, b = -10, c = 30)
-vec
-length(vec)  # View length of atomic vector object
-1:length(vec)  # Create sequence from `1` to `length(vec)`
-
-
-for (i in 1:length(vec)) {
-  writeLines(str_c("\nvalue of object i=", i, "; type=", typeof(i)))
-  #str(vec[[i]])  # Access element contents using [[]]
-}

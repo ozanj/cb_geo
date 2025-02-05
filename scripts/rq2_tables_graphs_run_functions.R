@@ -82,10 +82,19 @@ all_orders <- list(
   #bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1110 - 1210', '366935'), # ordered jan 2018; don't like these cutpoints as much
   #bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1220 - 1520', '366934', '366932'),
   bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1070 - 1180', '448375'), # ordered jan 2019
-  bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1220 - 1520', '448374', '448420')
+  bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1220 - 1520', '448374', '448420'),
   #bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1070 - 1180', '546954'), # ordered jan 2020; much smaller sample size than orders from jan 2019
-  #bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1220 - 1520', '546946', '546945')  
+  #bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1220 - 1520', '546946', '546945'),
+  northern_new_jersey = c('northern_new_jersey', 'nj_north_metro_eps_codes', 'PSAT score 1070 - 1180', '448922'),
+  northern_new_jersey = c('northern_new_jersey', 'nj_north_metro_eps_codes', 'PSAT score 1190 - 1520', '448427', '448440')
+  
 )
+
+
+#create_sim_eps_race_table(data = fa20_oos_psat_sf, ord_nums = c('448922'), eps_codes = nj_metro_eps_codes)
+#create_sim_eps_race_table(data = fa20_oos_psat_sf, ord_nums = c('448427'), eps_codes = nj_metro_eps_codes) # black students concentrated in nj08
+#create_sim_eps_race_table(data = fa20_oos_psat_sf, ord_nums = c('448440'), eps_codes = nj_metro_eps_codes) # black students stil concentrated in nj08
+
 
 all_orders %>% str()
 
@@ -147,28 +156,29 @@ get_order_ids <- function(metro) {
   if (metro == "chicago") {
     result$first_order  <- 487984
     result$second_order <- "488035_488053"
-  
-  # Philadelphia
-  } else if (metro == "philadelphia") {
+    
+    # Philadelphia or Northern New Jersey
+  } else if (metro %in% c("philadelphia", "northern new jersey")) {
     result$first_order  <- 448922
     result$second_order <- "448427_448440"
-  
-  # Los Angeles, Orange County, San Diego, Bay Area
+    
+    # Los Angeles, Orange County, San Diego, Bay Area
   } else if (metro %in% c("los angeles", "orange county", "san diego", "bay area")) {
     result$first_order  <- 448375
     result$second_order <- "448374_448420"
-  
-  # If we ever pass in a metro not covered above, throw error
+    
+    # If we ever pass in a metro not covered above, throw error
   } else {
     stop("No matching order logic for metro: ", metro)
   }
   
   return(result)
 }
-  
+
+
 # 2) Main loop to create & save the plots
 for (m in c("chicago", "philadelphia", "los angeles", 
-            "orange county", "san diego", "bay area")) {
+            "orange county", "san diego", "bay area", "northern new jersey")) {
   
   # Replace spaces with underscores for object/file naming
   m_underscore <- str_replace_all(m, " ", "_")
@@ -177,6 +187,10 @@ for (m in c("chicago", "philadelphia", "los angeles",
   orders       <- get_order_ids(m)
   first_order  <- orders$first_order
   second_order <- orders$second_order
+  
+  # A quick check to see if second_order is "missing"/empty
+  # (Feel free to adapt if your logic for "empty" is different.)
+  has_two_orders <- !is.null(second_order) && nzchar(second_order)
   
   for (g in c("race", "firstgen")) {
     
@@ -209,24 +223,32 @@ for (m in c("chicago", "philadelphia", "los angeles",
         )
       }
       
-      # -------------------------------
-      # IF METRO IS LA or BAY AREA => SAVE *SEPARATE* PLOTS
-      # -------------------------------
-      if (m %in% c("los angeles", "bay area")) {
+      # --------------------------------------------------------------------
+      # NEW LOGIC:
+      #   1) If there's only ONE order -> single-plot approach
+      #   2) If there are TWO orders:
+      #        - row-percent => combine them
+      #        - col-percent => separate them
+      # --------------------------------------------------------------------
+      
+      if (has_two_orders) {
         
-        # We make two separate plots, one for each order ID
-        for (order_id in c(first_order, second_order)) {
+        # 2-A) If row-percent => combine the two subplots
+        if (rc == "row") {
           
-          # Construct the name of the sub-plot object in .GlobalEnv
-          # e.g. "rq2_los_angeles_race_plot_order_448375"
-          single_plot_obj_name <- str_c("rq2_", m_underscore, "_", g, "_plot_order_", order_id)
+          # Build object names for the first + second subplots
+          first_plot_obj_name  <- str_c("rq2_", m_underscore, "_", g, "_plot_order_", first_order)
+          second_plot_obj_name <- str_c("rq2_", m_underscore, "_", g, "_plot_order_", second_order)
           
-          # Grab that sub-plot (row or col version)
-          single_subplot <- get(single_plot_obj_name, envir = .GlobalEnv)[[ subslot ]]
+          # Retrieve sub-plot objects
+          first_sub  <- get(first_plot_obj_name,  envir = .GlobalEnv)[[ subslot ]]
+          second_sub <- get(second_plot_obj_name, envir = .GlobalEnv)[[ subslot ]]
           
-          # The final filename includes the order ID
-          # e.g. "rq2_los_angeles_race_row_plot_448375.png"
-          plot_name <- str_c(plot_name_base, "_", order_id)
+          # Combine them in a single column
+          combined_plot <- first_sub + second_sub + plot_layout(ncol = 1)
+          
+          # e.g. "rq2_chicago_race_row_plot.png"
+          plot_name <- plot_name_base
           
           # For clarity in console/log
           writeLines(plot_name)
@@ -235,13 +257,13 @@ for (m in c("chicago", "philadelphia", "los angeles",
           # Write the figure title to a .txt file
           writeLines(
             figure_title, 
-            file.path(graphs_dir, str_c(plot_name, "_title.txt"))
+            file.path(graphs_dir, "rq2", str_c(plot_name, "_title.txt"))
           )
           
-          # Save the separate plot
+          # Save the combined ggplot object
           ggsave(
-            filename = file.path(graphs_dir, str_c(plot_name, ".png")),
-            plot     = single_subplot,
+            filename = file.path(graphs_dir, "rq2", str_c(plot_name, ".png")),
+            plot     = combined_plot,
             width    = 16,
             height   = 10,
             bg       = "white"
@@ -254,30 +276,68 @@ for (m in c("chicago", "philadelphia", "los angeles",
             "- '% in poverty' is the share of individuals below the federal poverty line.",
             "- Data sources: US Census, etc."
           )
-          
           writeLines(
             note_text, 
-            file.path(graphs_dir, str_c(plot_name, "_note.txt"))
+            file.path(graphs_dir, "rq2", str_c(plot_name, "_note.txt"))
           )
+          
+          # 2-B) If col-percent => make two separate plots (one per order)
+        } else { 
+          
+          # We make two separate plots, one for each order ID
+          for (order_id in c(first_order, second_order)) {
+            
+            # e.g. "rq2_los_angeles_race_plot_order_448375"
+            single_plot_obj_name <- str_c("rq2_", m_underscore, "_", g, "_plot_order_", order_id)
+            
+            # Grab that sub-plot (row or col version)
+            single_subplot <- get(single_plot_obj_name, envir = .GlobalEnv)[[ subslot ]]
+            
+            # e.g. "rq2_los_angeles_race_col_plot_448375.png"
+            plot_name <- str_c(plot_name_base, "_", order_id)
+            
+            # For clarity in console/log
+            writeLines(plot_name)
+            writeLines(figure_title)
+            
+            # Write the figure title to a .txt file
+            writeLines(
+              figure_title, 
+              file.path(graphs_dir, "rq2", str_c(plot_name, "_title.txt"))
+            )
+            
+            # Save the separate plot
+            ggsave(
+              filename = file.path(graphs_dir, "rq2", str_c(plot_name, ".png")),
+              plot     = single_subplot,
+              width    = 16,
+              height   = 10,
+              bg       = "white"
+            )
+            
+            # Write out a .txt file with the footnotes
+            note_text <- c(
+              "Figure Notes:",
+              "- Median income is shown in thousands ($k).",
+              "- '% in poverty' is the share of individuals below the federal poverty line.",
+              "- Data sources: US Census, etc."
+            )
+            writeLines(
+              note_text, 
+              file.path(graphs_dir, "rq2", str_c(plot_name, "_note.txt"))
+            )
+          }
         }
         
-      # -------------------------------
-      # ELSE => COMBINE THE TWO PLOTS WITH PATCHWORK
-      # -------------------------------
+        # --------------------------------------------------------------------
+        # 1) If there's ONLY one order (no second_order) => single-plot
+        # --------------------------------------------------------------------
       } else {
         
-        # Build object names for the first + second subplots
-        first_plot_obj_name  <- str_c("rq2_", m_underscore, "_", g, "_plot_order_", first_order)
-        second_plot_obj_name <- str_c("rq2_", m_underscore, "_", g, "_plot_order_", second_order)
+        # There's only a first_order
+        single_plot_obj_name <- str_c("rq2_", m_underscore, "_", g, "_plot_order_", first_order)
+        single_subplot       <- get(single_plot_obj_name, envir = .GlobalEnv)[[ subslot ]]
         
-        # Retrieve sub-plot objects
-        first_sub  <- get(first_plot_obj_name,  envir = .GlobalEnv)[[ subslot ]]
-        second_sub <- get(second_plot_obj_name, envir = .GlobalEnv)[[ subslot ]]
-        
-        # Combine the two sub-plots in a single column
-        combined_plot <- first_sub + second_sub + plot_layout(ncol = 1)
-        
-        # e.g. "rq2_chicago_race_row_plot.png"
         plot_name <- plot_name_base
         
         # For clarity in console/log
@@ -287,38 +347,37 @@ for (m in c("chicago", "philadelphia", "los angeles",
         # Write the figure title to a .txt file
         writeLines(
           figure_title, 
-          file.path(graphs_dir, str_c(plot_name, "_title.txt"))
+          file.path(graphs_dir, "rq2", str_c(plot_name, "_title.txt"))
         )
         
-        # Save the combined ggplot object
+        # Save the single plot
         ggsave(
-          filename = file.path(graphs_dir, str_c(plot_name, ".png")),
-          plot     = combined_plot,
+          filename = file.path(graphs_dir, "rq2", str_c(plot_name, ".png")),
+          plot     = single_subplot,
           width    = 16,
           height   = 10,
           bg       = "white"
         )
         
-        # Write out a .txt file with the footnotes
+        # Footnotes
         note_text <- c(
           "Figure Notes:",
           "- Median income is shown in thousands ($k).",
           "- '% in poverty' is the share of individuals below the federal poverty line.",
           "- Data sources: US Census, etc."
         )
-        
         writeLines(
           note_text, 
-          file.path(graphs_dir, str_c(plot_name, "_note.txt"))
+          file.path(graphs_dir, "rq2", str_c(plot_name, "_note.txt"))
         )
         
-      } # end if/else (combine vs separate)
+      } # end if (has_two_orders)
       
     } # end rc loop
     
   }   # end g (race/firstgen) loop
   
-}     # end m (city) loop
+}     # end m (metro) loop
 
 ###########################
 ############################ RUN FUNCTION create_race_by_firstgen_graph TO CREATE GRAPH OF RACE X FIRSTGEN
