@@ -112,5 +112,7 @@ names(all_codes)
 create_rq1_map(c('bay_area'))
 create_rq1_map(c('bay_area'), shared_legend = T)
 
+create_rq1_map(c('long_island'), shared_legend = T)
+
 create_rq1_map(c('bay_area', 'philly', 'chicago'))
 saveWidget(create_rq1_map(c('bay_area', 'philly', 'chicago')), file.path('.', 'results', 'maps', 'rq1_map_bayarea_philly_chicago.html'), background = 'transparent', selfcontained = T)

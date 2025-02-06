@@ -35,7 +35,7 @@ include-in-header: ./assets/html/header.html
 # Results
 
 ```{r setup, echo=FALSE, results = 'asis'}
-```{r, echo=FALSE, results='asis'}
+
 library(tidyverse)
 library(kableExtra)  # For collapse_rows() to work
 library(tools)
@@ -110,7 +110,7 @@ graph_types_rq1 <- c("race", "ses")
 rq2_metros <- c(
   "chicago", "philadelphia", "los angeles", 
   "orange county", "san diego", "bay area",
-  "northern new jersey"
+  "northern new jersey","long island",'detroit','dallas'
 )
 
 # We'll define a "metro_orders" list for those RQ2 metros:
@@ -118,6 +118,9 @@ metro_orders <- list(
   "chicago"             = c("487984", "488035_488053"),
   "philadelphia"        = c("448922", "448427_448440"),
   "northern_new_jersey" = c("448922", "448427_448440"),
+  "long_island"         = c("448922", "448427_448440"),
+  "detroit"             = c("448922", "448427_448440"),
+  "dallas"              = c("448922", "448427_448440"),
   "los_angeles"         = c("448375", "448374_448420"),
   "orange_county"       = c("448375", "448374_448420"),
   "san_diego"           = c("448375", "448374_448420"),
@@ -147,7 +150,7 @@ for (m in metros) {
       }
 
     # ---------------------------------------------
-    # RQ2 Logic (row vs. col approach)
+    # RQ2 Logic (row vs. col approach + race_by_firstgen)
     # ---------------------------------------------
     } else if (rq == "rq2") {
 
@@ -158,7 +161,7 @@ for (m in metros) {
       m_underscored <- str_replace_all(m, " ", "_")
       orders_for_m  <- metro_orders[[m_underscored]]
 
-      # If a metro isn't in the list or no orders, skip
+      # If a metro isn't in the list or has no orders, skip
       if (is.null(orders_for_m)) next
 
       # We'll do 2 group types: race & firstgen
@@ -189,11 +192,23 @@ for (m in metros) {
               insert_figure(rq = rq, metro = m, graph_type = graph_type_col)
             }
             
-          } # end if row vs col
+          } # end if (row vs col)
 
         } # end rc loop
         
       } # end g loop
+
+      # -------------------------------------------
+      # ADDITIONAL: race_by_firstgen for each order
+      # -------------------------------------------
+      # Like the column approach, one slide per order_id
+      for (order_id in orders_for_m) {
+        writeLines(str_c("### Research question ", rq_num))
+        # Filenames look like:
+        #   rq2_northern_new_jersey_order_448922_race_by_firstgen.png
+        graph_type_rbf <- str_c("order_", order_id, "_race_by_firstgen")
+        insert_figure(rq = rq, metro = m, graph_type = graph_type_rbf)
+      }
 
     } # end if (rq == "rq2")
 

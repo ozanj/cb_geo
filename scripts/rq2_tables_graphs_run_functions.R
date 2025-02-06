@@ -86,14 +86,18 @@ all_orders <- list(
   #bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1070 - 1180', '546954'), # ordered jan 2020; much smaller sample size than orders from jan 2019
   #bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1220 - 1520', '546946', '546945'),
   northern_new_jersey = c('northern_new_jersey', 'nj_north_metro_eps_codes', 'PSAT score 1070 - 1180', '448922'),
-  northern_new_jersey = c('northern_new_jersey', 'nj_north_metro_eps_codes', 'PSAT score 1190 - 1520', '448427', '448440')
-  
+  northern_new_jersey = c('northern_new_jersey', 'nj_north_metro_eps_codes', 'PSAT score 1190 - 1520', '448427', '448440'),
+  long_island = c('long_island', 'long_island_eps_codes', 'PSAT score 1070 - 1180', '448922'),
+  long_island = c('long_island', 'long_island_eps_codes', 'PSAT score 1190 - 1520', '448427', '448440'),
+  detroit = c('detroit', 'detroit_eps_codes', 'PSAT score 1070 - 1180', '448922'),
+  detroit = c('detroit', 'detroit_eps_codes', 'PSAT score 1190 - 1520', '448427', '448440'),
+  dallas = c('dallas', 'dallas_eps_codes', 'PSAT score 1070 - 1180', '448922'),
+  dallas = c('dallas', 'dallas_eps_codes', 'PSAT score 1190 - 1520', '448427', '448440')  
 )
 
-
-#create_sim_eps_race_table(data = fa20_oos_psat_sf, ord_nums = c('448922'), eps_codes = nj_metro_eps_codes)
-#create_sim_eps_race_table(data = fa20_oos_psat_sf, ord_nums = c('448427'), eps_codes = nj_metro_eps_codes) # black students concentrated in nj08
-#create_sim_eps_race_table(data = fa20_oos_psat_sf, ord_nums = c('448440'), eps_codes = nj_metro_eps_codes) # black students stil concentrated in nj08
+#create_sim_eps_race_table(data = fa20_oos_psat_sf, ord_nums = c('448922'), eps_codes = c('TX19','TX20','TX21','TX22','TX23','TX24')) # 
+#create_sim_eps_race_table(data = fa20_oos_psat_sf, ord_nums = c('448427'), eps_codes = c('TX19','TX20','TX21','TX22','TX23','TX24')) 
+#create_sim_eps_race_table(data = fa20_oos_psat_sf, ord_nums = c('448440'), eps_codes = c('TX19','TX20','TX21','TX22','TX23','TX24'))
 
 
 all_orders %>% str()
@@ -158,7 +162,7 @@ get_order_ids <- function(metro) {
     result$second_order <- "488035_488053"
     
     # Philadelphia or Northern New Jersey
-  } else if (metro %in% c("philadelphia", "northern new jersey")) {
+  } else if (metro %in% c("philadelphia", "northern new jersey",'long island','detroit','dallas')) {
     result$first_order  <- 448922
     result$second_order <- "448427_448440"
     
@@ -178,7 +182,7 @@ get_order_ids <- function(metro) {
 
 # 2) Main loop to create & save the plots
 for (m in c("chicago", "philadelphia", "los angeles", 
-            "orange county", "san diego", "bay area", "northern new jersey")) {
+            "orange county", "san diego", "bay area", "northern new jersey",'long island','detroit','dallas')) {
   
   # Replace spaces with underscores for object/file naming
   m_underscore <- str_replace_all(m, " ", "_")

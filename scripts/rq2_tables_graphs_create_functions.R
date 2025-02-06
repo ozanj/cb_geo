@@ -17,6 +17,7 @@ options(scipen = 999)
 library(tidyverse)
 library(formattable)
 library(patchwork)
+library(ggbreak) # custom breaks
 library(scales)
 library(readxl)
 library(lubridate)
@@ -676,7 +677,7 @@ create_sim_eps_graph <- function(data_graph,
           )
         )
       ) %>%
-      dplyr::filter(!group %in% c("AIAN, non-Hispanic", "NHPI, non-Hispanic"))
+      dplyr::filter(!group %in% c("AIAN, non-Hispanic", "NHPI, non-Hispanic",'Two+, non-Hispanic'))
     
     # Titles and legend labels
     row_plot_title   <- "Race Distribution Within Each EPS Code (Row %)"
