@@ -7,9 +7,12 @@ function(el, x, choices) {
   let region = choices.region_choices.region,
       region_name = choices.region_choices.region_name,
       latitude = choices.region_choices.latitude,
-      longitude = choices.region_choices.longitude;
+      longitude = choices.region_choices.longitude,
+      order_region = choices.order_choices.region,
+      order_num = choices.order_choices.order_num,
+      order_title = choices.order_choices.order_title;
       
-  $(String.raw`<style>#race-label span::before { content: "➕"; margin-right: 2.5px; margin-left: 5.5px; width: 13px; display: inline-block; transition: transform 0.25s ease-out; } #race-label.active span::before { content: "➖" } #race-label:not(.active) span::before { transform: rotate(90deg); } .leaflet-control-layers-base { width: 190px; }</style>`).appendTo('head');
+  $(String.raw`<style>.no-fill { fill-opacity: 0; } #race-label span::before { content: "➕"; margin-right: 2.5px; margin-left: 5.5px; width: 13px; display: inline-block; transition: transform 0.25s ease-out; } #race-label.active span::before { content: "➖" } #race-label:not(.active) span::before { transform: rotate(90deg); } .leaflet-control-layers-base { width: 190px; }</style>`).appendTo('head');
   
   $('.leaflet-control-layers-base').prepend('<p style="margin: 5px; font-weight: 600;">Variables</p>');
   
@@ -20,6 +23,7 @@ function(el, x, choices) {
   
   $('button[title="Toggle View"] .button-state').append('<span id="view-btn" style="display: inline-block; float: left; padding-left: 5px;">National View</span>');
   $('button[title="Select Metro Area"] .button-state').append('<span style="display: inline-block; float: left; padding-left: 5px;">Select Metro Area</span>');
+  $('button[title="Select Order Number"] .button-state').append('<span style="display: inline-block; float: left; padding-left: 5px;">Select Order Number</span>');
   
   // metro selection options
   
@@ -33,7 +37,13 @@ function(el, x, choices) {
   
   $('button[title="Select Metro Area"]').parent().after(metroControlHTML);
   
-  // race/ethnicity selection options
+  // order selection options
+  
+  let orderControlHTML = '<div id="order-control" class="leaflet-control-layers leaflet-control leaflet-control-layers-expanded custom-control" style="width: auto; height: auto;"></div>';
+  
+  $('button[title="Select Order Number"]').parent().after(orderControlHTML);
+  
+  // race/ethnicity base layer
   
   let raceOptions = $('.leaflet-control-layers-base label').filter(function() {
     return $(this).text().trim().startsWith('%');
@@ -49,6 +59,42 @@ function(el, x, choices) {
     $(this).toggleClass('active');
     $('#race-container').slideToggle();
   })
+  
+  // race/ethnicity overlay layer
+  
+  $('.leaflet-control-layers-overlays label').each(function(idx, curr) {
+    if (idx >= 2) {
+      $(this).css('margin-left', '20px');
+      $(this).find('input').attr('name', 'purchased-race');
+      $(this).find('div').append('<span class="dot" style="background-color: ' + choices.pin_colors[$(this).text().trim()] + '; height: 4px; width: 4px; border-radius: 50%; display: inline-block; padding: 1px; margin: 0 0 1px 5px;"></span>');
+      $(this).find('.dot').fadeOut(0);
+    }
+  });
+  
+  $('input[name="purchased-race"]').on('change', function(e) {
+    handleFirstGen();
+    $(this).siblings('.dot').fadeToggle(50);
+  });
+  
+  $('.leaflet-control-layers-overlays label:nth-child(2)').on('change', function(e) {
+    handleFirstGen();
+  });
+  
+  // first-gen fill option
+  
+  $('.leaflet-control-layers-overlays').after('<div class="leaflet-control-layers-separator"></div><div><label><div><input type="checkbox" class="leaflet-control-layers-selector" name="first-gen"><span> First-generation</span></div></label></div>');
+  
+  $('input[name="first-gen"]').on('change', function(e) {
+    handleFirstGen();
+  });
+  
+  let handleFirstGen = function() {
+    if ($('input[name="first-gen"]').is(':checked')) {
+      $('.order-pin').removeClass('no-fill');
+    } else {
+      $('.order-pin').addClass('no-fill');
+    }
+  }
     
   // selection text
   
@@ -57,6 +103,20 @@ function(el, x, choices) {
   $('.leaflet > .leaflet-control-container > .leaflet-top.leaflet-left').append(selTextHTML);
   
   // handle selections
+  
+  let updateOrderOptions = function() {
+    orderOptionsHTML = '';
+    order_region.forEach(function(curr, idx) {
+      if (curr === active_attr.active_metro) {
+        orderOptionsHTML += '<div><input type="radio" class="leaflet-control-layers-selector" name="order-choice" data-order="' + order_num[idx] + '"><span> ' + order_num[idx] + ': ' + order_title[idx] + '</span></div>';
+      }
+    });
+    
+    $('#order-control').html(orderOptionsHTML);
+    
+    active_attr.active_order = $('#order-control div:first-child input').attr('data-order');
+    $('input[data-order="' + active_attr.active_order + '"]').trigger('click');
+  }
     
   $('input[name="metro-choice"]').on('change', function(e) {
     let $this = $(this);
@@ -73,24 +133,48 @@ function(el, x, choices) {
     $('button[title="Toggle View"]').attr('data-national', false);
     $('#view-btn').html('National View');
     
+    updateOrderOptions();
+    update_pins();
+    
     update_sel_text();
     update_legend();
+  });
+    
+  $(document).on('change', 'input[name="order-choice"]', function(e) {
+    let $this = $(this);
+    
+    let order = $this.attr('data-order');
+    active_attr.active_order = order;
+    
+    update_pins();
+    update_sel_text();
   });
   
   let update_base_layer = function() {
     $('.metro-shape').css('display', 'none');
     
-    if (active_attr.active_base === 'MSA') {
-      $('.metro-' + active_attr.active_metro + '.metro-line').css('display', 'inherit');
-    } else {
-      $('.metro-' + active_attr.active_metro).css('display', 'inherit');
+    $('.metro-shape.metro-' + active_attr.active_metro).css('display', 'inherit');
+    
+    if (active_attr.active_base !== 'MSA') {
+      $('.metro-line-' + active_attr.active_metro).css('display', 'inherit');
     }
   };
+  
+  let update_pins = function() {
+    $('.order-pin').css('display', 'none');
+    
+    $('.metro-' + active_attr.active_metro + '.order-' + active_attr.active_order).css('display', 'inherit');
+  }
   
   // handle selection text update
   
   let update_sel_text = function() {
     let sel_metro = $('input[data-region="' + active_attr.active_metro + '"]').next().text();
+    
+    if (active_attr.active_order !== '') {
+      sel_metro += ' - ' + $('input[data-order="' + active_attr.active_order + '"]').next().text();
+    }
+    
     $('#selection-text').text(sel_metro);
   };
   
@@ -135,7 +219,7 @@ function(el, x, choices) {
     }
   };
   
-  // handle base layer selection
+  // handle controls selection
 
   myMap.on('baselayerchange', function(e) {
     active_attr.active_base = e.name;
@@ -145,15 +229,21 @@ function(el, x, choices) {
     update_base_layer();
   });
   
+  myMap.on('overlayadd', function(e) {
+    update_pins();
+  });
+  
   // default settings on load
       
   let active_attr = {
     active_base: 'MSA',
-    active_metro: region[0]
+    active_metro: region[0],
+    active_order: ''
   };
   
-  $('.legend, #metro-control').css('display', 'none');
+  $('.legend, #metro-control, #order-control').css('display', 'none');
   
   $('input[data-region="' + active_attr.active_metro + '"]').trigger('click');
+  handleFirstGen();
   
 }

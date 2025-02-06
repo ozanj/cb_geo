@@ -13,7 +13,7 @@ all_codes <- list(
   cleveland = list(name = 'Cleveland', eps = cleveland_eps_codes),
   northern_nj = list(name = 'Northern New Jersey', eps = nj_north_metro_eps_codes),
   houston = list(name = 'Houston', eps = htown_eps_codes),
-  bay_area = list(name = 'Bay Area', eps = bay_eps_codes),
+  bay_area = list(name = 'Bay Area', eps = bay_area_eps_codes),
   long_island = list(name = 'Long Island', eps = long_island_eps_codes),
   ny_ny = list(name = 'New York, New York', eps = nyny_metro_eps_codes),
   detroit = list(name = 'Detroit', eps = detroit_eps_codes),
