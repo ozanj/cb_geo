@@ -1,7 +1,13 @@
 ---
-title: 'Title'
-subtitle: 'Subtitle'
-author: ['Author', 'Author']
+title: 'Structuring College Access'
+subtitle: 'The Market Segment Model and College Board Geomarkets'
+author:
+  - name: Ozan Jaquette
+    affiliation: UCLA
+  - name: Karina Salazar
+    affiliation: University of Arizona
+  - name: Crystal Han
+    affiliation: Stanford University
 bibliography: ./assets/bib/cb_geomarket_bib.bib
 format:
   revealjs: 
@@ -19,7 +25,43 @@ include-in-header: ./assets/html/header.html
 ---
 
 
-# Level-1 heading
+# Introduction
+
+### Introduction
+#### Talent is everywhere, but structure allocates talent to unequal opportunities
+
+College Board "Geomarkets"
+
+- Carve states and metropolitan areas into smaller geographic regions meant to define local recruiting markets
+
+POP OUT OF GEOMARKETS
+
+- Chicago
+- New York
+
+Geomarkets are an input to two College Board products
+
+- Enrollment Planning Service:
+- Student Search Service:
+
+**Research questions** focus on metropolitan areas
+
+1. What is SES and racial variation between, within geomarkets? How does this change over time?
+1. What is SES and racial composition of included vs. excluded prospects, if student list purchases filter on particular Geomarkets?
+
+### New York and Chicago Geomarkets
+
+::: columns
+::: {.column width="40%"}
+
+![](./assets/images/nyc_geomarkets.png)
+:::
+
+::: {.column width="60%"}
+
+![](./assets/images/chicago_geomarkets.png)
+:::
+:::
 
 ## Level-2 heading
 
@@ -28,6 +70,9 @@ include-in-header: ./assets/html/header.html
 ### Level-3 heading
 #### Level-4 subheading
 
+# Empirical Context
+
+# Theory
 ### Test map
 
 <iframe src="https://comforting-kashata-600ce0.netlify.app/" width=100% height=100% allowtransparency="true"></iframe>
@@ -219,6 +264,8 @@ for (m in metros) {
 } # end metros loop
 
 ```
+
+# Discussion
 
 
 
