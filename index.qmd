@@ -110,7 +110,7 @@ graph_types_rq1 <- c("race", "ses")
 rq2_metros <- c(
   "chicago", "philadelphia", "los angeles", 
   "orange county", "san diego", "bay area",
-  "northern new jersey","long island",'detroit','dallas'
+  "northern new jersey","long island",'detroit','dallas','houston'
 )
 
 # We'll define a "metro_orders" list for those RQ2 metros:
@@ -124,7 +124,9 @@ metro_orders <- list(
   "los_angeles"         = c("448375", "448374_448420"),
   "orange_county"       = c("448375", "448374_448420"),
   "san_diego"           = c("448375", "448374_448420"),
-  "bay_area"            = c("448375", "448374_448420")
+  "bay_area"            = c("448375", "448374_448420"),
+  'houston'             = c('329702') #   # houston = c('houston', 'houston_eps_codes', 'PSAT score 1010 - 1520', '329702')
+
 )
 
 # 4) Main loop

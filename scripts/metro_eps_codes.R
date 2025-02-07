@@ -28,8 +28,8 @@ long_island_eps_codes <- c(paste0('NY',16:21))
 atl_eps_codes <- paste0("GA ", 1:4) #
 atl_eps_codes
 
-htown_eps_codes <- str_c("TX",15:18)
-htown_eps_codes
+houston_eps_codes <- str_c("TX",15:18)
+houston_eps_codes
 
 # stuff to add
   # some metro for los angeles

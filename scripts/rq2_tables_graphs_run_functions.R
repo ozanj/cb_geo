@@ -92,8 +92,11 @@ all_orders <- list(
   detroit = c('detroit', 'detroit_eps_codes', 'PSAT score 1070 - 1180', '448922'),
   detroit = c('detroit', 'detroit_eps_codes', 'PSAT score 1190 - 1520', '448427', '448440'),
   dallas = c('dallas', 'dallas_eps_codes', 'PSAT score 1070 - 1180', '448922'),
-  dallas = c('dallas', 'dallas_eps_codes', 'PSAT score 1190 - 1520', '448427', '448440')  
+  dallas = c('dallas', 'dallas_eps_codes', 'PSAT score 1190 - 1520', '448427', '448440'),
+  houston = c('houston', 'houston_eps_codes', 'PSAT score 1010 - 1520', '329702')
 )
+
+# 2 Stephen F Austin State University, univ_id=228431 ord_num=329702          PSAT 1010-1520; grades C+ to A+, 2019 HS grads, all of TX, ordered 8/31/2017 [but seems to have TX 17....]
 
 #create_sim_eps_race_table(data = fa20_oos_psat_sf, ord_nums = c('448922'), eps_codes = c('TX19','TX20','TX21','TX22','TX23','TX24')) # 
 #create_sim_eps_race_table(data = fa20_oos_psat_sf, ord_nums = c('448427'), eps_codes = c('TX19','TX20','TX21','TX22','TX23','TX24')) 
@@ -151,6 +154,7 @@ for (orders in all_orders) {
 
 
 ################
+# 1) Utility function to fetch the order IDs
 get_order_ids <- function(metro) {
   
   # Initialize a result list
@@ -161,7 +165,11 @@ get_order_ids <- function(metro) {
     result$first_order  <- 487984
     result$second_order <- "488035_488053"
     
-    # Philadelphia or Northern New Jersey
+    # Houston
+  } else if (metro %in% c("houston")) {
+    result$first_order  <- 329702
+    
+    # Philadelphia, Northern NJ, etc.
   } else if (metro %in% c("philadelphia", "northern new jersey",'long island','detroit','dallas')) {
     result$first_order  <- 448922
     result$second_order <- "448427_448440"
@@ -171,7 +179,6 @@ get_order_ids <- function(metro) {
     result$first_order  <- 448375
     result$second_order <- "448374_448420"
     
-    # If we ever pass in a metro not covered above, throw error
   } else {
     stop("No matching order logic for metro: ", metro)
   }
@@ -182,18 +189,19 @@ get_order_ids <- function(metro) {
 
 # 2) Main loop to create & save the plots
 for (m in c("chicago", "philadelphia", "los angeles", 
-            "orange county", "san diego", "bay area", "northern new jersey",'long island','detroit','dallas')) {
+            "orange county", "san diego", "bay area", 
+            "northern new jersey", "long island", "detroit", 
+            "dallas", "houston")) {
   
   # Replace spaces with underscores for object/file naming
   m_underscore <- str_replace_all(m, " ", "_")
   
-  # Retrieve the two order IDs for this metro
+  # Retrieve the order IDs for this metro
   orders       <- get_order_ids(m)
   first_order  <- orders$first_order
   second_order <- orders$second_order
   
-  # A quick check to see if second_order is "missing"/empty
-  # (Feel free to adapt if your logic for "empty" is different.)
+  # Check if there's a second order
   has_two_orders <- !is.null(second_order) && nzchar(second_order)
   
   for (g in c("race", "firstgen")) {
@@ -207,9 +215,10 @@ for (m in c("chicago", "philadelphia", "los angeles",
       subslot <- if (rc == "row") "plot_r" else "plot_c"
       
       # We'll use this base name for saving or identifying the figure
+      # (Note: we might attach the order ID below if needed)
       plot_name_base <- str_c("rq2_", m_underscore, "_", g, "_", rc, "_plot")
       
-      # Build a figure title (used for both combined or separate saves)
+      # Build a figure title
       if (rc == "row") {
         figure_title <- str_c(
           g_prefix,
@@ -342,7 +351,13 @@ for (m in c("chicago", "philadelphia", "los angeles",
         single_plot_obj_name <- str_c("rq2_", m_underscore, "_", g, "_plot_order_", first_order)
         single_subplot       <- get(single_plot_obj_name, envir = .GlobalEnv)[[ subslot ]]
         
-        plot_name <- plot_name_base
+        # For single-order metros, we usually do just one figure name.
+        # BUT if rc == "col", you want the order number appended:
+        if (rc == "col") {
+          plot_name <- str_c(plot_name_base, "_", first_order)
+        } else {
+          plot_name <- plot_name_base
+        }
         
         # For clarity in console/log
         writeLines(plot_name)
