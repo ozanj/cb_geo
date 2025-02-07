@@ -3,11 +3,12 @@ library(tidyverse)
 library(formattable)
 library(htmlwidgets)
 library(haven)
+library(sf)
 
 # Load data
 
-source(file.path('scripts', 'create_stu_list.R'))
 source(file.path('scripts', 'map_functions.R'))
+source(file.path('scripts', 'create_stu_list.R'))
 
 load(file.path('data', 'map_data_final.RData'))
 

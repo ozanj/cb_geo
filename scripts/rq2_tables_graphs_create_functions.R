@@ -447,7 +447,7 @@ create_sim_eps_race_firstgen_table <- function(data, ord_nums, eps_codes, exclud
 # philly metro area
 # order 448922: PSAT 1070 - 1180; order 448427: PSAT 1190 - 1260; order 448440: PSAT 1270 - 1520
 
-#create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('487984'), eps_codes = chi_eps_codes) %>% print(n=70) # 
+create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('487984'), eps_codes = chi_eps_codes) %>% print(n=70) # 
 #create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('487984'), eps_codes = chi_eps_codes, exclude_race = '') %>% print(n=70) # 
 #create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('487984'), eps_codes = chi_eps_codes, exclude_race = c(1,8,12)) %>% print(n=70) # 
 #lists_orders_zip_hs_df_sf %>% as_tibble() %>% count(stu_race_cb)

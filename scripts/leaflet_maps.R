@@ -233,9 +233,11 @@ display_names <- list(
   "pct_nhisp_black" = "% Black, non-Hispanic"
 )
 
+create_eps_maps(bay_area_eps_codes, c("pct_nhisp_white","pct_nhisp_black", "pct_nhisp_asian"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
+
 # new jersey metro area
 nj_north_metro_eps_codes
-create_eps_maps(nj_north_metro_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "med_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
+create_eps_maps(nj_north_metro_eps_codes, c("pct_nhisp_white","pct_nhisp_black", "pct_nhisp_asian"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
 
 create_eps_maps(nj_eps_codes, c("pct_nhisp_white","pct_nhisp_black","pct_hisp_all", "med_inc_house"), mapping_level = "eps", display_names = display_names, eps_border_weight = 4)
 
