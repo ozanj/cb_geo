@@ -2,7 +2,7 @@ library(leaflet)
 library(tidyverse)
 library(formattable)
 library(htmlwidgets)
-
+library(haven)
 
 # Load data
 
