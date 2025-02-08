@@ -26,7 +26,7 @@ include-in-header: ./assets/html/header.html
 
 # Introduction
 
-### Introduction
+### Introduction {.hide}
 #### Talent is everywhere, but structure allocates talent to unequal opportunities
 
 College Board "Geomarkets"
@@ -48,7 +48,7 @@ Geomarkets are an input to two College Board products
 1. What is SES and racial variation between, within geomarkets? How does this change over time?
 1. What is SES and racial composition of included vs. excluded prospects, if student list purchases filter on particular Geomarkets?
 
-### New York and Chicago Geomarkets
+### New York and Chicago Geomarkets {.hide}
 
 ::: columns
 ::: {.column width="40%"}
