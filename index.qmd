@@ -1,13 +1,8 @@
 ---
 title: 'Structuring College Access'
 subtitle: 'The Market Segment Model and College Board Geomarkets'
-author:
-  - name: Ozan Jaquette
-    affiliation: UCLA
-  - name: Karina Salazar
-    affiliation: University of Arizona
-  - name: Crystal Han
-    affiliation: Stanford University
+author: ['Ozan Jaquette', 'Karina Salazar', 'Crystal Han']
+institute: ['UCLA', 'University of Arizona', 'Stanford University']
 bibliography: ./assets/bib/cb_geomarket_bib.bib
 format:
   revealjs: 

@@ -47,9 +47,16 @@ $presentation-font-size-root: 30px;
       opacity: 0.7;
     }
   }
-  .author {
+  .author, .institute {
     font-size: 20px;
+    margin-bottom: 50px;
+  }
+  .author {
     color: #827250;
+  }
+  .institute {
+    color: #808080;
+    transform: translateY(-200px);
   }
   .bg {
     cursor: pointer;
