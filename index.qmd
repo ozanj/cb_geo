@@ -19,6 +19,10 @@ format:
     background-transition: fade
     auto-stretch: false
     slide-level: 3
+    menu:
+      titleSelector: 'h1, h2, .slide:not(.hide) h3'
+      useTextContentForMissingTitles: false
+      hideMissingTitles: true
     template-partials:
       - ./assets/html/title-slide.html
 include-in-header: ./assets/html/header.html
@@ -67,7 +71,7 @@ Geomarkets are an input to two College Board products
 
 ### Level-3 heading
 
-### Level-3 heading
+### Level-3 heading {.hide}
 #### Level-4 subheading
 
 # Empirical Context
@@ -151,6 +155,9 @@ rqs <- c("rq1", "rq2")
 # For RQ1, we have two plot types: "race" and "ses"
 graph_types_rq1 <- c("race", "ses")
 
+# For RQ2, we have two plot types: "race" and "firstgen"
+graph_types_rq2 <- c("race", "firstgen")
+
 # 3) Subset of metros with RQ2 data (2 orders each)
 rq2_metros <- c(
   "chicago", "philadelphia", "los angeles", 
@@ -191,8 +198,10 @@ for (m in metros) {
     if (rq == "rq1") {
 
       # Each metro has 2 plots: "race" & "ses"
-      for (g in graph_types_rq1) {
-        writeLines(str_c("### Research question ", rq_num))
+      for (i in seq(graph_types_rq1)) {
+        g <- graph_types_rq1[i]
+
+        writeLines(str_c("### Research question ", rq_num, if_else(i == 1, "", " {.hide}")))
         insert_figure(rq = rq, metro = m, graph_type = g)
       }
 
@@ -212,7 +221,8 @@ for (m in metros) {
       if (is.null(orders_for_m)) next
 
       # We'll do 2 group types: race & firstgen
-      for (g in c("race", "firstgen")) {
+      for (i in seq(graph_types_rq2)) {
+        g <- graph_types_rq2[i]
 
         # We'll do row and col for each group type
         for (rc in c("row", "col")) {
@@ -221,7 +231,7 @@ for (m in metros) {
             #
             # ROW => single combined figure on one slide
             #
-            writeLines(str_c("### Research question ", rq_num))
+            writeLines(str_c("### Research question ", rq_num, if_else(i == 1, "", " {.hide}")))
             graph_type_row <- str_c(g, "_", rc, "_plot")
             insert_figure(rq = rq, metro = m, graph_type = graph_type_row)
 
@@ -232,7 +242,7 @@ for (m in metros) {
             for (order_id in orders_for_m) {
               
               # Each order ID gets its own "###" => new Reveal.js slide
-              writeLines(str_c("### Research question ", rq_num))
+              writeLines(str_c("### Research question ", rq_num, " {.hide}"))
               
               # e.g. "rq2_chicago_race_col_plot_487984.png"
               graph_type_col <- str_c(g, "_", rc, "_plot_", order_id)
@@ -250,7 +260,7 @@ for (m in metros) {
       # -------------------------------------------
       # Like the column approach, one slide per order_id
       for (order_id in orders_for_m) {
-        writeLines(str_c("### Research question ", rq_num))
+        writeLines(str_c("### Research question ", rq_num, rq_num, " {.hide}"))
         # Filenames look like:
         #   rq2_northern_new_jersey_order_448922_race_by_firstgen.png
         graph_type_rbf <- str_c("order_", order_id, "_race_by_firstgen")

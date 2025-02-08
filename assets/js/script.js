@@ -29,4 +29,14 @@ $(function() {
     $('img').removeClass('disabled');
   });
   
+  const h3 = $('.slide:not(.hide) h3').map(function() {
+    return $(this).text();
+  }).get();
+
+  $('.slide-menu-item-vertical').filter(function() {
+    if (h3.includes($(this).text())) {
+      $(this).css('padding-left', '42px');
+    }
+  });
+
 });
