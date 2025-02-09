@@ -285,12 +285,14 @@ create_rq2_map <- function(metros) {
       filter(eps %in% region$eps[[1]]) %>% 
       mutate(np_order = f(ncessch, str_c(order_nums, collapse = ','))) %>%
       filter(np_order != '')
+    
+    marker_size <- 2
 
     m <- m %>% 
       
       # Non-purchased markers
       addCircleMarkers(data = non_purchased, lng = ~st_coordinates(geometry)[,1], lat = ~st_coordinates(geometry)[,2], group = 'Non-Purchased High Schools',
-                       radius = 1, fillOpacity = 0, opacity = 1, weight = 1.5, color = 'red',
+                       radius = marker_size, fillOpacity = 1, opacity = 1, weight = 1.5, color = 'red', fillColor = 'red',
                        popup = ~hs_label, options = pathOptions(className = paste0('metro-', metro, ' order-pin ', non_purchased$np_order)))
     
     # Markers for purchased schools (order-specific)
@@ -302,7 +304,7 @@ create_rq2_map <- function(metros) {
           
           # Purchased markers
           addCircleMarkers(data = p, lng = ~st_coordinates(geometry)[,1], lat = ~st_coordinates(geometry)[,2], group = pin_vars[[v]]$group,
-                           radius = ~sqrt(get(paste0(v, '_all'))) + 1, fillOpacity = 0, opacity = 1, weight = 1.5, color = pin_vars[[v]]$color,
+                           radius = ~sqrt(get(paste0(v, '_all'))) + marker_size, fillOpacity = ~if_else(get(paste0(v, '_all')) == 0, 1, 0), opacity = 1, weight = 1.5, color = pin_vars[[v]]$color, fillColor = pin_vars[[v]]$color,
                            popup = ~paste0(hs_label, order_label), options = pathOptions(className = paste0('metro-', metro, ' order-pin order-', order_num)))
       }
     }
