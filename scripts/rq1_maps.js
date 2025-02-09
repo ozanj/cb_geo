@@ -38,7 +38,7 @@ function(el, x, choices) {
     yearControlHTML += '<div' + (idx === 0 ? '' : ' style="margin-left: 5px;"') + '><input type="radio" class="leaflet-control-layers-selector" name="year-choice" data-year="' + curr + '"><span>' + curr + '</span></div>';
   });
   
-  yearControlHTML += '</div><p style="margin: 5px; font-weight: 600;">Variables</p>';
+  yearControlHTML += '</div><p style="margin: 5px; font-weight: 600;">Census data</p>';
   
   $('.leaflet-control-layers-base').prepend(yearControlHTML);
   

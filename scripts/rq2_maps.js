@@ -14,7 +14,8 @@ function(el, x, choices) {
       
   $(String.raw`<style>.no-fill { fill-opacity: 0; } #race-label span::before { content: "➕"; margin-right: 2.5px; margin-left: 5.5px; width: 13px; display: inline-block; transition: transform 0.25s ease-out; } #race-label.active span::before { content: "➖" } #race-label:not(.active) span::before { transform: rotate(90deg); } .leaflet-control-layers-base { width: 190px; }</style>`).appendTo('head');
   
-  $('.leaflet-control-layers-base').prepend('<p style="margin: 5px; font-weight: 600;">Variables</p>');
+  $('.leaflet-control-layers-base').prepend('<p style="margin: 5px; font-weight: 600;">Census data (by tract)</p>');
+  $('.leaflet-control-layers-overlays').prepend('<p style="margin: 8px 5px 5px; font-weight: 600;">Student lists (by school)</p>');
   
   // buttons
   
