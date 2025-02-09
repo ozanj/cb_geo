@@ -118,7 +118,7 @@ get_palette <- function(variable, domain, level, pal = 'YlGnBu') {
   
   if (str_detect(variable, '_inc_')) {
     if (level == 'tract') {
-      bins <- pretty(range(domain, na.rm = T), n = 6)
+      bins <- pretty(range(domain, na.rm = T), n = 6, min.n = 6)
     } else {
       bins <- c(0, 25, 50, 75, 100, 125, 150, 175, 200, 1000) * 1000
     }
@@ -139,7 +139,7 @@ get_palette <- function(variable, domain, level, pal = 'YlGnBu') {
       cuts
     }
   } else if (str_detect(variable, 'pct_')) {
-    bins <- pretty(range(0, max(domain, na.rm = T)), n = 5)
+    bins <- pretty(range(0, max(domain, na.rm = T)), n = 5, min.n = 5)
     palette <- colorBin(pal, domain, bins)
     
     label_format <- function(type, cuts) {
