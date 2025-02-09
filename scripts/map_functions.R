@@ -97,9 +97,14 @@ eps_data %>% as.data.frame() %>%
 
 tract_data <- allyr_anal_tract_sf %>% 
   filter(eps %in% flatten_chr(regions_data$eps)) %>% 
-  select(year, eps, eps_name, proportion, tot_all, med_inc_house, pct_nhisp_white, pct_nhisp_black, pct_hisp_all, pct_nhisp_asian, pct_nhisp_nhpi, pct_nhisp_native, pct_nhisp_multi, pct_pov_yes, pct_edu_baplus_all, geometry) %>% 
+  select(year, eps, eps_name, gisjoin, geoid, proportion, tot_all, med_inc_house, pct_nhisp_white, pct_nhisp_black, pct_hisp_all, pct_nhisp_asian, pct_nhisp_nhpi, pct_nhisp_native, pct_nhisp_multi, pct_pov_yes, pct_edu_baplus_all, geometry) %>% 
   rename('sum_tot_all' = 'tot_all') %>% 
-  format_vars()
+  format_vars() %>% 
+  mutate(
+    state_code = if_else(is.na(gisjoin), str_sub(geoid, 1, 2), str_sub(gisjoin, 2, 3)),
+    county_code = if_else(is.na(gisjoin), str_sub(geoid, 3, 5), str_sub(gisjoin, 5, 7)),
+    tract_code = as.numeric(if_else(is.na(gisjoin), str_sub(geoid, 6), str_pad(str_sub(gisjoin, 9), width = 6, side = 'right', pad = '0'))) / 100
+  )
 
 tract_data %>% as.data.frame() %>% 
   group_by(year) %>% 

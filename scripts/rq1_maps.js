@@ -119,6 +119,7 @@ function(el, x, choices) {
   
   let update_base_layer = function() {
     $('.metro-shape').css('display', 'none');
+    update_sel_text();
     
     if (active_attr.active_base === 'MSA') {
       $('.metro-' + active_attr.active_metro + '.metro-line').css('display', 'inherit');
@@ -154,9 +155,13 @@ function(el, x, choices) {
   // handle selection text update
   
   let update_sel_text = function() {
-    let sel_metro = $('input[data-region="' + active_attr.active_metro + '"]').next().text(),
-      sel_year = active_attr.active_year;
-    $('#selection-text').text(sel_metro + ' in ' + sel_year);
+    let sel_text = $('input[data-region="' + active_attr.active_metro + '"]').next().text();
+    
+    if (active_attr.active_base !== 'MSA') {
+      sel_text += ' in ' + active_attr.active_year;
+    }
+
+    $('#selection-text').text(sel_text);
   };
   
   // handle legend update

@@ -213,7 +213,7 @@ create_rq2_map <- function(metros) {
     m <- m %>%
       
       # Metro outline
-      addPolylines(data = eps, opacity = 1, color = '#707070', weight = 1.2, group = 'MSA', options = c(className = paste0('metro-shape metro-', metro))) %>% 
+      addPolygons(data = eps, opacity = 1, color = 'purple', fillOpacity = 0, weight = 2, label = ~paste0('<b style="font-size:11px">', eps, ' - ', eps_name, '</b>') %>% lapply(htmltools::HTML), group = 'MSA', options = c(className = paste0('metro-shape metro-', metro))) %>% 
       
       # EPS outline
       addPolylines(data = eps, opacity = 1, color = 'purple', weight = 2, options = c(className = paste0('metro-shape metro-line-', metro)))
@@ -227,7 +227,7 @@ create_rq2_map <- function(metros) {
       m <- m %>% 
         
         # Shapes
-        addPolygons(data = tract, opacity = 1, color = '#808080', weight = 1, dashArray = '3', fillOpacity = 0.8, smoothFactor = 0.2, fillColor = ~color_pal_tract$palette(get(v)), label = ~paste0('<b>', eps, ' - ', eps_name, '</b><br>', get(paste0(v, '_text'))) %>% lapply(htmltools::HTML), group = group_name, highlightOptions = highlight_shp, options = pathOptions(className = paste0('metro-shape metro-', metro))) %>%
+        addPolygons(data = tract, opacity = 1, color = '#808080', weight = 1, dashArray = '3', fillOpacity = 0.8, smoothFactor = 0.2, fillColor = ~color_pal_tract$palette(get(v)), label = ~paste0('<b style="font-size:11px">', eps, ' - ', eps_name, '</b><br><b>Tract ', tract_code, '</b>: ', get(paste0(v, '_text'))) %>% lapply(htmltools::HTML), group = group_name, highlightOptions = highlight_shp, options = pathOptions(className = paste0('metro-shape metro-', metro))) %>%
       
         addLegend(data = tract,
                   position = 'topright', pal = color_pal_tract$palette, values = ~get(v),
