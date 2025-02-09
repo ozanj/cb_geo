@@ -16,7 +16,6 @@ function(el, x, choices) {
   $('.easy-button-button').css('width', 'auto');
   $('.easy-button-button .button-state .fa').css({'float': 'left', 'margin-top': '8px'});
   
-  $('button[title="Toggle View"] .button-state').append('<span id="view-btn" style="display: inline-block; float: left; padding-left: 5px;">National View</span>');
   $('button[title="Select Metro Area"] .button-state').append('<span style="display: inline-block; float: left; padding-left: 5px;">Select Metro Area</span>');
   
   // metro selection options
@@ -91,9 +90,6 @@ function(el, x, choices) {
     update_base_layer();
     
     myMap.setView([lng, lat], 8.2);
-    
-    $('button[title="Toggle View"]').attr('data-national', false);
-    $('#view-btn').html('National View');
     
     update_sel_text();
     update_legend();

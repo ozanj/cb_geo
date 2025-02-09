@@ -23,13 +23,6 @@ create_rq1_map <- function(metros, shared_legend = F) {
   m <- leaflet() %>%
     addProviderTiles(providers$CartoDB.Positron) %>%
     
-    addMiniMap(tiles = providers$CartoDB.Positron,
-               toggleDisplay = T) %>%
-    
-    addEasyButton(easyButton(
-      icon = 'fa-crosshairs', title = 'Toggle View',
-      onClick = JS("function(btn, map){ let zoom = $(btn.button).attr('data-national'); $('.custom-control').slideUp(); if (zoom === 'true') { let $sel = $('input[name=\"metro-choice\"]:checked'); map.setView([$sel.attr('data-lng'), $sel.attr('data-lat')], 8.2); $(btn.button).attr('data-national', false); $('#view-btn').html('National View'); } else { map.setView([39.828, -98.580], 4); $(btn.button).attr('data-national', true); $('#view-btn').html('MSA View'); }}"))) %>%
-    
     addEasyButton(easyButton(
       icon = 'fa-globe', title = 'Select Metro Area',
       onClick = JS("function(btn, map){ $('.custom-control').not('#metro-control').slideUp(); $('#metro-control').slideToggle(); }")))
