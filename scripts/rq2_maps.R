@@ -30,12 +30,12 @@ ccd_data <- ccd %>%
       `3` = 'Career and technical',
       `4` = 'Alternative education'
     ),
-    control = 'public'
+    control = 'Public'
   )
 
 pss_data <- pss %>% 
   filter(total_12 >= 10) %>%
-  select(cbsa_1, ncessch, state_code, name, school_type, latitude, longitude, total_students, total_white, total_asian, total_black, total_hispanic, total_amerindian, total_nativehawaii, total_tworaces) %>% 
+  select(cbsa_1, ncessch, state_code, name, school_type, latitude, longitude, total_students, total_white, total_asian, total_black, total_hispanic, total_amerindian, total_nativehawaii, total_tworaces, religion) %>% 
   mutate(
     total_unknown = 0,
     school_type = recode(
@@ -48,7 +48,14 @@ pss_data <- pss %>%
       `6` = 'Alternative/other',
       `7` = 'Early childhood program/child care center'
     ),
-    control = 'private'
+    religion = recode(
+      religion,
+      'catholic' = 'Catholic',
+      'christian' = 'Christian',
+      'nonsectarian' = 'Non-sectarian',
+      'other' = 'Other'
+    ),
+    control = 'Private'
   )
 
 hs_data <- ccd_data %>% 
@@ -64,16 +71,18 @@ hs_data <- ccd_data %>%
     pct_unknown = total_unknown / total_students,
     hs_label = paste0(
       '<b>', name, '</b><br>',
-      'School Type: ', school_type, '<br><br>',
-      '<b>Total Enrollment</b>: ', total_students, '<br>',
-      '% White: ', sprintf('%.1f', pct_white * 100), '<br>',
-      '% Black: ', sprintf('%.1f', pct_black * 100), '<br>',
-      '% Hispanic: ', sprintf('%.1f', pct_hispanic * 100), '<br>',
-      '% Asian: ', sprintf('%.1f', pct_asian * 100), '<br>',
-      '% NHPI: ', sprintf('%.1f', pct_nativehawaii * 100), '<br>',
-      '% AIAN: ', sprintf('%.1f', pct_amerindian * 100), '<br>',
-      '% 2+ Races: ', sprintf('%.1f', pct_tworaces * 100), '<br>',
-      '% Unknown: ', sprintf('%.1f', pct_unknown * 100)
+      'School Control: ', control, '<br>',
+      'School Type: ', school_type, '<br>',
+      if_else(control == 'Private', paste0('Religious Affiliation: ', religion, '<br>'), ''), '<br>',
+      '<b>Total Enrollment</b>: ', format(total_students, big.mark = ',', trim = T), '<br>',
+      '<ul><li>% White: ', sprintf('%.1f', pct_white * 100), '</li>',
+      '<li>% Black: ', sprintf('%.1f', pct_black * 100), '</li>',
+      '<li>% Hispanic: ', sprintf('%.1f', pct_hispanic * 100), '</li>',
+      '<li>% Asian: ', sprintf('%.1f', pct_asian * 100), '</li>',
+      '<li>% NHPI: ', sprintf('%.1f', pct_nativehawaii * 100), '</li>',
+      '<li>% AIAN: ', sprintf('%.1f', pct_amerindian * 100), '</li>',
+      '<li>% 2+ Races: ', sprintf('%.1f', pct_tworaces * 100), '</li>',
+      '<li>% Unknown: ', sprintf('%.1f', pct_unknown * 100), '</li></ul>'
     )
   ) %>% 
   st_as_sf(coords = c('longitude', 'latitude'), crs = 4326) %>%
@@ -106,13 +115,15 @@ purchased_data <- lists_orders_zip_hs_df %>%
   mutate(
     firstgen = recode(
       unclass(stu_first_gen),
-      `1` = 1,
-      `2` = 1,
-      .default = 0
+      `1` = 'nocollege',
+      `2` = 'somecollege',
+      `3` = 'notfirstgen',
+      `4` = 'noedu',
+      .missing = 'noedu'
     ),
     race = recode(
       unclass(stu_race_cb),
-      `0` = 'unknown',
+      `0` = 'norace',
       `1` = 'aian',
       `2` = 'asian',
       `3` = 'black',
@@ -121,36 +132,61 @@ purchased_data <- lists_orders_zip_hs_df %>%
       `9` = 'white',
       `10` = 'other',
       `12` = 'multi',
-      .missing = 'missing'
+      .missing = 'norace'
     ),
-    count = 1
+    category = paste0(race, '_', firstgen)
   ) %>% 
-  select(-stu_first_gen, -stu_race_cb) 
+  select(-stu_first_gen, -stu_race_cb)  # other_nocollege and other_somecollege non-existant
 
 student_data <- purchased_data %>% 
+  group_by(univ_id, ord_num, hs_ncessch, category) %>% 
+  summarise(count = n(), .groups = 'drop') %>%
+  bind_rows(
+    purchased_data %>% 
+    group_by(univ_id, ord_num, hs_ncessch, race) %>% 
+    summarise(count = n(), .groups = 'drop') %>%
+    mutate(category = paste0(race, '_all')) %>%
+    select(-race)
+  ) %>% 
+  bind_rows(
+    purchased_data %>% 
+    group_by(univ_id, ord_num, hs_ncessch, firstgen) %>% 
+    summarise(count = n(), .groups = 'drop') %>%
+    mutate(category = paste0('all_', firstgen)) %>%
+    select(-firstgen)
+  ) %>%
+  bind_rows(
+    purchased_data %>% 
+    group_by(univ_id, ord_num, hs_ncessch) %>% 
+    summarise(count = n(), .groups = 'drop') %>%
+    mutate(category = 'all_all')
+  ) %>%
   pivot_wider(
     id_cols = c(univ_id, ord_num, hs_ncessch),
-    names_from = race,
-    values_from = c(count, firstgen),
-    values_fn = list(count = sum, firstgen = mean),
-    values_fill = 0
+    names_from = category,
+    values_from = count,
+    values_fill = 0,
+    names_sort = T
   ) %>% 
-  left_join(purchased_data %>% group_by(univ_id, ord_num, hs_ncessch) %>% summarise(firstgen_total = mean(firstgen), count_total = sum(count), .groups = 'drop'), by = c('univ_id', 'ord_num', 'hs_ncessch')) %>% 
+  mutate(
+    other_nocollege = 0,
+    other_somecollege = 0
+  ) %>% 
   rename('ncessch' = 'hs_ncessch') %>%
-  inner_join(hs_data, by = 'ncessch') %>% 
+  inner_join(hs_data, by = 'ncessch') %>%
   mutate(
     order_label = paste0(
-      '<br><br><b>Total Purchased</b>: ', count_total, ' (', count_total * firstgen_total, ' first-gen)<br>',
-      '# White: ', count_white, ' (', count_white * firstgen_white, ' first-gen)<br>',
-      '# Black: ', count_black, ' (', count_black * firstgen_black, ' first-gen)<br>',
-      '# Hispanic: ', count_hispanic, ' (', count_hispanic * firstgen_hispanic, ' first-gen)<br>',
-      '# Asian: ', count_asian, ' (', count_asian * firstgen_asian, ' first-gen)<br>',
-      '# NHPI: ', count_nhpi, ' (', count_nhpi * firstgen_nhpi, ' first-gen)<br>',
-      '# AIAN: ', count_aian, ' (', count_aian * firstgen_aian, ' first-gen)<br>',
-      '# 2+ Races: ', count_multi, ' (', count_multi * firstgen_multi, ' first-gen)<br>',
-      '# Other: ', count_other, ' (', count_other * firstgen_other, ' first-gen)<br>',
-      '# Unknown: ', count_unknown, ' (', count_unknown * firstgen_unknown, ' first-gen)<br>',
-      '# Missing: ', count_missing, ' (', count_missing * firstgen_missing, ' first-gen)'
+      '<br><b>Total Purchased</b>: ', format(all_all, big.mark = ',', trim = T), ' (', all_nocollege, ' no college, ', all_somecollege, ' some college)',
+      '<p>Total (parental education)</p>',
+      '<ul><li>White: ', white_all, ' (', white_nocollege, ', ', white_somecollege, ')</li>',
+      '<li>Black: ', black_all, ' (', black_nocollege, ', ', black_somecollege, ')</li>',
+      '<li>Hispanic: ', hispanic_all, ' (', hispanic_nocollege, ', ', hispanic_somecollege, ')</li>',
+      '<li>Asian: ', asian_all, ' (', asian_nocollege, ', ', asian_somecollege, ')</li>',
+      '<li>NHPI: ', nhpi_all, ' (', nhpi_nocollege, ', ', nhpi_somecollege, ')</li>',
+      '<li>AIAN: ', aian_all, ' (', aian_nocollege, ', ', aian_somecollege, ')</li>',
+      '<li>2+ Races: ', multi_all, ' (', multi_nocollege, ', ', multi_somecollege, ')</li>',
+      '<li>Other: ', other_all, ' (', other_nocollege, ', ', other_somecollege, ')</li>',
+      '<li>Unknown/Missing: ', norace_all, ' (', norace_nocollege, ', ', norace_somecollege, ')</li></ul>'
     )
   )
 
@@ -161,7 +197,7 @@ orders_data <- data.frame(
 )
 
 pin_vars <- list(
-  total = list(group = 'Purchased High Schools', color = 'black'),
+  all = list(group = 'Purchased High Schools', color = 'black'),
   white = list(group = 'White, non-Hispanic', color = 'red'),
   black = list(group = 'Black, non-Hispanic', color = 'orange'),
   hispanic = list(group = 'Hispanic', color = 'gold'),
@@ -170,8 +206,7 @@ pin_vars <- list(
   aian = list(group = 'AIAN, non-Hispanic', color = 'purple'),
   multi = list(group = '2+ Races, non-Hispanic', color = 'hotpink'),
   other = list(group = 'Other', color = 'brown'),
-  unknown = list(group = 'Unknown', color = 'darkgray'),
-  missing = list(group = 'Missing', color = 'lightgray')
+  norace = list(group = 'Unknown', color = 'gray')
 )
 
 
@@ -267,7 +302,7 @@ create_rq2_map <- function(metros) {
           
           # Purchased markers
           addCircleMarkers(data = p, lng = ~st_coordinates(geometry)[,1], lat = ~st_coordinates(geometry)[,2], group = pin_vars[[v]]$group,
-                           radius = ~sqrt(get(paste0('count_', v))) + 1, fillOpacity = ~get(paste0('firstgen_', v)), opacity = 1, weight = 1.5, color = pin_vars[[v]]$color, fillColor = 'black',
+                           radius = ~sqrt(get(paste0(v, '_all'))) + 1, fillOpacity = 0, opacity = 1, weight = 1.5, color = pin_vars[[v]]$color,
                            popup = ~paste0(hs_label, order_label), options = pathOptions(className = paste0('metro-', metro, ' order-pin order-', order_num)))
       }
     }
