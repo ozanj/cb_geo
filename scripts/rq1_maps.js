@@ -89,7 +89,7 @@ function(el, x, choices) {
     active_attr.active_metro = metro;
     update_base_layer();
     
-    myMap.setView([lng, lat], 8.2);
+    myMap.setView([lng, lat], 8.5);
     
     update_sel_text();
     update_legend();
