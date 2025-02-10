@@ -33,19 +33,14 @@ College Board "Geomarkets"
 
 - Carve states and metropolitan areas into smaller geographic regions meant to define local recruiting markets
 
-POP OUT OF GEOMARKETS
-
-- Chicago
-- New York
-
 Geomarkets are an input to two College Board products
 
-- Enrollment Planning Service:
-- Student Search Service:
+- Enrollment Planning Service (EPS): software recommends which Geomarkets to recruit and which high schools to visit
+- Student Search Service: purchase the contact information of prospects that meet "search filter" criteria
 
-**Research questions** focus on metropolitan areas
+**Research questions** (focus on metropolitan areas):
 
-1. What is SES and racial variation between, within geomarkets? How does this change over time?
+1. What is SES and racial variation between, within Geomarkets? How does this change over time?
 1. What is SES and racial composition of included vs. excluded prospects, if student list purchases filter on particular Geomarkets?
 
 ### New York and Chicago Geomarkets {.hide}
@@ -62,14 +57,23 @@ Geomarkets are an input to two College Board products
 :::
 :::
 
-## Level-2 heading
+# Background
 
-### Level-3 heading
+### Background{.hide}
+#### Creating Market Segment Model and Geomarkets
 
-### Level-3 heading {.hide}
-#### Level-4 subheading
+Project origins
 
-# Empirical Context
+Market Segment Model
+
+- Allocates students into four market segments based on score-sending behavior of 1980 SAT test-takers
+- "local" student submits most SAT scores to institutions in their own Geomarket
+- "An “in-state” student submits more SAT scores to in-state institutions than they do to local, regional, or national institutions
+
+Geomarkets
+
+> Zemsky & Oedel (1983) [p. 4] write that,  [Often] the market boundaries match formal political and educational divisions, reflecting natural channels of communication. Each major metropolitan area is composed of several markets, usually corresponding to the inner city, a first ring of suburbs, and an outer ring of suburbs.
+
 
 # Theory
 ### Test map
@@ -272,9 +276,17 @@ for (m in metros) {
 
 # Discussion
 
+### Discussion{.hide}
+#### Summary of results
 
+THIS IS TEXT
 
-### References
+### Discussion{.hide}
+#### Contributin to scholarship
+
+THIS IS TEXT
+
+# References
 
 ::: {#refs}
 :::
