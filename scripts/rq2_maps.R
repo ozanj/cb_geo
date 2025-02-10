@@ -313,7 +313,7 @@ create_rq2_map <- function(metros) {
             
             # Purchased markers
             addCircleMarkers(data = p, lng = ~st_coordinates(geometry)[,1], lat = ~st_coordinates(geometry)[,2], group = 'Purchased High Schools',
-                             radius = ~sqrt(get(paste0(r, '_', e))) + marker_size, fillOpacity = ~if_else(get(paste0(r, '_', e)) == 0, 1, 0), opacity = 1, weight = 1.5, color = ~if_else(control == 'Public', 'blue', 'orange'), fillColor = ~if_else(control == 'Public', 'blue', 'orange'),
+                             radius = ~sqrt(get(paste0(r, '_', e))) + marker_size, fillOpacity = ~if_else(get(paste0(r, '_', e)) == 0, 1, 0), opacity = 1, weight = 1.5, color = ~if_else(control == 'Private', 'blue', 'orange'), fillColor = ~if_else(control == 'Private', 'blue', 'orange'),
                              popup = ~paste0(hs_label, order_label), options = pathOptions(className = paste0('metro-', metro, ' order-pin order-', order_num, '-', r, '-', e)))
         }
       }

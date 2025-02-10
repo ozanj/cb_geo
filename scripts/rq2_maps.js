@@ -61,8 +61,8 @@ function(el, x, choices) {
   
   // purchased hs overlay layer
   
-  let HSControlHTML = '<p style="margin: 0 18px; color: gray;"><span style="height: 4px; width: 4px; border-radius: 50%; display: inline-block; padding: 1px; margin: 0 8px 1px; background-color: blue;"></span>Public HS</p>' +
-    '<p style="margin: 0 18px; color: gray;"><span style="height: 4px; width: 4px; border-radius: 50%; display: inline-block; padding: 1px; margin: 0 8px 1px; background-color: orange;"></span>Private HS</p>';
+  let HSControlHTML = '<p style="margin: 0 18px; color: gray;"><span style="height: 4px; width: 4px; border-radius: 50%; display: inline-block; padding: 1px; margin: 0 8px 1px; background-color: orange;"></span>Public HS</p>' +
+    '<p style="margin: 0 18px; color: gray;"><span style="height: 4px; width: 4px; border-radius: 50%; display: inline-block; padding: 1px; margin: 0 8px 1px; background-color: blue;"></span>Private HS</p>';
   
   let raceHSControlHTML = '<label class="collapsible-label" data-label="hs-race" style="cursor: pointer; margin-left: -1px;"><div><span style="font-weight: 500;"> by Race/Ethnicity</span></div></label><div id="hs-race-container" style="padding-left: 19px;">';
   
