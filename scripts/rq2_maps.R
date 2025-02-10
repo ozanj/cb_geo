@@ -136,11 +136,19 @@ purchased_data <- lists_orders_zip_hs_df %>%
     ),
     category = paste0(race, '_', firstgen)
   ) %>% 
-  select(-stu_first_gen, -stu_race_cb)  # other_nocollege and other_somecollege non-existant
+  select(-stu_first_gen, -stu_race_cb)  # other_nocollege and other_somecollege non-existent
 
 student_data <- purchased_data %>% 
   group_by(univ_id, ord_num, hs_ncessch, category) %>% 
   summarise(count = n(), .groups = 'drop') %>%
+  bind_rows(
+    purchased_data %>% 
+    filter(firstgen %in% c('nocollege', 'somecollege')) %>%
+    group_by(univ_id, ord_num, hs_ncessch, race) %>%
+    summarise(count = n(), .groups = 'drop') %>%
+    mutate(category = paste0(race, '_nosomecollege')) %>%
+    select(-race)
+  ) %>% 
   bind_rows(
     purchased_data %>% 
     group_by(univ_id, ord_num, hs_ncessch, race) %>% 
@@ -170,7 +178,9 @@ student_data <- purchased_data %>%
   ) %>% 
   mutate(
     other_nocollege = 0,
-    other_somecollege = 0
+    other_somecollege = 0,
+    other_nosomecollege = other_nocollege + other_somecollege,
+    all_nosomecollege = all_nocollege + all_somecollege
   ) %>% 
   rename('ncessch' = 'hs_ncessch') %>%
   inner_join(hs_data, by = 'ncessch') %>%
@@ -196,17 +206,14 @@ orders_data <- data.frame(
   order_title = c('SAT 1020-1150', 'SAT 1160-1300', 'SAT 1310-1600', 'PSAT 1070-1180', 'PSAT 1190-1260', 'PSAT 1270-1520')
 )
 
-pin_vars <- list(
-  all = list(group = 'Purchased High Schools', color = 'black'),
-  white = list(group = 'White, non-Hispanic', color = 'red'),
-  black = list(group = 'Black, non-Hispanic', color = 'orange'),
-  hispanic = list(group = 'Hispanic', color = 'gold'),
-  asian = list(group = 'Asian, non-Hispanic', color = 'green'),
-  nhpi = list(group = 'NHPI, non-Hispanic', color = 'blue'),
-  aian = list(group = 'AIAN, non-Hispanic', color = 'purple'),
-  multi = list(group = '2+ Races, non-Hispanic', color = 'hotpink'),
-  other = list(group = 'Other', color = 'brown'),
-  norace = list(group = 'Unknown', color = 'gray')
+race_vars <- data.frame(
+  abbrev = c('all', 'white', 'black', 'hispanic', 'asian', 'nhpi', 'aian', 'multi', 'other', 'norace'),
+  name = c('All', 'White, non-Hispanic', 'Black, non-Hispanic', 'Hispanic', 'Asian, non-Hispanic', 'NHPI, non-Hispanic', 'AIAN, non-Hispanic', '2+ Races, non-Hispanic', 'Other', 'Unknown/Missing')
+)
+
+edu_vars <- data.frame(
+  abbrev = c('all', 'nocollege', 'somecollege', 'nosomecollege', 'notfirstgen', 'noedu'),
+  name = c('All', 'No college', 'Some college', 'No or some college', 'BA+', 'Unknown/Missing')
 )
 
 
@@ -218,7 +225,8 @@ create_rq2_map <- function(metros) {
   choices <- list(
     region_choices = regions_data %>% filter(region %in% metros) %>% select(region, region_name, latitude, longitude),
     order_choices = orders_data,
-    pin_colors = setNames(map(pin_vars, \(x) x$color), map(pin_vars, \(x) x$group))
+    race_vars = race_vars,
+    edu_vars = edu_vars
   )
   
   highlight_shp <- highlightOptions(weight = 1, color = '#606060', dashArray = '')
@@ -299,13 +307,15 @@ create_rq2_map <- function(metros) {
     for (order_num in order_nums) {
       p <- purchased %>% filter(ord_num == order_num)
       
-      for(v in names(pin_vars)) {
-        m <- m %>% 
-          
-          # Purchased markers
-          addCircleMarkers(data = p, lng = ~st_coordinates(geometry)[,1], lat = ~st_coordinates(geometry)[,2], group = pin_vars[[v]]$group,
-                           radius = ~sqrt(get(paste0(v, '_all'))) + marker_size, fillOpacity = ~if_else(get(paste0(v, '_all')) == 0, 1, 0), opacity = 1, weight = 1.5, color = pin_vars[[v]]$color, fillColor = pin_vars[[v]]$color,
-                           popup = ~paste0(hs_label, order_label), options = pathOptions(className = paste0('metro-', metro, ' order-pin order-', order_num)))
+      for (r in race_vars$abbrev) {
+        for (e in edu_vars$abbrev) {
+          m <- m %>% 
+            
+            # Purchased markers
+            addCircleMarkers(data = p, lng = ~st_coordinates(geometry)[,1], lat = ~st_coordinates(geometry)[,2], group = 'Purchased High Schools',
+                             radius = ~sqrt(get(paste0(r, '_', e))) + marker_size, fillOpacity = ~if_else(get(paste0(r, '_', e)) == 0, 1, 0), opacity = 1, weight = 1.5, color = ~if_else(control == 'Public', 'blue', 'orange'), fillColor = ~if_else(control == 'Public', 'blue', 'orange'),
+                             popup = ~paste0(hs_label, order_label), options = pathOptions(className = paste0('metro-', metro, ' order-pin order-', order_num, '-', r, '-', e)))
+        }
       }
     }
     
@@ -313,12 +323,10 @@ create_rq2_map <- function(metros) {
   
   m %>% 
     
-    hideGroup(flatten_chr(map(pin_vars, \(x) x$group))[-1]) %>% 
-  
     addLayersControl(
       position = c('bottomleft'),
       baseGroups = c('MSA', flatten_chr(map(base_vars, \(x) if_else(str_detect(x$name, 'Hispanic'), x$name, str_c('MSA by ', x$name))))),
-      overlayGroups = c('Non-Purchased High Schools', flatten_chr(map(pin_vars, \(x) x$group))),
+      overlayGroups = c('Non-Purchased High Schools', 'Purchased High Schools'),
       options = layersControlOptions(collapsed = F)
     ) %>% 
     htmlwidgets::onRender(js, choices)
