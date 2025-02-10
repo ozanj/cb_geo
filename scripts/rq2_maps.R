@@ -72,8 +72,8 @@ hs_data <- ccd_data %>%
     hs_label = paste0(
       '<b>', name, '</b><br>',
       'School Control: ', control, '<br>',
-      'School Type: ', school_type, '<br>',
-      if_else(control == 'Private', paste0('Religious Affiliation: ', religion, '<br>'), ''), '<br>',
+      if_else(control == 'Private', paste0('Religious Affiliation: ', religion, '<br>'), ''),
+      'School Type: ', school_type, '<br><br>',
       '<b>Total Enrollment</b>: ', format(total_students, big.mark = ',', trim = T), '<br>',
       '<ul><li>% White: ', sprintf('%.1f', pct_white * 100), '</li>',
       '<li>% Black: ', sprintf('%.1f', pct_black * 100), '</li>',
