@@ -201,9 +201,9 @@ student_data <- purchased_data %>%
   )
 
 orders_data <- data.frame(
-  region = c(rep('chicago', 3), rep('philly', 3)),
-  order_num = c('487984', '488035', '488053', '448922', '448427', '448440'),
-  order_title = c('SAT 1020-1150', 'SAT 1160-1300', 'SAT 1310-1600', 'PSAT 1070-1180', 'PSAT 1190-1260', 'PSAT 1270-1520')
+  region = c(rep('chicago', 3), rep('philly', 3), rep('long_island', 3), rep('bay_area', 3)),
+  order_num = c('487984', '488035', '488053', rep(c('448922', '448427', '448440'), 2), '448375', '448420', '448374'),
+  order_title = c('SAT 1020-1150', 'SAT 1160-1300', 'SAT 1310-1600', rep(c('PSAT 1070-1180', 'PSAT 1190-1260', 'PSAT 1270-1520'), 2), 'PSAT 1070-1180', 'PSAT 1190-1260', 'PSAT 1270-1520')
 )
 
 race_vars <- data.frame(
@@ -338,4 +338,5 @@ create_rq2_map <- function(metros) {
 names(all_codes)
 
 create_rq2_map(c('philly', 'chicago'))
+create_rq2_map(c('bay_area', 'long_island'))
 saveWidget(create_rq2_map(c('philly', 'chicago')), file.path('.', 'results', 'maps', 'rq2_map_philly_chicago.html'), background = 'transparent', selfcontained = T)
