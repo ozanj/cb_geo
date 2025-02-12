@@ -35,8 +35,8 @@ College Board "Geomarkets"
 
 Geomarkets are an input to two College Board products
 
-- Enrollment Planning Service (EPS): software recommends which Geomarkets to recruit and which high schools to visit
-- Student Search Service: purchase the contact information of prospects that meet "search filter" criteria
+- Enrollment Planning Service (est. 1984): software recommends which Geomarkets to recruit and which high schools to visit
+- Student Search Service (est. 1972): purchase the contact information of prospects that meet "search filter" criteria
 
 **Research questions** (focus on metropolitan areas):
 
@@ -57,25 +57,115 @@ Geomarkets are an input to two College Board products
 :::
 :::
 
-# Background
+# Background and Theory
 
-### Background{.hide}
-#### Creating Market Segment Model and Geomarkets
+### Background and Theory {.hide}
+#### Geomarkets and Market Segment Model created by @RN4982
 
-Project origins
+**Geomarkets** [@RN4982, p. 4]:
 
-Market Segment Model
+> Market boundaries [often] match formal political and educational divisions, reflecting natural channels of communication. Each major metro area is composed of several markets, usually corresponding to the inner city, a first ring of suburbs, and an outer ring of suburbs.
 
-- Allocates students into four market segments based on score-sending behavior of 1980 SAT test-takers
-- "local" student submits most SAT scores to institutions in their own Geomarket
-- "An “in-state” student submits more SAT scores to in-state institutions than they do to local, regional, or national institutions
+**Market Segment Model**, based on student SAT score-sending behavior
 
-Geomarkets
+- Send scores to colleges: local (in Geomarket); in-state (in state, diff Geomarket); regional (in region, diff state); or national (diff region)
+- Students sorted into 4 market segments: local, in-state, regional, national
+  - "local" students submit most SAT scores to local institutions
+- *(Geo)Market Segment Profile*: number of students by market segment
+- *Institutional Profile*: number of students from each market segment the send scores to institution *i*, separately by Geomarket
 
-> Zemsky & Oedel (1983) [p. 4] write that,  [Often] the market boundaries match formal political and educational divisions, reflecting natural channels of communication. Each major metropolitan area is composed of several markets, usually corresponding to the inner city, a first ring of suburbs, and an outer ring of suburbs.
+### Background and Theory {.hide}
+#### Draw from scholarship on quantification, particularly @RN4975
+
+**Correlation**, extent to which variables move together
+
+<div style="margin-left: 1em;">
+<details>
+  <summary>@RN4982: SAT score, parental education, family income, educational aspirations predict student market segment</summary>
+> Our research has simply demonstrated what everyone has always known: communities with high levels of family income and parental education are also communities in which students have higher than average SATs and more far-reaching aspirations” [@RN4982, p. 42].
+</details>
+</div>
+
+  - Observed correlations are a function of structural inequality
+    - Predicting future based on past correlations reproduces inequality
+
+\medskip
+
+**Homophily**, birds of a feather flock together
+
+<div style="margin-left: 1em;">
+<details>
+  <summary>Market Segment Model based on idea of (voluntary) homophily</summary>
+> The layering of collegiate competition is primarily a socioeconomic layering. The hierarchical structure of collegiate competition reflects the stratified social and economic dimensions of the communities from which colleges draw their students. Competition among colleges, as admissions officers have told us for so long, is a matter of keeping company with one’s peers [@RN4982, p. 72].
+</details>
+</div>
+
+- Comercial social networks engineer homophily [@RN4975]
+- Commodifying the Market Segment Model engineers homophily
+    - Software tells colleges which Geomarkets, high schools to target
+
+### Background and Theory {.hide}
+#### Research questions and expectations
+
+**Research questions**
+
+1. What is the SES and racial variation between, within Geomarkets in a metro area? How does this change over time?
+
+    - Expect socioeconomic inequality between Geomarkets because Geomarkets/Market Segment Model based on social stratification
+    - Expect racial inequality between Geomarkets because racial segregation, correlation between class and race
+
+1. What is the SES and racial composition of included vs. excluded prospects, if "student list" purchases filter on particular Geomarkets?
+
+    - Excluding Geomarkets that are poor and non-White associated with:
+      - disproportionate exclusion of first-generation students
+      - disproportionate exclusion of non-white students
+      - disproportionate exclusion of first-generation, non-white students
+  
+# Methods
+
+### Methods
+#### Data
+
+RQ1: SES and racial variation over time between, within Geomarkets
+
+- Census tract-level data
+  - 1980, 2000 Census; 2016-2020 American Community Survey (ACS)
+  - Variables: race/Hispanic origin; median income, % poverty, % BA+
+- Geomarket shapefiles obtained from 2012 blog post
+  - Each zip code assigned to one Geomarket
+  - Partial spatial assigns each Census tract to one or more Geomarkets
+
+RQ2: SES and racial composition of student list purchases, by Geomarket
+
+- 414 student list purchases (associated with 2.5 million prospects) made by 14 public universities from 2016-2020
+  - Each prospect has a home zip code and a HS zip code (point geoms)
+- Analyze purchases that include all Geomarkets in a metro area
+  - Show who would be excluded had search criteria exluded a Geomarket
+
+### Methods
+#### Research design and analyses
+
+Research design
+
+- Metropolitan areas associated with multiple Geomarkets are cases
+
+Case selection
+
+- Initial case selection based on availability of student list purchases (RQ2)
+  - Want purchases that filter on test score, high school class, GPA, but not on student preference filters (e.g., college size)
+  - For some metro areas (e.g., DC/Maryland/Virgina) we don't have purchases that include all Geomarkets
+- Final case selection (3 metro areas)
+  - TBD, but conduct analyses for larger sample of metros
+
+Analyses (for both RQ1 and RQ2)
+
+- Descriptive statistics for between Geomarket variation
+- Interactive maps for within Geomarket variation
 
 
-# Theory
+
+
+
 ### Test map
 
 <iframe src="https://comforting-kashata-600ce0.netlify.app/" width=100% height=100% allowtransparency="true"></iframe>
