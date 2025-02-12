@@ -82,13 +82,16 @@ Geomarkets are an input to two College Board products
 <div style="margin-left: 1em;">
 <details>
   <summary>@RN4982: SAT score, parental education, family income, educational aspirations predict student market segment</summary>
+<div style="font-size: 0.85em;">
 > Our research has simply demonstrated what everyone has always known: communities with high levels of family income and parental education are also communities in which students have higher than average SATs and more far-reaching aspirations” [@RN4982, p. 42].
+</div>
 </details>
 </div>
 
-  - Observed correlations are a function of structural inequality
-    - Predicting future based on past correlations reproduces inequality
-
+- Observed correlations are a function of structural inequality
+  - "Predicting the future on the basis of the past threatens to reify and reproduce exist
+ing inequalities" [@RN4794, p. 224]
+<!--Predicting future based on past correlations reproduces inequality  -->
 \medskip
 
 **Homophily**, birds of a feather flock together
@@ -96,7 +99,9 @@ Geomarkets are an input to two College Board products
 <div style="margin-left: 1em;">
 <details>
   <summary>Market Segment Model based on idea of (voluntary) homophily</summary>
-> The layering of collegiate competition is primarily a socioeconomic layering. The hierarchical structure of collegiate competition reflects the stratified social and economic dimensions of the communities from which colleges draw their students. Competition among colleges, as admissions officers have told us for so long, is a matter of keeping company with one’s peers [@RN4982, p. 72].
+<div style="font-size: 0.85em;">  
+> The layering of collegiate competition is primarily a socioeconomic layering. The hierarchical structure of collegiate competition reflects the stratified social and economic dimensions of communities from which colleges draw their students. Competition among colleges, as admissions officers have told us for so long, is a matter of keeping company with one’s peers [@RN4982, p. 72].
+</div>
 </details>
 </div>
 
