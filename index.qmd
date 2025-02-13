@@ -123,7 +123,7 @@ Research interest: how quantification reproduces social stratification
   - Colleges *i* and *j* compete if many students send scores to both
   - Conclusion: Like colleges compete for like (social origin) students
 
-<p class="quote">Recommendation: target Geomarkets, schools targeted by peer colleges</p>
+<p class="quote">Recommendation: target Geomarkets, HS targeted by peer colleges</p>
 <p style="display:none;">On occasion, senior spokespersons for the profession worry that students outside the main market areas remain forgotten and hence, unchallenged. Inevitably, the increasing competition for students, the expense of travel and mailings, and internal political constraints compel institutions to concentrate their efforts where they will do the most good. The result is a natural reinforcing of the basic socioeconomic patterns that gave shape in the first place to the structure of college choice [@RN4982, p. 44].</p>
 
 
@@ -402,21 +402,33 @@ for (m in metros) {
 
 - Substantial inequality between and within Geomarkets
 - In 1980, Black people are usually concentrated in poorest Geomarket
-  - In some metro areas, this persists (e.g., Cleveland)
-  - In some metro areas,  (e.g., Atlanta)
+  - In some metros, this pattern persists (e.g., Cleveland)
+  - In some metros, these Geomarkets experience gentrification
 
 **RQ2: SES and racial composition of student list purchases**
 
-- Poor, non-white Geomarkets produce disproportionate share of Black, Hispanic students
-- Poor, non-white Geomarkets produce disproportionate share of first-generation studnets
+- Poor, non-white Geomarkets produce disproportionate share of Black, Hispanic students, (and often Asian)
+- Poor, non-white Geomarkets produce disproportionate share of first-generation students
 - Purchased student profiles by race X parental education
-  - Asian students from low-income Geomarkets tend to be first-gen compared to Asain students from rich Geomarkets
+  - Asian students from low-income Geomarkets tend to be first-gen compared to Asain students from affluent Geomarkets
   - Same result for Hispanic students
 
 ### Discussion{.hide}
-#### Contributin to scholarship
+#### Contribution to scholarship
 
-THIS IS TEXT
+Scholarship on quantification (in education)
+
+- Scholarship has not examined "b2b" quantification that classifies consumers for the sake of producers
+- @RN5005 show effect of quantification, but not mechanisms of *how* quantification produces inequality
+
+Scholarship on postsecondary "organizational field"
+
+- Scholarship focuses on schools and policies as "sorting machines" [@RN4873]
+  - But EPS, Student Search Service products structure college access
+  - College access structured by third-party vendors and products that amplify structural inequalities observed on demand-side
+- Org field is "totality of relevant actors" [@RN527, p. 148]
+  - The organizational field should be focus regulation
+  - Sociology should identify high-leverage actors/products in org field
 
 # References
 
