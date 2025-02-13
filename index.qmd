@@ -192,13 +192,6 @@ Analyses (RQ1 and RQ2)
 - Interactive maps for within Geomarket variation
 
 
-
-
-
-### Test map{.hide}
-
-<iframe src="https://comforting-kashata-600ce0.netlify.app/" width=100% height=100% allowtransparency="true"></iframe>
-
 # Results
 
 ```{r setup, echo=FALSE, results = 'asis'}
