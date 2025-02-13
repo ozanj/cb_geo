@@ -7,25 +7,45 @@ $(function() {
   $('.slides section.level3').prepend(link);
   
   $('.slides section img').on('click', function() {
-    let src = $(this).attr('src');
+    const src = $(this).attr('src');
     
-    var $slide = $(this).closest('.slide');
+    const $slide = $(this).closest('.slide');
     $slide.find('.modal img').attr('src', src);
     
-    $(this).closest('.slide').find('.modal').fadeIn(600);
-    $(this).closest('.slide').find('p img').addClass('disabled');
+    $slide.find('.modal').fadeIn(600);
+    $slide.find('p img').addClass('disabled');
   });
   
+  $('.slides section .quote').on('click', function() {
+    const $slide = $(this).closest('.slide');
+    $slide.find('.quote-container').remove();
+    
+    const quote = $('<div class="quote-container"></div>').append($(this).next().html());
+    
+    $slide.find('.modal').append(quote);
+    $slide.find('.modal').css('height', 'auto');
+    
+    $slide.find('.modal').fadeIn(600);
+  })
+  
   $('.close').on('click', function() {
-    $(this).closest('.slide').find('.modal').fadeOut();
-    $(this).closest('.slide').find('p img').removeClass('disabled');
+    const $slide = $(this).closest('.slide');
+    
+    $slide.find('.modal').fadeOut(400, function() {
+      $(this).css('height', '');
+      $(this).find('.quote-container').remove();
+    });
+    $slide.find('p img').removeClass('disabled');
   });
   
   $('<hr>').insertAfter('.reveal .slide h4');
   $('<hr>').insertAfter('.reveal .slide:not(.caption) h3:not(:has(+ h4))');
   
   Reveal.addEventListener('slidechanged', function() {
-    $('.modal').fadeOut();
+    $('.modal').fadeOut(400, function() {
+      $(this).css('height', '');
+      $(this).find('.quote-container').remove();
+    });
     $('img').removeClass('disabled');
   });
   

@@ -74,26 +74,8 @@ Research interest: how quantification reproduces social stratification
 - *Institutional Profile*  (produced by Geomarket): 
   - How many students by market segement send scores to college *i*
 
-<style>
-/* Remove the triangle marker from summary elements */
-details summary {
-  list-style: none; /* In some browsers, this alone may suffice */
-}
-
-/* For WebKit-based browsers (Chrome, Safari, etc.) */
-details summary::-webkit-details-marker {
-  display: none;
-}
-</style>
-
-<div style="margin: 0.5em 0 0 0;">
-<details style="margin: 0; padding: 0;">
-  <summary>**Geomarkets**</summary>
-<div style="font-size: 0.80em; margin-bottom: 0;">
-> Boundaries [often] match formal political and educational divisions, reflecting natural channels of communication. Each major metro area is composed of several markets, usually corresponding to the inner city, a first ring of suburbs, and an outer ring of suburbs [@RN4982, p. 4].
-</div>
-</details>
-</div>
+<p class="quote">Geomarkets</p>
+<p style="display:none;">Boundaries [often] match formal political and educational divisions, reflecting natural channels of communication. Each major metro area is composed of several markets, usually corresponding to the inner city, a first ring of suburbs, and an outer ring of suburbs [@RN4982, p. 4].</p>
 
 - Meant to reproduce the recruiting territories of admissions officers
 - @RN4982 create 143 Geomarkets in three regions
@@ -113,14 +95,8 @@ details summary::-webkit-details-marker {
   - Observed correlations caused by enduring structural inequality
   - "Predicting the future on the basis of the past threatens to reify and reproduce existing inequalities" [@RN4794, p. 224]
 
-<div style="margin: 0.5em 0 0 0;">
-<details style="margin: 0; padding: 0;">
-  <summary>**@RN4982[chapter 3]**</summary>
-<div style="font-size: 0.85em; margin-bottom: 0;">
-> Our research has simply demonstrated what everyone has always known: communities with high levels of family income and parental education are also communities in which students have higher than average SATs and more far-reaching aspirations” [@RN4982, p. 42].
-</div>
-</details>
-</div>
+<p class="quote">@RN4982[chapter 3]</p>
+<p style="display:none;">Our research has simply demonstrated what everyone has always known: communities with high levels of family income and parental education are also communities in which students have higher than average SATs and more far-reaching aspirations” [@RN4982, p. 42].</p>
 
 - Which variables correlated with student market segment (training data)?
   - Parental education, family income, SAT score, educational aspirations
@@ -139,30 +115,16 @@ details summary::-webkit-details-marker {
   - Based on snapshot of existing social stratification, match vertically categorized consumers to vertically categorized producers
   - Amplifies the effect of initial stratificaiton on subsequent stratification
 
-<div style="margin: 0.5em 0 0 0;">
-<details style="margin: 0; padding: 0;">
-  <summary>**@RN4982[chapter 4]**</summary>
-<div style="font-size: 0.85em; margin-bottom: 0;">
-> The layering of collegiate competition is primarily a socioeconomic layering. The hierarchical structure of collegiate competition reflects the stratified social and economic dimensions of communities from which colleges draw their students. Competition among colleges, as admissions officers have told us for so long, is a matter of keeping company with one’s peers [@RN4982, p. 72].
-</div>
-</details>
-</div>
+<p class="quote">@RN4982[chapter 4]</p>
+<p style="display:none;">The layering of collegiate competition is primarily a socioeconomic layering. The hierarchical structure of collegiate competition reflects the stratified social and economic dimensions of communities from which colleges draw their students. Competition among colleges, as admissions officers have told us for so long, is a matter of keeping company with one’s peers [@RN4982, p. 72].</p>
 
 - Conducted a social network analysis (training data):
   - 2-mode network: students (1) tie to colleges (2) by sending scores
   - Colleges *i* and *j* compete if many students send scores to both
   - Conclusion: Like colleges compete for like (social origin) students
 
-
-<div style="margin: 0.5em 0 0 0;">
-<details style="margin: 0; padding: 0;">
-  <summary> Recommendation: target Geomarkets, schools targeted by peer colleges</summary>
-<div style="font-size: 0.85em; margin-bottom: 0;">
-> On occasion, senior spokespersons for the profession worry that students outside the main market areas remain forgotten and hence, unchallenged. Inevitably, the increasing competition for students, the expense of travel and mailings, and internal political constraints compel institutions to concentrate their efforts where they will do the most good. The result is a natural reinforcing of the basic socioeconomic patterns that gave shape in the first place to the structure of college choice [@RN4982, p. 44].
-</div>
-</details>
-</div>
-
+<p class="quote">Recommendation: target Geomarkets, schools targeted by peer colleges</p>
+<p style="display:none;">On occasion, senior spokespersons for the profession worry that students outside the main market areas remain forgotten and hence, unchallenged. Inevitably, the increasing competition for students, the expense of travel and mailings, and internal political constraints compel institutions to concentrate their efforts where they will do the most good. The result is a natural reinforcing of the basic socioeconomic patterns that gave shape in the first place to the structure of college choice [@RN4982, p. 44].</p>
 
 
 ### Research questions and expectations{.hide}

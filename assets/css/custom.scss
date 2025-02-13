@@ -87,6 +87,49 @@ $presentation-font-size-root: 30px;
     margin-top: -20px;
     padding-left: 10px;
   }
+  .quote {
+    font-weight: 700;
+    display: inline-block;
+    cursor: pointer;
+    color: #827250;
+    transition: color .15s ease;
+    &:hover {
+      color: #9c8962;
+    }
+    &:before {
+      content: '\f002';
+      font-family: FontAwesome;
+      margin-right: 5px;
+    }
+  }
+  .quote-container {
+    padding: 50px 40px;
+    margin-bottom: 40px;
+    color: white;
+    background-color: #42355b;
+    text-align: center;
+    position: relative;
+    &:before, &:after {
+      position: absolute;
+      font-size: 50px;
+      color: #FFFFFF;
+      font-weight: 700;
+    }
+    &:before{
+      content: '\201c';
+      top: 0; left: 10px;    
+    }
+    &:after{
+      content: '\201d';
+      bottom: 0; right: 10px;    
+    }
+    a {
+      color: #d2d2d2;
+      &:hover {
+        color: #b9b9b9;
+      }
+    }
+  }
   .slide {
     h2, h3, h4 {
       font-weight: 300;
