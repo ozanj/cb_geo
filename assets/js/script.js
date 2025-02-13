@@ -6,11 +6,19 @@ $(function() {
   const link = '<a class="link" href="https://ozanj.github.io/cb_geo/">ozanj.github.io/cb_geo</a>';
   $('.slides section.level3').prepend(link);
   
-  $('.slides section img').on('click', function() {
-    const src = $(this).attr('src');
-    
+  $('.slides section p img').on('click', function() {
+    const src = $(this).attr('src'),
+      width = $(this).attr('data-width');
+
     const $slide = $(this).closest('.slide');
     $slide.find('.modal img').attr('src', src);
+    
+    // reset width from any previous image
+    $slide.find('.modal img').css('width', '');
+    
+    if (width) {
+      $slide.find('.modal img').css('width', width);
+    }
     
     $slide.find('.modal').fadeIn(600);
     $slide.find('p img').addClass('disabled');

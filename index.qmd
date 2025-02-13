@@ -49,7 +49,7 @@ Research interest: how quantification reproduces social stratification
 ::: columns
 ::: {.column width="40%"}
 
-![](./assets/images/nyc_geomarkets.png)
+<img src="./assets/images/nyc_geomarkets.png" data-width="60%">
 :::
 
 ::: {.column width="60%"}
