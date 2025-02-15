@@ -28,33 +28,35 @@ include-in-header: ./assets/html/header.html
 
 ### Introduction {.hide}
 
-College Board "Geomarkets"
+Historically, College Board offered two recruiting products to colleges
 
-- Carve states and metropolitan areas into smaller geographic regions meant to define local recruiting markets
+- Student Search Service (est. 1972): purchase contact information of prospects that meet "search filter" criteria
+- Enrollment Planning Service (est. 1984): software-as-service, says which "Geomarkets" to target and which high schools to visit
 
-Geomarkets are an input to two College Board products
+College Board "Geomarkets" are an input in both products
 
-- Enrollment Planning Service (est. 1984): software recommends which Geomarkets to recruit and which high schools to visit
-- Student Search Service (est. 1972): purchase the contact information of prospects that meet "search filter" criteria
+- Geomarkets carve states and metro areas into smaller geographic regions meant to define local recruiting markets [@RN4982]
 
-Research questions
+Concerns: Geomarket borders correlated with race/class; likely to be used in ways that undermine equality of opportunity
 
 1. What is SES, racial variation between, within Geomarkets? Over time?
-1. What is SES and racial composition of included vs. excluded prospects, if student list purchases filter on particular Geomarkets?
+1. What is SES and racial composition of included vs. excluded prospects when student list purchases filter on particular Geomarkets?
 
-Research interest: how quantification reproduces social stratification
+<!-- Research interest: how quantification reproduces social stratification -->
 
 ### New York and Chicago Geomarkets {.hide}
 
 ::: columns
-::: {.column width="40%"}
-
-<img src="./assets/images/nyc_geomarkets.png" data-width="60%">
-:::
-
-::: {.column width="60%"}
+::: {.column width="50%"}
 
 ![](./assets/images/chicago_geomarkets.png)
+
+<!-- <img src="./assets/images/nyc_geomarkets.png" data-width="60%"> -->
+:::
+
+::: {.column width="50%"}
+**[University of Chicago admissions counselors, Chicago-land](https://collegeadmissions.uchicago.edu/contact)**
+![](./assets/images/chicagoland_territories_u_chicago_redacted.png)
 :::
 :::
 
@@ -63,7 +65,14 @@ Research interest: how quantification reproduces social stratification
 ### Background{.hide}
 #### Geomarkets and Market Segment Model created by @RN4982
 
-**Market Segment Model**, based on student SAT score-sending behavior
+<p class="quote">Geomarkets</p>
+<p style="display:none;">Boundaries [often] match formal political and educational divisions, reflecting natural channels of communication. Each major metro area is composed of several markets, usually corresponding to the inner city, a first ring of suburbs, and an outer ring of suburbs [@RN4982, p. 4].</p>
+
+- Meant to reproduce the recruiting territories of admissions officers
+- @RN4982 create 143 Geomarkets in three regions
+- Enrollment Planning Service (EPS) uses 304 Geomarkets
+
+**Market Segment Model**, based on student SAT score-sending behavior [SIMPLIFY]
 
 - Each student-to-college score assigned to one of four categories:
   - Local (in Geomarket); in-state (diff Geomarket); regional; national
@@ -74,12 +83,6 @@ Research interest: how quantification reproduces social stratification
 - *Institutional Profile*  (produced by Geomarket): 
   - How many students by market segement send scores to college *i*
 
-<p class="quote">Geomarkets</p>
-<p style="display:none;">Boundaries [often] match formal political and educational divisions, reflecting natural channels of communication. Each major metro area is composed of several markets, usually corresponding to the inner city, a first ring of suburbs, and an outer ring of suburbs [@RN4982, p. 4].</p>
-
-- Meant to reproduce the recruiting territories of admissions officers
-- @RN4982 create 143 Geomarkets in three regions
-- Enrollment Planning Service (EPS) uses 304 Geomarkets
 
 # Theory
 
