@@ -16,19 +16,19 @@ function(el, x, choices) {
   $('.easy-button-button').css('width', 'auto');
   $('.easy-button-button .button-state .fa').css({'float': 'left', 'margin-top': '8px'});
   
-  $('button[title="Select Metro Area"] .button-state').append('<span style="display: inline-block; float: left; padding-left: 5px;">Select Metro Area</span>');
+  // $('button[title="Select Metro Area"] .button-state').append('<span style="display: inline-block; float: left; padding-left: 5px;">Select Metro Area</span>');
   
   // metro selection options
   
-  let metroControlHTML = '<div id="metro-control" class="leaflet-control-layers leaflet-control leaflet-control-layers-expanded custom-control" style="width: auto; height: auto;">';
+  // let metroControlHTML = '<div id="metro-control" class="leaflet-control-layers leaflet-control leaflet-control-layers-expanded custom-control" style="width: auto; height: auto;">';
   
-  region_name.forEach(function(curr, idx) {
-    metroControlHTML += '<div><input type="radio" class="leaflet-control-layers-selector" name="metro-choice" data-region="' + region[idx] + '" data-lat="' + latitude[idx] + '" data-lng="' + longitude[idx] + '"><span> ' + curr + '</span></div>';
-  });
+  // region_name.forEach(function(curr, idx) {
+  //   metroControlHTML += '<div><input type="radio" class="leaflet-control-layers-selector" name="metro-choice" data-region="' + region[idx] + '" data-lat="' + latitude[idx] + '" data-lng="' + longitude[idx] + '"><span> ' + curr + '</span></div>';
+  // });
     
-  metroControlHTML += '</div>';
+  // metroControlHTML += '</div>';
   
-  $('button[title="Select Metro Area"]').parent().after(metroControlHTML);
+  // $('button[title="Select Metro Area"]').parent().after(metroControlHTML);
   
   // year selection options
   
@@ -64,7 +64,7 @@ function(el, x, choices) {
   
   $('.leaflet-control-layers-base label:nth-child(5)').after(raceControlHTML);
   
-  $('#race-container').append(raceOptions).slideUp();
+  $('#race-container').append(raceOptions).slideUp(0);
   
   $('#race-label').on('click', function(e) {
     $(this).toggleClass('active');
@@ -79,21 +79,21 @@ function(el, x, choices) {
   
   // handle selections
     
-  $('input[name="metro-choice"]').on('change', function(e) {
-    let $this = $(this);
+  // $('input[name="metro-choice"]').on('change', function(e) {
+  //   let $this = $(this);
     
-    let metro = $this.attr('data-region'),
-        lat = $this.attr('data-lat'),
-        lng = $this.attr('data-lng');
+  //   let metro = $this.attr('data-region'),
+  //       lat = $this.attr('data-lat'),
+  //       lng = $this.attr('data-lng');
         
-    active_attr.active_metro = metro;
-    update_base_layer();
+  //   active_attr.active_metro = metro;
+  //   update_base_layer();
     
-    myMap.setView([lng, lat], 8.5);
+  //   myMap.setView([lng, lat], 8.5);
     
-    update_sel_text();
-    update_legend();
-  });
+  //   update_sel_text();
+  //   update_legend();
+  // });
   
   $('input[name="year-choice"]').on('change', function(e) {
     let $this = $(this);
@@ -155,7 +155,7 @@ function(el, x, choices) {
   // handle selection text update
   
   let update_sel_text = function() {
-    let sel_text = $('input[data-region="' + active_attr.active_metro + '"]').next().text();
+    let sel_text = region_name[region.indexOf(active_attr.active_metro)] // $('input[data-region="' + active_attr.active_metro + '"]').next().text();
     
     if (active_attr.active_base !== 'MSA') {
       sel_text += ' in ' + active_attr.active_year;
@@ -226,7 +226,7 @@ function(el, x, choices) {
   
   $('.legend, #metro-control').css('display', 'none');
   
-  $('input[data-region="' + active_attr.active_metro + '"]').trigger('click');
+  // $('input[data-region="' + active_attr.active_metro + '"]').trigger('click');
   $('input[data-year="' + active_attr.active_year + '"]').trigger('click');
   $('input[data-level="' + active_attr.active_level + '"]').trigger('click');
   

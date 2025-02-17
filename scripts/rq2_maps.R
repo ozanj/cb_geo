@@ -181,7 +181,17 @@ student_data <- purchased_data %>%
     other_somecollege = 0,
     other_nosomecollege = other_nocollege + other_somecollege,
     all_nosomecollege = all_nocollege + all_somecollege
-  ) %>% 
+  )
+
+student_data_multi_orders <- lapply(c('488035_488053', '448427_448440', '448420_448374'), function(orders) {
+  student_data %>% 
+    filter(ord_num %in% str_split(orders, '_')[[1]]) %>%
+    mutate(ord_num = orders) %>% 
+    group_by(univ_id, ord_num, hs_ncessch) %>% 
+    summarise(across(aian_all:all_nosomecollege, sum), .groups = 'drop')
+})
+
+student_data <- do.call(bind_rows, c(list(student_data), student_data_multi_orders)) %>% 
   rename('ncessch' = 'hs_ncessch') %>%
   inner_join(hs_data, by = 'ncessch') %>%
   mutate(
@@ -200,10 +210,31 @@ student_data <- purchased_data %>%
     )
   )
 
+lists_orders_zip_hs_df %>% 
+  select(ord_num, ord_sat_score_min, ord_sat_score_max, ord_psat_score_min, ord_psat_score_max) %>% 
+  filter(ord_num %in% c('487984', '488035', '488053', '448922', '448427', '448440', '448375', '448374', '448420', '329702')) %>% 
+  distinct() %>% 
+  View()
+
 orders_data <- data.frame(
-  region = c(rep('chicago', 3), rep('philly', 3), rep('long_island', 3), rep('bay_area', 3)),
-  order_num = c('487984', '488035', '488053', rep(c('448922', '448427', '448440'), 2), '448375', '448420', '448374'),
-  order_title = c('SAT 1020-1150', 'SAT 1160-1300', 'SAT 1310-1600', rep(c('PSAT 1070-1180', 'PSAT 1190-1260', 'PSAT 1270-1520'), 2), 'PSAT 1070-1180', 'PSAT 1190-1260', 'PSAT 1270-1520')
+  region = c(
+    rep('chicago', 4),
+    rep('philadelphia', 4), rep('northern_new_jersey', 4), rep('long_island', 4), rep('detroit', 4), rep('dallas', 4),
+    rep('los_angeles', 4), rep('orange_county', 4), rep('san_diego', 4), rep('bay_area', 4),
+    'houston'
+  ),
+  order_num = c(
+    '487984', '488035', '488053', '488035_488053',
+    rep(c('448922', '448427', '448440', '448427_448440'), 5),
+    rep(c('448375', '448420', '448374', '448420_448374'), 4),
+    '329702'
+  ),
+  order_title = c(
+    'SAT 1020-1150', 'SAT 1160-1300', 'SAT 1310-1600', 'SAT 1160-1600',
+    rep(c('PSAT 1070-1180', 'PSAT 1190-1260', 'PSAT 1270-1520', 'PSAT 1190-1520'), 5),
+    rep(c('PSAT 1070-1180', 'PSAT 1190-1260', 'PSAT 1270-1520', 'PSAT 1190-1520'), 4),
+    'PSAT 1010-1520'
+  )
 )
 
 race_vars <- data.frame(
@@ -234,9 +265,9 @@ create_rq2_map <- function(metros) {
   m <- leaflet() %>%
     addProviderTiles(providers$CartoDB.Positron) %>%
     
-    addEasyButton(easyButton(
-      icon = 'fa-globe', title = 'Select Metro Area',
-      onClick = JS("function(btn, map){ $('.custom-control').not('#metro-control').slideUp(); $('#metro-control').slideToggle(); }"))) %>% 
+    # addEasyButton(easyButton(
+    #   icon = 'fa-globe', title = 'Select Metro Area',
+    #   onClick = JS("function(btn, map){ $('.custom-control').not('#metro-control').slideUp(); $('#metro-control').slideToggle(); }"))) %>% 
     
     addEasyButton(easyButton(
       icon = 'fa-file', title = 'Select Order Number',
@@ -340,3 +371,8 @@ names(all_codes)
 create_rq2_map(c('philly', 'chicago'))
 create_rq2_map(c('bay_area', 'long_island'))
 saveWidget(create_rq2_map(c('philly', 'chicago')), file.path('.', 'results', 'maps', 'rq2_map_philly_chicago.html'), background = 'transparent', selfcontained = T)
+
+
+for (region in unique(orders_data$region)) {
+  saveWidget(create_rq2_map(region), file.path('.', 'results', 'maps', paste0('rq2_map_', region, '.html')), background = 'transparent', selfcontained = T)
+}

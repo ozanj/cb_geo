@@ -57,6 +57,12 @@ $(function() {
     $('img').removeClass('disabled');
   });
   
+  Reveal.on('ready', (event) => {
+    $('iframe').each(function() {
+        $(this).attr('src', $(this).data('src'));
+    });
+  });
+  
   const h3 = $('.slide:not(.hide) h3').map(function() {
     return $(this).text();
   }).get();

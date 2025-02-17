@@ -318,6 +318,18 @@ for (m in metros) {
         writeLines(str_c("### Research question ", rq_num, if_else(i == 1, "", " {.hide}")))
         insert_figure(rq = rq, metro = m, graph_type = g)
       }
+      
+      # Add RQ1 map
+      writeLines(str_c("### Research question ", rq_num, " {.hide}"))
+      writeLines("#### Map")
+      
+      rq1_map <- if_else(
+        m == 'los angeles',
+        'https://rq1-map-los-angeles.netlify.app',
+        str_c('./results/maps/rq1_map_', str_replace_all(m, " ", "_"), '.html')
+      )
+      
+      writeLines(str_c('<iframe data-src="', rq1_map, '" src="about:blank" width=100% height=100% allowtransparency="true"></iframe>'))
 
     # ---------------------------------------------
     # RQ2 Logic (row vs. col approach + race_by_firstgen)
@@ -374,12 +386,18 @@ for (m in metros) {
       # -------------------------------------------
       # Like the column approach, one slide per order_id
       for (order_id in orders_for_m) {
-        writeLines(str_c("### Research question ", rq_num, rq_num, " {.hide}"))
+        writeLines(str_c("### Research question ", rq_num, " {.hide}"))
         # Filenames look like:
         #   rq2_northern_new_jersey_order_448922_race_by_firstgen.png
         graph_type_rbf <- str_c("order_", order_id, "_race_by_firstgen")
         insert_figure(rq = rq, metro = m, graph_type = graph_type_rbf)
       }
+      
+      # Add RQ2 map
+      writeLines(str_c("### Research question ", rq_num, " {.hide}"))
+      writeLines("#### Map")
+      
+      writeLines(str_c('<iframe data-src="./results/maps/rq2_map_', str_replace_all(m, " ", "_"), '.html" src="about:blank" width=100% height=100% allowtransparency="true"></iframe>'))
 
     } # end if (rq == "rq2")
 

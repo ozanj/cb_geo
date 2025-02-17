@@ -21,11 +21,11 @@ create_rq1_map <- function(metros, shared_legend = F) {
   yrs <- c(1980, 2000, 2020)
   
   m <- leaflet() %>%
-    addProviderTiles(providers$CartoDB.Positron) %>%
+    addProviderTiles(providers$CartoDB.Positron) # %>%
     
-    addEasyButton(easyButton(
-      icon = 'fa-globe', title = 'Select Metro Area',
-      onClick = JS("function(btn, map){ $('.custom-control').not('#metro-control').slideUp(); $('#metro-control').slideToggle(); }")))
+    # addEasyButton(easyButton(
+    #   icon = 'fa-globe', title = 'Select Metro Area',
+    #   onClick = JS("function(btn, map){ $('.custom-control').not('#metro-control').slideUp(); $('#metro-control').slideToggle(); }")))
   
   for (metro in metros) {
     print(metro)
@@ -111,3 +111,8 @@ create_rq1_map(c('philly', 'chicago'))
 
 create_rq1_map(c('bay_area', 'philly', 'chicago'))
 saveWidget(create_rq1_map(c('bay_area', 'philly', 'chicago')), file.path('.', 'results', 'maps', 'rq1_map_bayarea_philly_chicago.html'), background = 'transparent', selfcontained = T)
+
+
+for (region in regions_data$region) {
+  saveWidget(create_rq1_map(region), file.path('.', 'results', 'maps', paste0('rq1_map_', region, '.html')), background = 'transparent', selfcontained = T)
+}

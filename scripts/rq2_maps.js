@@ -26,20 +26,20 @@ function(el, x, choices) {
   $('.easy-button-button').css('width', 'auto');
   $('.easy-button-button .button-state .fa').css({'float': 'left', 'margin-top': '8px'});
   
-  $('button[title="Select Metro Area"] .button-state').append('<span style="display: inline-block; float: left; padding-left: 5px;">Select Metro Area</span>');
+  // $('button[title="Select Metro Area"] .button-state').append('<span style="display: inline-block; float: left; padding-left: 5px;">Select Metro Area</span>');
   $('button[title="Select Order Number"] .button-state').append('<span style="display: inline-block; float: left; padding-left: 5px;">Select Order Number</span>');
   
   // metro selection options
   
-  let metroControlHTML = '<div id="metro-control" class="leaflet-control-layers leaflet-control leaflet-control-layers-expanded custom-control" style="width: auto; height: auto;">';
+  // let metroControlHTML = '<div id="metro-control" class="leaflet-control-layers leaflet-control leaflet-control-layers-expanded custom-control" style="width: auto; height: auto;">';
   
-  region_name.forEach(function(curr, idx) {
-    metroControlHTML += '<div><input type="radio" class="leaflet-control-layers-selector" name="metro-choice" data-region="' + region[idx] + '" data-lat="' + latitude[idx] + '" data-lng="' + longitude[idx] + '"><span> ' + curr + '</span></div>';
-  });
+  // region_name.forEach(function(curr, idx) {
+  //   metroControlHTML += '<div><input type="radio" class="leaflet-control-layers-selector" name="metro-choice" data-region="' + region[idx] + '" data-lat="' + latitude[idx] + '" data-lng="' + longitude[idx] + '"><span> ' + curr + '</span></div>';
+  // });
     
-  metroControlHTML += '</div>';
+  // metroControlHTML += '</div>';
   
-  $('button[title="Select Metro Area"]').parent().after(metroControlHTML);
+  // $('button[title="Select Metro Area"]').parent().after(metroControlHTML);
   
   // order selection options
   
@@ -104,7 +104,7 @@ function(el, x, choices) {
     orderOptionsHTML = '';
     order_region.forEach(function(curr, idx) {
       if (curr === active_attr.active_metro) {
-        orderOptionsHTML += '<div><input type="radio" class="leaflet-control-layers-selector" name="order-choice" data-order="' + order_num[idx] + '"><span> ' + order_num[idx] + ': ' + order_title[idx] + '</span></div>';
+        orderOptionsHTML += '<div><input type="radio" class="leaflet-control-layers-selector" name="order-choice" data-order="' + order_num[idx] + '"><span> ' + order_num[idx].split('_').join(' & ') + ': ' + order_title[idx] + '</span></div>';
       }
     });
     
@@ -114,24 +114,24 @@ function(el, x, choices) {
     $('input[data-order="' + active_attr.active_order + '"]').trigger('click');
   }
     
-  $('input[name="metro-choice"]').on('change', function(e) {
-    let $this = $(this);
+  // $('input[name="metro-choice"]').on('change', function(e) {
+  //   let $this = $(this);
     
-    let metro = $this.attr('data-region'),
-        lat = $this.attr('data-lat'),
-        lng = $this.attr('data-lng');
+  //   let metro = $this.attr('data-region'),
+  //       lat = $this.attr('data-lat'),
+  //       lng = $this.attr('data-lng');
         
-    active_attr.active_metro = metro;
-    update_base_layer();
+  //   active_attr.active_metro = metro;
+  //   update_base_layer();
 
-    myMap.setView([lng, lat], 8.5);
+  //   myMap.setView([lng, lat], 8.5);
     
-    updateOrderOptions();
-    update_pins();
+  //   updateOrderOptions();
+  //   update_pins();
     
-    update_sel_text();
-    update_legend();
-  });
+  //   update_sel_text();
+  //   update_legend();
+  // });
     
   $(document).on('change', 'input[name="order-choice"]', function(e) {
     let $this = $(this);
@@ -176,7 +176,7 @@ function(el, x, choices) {
   // handle selection text update
   
   let update_sel_text = function() {
-    let sel_metro = $('input[data-region="' + active_attr.active_metro + '"]').next().text();
+    let sel_metro = region_name[region.indexOf(active_attr.active_metro)] // $('input[data-region="' + active_attr.active_metro + '"]').next().text();
     
     if (active_attr.active_order !== '') {
       sel_metro += ' - ' + $('input[data-order="' + active_attr.active_order + '"]').next().text();
@@ -252,8 +252,10 @@ function(el, x, choices) {
   
   $('.legend, #metro-control, #order-control').css('display', 'none');
   
-  $('input[data-region="' + active_attr.active_metro + '"]').trigger('click');
+  // $('input[data-region="' + active_attr.active_metro + '"]').trigger('click');
   $('input[data-race="' + active_attr.active_race + '"]').trigger('click');
   $('input[data-edu="' + active_attr.active_edu + '"]').trigger('click');
+  
+  updateOrderOptions();
 
 }
