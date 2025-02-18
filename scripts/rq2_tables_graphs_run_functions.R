@@ -55,6 +55,12 @@ source(file = file.path(scripts_dir, 'rq2_tables_graphs_create_functions.R'))
 ###########################
 ############################ RUN FUNCTION create_sim_eps_graph TO CREATE GRAPH OF RACE AND GRAPH OF FIRSTGEN
 ###########################
+#CA ORDER NUMBERS
+
+# 2 448375  33893 FA20 - CA PSAT AD {JAN19); ordered 1/8/2019; 2020 HS grad class; CA; PSAT 1070 - 1180
+# 6 448420  19437; FA20 - CA PSAT SE (JAN19); ordered 1/8/2019; 2020/21 hs grad class; CA; PSAT 1190-1260
+# 5 448374  19775; FA20 - CA PSAT BE (JAN19); ordered 1/8/2019; 2020/21 hs grad class; CA; PSAT 1270-1520
+
 
 all_orders <- list(
   chicago = c('chicago', 'chi_eps_codes', 'SAT score 1020 - 1150', '487984'),
@@ -64,27 +70,27 @@ all_orders <- list(
   #los_angeles = c('los_angeles', 'los_angeles_eps_codes', 'PSAT score 1110 - 1210', '366935'), # ordered jan 2018; don't like these cutpoints as much
   #los_angeles = c('los_angeles', 'los_angeles_eps_codes', 'PSAT score 1220 - 1520', '366934', '366932'),
   los_angeles = c('los_angeles', 'los_angeles_eps_codes', 'PSAT score 1070 - 1180', '448375'), # ordered jan 2019
-  los_angeles = c('los_angeles', 'los_angeles_eps_codes', 'PSAT score 1220 - 1520', '448374', '448420'),
+  los_angeles = c('los_angeles', 'los_angeles_eps_codes', 'PSAT score 1190 - 1520', '448374', '448420'),
   #los_angeles = c('los_angeles', 'los_angeles_eps_codes', 'PSAT score 1070 - 1180', '546954'), # ordered jan 2020; much smaller sample size than orders from jan 2019
-  #los_angeles = c('los_angeles', 'los_angeles_eps_codes', 'PSAT score 1220 - 1520', '546946', '546945'),
+  #los_angeles = c('los_angeles', 'los_angeles_eps_codes', 'PSAT score 1190 - 1520', '546946', '546945'),
   #orange_county = c('orange_county', 'orange_county_eps_codes', 'PSAT score 1110 - 1210', '366935'), # ordered jan 2018; don't like these cutpoints as much
   #orange_county = c('orange_county', 'orange_county_eps_codes', 'PSAT score 1220 - 1520', '366934', '366932'),
   orange_county = c('orange_county', 'orange_county_eps_codes', 'PSAT score 1070 - 1180', '448375'), # ordered jan 2019
-  orange_county = c('orange_county', 'orange_county_eps_codes', 'PSAT score 1220 - 1520', '448374', '448420'),
+  orange_county = c('orange_county', 'orange_county_eps_codes', 'PSAT score 1190 - 1520', '448374', '448420'),
   #orange_county = c('orange_county', 'orange_county_eps_codes', 'PSAT score 1070 - 1180', '546954'), # ordered jan 2020; much smaller sample size than orders from jan 2019
-  #orange_county = c('orange_county', 'orange_county_eps_codes', 'PSAT score 1220 - 1520', '546946', '546945'),
+  #orange_county = c('orange_county', 'orange_county_eps_codes', 'PSAT score 1190 - 1520', '546946', '546945'),
   #san_diego = c('san_diego', 'san_diego_eps_codes', 'PSAT score 1110 - 1210', '366935'), # ordered jan 2018; don't like these cutpoints as much
   #san_diego = c('san_diego', 'san_diego_eps_codes', 'PSAT score 1220 - 1520', '366934', '366932'),
   san_diego = c('san_diego', 'san_diego_eps_codes', 'PSAT score 1070 - 1180', '448375'), # ordered jan 2019
-  san_diego = c('san_diego', 'san_diego_eps_codes', 'PSAT score 1220 - 1520', '448374', '448420'),
+  san_diego = c('san_diego', 'san_diego_eps_codes', 'PSAT score 1190 - 1520', '448374', '448420'),
   #san_diego = c('san_diego', 'san_diego_eps_codes', 'PSAT score 1070 - 1180', '546954'), # ordered jan 2020; much smaller sample size than orders from jan 2019
-  #san_diego = c('san_diego', 'san_diego_eps_codes', 'PSAT score 1220 - 1520', '546946', '546945'),
+  #san_diego = c('san_diego', 'san_diego_eps_codes', 'PSAT score 1190 - 1520', '546946', '546945'),
   #bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1110 - 1210', '366935'), # ordered jan 2018; don't like these cutpoints as much
   #bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1220 - 1520', '366934', '366932'),
   bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1070 - 1180', '448375'), # ordered jan 2019
-  bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1220 - 1520', '448374', '448420'),
+  bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1190 - 1520', '448374', '448420'),
   #bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1070 - 1180', '546954'), # ordered jan 2020; much smaller sample size than orders from jan 2019
-  #bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1220 - 1520', '546946', '546945'),
+  #bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1190 - 1520', '546946', '546945'),
   northern_new_jersey = c('northern_new_jersey', 'nj_north_metro_eps_codes', 'PSAT score 1070 - 1180', '448922'),
   northern_new_jersey = c('northern_new_jersey', 'nj_north_metro_eps_codes', 'PSAT score 1190 - 1520', '448427', '448440'),
   long_island = c('long_island', 'long_island_eps_codes', 'PSAT score 1070 - 1180', '448922'),

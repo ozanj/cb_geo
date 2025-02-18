@@ -55,7 +55,7 @@ Concerns: Geomarket borders correlated with race/class; likely to be used in way
 :::
 
 ::: {.column width="50%"}
-**[University of Chicago admissions counselors, Chicago-land](https://collegeadmissions.uchicago.edu/contact)**
+**[University of Chicago admissions counselors, IL territories](https://collegeadmissions.uchicago.edu/contact)**
 ![](./assets/images/chicagoland_territories_u_chicago_redacted.png)
 :::
 :::
