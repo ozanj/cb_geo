@@ -28,10 +28,10 @@ include-in-header: ./assets/html/header.html
 
 ### Introduction {.hide}
 
-Historically, College Board offered two recruiting products to colleges
+Two recruiting products sold by College Board
 
-- Student Search Service (est. 1972): purchase contact information of prospects that meet "search filter" criteria
-- Enrollment Planning Service (est. 1984): software-as-service, says which "Geomarkets" to target and which high schools to visit
+- Student Search Service (est. 1972): purchase contact information of prospects that meet "search filter" criteria [@RN5012]
+- Enrollment Planning Service (EPS, est. 1984): software recommends which "Geomarkets" to target and which high schools to visit
 
 College Board "Geomarkets" are an input in both products
 
@@ -60,7 +60,7 @@ Concerns: Geomarket borders correlated with race/class; likely to be used in way
 :::
 :::
 
-# Background
+# Background and Theory
 
 ### Background{.hide}
 #### Geomarkets and Market Segment Model created by @RN4982
@@ -69,22 +69,42 @@ Concerns: Geomarket borders correlated with race/class; likely to be used in way
 <p style="display:none;">Boundaries [often] match formal political and educational divisions, reflecting natural channels of communication. Each major metro area is composed of several markets, usually corresponding to the inner city, a first ring of suburbs, and an outer ring of suburbs [@RN4982, p. 4].</p>
 
 - Meant to reproduce the recruiting territories of admissions officers
-- @RN4982 create 143 Geomarkets in three regions
-- Enrollment Planning Service (EPS) uses 304 Geomarkets
+- @RN4982 has 143 Geomarkets in 3 regions; EPS has 304
 
-**Market Segment Model**, based on student SAT score-sending behavior [SIMPLIFY]
+**Market Segment Model**
 
-- Each student-to-college score assigned to one of four categories:
-  - Local (in Geomarket); in-state (diff Geomarket); regional; national
-- Students sorted into 4 market segments: local, in-state, regional, national
-  - "Local" students submit most SAT scores to local institutions
-- *Market Segment Profile* (produced by Geomarket): 
-  - How many students in each market segment
-- *Institutional Profile*  (produced by Geomarket): 
-  - How many students by market segement send scores to college *i*
+- Predicts how demand for a college varies by Geomarket, based on characteristics of households in Geomarket
+- Categorize students into 4 market segments -- local, in-state, regional, national -- based on SAT score-sending behavior
+  - local: send most scores to colleges within Geomarket
+  - regional: send most scores out-of-state but in-region (e.g., Midwest)
+- "Good" colleges should look for regional and national students
+  - Like @RN2247, except College Board creates product from it
+  - @RN4982 create outputs that become EPS software
+
+### Scholarship on Quantification {.hide}
+#### Discussions of correlation and homophily by @RN4975[chapter 1]
+
+<p class="quote">**Correlation**: extent to which variables move together</p>
+<p style="display:none;">Our research has simply demonstrated what everyone has always known: communities with high levels of family income and parental education are also communities in which students have higher than average SATs and more far-reaching aspirations” [@RN4982, p. 42].</p>
+
+- Correlations from training data caused by structural inequality
+  - "Predicting the future on the basis of the past threatens to reify and reproduce existing inequalities" [@RN4794, p. 224]
+- @RN4982 find 4 predictors of student market segment
+  - Parental education, family income, SAT score, educational aspirations
+  - Recommend selective colleges target high-SES Geomarkets
 
 
-# Theory
+<p class="quote">**Homophily**: birds of a feather flock together</p>
+<p style="display:none;">The layering of collegiate competition is primarily a socioeconomic layering. The hierarchical structure of collegiate competition reflects the stratified social and economic dimensions of communities from which colleges draw their students. Competition among colleges, as admissions officers have told us for so long, is a matter of keeping company with one’s peers [@RN4982, p. 72].</p>
+
+
+- Homophily not the result of voluntary action; homophily programmed into algorithms that create connections
+  - Match vertically ranked consumers to vertically ranked producers
+- @RN4982: like colleges compete for like students (SES)
+<p class="quote" style="font-size: 0.85em;">Recommend colleges target Geomarkets, schools targeted by peer colleges</p>
+<p style="display:none;">On occasion, senior spokespersons for the profession worry that students outside the main market areas remain forgotten and hence, unchallenged. Inevitably, the increasing competition for students, the expense of travel and mailings, and internal political constraints compel institutions to concentrate their efforts where they will do the most good. The result is a natural reinforcing of the basic socioeconomic patterns that gave shape in the first place to the structure of college choice [@RN4982, p. 44].</p>
+
+<!--
 
 ### Scholarship on quantification {.hide}
 #### Discussion of correlation by @RN4975[chapter 1]
@@ -128,29 +148,25 @@ Concerns: Geomarket borders correlated with race/class; likely to be used in way
 
 <p class="quote">Recommendation: target Geomarkets, HS targeted by peer colleges</p>
 <p style="display:none;">On occasion, senior spokespersons for the profession worry that students outside the main market areas remain forgotten and hence, unchallenged. Inevitably, the increasing competition for students, the expense of travel and mailings, and internal political constraints compel institutions to concentrate their efforts where they will do the most good. The result is a natural reinforcing of the basic socioeconomic patterns that gave shape in the first place to the structure of college choice [@RN4982, p. 44].</p>
+ -->
 
+### Research questions{.hide}
 
-### Research questions and expectations{.hide}
+<br>
 
-**Research goals**
+**Research interests**
 
-- Examine extent of social inequaltiy between Geomarkets (RQ1)
-- Show how application of Geomarkets produces inequality (RQ2)
+- How unequal are these Geomarkets?
+- Who is included/excluded if we purchase student lists and filter on Geomarkets as recommended by @RN4982
+
+<br>
 
 **Research questions**
 
-1. SES and racial variation between, within Geomarkets? Change over time?
+1. What is the socioeconomic and racial variation between and within Geomarkets? How does this change over time?
+1. What is the socioeconomic and and racial composition of included vs. excluded prospects, if "student list" purchases filter on particular Geomarkets?
 
-    - Geomarkets/Market Segment Model based on social stratification
-    - US Racial segregation, correlation between class and race
 
-1. SES and racial composition of included vs. excluded prospects, if "student list" purchases filter on particular Geomarkets?
-
-    - Excluding Geomarkets that are poor and non-White associated with:
-      - Disproportionate exclusion of first-generation students
-      - Disproportionate exclusion of non-white students
-      - Disproportionate exclusion of first-generation, non-white students
-  
 # Methods
 
 ### Methods{.hide}
@@ -160,30 +176,31 @@ Concerns: Geomarket borders correlated with race/class; likely to be used in way
 
 - Census tract-level data
   - 1980, 2000 Census; 2016-2020 American Community Survey (ACS)
-  - Variables: race/Hispanic origin; median income, % poverty, % BA+
-- Geomarket shapefiles obtained from 2012 blog post
+- Geomarket shapefiles obtained from a 2012 blog post
   - Each zip code assigned to one Geomarket
-  - Partial spatial assigns each Census tract to one or more Geomarkets
+- Partial spatial assigns each Census tract to one or more Geomarkets
 
 **RQ2: SES and racial composition of student list purchases**
 
-- 414 student lists -- associated with 2.5 million prospects -- purchaseds by 14 public universities from 2016-2020
+- Student lists purchased by 14 public universities from 2016-2020
+  - 414 student lists associated with 2.5 million prospects
   - Each prospect has a home zip code and a HS zip code (point geoms)
 - Analyze purchases that include all Geomarkets in a metro area
-  - Show who would be excluded had search criteria exluded a Geomarket
+  - Show who would be included/excluded had search criteria filtered on particular Geomarket(s)
 
 ### Methods{.hide}
-#### Research design: quantitative case study
+#### Research design is a quantitative case study
 
-Cases are metro areas associated with multiple Geomarkets (n = 17)
+
 
 <div style="margin-top: 0.8em;"></div>
 
-Case selection
+Cases 
 
+- Cases are metro areas associated with multiple Geomarkets (n ~ 17)
 - Initial case selection based on availability of student list purchases (RQ2)
   - Prefer purchases that filter on test score, HS class, GPA, but not on student preferences (e.g., college size)
-    - Ideal: purchases differ on test score range, but same on other filters
+  - Ideal: purchases differ on test score range, but same on other filters
   - For some metros, don't have purchases that include all Geomarkets
 - Final set of cases for manuscript main text (3 metro areas)
   - TBD; unsure about criteria
@@ -423,9 +440,9 @@ for (m in metros) {
 
 **RQ2: SES and racial composition of student list purchases**
 
-- Poor, non-white Geomarkets produce disproportionate share of Black, Hispanic students, (and often Asian)
+- Poor, non-white Geomarkets produce disproportionate share of Black, Hispanic (and often Asian) students
 - Poor, non-white Geomarkets produce disproportionate share of first-generation students
-- Purchased student profiles by race X parental education
+- Intersection of race and parental education
   - Asian students from low-income Geomarkets tend to be first-gen compared to Asain students from affluent Geomarkets
   - Same result for Hispanic students
 
@@ -441,9 +458,9 @@ Scholarship on postsecondary "organizational field"
 
 - Scholarship focuses on schools and policies as "sorting machines" [@RN4873]
   - But EPS, Student Search Service products structure college access
-  - College access structured by third-party vendors and products that amplify structural inequalities observed on demand-side
+  - College access structured by third-party vendors, products that amplify structural inequalities observed on demand-side
 - Org field is "totality of relevant actors" [@RN527, p. 148]
-  - The organizational field should be focus regulation
+  - Organizational field should be focus of regulation
   - Sociology should identify high-leverage actors/products in org field
 
 # References

@@ -417,9 +417,7 @@ create_eps_graph <- function(eps_codes,
   # 2) Create the text you want to store [REVISE NOTE TEXT LATER!]
   note_text <- c(
     "Figure Notes:",
-    "- Median income is shown in thousands ($k).",
-    "- '% in poverty' is the share of individuals below the federal poverty line.",
-    "- Data sources: US Census, etc.",
+    "- Race/ethnicity categories not available in 1980 Census: Asian, non-Hispanic; Two+ races, non-Hispanic; NHPI, non-Hispanic; AIAN non-Hispanic",
     note
   )
   
@@ -445,7 +443,7 @@ all_codes <- list(
   'chicago' = chi_eps_codes,
   'cleveland' = cleveland_eps_codes,
   'northern new jersey' = nj_north_metro_eps_codes,
-  'houston' = htown_eps_codes,
+  'houston' = houston_eps_codes,
   'bay area' = bay_area_eps_codes,
   'long island' = long_island_eps_codes,
   'new york city' = nyny_metro_eps_codes,
@@ -471,7 +469,7 @@ for (metro_name in names(all_codes)) {
       eps_codes  = metro_codes,
       prefix     = metro_name,        # <--- pass "philly" or "dallas"
       graph_type = graph_types[g],
-      note       = "some note"
+      note       = NULL
     )
   }
 }

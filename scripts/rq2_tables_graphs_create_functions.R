@@ -1051,9 +1051,7 @@ create_race_by_firstgen_graph <- function(data_graph,
   # 2) Create the text you want to store [REVISE NOTE TEXT LATER!]
   note_text <- c(
     "Figure Notes:",
-    "- Median income is shown in thousands ($k).",
-    "- '% in poverty' is the share of individuals below the federal poverty line.",
-    "- Data sources: US Census, etc."
+    "- Excludes students who have missing values for race or parental education"
   )
   
   # 3) Write that text to a file

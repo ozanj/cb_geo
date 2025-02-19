@@ -1,5 +1,2 @@
 Figure Notes:
-- Median income is shown in thousands ($k).
-- '% in poverty' is the share of individuals below the federal poverty line.
-- Data sources: US Census, etc.
-some note
+- Race/ethnicity categories not available in 1980 Census: Asian, non-Hispanic; Two+ races, non-Hispanic; NHPI, non-Hispanic; AIAN non-Hispanic
