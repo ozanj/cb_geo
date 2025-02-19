@@ -63,6 +63,10 @@ $(function() {
     });
   });
   
+  $('.fullscreen').on('click', function() {
+    $(this).prev('iframe').get(0).requestFullscreen();
+  });
+  
   const h3 = $('.slide:not(.hide) h3').map(function() {
     return $(this).text();
   }).get();

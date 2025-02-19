@@ -330,6 +330,7 @@ for (m in metros) {
       )
       
       writeLines(str_c('<iframe data-src="', rq1_map, '" src="about:blank" width=100% height=100% allowtransparency="true"></iframe>'))
+      writeLines('<p class="fullscreen">Fullscreen</p>')
 
     # ---------------------------------------------
     # RQ2 Logic (row vs. col approach + race_by_firstgen)
@@ -398,6 +399,7 @@ for (m in metros) {
       writeLines("#### Map")
       
       writeLines(str_c('<iframe data-src="./results/maps/rq2_map_', str_replace_all(m, " ", "_"), '.html" src="about:blank" width=100% height=100% allowtransparency="true"></iframe>'))
+      writeLines('<p class="fullscreen">Fullscreen</p>')
 
     } # end if (rq == "rq2")
 

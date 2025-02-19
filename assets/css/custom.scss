@@ -81,11 +81,28 @@ $presentation-font-size-root: 30px;
     right: 0;
     font-size: 13px;
   }
-  .footnote {
+  .footnote,
+  .fullscreen {
     font-size: 12px;
     color: #444444;
+  }
+  .footnote {
     margin-top: -20px;
     padding-left: 10px;
+  }
+  .fullscreen {
+    margin-top: -25px;
+    padding-left: 5px;
+    cursor: pointer;
+    transition: opacity .15s ease;
+    &:before {
+      content: '\f065';
+      font-family: FontAwesome;
+      margin-right: 5px;
+    }
+    &:hover {
+      opacity: 0.7;
+    }
   }
   .quote {
     font-weight: 700;
@@ -165,6 +182,7 @@ $presentation-font-size-root: 30px;
       }
     }
     iframe {
+      max-width: 100%;
       max-height: 80%;
     }
   }
