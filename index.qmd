@@ -87,7 +87,7 @@ Concerns: Geomarket borders correlated with race/class; likely to be used in way
 <p class="quote">**Correlation**: extent to which variables move together</p>
 <p style="display:none;">Our research has simply demonstrated what everyone has always known: communities with high levels of family income and parental education are also communities in which students have higher than average SATs and more far-reaching aspirations” [@RN4982, p. 42].</p>
 
-- Correlations from training data caused by structural inequality
+- Correlations observed in training data caused by structural inequality
   - "Predicting the future on the basis of the past threatens to reify and reproduce existing inequalities" [@RN4794, p. 224]
 - @RN4982 find 4 predictors of student market segment
   - Parental education, family income, SAT score, educational aspirations
