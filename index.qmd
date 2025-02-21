@@ -184,9 +184,10 @@ Concerns: Geomarket borders correlated with race/class; likely to be used in way
 
 - Student lists purchased by 14 public universities from 2016-2020
   - 414 student lists associated with 2.5 million prospects
-  - Each prospect has a home zip code and a HS zip code (point geoms)
+    - Data: search filter criteria; and de-identified student-level data
+    - Each prospect has a home and a HS zip code (point geoms)
 - Analyze purchases that include all Geomarkets in a metro area
-  - Show who would be included/excluded had search criteria filtered on particular Geomarket(s)
+  - Show who included/excluded if we filter on particular Geomarkets
 
 ### Methods{.hide}
 #### Research design is a quantitative case study
@@ -433,32 +434,33 @@ for (m in metros) {
 
 **RQ1: SES and racial variation over time between, within Geomarkets**
 
-- Substantial inequality between and within Geomarkets
+- Geomarkets highly correllated with race and class in many metros
 - In 1980, Black people are usually concentrated in poorest Geomarket
   - In some metros, this pattern persists (e.g., Cleveland)
-  - In some metros, these Geomarkets experience gentrification
 
 **RQ2: SES and racial composition of student list purchases**
 
-- Poor, non-white Geomarkets produce disproportionate share of Black, Hispanic (and often Asian) students
+- Poor, non-white Geomarkets produce disproportionate share of Black and Hispanic students
 - Poor, non-white Geomarkets produce disproportionate share of first-generation students
 - Intersection of race and parental education
-  - Asian students from low-income Geomarkets tend to be first-gen compared to Asain students from affluent Geomarkets
-  - Same result for Hispanic students
+  - Compared to students from affluent Geomarkets, Asian and Hispanic students from low-income Geomarkets tend to be first-gen
+  - Targeting non-white students in affluent Geomarkets yields mostly non-first-gen
+
 
 ### Discussion{.hide}
 #### Contribution to scholarship
 
 Scholarship on quantification (in education)
 
-- Scholarship has not examined "b2b" quantification that classifies consumers for the sake of producers
+- Hasn't examined quantification that classifies consumers for producers
+  - Structural inequality $\rightarrow$ unequal student demand for college
+  - College access structured by third-party products that encourage supply-side to amplify structural inequalities observed on demand-side
 - @RN5005 show effect of quantification, but not mechanisms of *how* quantification produces inequality
 
 Scholarship on postsecondary "organizational field"
 
-- Scholarship focuses on schools and policies as "sorting machines" [@RN4873]
-  - But EPS, Student Search Service products structure college access
-  - College access structured by third-party vendors, products that amplify structural inequalities observed on demand-side
+- Soc-of-ed focuses on schools (and policies) as "sorting machines"
+  - But third-party vendors have structured college access for decades
 - Org field is "totality of relevant actors" [@RN527, p. 148]
   - Organizational field should be focus of regulation
   - Sociology should identify high-leverage actors/products in org field
