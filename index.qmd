@@ -44,7 +44,7 @@ Concerns: Geomarket borders correlated with race/class; likely to be used in way
 
 <!-- Research interest: how quantification reproduces social stratification -->
 
-### New York and Chicago Geomarkets {.hide}
+### Geomarkets around Chicago-land {.hide}
 
 ::: columns
 ::: {.column width="50%"}
@@ -66,7 +66,7 @@ Concerns: Geomarket borders correlated with race/class; likely to be used in way
 #### Geomarkets and Market Segment Model created by @RN4982
 
 <p class="quote">Geomarkets</p>
-<p style="display:none;">Boundaries [often] match formal political and educational divisions, reflecting natural channels of communication. Each major metro area is composed of several markets, usually corresponding to the inner city, a first ring of suburbs, and an outer ring of suburbs [@RN4982, p. 4].</p>
+<p style="display:none;">Boundaries [often] match formal political and educational divisions, reflecting natural channels of communication. **Each major metro area is composed of several markets, usually corresponding to the inner city, a first ring of suburbs, and an outer ring of suburbs.** In more sparsely populated areas, communities are sometimes combined in order to make the analysis meaningful. [@RN4982, p. 4].</p>
 
 - Meant to reproduce the recruiting territories of admissions officers
 - @RN4982 has 143 Geomarkets in 3 regions; EPS has 304
@@ -175,7 +175,7 @@ Concerns: Geomarket borders correlated with race/class; likely to be used in way
 **RQ1: SES and racial variation over time between, within Geomarkets**
 
 - Census tract-level data
-  - 1980, 2000 Census; 2016-2020 American Community Survey (ACS)
+  - 1980, 2000 Census, 2016-2020 American Community Survey (ACS)
 - Geomarket shapefiles obtained from a 2012 blog post
   - Each zip code assigned to one Geomarket
 - Partial spatial assigns each Census tract to one or more Geomarkets
@@ -454,7 +454,7 @@ Scholarship on quantification (in education)
 
 - Hasn't examined quantification that classifies consumers for producers
   - Structural inequality $\rightarrow$ unequal student demand for college
-  - College access structured by third-party products that encourage supply-side to amplify structural inequalities observed on demand-side
+  - Third-party products take snapshot student demand $\rightarrow$ encourage supply-side to amplify structural inequalities observed on demand-side
 - @RN5005 show effect of quantification, but not mechanisms of *how* quantification produces inequality
 
 Scholarship on postsecondary "organizational field"
