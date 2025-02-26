@@ -321,16 +321,11 @@ create_eps_graph <- function(eps_codes,
       scale_y_continuous(labels = scales::percent_format()) +
       facet_wrap(~ year, ncol = 1, scales = "free_y") +
       theme_custom + 
-      # Add/modify this theme() call:
       theme(
-        # Increase legend text/title size
         legend.text  = element_text(size = 14),
         legend.title = element_text(size = 14),
-        # Increase size of geomarket names (on y-axis after coord_flip)
         axis.text.y  = element_text(size = 12),
-        # Increase size of percentages (on x-axis after coord_flip)
         axis.text.x  = element_text(size = 12),
-        # Increase size of facet labels (i.e., the year labels)
         strip.text   = element_text(size = 14)
       )
     
@@ -371,11 +366,9 @@ create_eps_graph <- function(eps_codes,
       ) +
       facetted_pos_scales(
         y = list(
-          # For Median income
           (variable == "Median income") ~ scale_y_continuous(
             labels = scales::label_number(suffix = "k")
           ),
-          # For the percentage variables
           (variable %in% c("% in poverty", "% with BA+")) ~ scale_y_continuous(
             labels = scales::label_number(suffix = "%")
           )
@@ -387,7 +380,7 @@ create_eps_graph <- function(eps_codes,
   writeLines(file_prefix)
   
   # create strings for file names
-  plot_name <- str_c('rq1',file_prefix_underscore,graph_type, sep = '_')
+  plot_name <- str_c('rq1', file_prefix_underscore, graph_type, sep = '_')
   writeLines(plot_name)
   
   # Save plot to file
@@ -399,22 +392,62 @@ create_eps_graph <- function(eps_codes,
     bg = 'white'
   )
   
-  # Define the figure title
+  # Define which_characteristics for figure title
   if (graph_type == "race") {
     which_characteristics <- 'Racial/ethnic composition' 
   } else if (graph_type == "ses") {
     which_characteristics <- 'Socioeconomic characteristics' 
   }
+  
+  # -------------------------------------------------------------
+  # (A) Build friendly_prefix and do if-else
+  # -------------------------------------------------------------
+  friendly_prefix <- str_to_title(file_prefix)
+  
+  # If user typed "dc maryland virginia", override with "D.C., Maryland, and Virginia"
+  if (file_prefix == "dc maryland virginia") {
+    friendly_prefix <- "D.C., Maryland, and Virginia"
+  } else if (friendly_prefix == "Bay Area") {
+    # omit "area"
+    figure_title <- str_c(
+      which_characteristics,
+      "of",
+      friendly_prefix,
+      "Geomarkets",
+      sep = ' '
+    )
+    writeLines(figure_title)
+    
+    # Save the title to a .txt file
+    writeLines(figure_title, file.path(graphs_dir,'rq1', str_c(plot_name, 'title.txt', sep = '_'))) 
+    
+    # Build note text
+    note_text <- c(
+      "Figure Notes:",
+      "- Race/ethnicity categories not available in 1980 Census: Asian, non-Hispanic; Two+ races, non-Hispanic; NHPI, non-Hispanic; AIAN non-Hispanic",
+      note
+    )
+    writeLines(note_text, file.path(graphs_dir,'rq1', str_c(plot_name, 'note.txt', sep = '_')))
+    
+    return(plot)
+  }
+  
+  # Otherwise build the normal figure_title
+  # e.g. "Racial/ethnic composition of <friendly_prefix> area Geomarkets"
   figure_title <- str_c(
-    which_characteristics, "of", str_to_title(file_prefix), "area Geomarkets", sep = ' '
+    which_characteristics,
+    "of",
+    friendly_prefix,
+    "area Geomarkets",
+    sep = ' '
   )
   
   writeLines(figure_title)
   
   # Save the title to a .txt file
-  writeLines(figure_title, file.path(graphs_dir,'rq1', str_c(plot_name, 'title.txt', sep = '_')))    
+  writeLines(figure_title, file.path(graphs_dir,'rq1', str_c(plot_name, 'title.txt', sep = '_')))  
   
-  # 2) Create the text you want to store [REVISE NOTE TEXT LATER!]
+  # 2) Create the note text
   note_text <- c(
     "Figure Notes:",
     "- Race/ethnicity categories not available in 1980 Census: Asian, non-Hispanic; Two+ races, non-Hispanic; NHPI, non-Hispanic; AIAN non-Hispanic",
@@ -422,18 +455,12 @@ create_eps_graph <- function(eps_codes,
   )
   
   # 3) Write that text to a file
-  writeLines(note_text, file.path(graphs_dir,'rq1', str_c(plot_name, 'note.txt', sep = '_')))    
-             
+  writeLines(note_text, file.path(graphs_dir,'rq1', str_c(plot_name, 'note.txt', sep = '_')))  
+  
   # Return the plot
   return(plot)
 }
 
-create_eps_graph(
-  eps_codes = dallas_eps_codes, 
-  prefix = 'dallas',
-  graph_type = "ses", 
-  note = "additional text for my note!"
-)
 
 
 all_codes <- list(

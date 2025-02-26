@@ -1,2 +1,2 @@
 Figure Notes:
-- Excludes students with missing values for race
+- Excludes students with missing values for race. Order number 448375 (ordered 1/8/2019): HS class 2020; State = CA; PSAT 1070 - 1180. Order number 546954 (ordered 1/6/2020): HS class 2021; State = CA; PSAT 1070 - 1180. Order number 448420 (ordered 1/8/2019): HS class 2020 OR 2021; State = CA; PSAT 1190 - 1260. Order number 546946 (ordered 1/6/2020): HS class 2021 OR 2022; State = CA; PSAT 1190 - 1260. Order number 448374 (ordered 1/8/2019): HS class 2020 OR 2021; State = CA; PSAT 1270 - 1520. Order number 546945 (ordered 1/6/2020): HS class 2021 OR 2022; State = CA; PSAT 1270 - 1520.

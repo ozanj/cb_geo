@@ -677,9 +677,8 @@ create_sim_eps_graph <- function(data_graph,
           )
         )
       ) %>%
-      dplyr::filter(!group %in% c("AIAN, non-Hispanic", "NHPI, non-Hispanic",'Two+, non-Hispanic'))
+      dplyr::filter(!group %in% c("AIAN, non-Hispanic", "NHPI, non-Hispanic", "Two+, non-Hispanic"))
     
-    # Titles and legend labels
     row_plot_title   <- "Race Distribution Within Each EPS Code (Row %)"
     col_plot_title   <- "Distribution of Each Race Across EPS Codes (Column %)"
     fill_legend      <- "Geomarket"        # for the column plot
@@ -767,28 +766,29 @@ create_sim_eps_graph <- function(data_graph,
     row_legend_title <- "Parental education" # for the row plot
   }
   
-  # (A) Append the user-supplied title to each plot title if provided
+  # (A) Append the user-supplied title if provided
   if (!is.null(title) && nzchar(title)) {
     row_plot_title <- paste0(title)
     col_plot_title <- paste0(title)
   }
   
-  # Determine which column contains the overall sample size.
+  # (B) For the row plot, build the "eps_label" with sample size
   known_col <- if (variable == "race") "race_known" else "stu_known"
   
-  # ----------------------------------------------------------------
-  # (B) Create a new label that combines the EPS code and its sample size
-  # ----------------------------------------------------------------
   df_r <- df_r %>%
     dplyr::group_by(eps_codename) %>%
     dplyr::mutate(
-      eps_label = paste0(as.character(eps_codename),
-                         " (n=", formattable::comma(first(.data[[known_col]]), digits = 0), ")")
+      eps_label = paste0(
+        as.character(eps_codename),
+        " (n=",
+        formattable::comma(dplyr::first(.data[[known_col]]), digits = 0),
+        ")"
+      )
     ) %>%
     dplyr::ungroup()
   
   # ----------------------------------------------------------------
-  # (C) Build the Row-Percent Plot using the new eps_label
+  # (C) Build the Row-Percent Plot (plot_r)
   # ----------------------------------------------------------------
   plot_r <- df_r %>%
     ggplot2::ggplot(
@@ -798,8 +798,7 @@ create_sim_eps_graph <- function(data_graph,
         fill = group
       )
     ) +
-    ggplot2::geom_bar(stat = "identity", 
-                      position = ggplot2::position_fill(reverse = TRUE)) +
+    ggplot2::geom_bar(stat = "identity", position = ggplot2::position_fill(reverse = TRUE)) +
     ggplot2::scale_y_continuous(labels = scales::percent_format(scale = 100)) +
     ggplot2::labs(
       title = row_plot_title,
@@ -809,19 +808,19 @@ create_sim_eps_graph <- function(data_graph,
     ) +
     ggplot2::theme_minimal() +
     ggplot2::theme(
-      plot.margin = ggplot2::margin(t = 20, r = 0, b = 20, l = 20),  # Lower the right margin (r=2) so the plot takes up more horizontal space. Increase 'r' to add more white space.
-      legend.box.spacing = grid::unit(0, "line"),  # Reduce spacing between the plot and the legend. Increase this value for a larger gap.
-      legend.text        = ggplot2::element_text(size = 14),
-      legend.title       = ggplot2::element_text(size = 14),
-      axis.text.y        = ggplot2::element_text(size = 13),
-      axis.text.x        = ggplot2::element_text(size = 13),
-      strip.text         = ggplot2::element_text(size = 14),
-      plot.title         = ggplot2::element_text(size = 16, face = "bold")
+      plot.margin       = ggplot2::margin(t = 20, r = 0, b = 20, l = 20),
+      legend.box.spacing = grid::unit(0, "line"),
+      legend.text       = ggplot2::element_text(size = 14),
+      legend.title      = ggplot2::element_text(size = 14),
+      axis.text.y       = ggplot2::element_text(size = 13),
+      axis.text.x       = ggplot2::element_text(size = 13),
+      strip.text        = ggplot2::element_text(size = 14),
+      plot.title        = ggplot2::element_text(size = 16, face = "bold")
     ) +
     ggplot2::coord_flip(clip = "off")
   
   # ----------------------------------------------------------------
-  # (D) Build the Column-Percent Plot (unchanged)
+  # (D) Build the Column-Percent Plot (plot_c) with percentage labels
   # ----------------------------------------------------------------
   plot_c <- df_c %>%
     ggplot2::ggplot(
@@ -831,7 +830,18 @@ create_sim_eps_graph <- function(data_graph,
         fill = eps_codename
       )
     ) +
-    ggplot2::geom_bar(stat = "identity", position = "dodge") +
+    # Dodge bars
+    ggplot2::geom_bar(stat = "identity", position = ggplot2::position_dodge(width = 0.9)) +
+    # Add text labels with e.g. "37%"
+    ggplot2::geom_text(
+      ggplot2::aes(
+        label = scales::percent(value/100, accuracy = 1)
+      ),
+      position = ggplot2::position_dodge(width = 0.9),
+      vjust = 0.5,    # vertically center the text in the bar
+      hjust = -0.2,   # shift it slightly to the right
+      size  = 4
+    ) +
     ggplot2::labs(
       title = col_plot_title,
       x     = NULL,
@@ -840,27 +850,25 @@ create_sim_eps_graph <- function(data_graph,
     ) +
     ggplot2::scale_y_continuous(
       labels = scales::percent_format(scale = 1),
-      expand = ggplot2::expansion(mult = c(0, 0.1))
+      expand = ggplot2::expansion(mult = c(0, 0.2))  # add space on right for text
     ) +
     ggplot2::scale_fill_discrete(
       guide = ggplot2::guide_legend(reverse = TRUE)
     ) +
     ggplot2::theme_minimal() +
     ggplot2::theme(
-      legend.text       = ggplot2::element_text(size = 14),
-      legend.title      = ggplot2::element_text(size = 14),
-      axis.text.x       = ggplot2::element_text(size = 13),
-      axis.text.y       = ggplot2::element_text(size = 13),
-      strip.text        = ggplot2::element_text(size = 14),
-      axis.text.x.top   = ggplot2::element_text(size = 13),
-      plot.title        = ggplot2::element_text(size = 16, face = "bold"),
+      legend.text        = ggplot2::element_text(size = 14),
+      legend.title       = ggplot2::element_text(size = 14),
+      axis.text.x        = ggplot2::element_text(size = 13),
+      axis.text.y        = ggplot2::element_text(size = 13),
+      strip.text         = ggplot2::element_text(size = 14),
+      axis.text.x.top    = ggplot2::element_text(size = 13),
+      plot.title         = ggplot2::element_text(size = 16, face = "bold"),
       panel.grid.major.x = ggplot2::element_blank()
     ) +
     ggplot2::coord_flip(clip = "off")
   
-  # ----------------------------------------------------------------
   # (E) Return both plots as a list
-  # ----------------------------------------------------------------
   list(plot_r = plot_r, plot_c = plot_c)
 }
 
@@ -1027,12 +1035,22 @@ create_race_by_firstgen_graph <- function(
   # If 'title_suf' is non-empty, we prepend ", "
   suffix_part <- if (nzchar(title_suf)) str_c(", ", title_suf) else ""
   
-  figure_title <- str_c(
-    "First-generation status by race for ",
-    friendly_metro_name,
-    " area Geomarkets",
-    suffix_part
-  )
+  # If friendly_metro_name == "Bay Area", omit " area"
+  if (friendly_metro_name == "Bay Area") {
+    figure_title <- str_c(
+      "First-generation status by race for ",
+      friendly_metro_name,
+      " Geomarkets",
+      suffix_part
+    )
+  } else {
+    figure_title <- str_c(
+      "First-generation status by race for ",
+      friendly_metro_name,
+      " area Geomarkets",
+      suffix_part
+    )
+  }
   
   writeLines(figure_title)
   
@@ -1042,7 +1060,9 @@ create_race_by_firstgen_graph <- function(
     file.path(graphs_dir, "rq2b", str_c(plot_name, "_title.txt"))
   )
   
+  # ----------------------------------------------------------
   # 8) Save the plot
+  # ----------------------------------------------------------
   ggsave(
     filename = file.path(graphs_dir, "rq2b", str_c(plot_name, ".png")),
     plot     = plot,
@@ -1051,11 +1071,40 @@ create_race_by_firstgen_graph <- function(
     bg       = "white"
   )
   
-  # 9) Notes
+  # ----------------------------------------------------------
+  # 9) Notes: We'll now retrieve the "figure_note" from orders_df,
+  #    matching our ord_nums_graph if possible, and append after
+  #    existing text (with a period + space).
+  # ----------------------------------------------------------
+  
+  # Build the default lines
   note_text <- c(
     "Figure Notes:",
     "- Excludes students who have missing values for race or parental education"
   )
+  
+  # 9-A) Attempt to retrieve the figure_note for these specific order(s).
+  if (exists("orders_df", envir = .GlobalEnv)) {
+    # Grab the global orders_df
+    orders_df_global <- get("orders_df", envir = .GlobalEnv)
+    
+    # Build the underscore version from ord_nums_graph
+    orders_str <- str_c(ord_nums_graph, collapse = "_")
+    
+    row_match <- orders_df_global %>%
+      dplyr::filter(order_ids == orders_str)
+    
+    if (nrow(row_match) > 0) {
+      figure_note_local <- row_match$figure_note[1]
+      # Append the figure note with ". " preceding it
+      note_text[2] <- str_c(note_text[2], ". ", figure_note_local)
+    }
+  }
+  
+  # Optionally, add a final period if you want
+  note_text <- str_c(note_text, ".")
+  
+  # 9-B) Write out the final notes
   writeLines(
     note_text,
     file.path(graphs_dir, "rq2b", str_c(plot_name, "_note.txt"))

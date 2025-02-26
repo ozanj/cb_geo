@@ -1,2 +1,2 @@
 Figure Notes:
-- Excludes students with missing values for firstgen
+- Excludes students with missing values for firstgen. Order number 392833 (ordered 7/10/2018): HS class 2019 OR 2020; state = IL; SAT 1020 - 1150; GPA B- to A+. Order number 487984 (ordered 7/19/2019): HS class 2020 OR 2021; state = IL; SAT 1020 - 1150; GPA B- to A+.

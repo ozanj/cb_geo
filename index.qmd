@@ -229,12 +229,7 @@ graphs_dir <- file.path(".", "results", "graphs")
 # 1) Define the `insert_figure` helper function
 insert_figure <- function(rq, metro, graph_type, base_path = graphs_dir) {
 
-  # 'metro' is already underscored (e.g. "los_angeles").
-  # We'll use it directly for file paths, but if you want
-  # to be extra safe, you can do:
-  # metro_underscored <- str_replace_all(metro, " ", "_")
-  # ... (assuming it has no spaces).
-  
+  # We'll use 'metro' directly since it's already underscored (e.g. "los_angeles").
   fig_file  <- file.path(base_path, rq, str_c(rq, "_", metro, "_", graph_type, ".png"))
   cap_file  <- file.path(base_path, rq, str_c(rq, "_", metro, "_", graph_type, "_title.txt"))
   note_file <- file.path(base_path, rq, str_c(rq, "_", metro, "_", graph_type, "_note.txt"))
@@ -301,12 +296,21 @@ rq2_metros <- unique(orders_df$metro)
 # 4) Main loop
 for (m in metros) {
 
-  # Convert "los_angeles" -> "Los Angeles" for display in slides
-  heading_text <- gsub("_", " ", m, fixed = TRUE)
-  heading_text <- tools::toTitleCase(heading_text)
+  # Convert underscores -> spaces, then title case
+  # But add special checks for "dc_maryland_virginia" and "bay_area"
+  if (m == "dc_maryland_virginia") {
+    heading_text <- "D.C., Maryland, and Virginia"
+  } else if (m == "bay_area") {
+    heading_text <- "Bay Area"
+  } else {
+    # Normal logic
+    heading_text <- gsub("_", " ", m, fixed = TRUE)
+    heading_text <- tools::toTitleCase(heading_text)
+    heading_text <- str_c(heading_text, " area")
+  }
 
-  # Print a top-level heading for the metro area in user-friendly form
-  writeLines(str_c("## ", heading_text, " area"))
+  # Print a top-level heading for the metro area
+  writeLines(str_c("## ", heading_text))
 
   for (rq in rqs) {
     
@@ -332,11 +336,9 @@ for (m in metros) {
       writeLines(str_c("### Research question ", rq_num, " {.hide}"))
       writeLines("#### Map")
       
-      # Use 'm' for the file path to the map (underscored version).
-      # If you had a special case for "los_angeles", you could handle that here.
       rq1_map <- str_c('./results/maps/rq1_map_', m, '.html')
       
-      # But let's illustrate one special example for "los_angeles":
+      # Example special case for "los_angeles"
       if (m == "los_angeles") {
         rq1_map <- 'https://rq1-map-los-angeles.netlify.app'
       }
@@ -385,8 +387,6 @@ for (m in metros) {
               # Each order ID gets its own "###" => new Reveal.js slide
               writeLines(str_c("### Research question ", rq_num, " {.hide}"))
               
-              # e.g. "race_col_plot_448375_546954"
-              # => "rq2_los_angeles_race_col_plot_448375_546954.png"
               graph_type_col <- str_c(g, "_", rc, "_plot_", order_id)
               insert_figure(rq = rq, metro = m, graph_type = graph_type_col)
             }
@@ -423,6 +423,7 @@ for (m in metros) {
   } # end rq loop
 
 } # end metros loop
+
 
 ```
 

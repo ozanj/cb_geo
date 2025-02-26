@@ -1,2 +1,2 @@
 Figure Notes:
-- Excludes students with missing values for firstgen
+- Excludes students with missing values for firstgen. Order number 448922 (ordered 1/9/2019): HS class 2020; selected Geomarkets; PSAT 1070 - 1180.
