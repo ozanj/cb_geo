@@ -1,0 +1,32 @@
+metro,eps_codes,order_ids,test_range,figure_note
+chicago,chi_eps_codes,392833_487984,SAT score 1020 - 1150,Illinois standard 2019 and 2020; some notes here
+chicago,chi_eps_codes,392834_488035,SAT score 1160 - 1300,Illinois Honors 2019 and 2020; some notes here
+chicago,chi_eps_codes,392835_488053,SAT score 1310 - 1600,Illinois GPPA 2019 and 2020; some notes here
+philadelphia,philly_eps_codes,448922,PSAT score 1070 - 1180,Some notes here
+philadelphia,philly_eps_codes,448427,PSAT score 1190 - 1260,Some notes here
+philadelphia,philly_eps_codes,448440,PSAT score 1270 - 1520,Some notes here
+los_angeles,los_angeles_eps_codes,448375_546954,PSAT score 1070 - 1180,Ordered Jan 2019; some notes here
+los_angeles,los_angeles_eps_codes,448420_546946,PSAT score 1190 - 1260,Some notes here
+los_angeles,los_angeles_eps_codes,448374_546945,PSAT score 1270 - 1520,Some notes here
+orange_county,orange_county_eps_codes,448375_546954,PSAT score 1070 - 1180,Ordered Jan 2019; some notes here
+orange_county,orange_county_eps_codes,448420_546946,PSAT score 1190 - 1260,Some notes here
+orange_county,orange_county_eps_codes,448374_546945,PSAT score 1270 - 1520,Some notes here
+san_diego,san_diego_eps_codes,448375_546954,PSAT score 1070 - 1180,Ordered Jan 2019; some notes here
+san_diego,san_diego_eps_codes,448420_546946,PSAT score 1190 - 1260,Some notes here
+san_diego,san_diego_eps_codes,448374_546945,PSAT score 1270 - 1520,Some notes here
+bay_area,bay_area_eps_codes,448375_546954,PSAT score 1070 - 1180,Ordered Jan 2019; some notes here
+bay_area,bay_area_eps_codes,448420_546946,PSAT score 1190 - 1260,Some notes here
+bay_area,bay_area_eps_codes,448374_546945,PSAT score 1270 - 1520,Some notes here
+northern_new_jersey,nj_north_metro_eps_codes,448922,PSAT score 1070 - 1180,Some notes here
+northern_new_jersey,nj_north_metro_eps_codes,448427,PSAT score 1190 - 1260,Some notes here
+northern_new_jersey,nj_north_metro_eps_codes,448440,PSAT score 1270 - 1520,Some notes here
+long_island,long_island_eps_codes,448922,PSAT score 1070 - 1180,Some notes here
+long_island,long_island_eps_codes,448427,PSAT score 1190 - 1260,Some notes here
+long_island,long_island_eps_codes,448440,PSAT score 1270 - 1520,Some notes here
+detroit,detroit_eps_codes,448922_484698,PSAT score 1070 - 1180,Some notes here
+detroit,detroit_eps_codes,448427_547005,PSAT score 1190 - 1260,Some notes here
+detroit,detroit_eps_codes,448440_546978,PSAT score 1270 - 1520,Some notes here
+dallas,dallas_eps_codes,448922,PSAT score 1070 - 1180,Some notes here
+dallas,dallas_eps_codes,448427,PSAT score 1190 - 1260,Some notes here
+dallas,dallas_eps_codes,448440,PSAT score 1270 - 1520,Some notes here
+houston,houston_eps_codes,329702,PSAT score 1010 - 1520,Some notes here

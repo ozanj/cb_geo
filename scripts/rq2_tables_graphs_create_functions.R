@@ -904,14 +904,16 @@ custom_race_labels <- c(
 )
 
 
-create_race_by_firstgen_graph <- function(data_graph,
-                                          ord_nums_graph,
-                                          eps_codes_graph,
-                                          metro_name = '',
-                                          exclude_race_graph = c(1,8,12),
-                                          title_suf = '') {
-
-  # 3) Create & pivot the table
+create_race_by_firstgen_graph <- function(
+    data_graph,
+    ord_nums_graph,
+    eps_codes_graph,
+    metro_name = '',
+    exclude_race_graph = c(1,8,12),
+    title_suf = ''
+) {
+  
+  # 1) Build the main data frame
   df <- create_sim_eps_race_firstgen_table(
     data      = data_graph, 
     ord_nums  = ord_nums_graph, 
@@ -924,143 +926,144 @@ create_race_by_firstgen_graph <- function(data_graph,
       values_to = "value"
     ) %>%
     mutate(
-      # Relabel race
       stu_race_cb = factor(
         stu_race_cb, 
         levels = names(custom_race_labels), 
         labels = custom_race_labels
-      ),      
-      # Relabel group
+      ),
       group = factor(
         group, 
         levels = custom_group_order, 
         labels = custom_group_labels
       ),
-      # Reverse the order of eps_codename globally
       eps_codename = factor(
         eps_codename,
         levels = rev(unique(eps_codename))  # reverse the unique order
       )
     )
   
-  df %>% print(n=250)
-  
-  # 4) Split out the subgroup vs. total N
-  df_plot <- df %>%
-    filter(group != "All")
-  
+  # 2) Separate the "All" group (totals) from the subgroups
+  df_plot <- df %>% filter(group != "All")
   df_totals <- df %>%
     filter(group == "All") %>%
-    distinct(stu_race_cb, eps_codename, value) %>%  # <--- ensure no duplicates
+    distinct(stu_race_cb, eps_codename, value) %>%
     rename(total_n = value)
   
-  # 5) Join the total N onto the plotting data (and remove any exact duplicates)
+  # 3) Attach total_n to each row in df_plot
   df_plot <- df_plot %>%
     left_join(df_totals, by = c("stu_race_cb", "eps_codename")) %>%
-    distinct()
-  
-  # 6) Create a new label (N=xxxx) & factor it once
-  df_plot <- df_plot %>%
+    distinct() %>%
     mutate(
-      # character label with “(N=...)”
       eps_label = str_c(
-        as.character(eps_codename), 
+        eps_codename, 
         " (n=", format(total_n, big.mark = ",", trim = TRUE), ")"
       ),
-    ) %>%
-    mutate(
-      # single factor across the entire data
-      eps_label_factor = factor(
-        eps_label,
-        levels = rev(unique(eps_label))
-      )
+      eps_label_factor = factor(eps_label, levels = rev(unique(eps_label)))
     )
   
-  # 7) Plot, with "free_y" so each facet only shows relevant codes
+  # 4) Create the ggplot
   plot <- ggplot(df_plot, aes(
-    x    = eps_label_factor, 
+    x    = eps_label_factor,
     y    = value,
     fill = group
   )) +
     geom_bar(stat = "identity", position = position_fill(reverse = TRUE)) +
     coord_flip(clip = "off") +
     facet_grid(
-      rows = vars(stu_race_cb), 
+      rows = vars(stu_race_cb),
       switch = "y",
-      scales = "free_y",          # <--- each race can drop labels it doesn't use
-      space  = "free_y"     # each facet’s height will scale to number of bars
+      scales = "free_y",
+      space  = "free_y"
     ) +
-    scale_x_discrete(drop = TRUE) +  # <--- drop unused factor levels
-    scale_y_continuous(labels = percent_format(accuracy = 1)) +
+    scale_x_discrete(drop = TRUE) +
+    scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
     labs(
       title = NULL,
       x     = NULL,
       y     = NULL,
-      fill  = "Parental education"  # <-- Set legend title here
+      fill  = "Parental education"
     ) +
     theme_minimal() +
     theme(
-      strip.text.y.left = element_text(size = 12, face = "plain", angle = 0, hjust = 0), # these are the labels for race/ethnicity that appear to the left of the labels for geomarket
+      strip.text.y.left = element_text(size = 12, face = "plain", angle = 0, hjust = 0),
       strip.placement   = "outside",
       panel.spacing     = unit(0.2, "lines"),
-      axis.text.y       = element_text(size = 10.5), # these are the labels for geomarket name that appear to the right of the labels for race ethnicity
+      axis.text.y       = element_text(size = 10.5),
       plot.title        = element_text(hjust = 0.5),
       legend.position   = "right",
       legend.key.size   = unit(0.8, "lines"),
       legend.title      = element_text(size = 12, face = "bold"),
       legend.text       = element_text(size = 12),
-      axis.text.x = element_text(size = 12) # Controls the size of "0% 25% 50% 75% 100%" labels  
+      axis.text.x       = element_text(size = 12)
     )
-
-  # create strings for file names
   
-  # Read the caption (if missing, use a default)
-  if (is.na(metro_name)) { # if metro name not specified use the first part of the eps_codes object
-    
-    metro <- str_replace(string = deparse(substitute(eps_codes_graph)), pattern = '_eps_codes', replacement = '')
-    
-  } else if (!is.na(metro_name)) { # if metro name specified, create version of metro name suitable for naming files
-    metro <- str_replace_all(string = metro_name, pattern = ' ', replacement = '_')
+  # 5) Figure file name: use underscores
+  if (is.na(metro_name) || metro_name == "") {
+    metro <- str_replace(
+      deparse(substitute(eps_codes_graph)),
+      pattern = "_eps_codes",
+      replacement = ""
+    )
+  } else {
+    metro <- str_replace_all(metro_name, " ", "_")
   }
-
-    
   
-  plot_name <- str_c('rq2',metro,'order',str_c(ord_nums_graph, collapse = '_'),'race_by_firstgen', sep = '_')
+  plot_name <- str_c(
+    "rq2b", 
+    metro,
+    "order",
+    str_c(ord_nums_graph, collapse = "_"),
+    "race_by_firstgen",
+    sep = "_"
+  )
   
   writeLines(plot_name)
   
-  # Define the figure title
+  # 6) Build the figure title with a "friendly" metro name
+  #    i.e. remove underscores, apply Title Case
+  friendly_metro_name <- gsub("_", " ", metro_name, fixed = TRUE)
+  friendly_metro_name <- tools::toTitleCase(friendly_metro_name)
+  
+  # If 'title_suf' is non-empty, we prepend ", "
+  suffix_part <- if (nzchar(title_suf)) str_c(", ", title_suf) else ""
+  
   figure_title <- str_c(
-    "First-generation status by race for ", str_to_title(metro_name), " area Geomarkets, ", title_suf
+    "First-generation status by race for ",
+    friendly_metro_name,
+    " area Geomarkets",
+    suffix_part
   )
   
   writeLines(figure_title)
   
-  # Save the title to a .txt file
-  writeLines(figure_title, file.path(graphs_dir,'rq2', str_c(plot_name, '_title.txt')))  
-  
-  # Save plot to file
-  ggsave(
-    filename = file.path(graphs_dir,'rq2', str_c(plot_name, '.png', sep = '')),
-    plot = plot,
-    width = 14,
-    height = 8,
-    bg = 'white'
+  # 7) Write out to .txt
+  writeLines(
+    figure_title,
+    file.path(graphs_dir, "rq2b", str_c(plot_name, "_title.txt"))
   )
   
-  # 2) Create the text you want to store [REVISE NOTE TEXT LATER!]
+  # 8) Save the plot
+  ggsave(
+    filename = file.path(graphs_dir, "rq2b", str_c(plot_name, ".png")),
+    plot     = plot,
+    width    = 14,
+    height   = 8,
+    bg       = "white"
+  )
+  
+  # 9) Notes
   note_text <- c(
     "Figure Notes:",
     "- Excludes students who have missing values for race or parental education"
   )
+  writeLines(
+    note_text,
+    file.path(graphs_dir, "rq2b", str_c(plot_name, "_note.txt"))
+  )
   
-  # 3) Write that text to a file
-  writeLines(note_text, file.path(graphs_dir,'rq2', str_c(plot_name, '_note.txt')))  
-  
-  # Return the plot
   return(plot)
-  
 }
+
 
 #create_race_by_firstgen_graph(data_graph,ord_nums_graph,eps_codes_graph,metro_name = '',exclude_race_graph = c(1,8,12),title_suf = '')
   

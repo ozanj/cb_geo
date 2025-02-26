@@ -221,7 +221,7 @@ library(tidyverse)
 library(kableExtra)  # For collapse_rows() to work
 library(tools)
 
-knitr::opts_chunk$set(echo = F, message = F)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
 
 # Example directories
 graphs_dir <- file.path(".", "results", "graphs")
@@ -229,13 +229,15 @@ graphs_dir <- file.path(".", "results", "graphs")
 # 1) Define the `insert_figure` helper function
 insert_figure <- function(rq, metro, graph_type, base_path = graphs_dir) {
 
-  # Convert spaces -> underscores for filenames
-  metro_underscored <- str_replace_all(metro, " ", "_")
-
-  # Build the three file paths (PNG, title TXT, note TXT)
-  fig_file  <- file.path(base_path, rq, str_c(rq, "_", metro_underscored, "_", graph_type, ".png"))
-  cap_file  <- file.path(base_path, rq, str_c(rq, "_", metro_underscored, "_", graph_type, "_title.txt"))
-  note_file <- file.path(base_path, rq, str_c(rq, "_", metro_underscored, "_", graph_type, "_note.txt"))
+  # 'metro' is already underscored (e.g. "los_angeles").
+  # We'll use it directly for file paths, but if you want
+  # to be extra safe, you can do:
+  # metro_underscored <- str_replace_all(metro, " ", "_")
+  # ... (assuming it has no spaces).
+  
+  fig_file  <- file.path(base_path, rq, str_c(rq, "_", metro, "_", graph_type, ".png"))
+  cap_file  <- file.path(base_path, rq, str_c(rq, "_", metro, "_", graph_type, "_title.txt"))
+  note_file <- file.path(base_path, rq, str_c(rq, "_", metro, "_", graph_type, "_note.txt"))
 
   # Print a heading / caption
   caption_text <- if (file.exists(cap_file)) readLines(cap_file, warn = FALSE) else "No Title Found"
@@ -261,25 +263,25 @@ insert_figure <- function(rq, metro, graph_type, base_path = graphs_dir) {
   }
 }
 
-# 2) Define your metros / RQs
+# 2) Define your *underscored* metros / RQs
 metros <- c(
   "atlanta",
-  "bay area",
+  "bay_area",
   "boston",
   "chicago",
   "cleveland",
   "dallas",
-  "dc maryland virginia",
+  "dc_maryland_virginia",
   "detroit",
   "houston",
-  "long island",
-  "los angeles",
+  "long_island",
+  "los_angeles",
   "miami",
-  "new york city",
-  "northern new jersey",
-  "orange county",
+  "new_york_city",
+  "northern_new_jersey",
+  "orange_county",
   "philadelphia",
-  "san diego"
+  "san_diego"
 )
 
 rqs <- c("rq1", "rq2")
@@ -290,34 +292,21 @@ graph_types_rq1 <- c("race", "ses")
 # For RQ2, we have two plot types: "race" and "firstgen"
 graph_types_rq2 <- c("race", "firstgen")
 
-# 3) Subset of metros with RQ2 data (2 orders each)
-rq2_metros <- c(
-  "chicago", "philadelphia", "los angeles", 
-  "orange county", "san diego", "bay area",
-  "northern new jersey","long island",'detroit','dallas','houston'
-)
+# 3) Read the CSV (underscored metro column)
+orders_df <- read_csv("scripts/metro_orders.csv")
 
-# We'll define a "metro_orders" list for those RQ2 metros:
-metro_orders <- list(
-  "chicago"             = c("487984", "488035_488053"),
-  "philadelphia"        = c("448922", "448427_448440"),
-  "northern_new_jersey" = c("448922", "448427_448440"),
-  "long_island"         = c("448922", "448427_448440"),
-  "detroit"             = c("448922", "448427_448440"),
-  "dallas"              = c("448922", "448427_448440"),
-  "los_angeles"         = c("448375", "448374_448420"),
-  "orange_county"       = c("448375", "448374_448420"),
-  "san_diego"           = c("448375", "448374_448420"),
-  "bay_area"            = c("448375", "448374_448420"),
-  'houston'             = c('329702') #   # houston = c('houston', 'houston_eps_codes', 'PSAT score 1010 - 1520', '329702')
-
-)
+# Derive the RQ2 metros from the CSV
+rq2_metros <- unique(orders_df$metro)
 
 # 4) Main loop
 for (m in metros) {
 
-  # Print a top-level heading for the metro area
-  writeLines(str_c("## ", tools::toTitleCase(m), " area"))
+  # Convert "los_angeles" -> "Los Angeles" for display in slides
+  heading_text <- gsub("_", " ", m, fixed = TRUE)
+  heading_text <- tools::toTitleCase(heading_text)
+
+  # Print a top-level heading for the metro area in user-friendly form
+  writeLines(str_c("## ", heading_text, " area"))
 
   for (rq in rqs) {
     
@@ -330,9 +319,11 @@ for (m in metros) {
     if (rq == "rq1") {
 
       # Each metro has 2 plots: "race" & "ses"
-      for (i in seq(graph_types_rq1)) {
+      for (i in seq_along(graph_types_rq1)) {
         g <- graph_types_rq1[i]
 
+        # The first RQ1 slide for a metro has a real heading;
+        # subsequent ones are hidden slides (".hide")
         writeLines(str_c("### Research question ", rq_num, if_else(i == 1, "", " {.hide}")))
         insert_figure(rq = rq, metro = m, graph_type = g)
       }
@@ -341,11 +332,14 @@ for (m in metros) {
       writeLines(str_c("### Research question ", rq_num, " {.hide}"))
       writeLines("#### Map")
       
-      rq1_map <- if_else(
-        m == 'los angeles',
-        'https://rq1-map-los-angeles.netlify.app',
-        str_c('./results/maps/rq1_map_', str_replace_all(m, " ", "_"), '.html')
-      )
+      # Use 'm' for the file path to the map (underscored version).
+      # If you had a special case for "los_angeles", you could handle that here.
+      rq1_map <- str_c('./results/maps/rq1_map_', m, '.html')
+      
+      # But let's illustrate one special example for "los_angeles":
+      if (m == "los_angeles") {
+        rq1_map <- 'https://rq1-map-los-angeles.netlify.app'
+      }
       
       writeLines(str_c('<iframe data-src="', rq1_map, '" src="about:blank" width=100% height=100% allowtransparency="true"></iframe>'))
       writeLines('<p class="fullscreen">Fullscreen</p>')
@@ -358,15 +352,17 @@ for (m in metros) {
       # Only run RQ2 code if the metro is in our RQ2 list
       if (!(m %in% rq2_metros)) next
 
-      # Convert name -> underscores for matching list keys
-      m_underscored <- str_replace_all(m, " ", "_")
-      orders_for_m  <- metro_orders[[m_underscored]]
+      # Filter orders_df to just rows for this underscored metro
+      df_metro <- filter(orders_df, metro == m)
 
-      # If a metro isn't in the list or has no orders, skip
-      if (is.null(orders_for_m)) next
+      # If none, skip
+      if (nrow(df_metro) == 0) next
+
+      # Gather all the underscore-delimited order_ids
+      orders_for_m <- df_metro$order_ids
 
       # We'll do 2 group types: race & firstgen
-      for (i in seq(graph_types_rq2)) {
+      for (i in seq_along(graph_types_rq2)) {
         g <- graph_types_rq2[i]
 
         # We'll do row and col for each group type
@@ -389,7 +385,8 @@ for (m in metros) {
               # Each order ID gets its own "###" => new Reveal.js slide
               writeLines(str_c("### Research question ", rq_num, " {.hide}"))
               
-              # e.g. "rq2_chicago_race_col_plot_487984.png"
+              # e.g. "race_col_plot_448375_546954"
+              # => "rq2_los_angeles_race_col_plot_448375_546954.png"
               graph_type_col <- str_c(g, "_", rc, "_plot_", order_id)
               insert_figure(rq = rq, metro = m, graph_type = graph_type_col)
             }
@@ -401,22 +398,24 @@ for (m in metros) {
       } # end g loop
 
       # -------------------------------------------
-      # ADDITIONAL: race_by_firstgen for each order
+      # ADDITIONAL: "race_by_firstgen" => goes to RQ2B
       # -------------------------------------------
-      # Like the column approach, one slide per order_id
       for (order_id in orders_for_m) {
         writeLines(str_c("### Research question ", rq_num, " {.hide}"))
-        # Filenames look like:
-        #   rq2_northern_new_jersey_order_448922_race_by_firstgen.png
+        # e.g. "rq2b_los_angeles_order_448375_546954_race_by_firstgen.png"
         graph_type_rbf <- str_c("order_", order_id, "_race_by_firstgen")
-        insert_figure(rq = rq, metro = m, graph_type = graph_type_rbf)
+        insert_figure(rq = "rq2b", metro = m, graph_type = graph_type_rbf)
       }
       
       # Add RQ2 map
       writeLines(str_c("### Research question ", rq_num, " {.hide}"))
       writeLines("#### Map")
       
-      writeLines(str_c('<iframe data-src="./results/maps/rq2_map_', str_replace_all(m, " ", "_"), '.html" src="about:blank" width=100% height=100% allowtransparency="true"></iframe>'))
+      writeLines(str_c(
+        '<iframe data-src="./results/maps/rq2_map_',
+        m,
+        '.html" src="about:blank" width=100% height=100% allowtransparency="true"></iframe>'
+      ))
       writeLines('<p class="fullscreen">Fullscreen</p>')
 
     } # end if (rq == "rq2")

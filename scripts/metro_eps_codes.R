@@ -24,6 +24,7 @@ philly_eps_codes <- paste0("PA ", 1:5) #
 philly_eps_codes
 
 long_island_eps_codes <- c(paste0('NY',16:21))
+long_island_eps_codes
 
 atl_eps_codes <- paste0("GA ", 1:4) #
 atl_eps_codes
@@ -38,6 +39,7 @@ houston_eps_codes
   # 
 
 dallas_eps_codes <- c('TX19','TX20','TX21','TX22','TX23','TX24')
+dallas_eps_codes
 
 nj_eps_codes <- c(paste0("NJ ", 1:9), paste0("NJ", 10:12))
 nj_eps_codes

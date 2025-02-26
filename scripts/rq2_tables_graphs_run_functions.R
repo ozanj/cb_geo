@@ -52,184 +52,85 @@ getwd()
 # script that creates functions to create tables and graphs
 source(file = file.path(scripts_dir, 'rq2_tables_graphs_create_functions.R'))
 
-###########################
-############################ RUN FUNCTION create_sim_eps_graph TO CREATE GRAPH OF RACE AND GRAPH OF FIRSTGEN
-###########################
-#CA ORDER NUMBERS
 
-# 2 448375  33893 FA20 - CA PSAT AD {JAN19); ordered 1/8/2019; 2020 HS grad class; CA; PSAT 1070 - 1180
-# 6 448420  19437; FA20 - CA PSAT SE (JAN19); ordered 1/8/2019; 2020/21 hs grad class; CA; PSAT 1190-1260
-# 5 448374  19775; FA20 - CA PSAT BE (JAN19); ordered 1/8/2019; 2020/21 hs grad class; CA; PSAT 1270-1520
+# 1) Load the CSV into a data frame
+orders_df <- read_csv(file.path(scripts_dir,"metro_orders.csv"))
 
 
-all_orders <- list(
-  chicago = c('chicago', 'chi_eps_codes', 'SAT score 1020 - 1150', '487984'),
-  chicago = c('chicago', 'chi_eps_codes', 'SAT score 1160 - 1600', '488035', '488053'),
-  philadelphia = c('philadelphia', 'philly_eps_codes', 'PSAT score 1070 - 1180', '448922'),
-  philadelphia = c('philadelphia', 'philly_eps_codes', 'PSAT score 1190 - 1520', '448427', '448440'),
-  #los_angeles = c('los_angeles', 'los_angeles_eps_codes', 'PSAT score 1110 - 1210', '366935'), # ordered jan 2018; don't like these cutpoints as much
-  #los_angeles = c('los_angeles', 'los_angeles_eps_codes', 'PSAT score 1220 - 1520', '366934', '366932'),
-  los_angeles = c('los_angeles', 'los_angeles_eps_codes', 'PSAT score 1070 - 1180', '448375'), # ordered jan 2019
-  los_angeles = c('los_angeles', 'los_angeles_eps_codes', 'PSAT score 1190 - 1520', '448374', '448420'),
-  #los_angeles = c('los_angeles', 'los_angeles_eps_codes', 'PSAT score 1070 - 1180', '546954'), # ordered jan 2020; much smaller sample size than orders from jan 2019
-  #los_angeles = c('los_angeles', 'los_angeles_eps_codes', 'PSAT score 1190 - 1520', '546946', '546945'),
-  #orange_county = c('orange_county', 'orange_county_eps_codes', 'PSAT score 1110 - 1210', '366935'), # ordered jan 2018; don't like these cutpoints as much
-  #orange_county = c('orange_county', 'orange_county_eps_codes', 'PSAT score 1220 - 1520', '366934', '366932'),
-  orange_county = c('orange_county', 'orange_county_eps_codes', 'PSAT score 1070 - 1180', '448375'), # ordered jan 2019
-  orange_county = c('orange_county', 'orange_county_eps_codes', 'PSAT score 1190 - 1520', '448374', '448420'),
-  #orange_county = c('orange_county', 'orange_county_eps_codes', 'PSAT score 1070 - 1180', '546954'), # ordered jan 2020; much smaller sample size than orders from jan 2019
-  #orange_county = c('orange_county', 'orange_county_eps_codes', 'PSAT score 1190 - 1520', '546946', '546945'),
-  #san_diego = c('san_diego', 'san_diego_eps_codes', 'PSAT score 1110 - 1210', '366935'), # ordered jan 2018; don't like these cutpoints as much
-  #san_diego = c('san_diego', 'san_diego_eps_codes', 'PSAT score 1220 - 1520', '366934', '366932'),
-  san_diego = c('san_diego', 'san_diego_eps_codes', 'PSAT score 1070 - 1180', '448375'), # ordered jan 2019
-  san_diego = c('san_diego', 'san_diego_eps_codes', 'PSAT score 1190 - 1520', '448374', '448420'),
-  #san_diego = c('san_diego', 'san_diego_eps_codes', 'PSAT score 1070 - 1180', '546954'), # ordered jan 2020; much smaller sample size than orders from jan 2019
-  #san_diego = c('san_diego', 'san_diego_eps_codes', 'PSAT score 1190 - 1520', '546946', '546945'),
-  #bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1110 - 1210', '366935'), # ordered jan 2018; don't like these cutpoints as much
-  #bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1220 - 1520', '366934', '366932'),
-  bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1070 - 1180', '448375'), # ordered jan 2019
-  bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1190 - 1520', '448374', '448420'),
-  #bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1070 - 1180', '546954'), # ordered jan 2020; much smaller sample size than orders from jan 2019
-  #bay_area = c('bay_area', 'bay_area_eps_codes', 'PSAT score 1190 - 1520', '546946', '546945'),
-  northern_new_jersey = c('northern_new_jersey', 'nj_north_metro_eps_codes', 'PSAT score 1070 - 1180', '448922'),
-  northern_new_jersey = c('northern_new_jersey', 'nj_north_metro_eps_codes', 'PSAT score 1190 - 1520', '448427', '448440'),
-  long_island = c('long_island', 'long_island_eps_codes', 'PSAT score 1070 - 1180', '448922'),
-  long_island = c('long_island', 'long_island_eps_codes', 'PSAT score 1190 - 1520', '448427', '448440'),
-  detroit = c('detroit', 'detroit_eps_codes', 'PSAT score 1070 - 1180', '448922'),
-  detroit = c('detroit', 'detroit_eps_codes', 'PSAT score 1190 - 1520', '448427', '448440'),
-  dallas = c('dallas', 'dallas_eps_codes', 'PSAT score 1070 - 1180', '448922'),
-  dallas = c('dallas', 'dallas_eps_codes', 'PSAT score 1190 - 1520', '448427', '448440'),
-  houston = c('houston', 'houston_eps_codes', 'PSAT score 1010 - 1520', '329702')
-)
+# Part #1) Creating "rq2_{metro}_{g}_plot_order_{ids}" objects
+# via create_sim_eps_graph()
 
-# 2 Stephen F Austin State University, univ_id=228431 ord_num=329702          PSAT 1010-1520; grades C+ to A+, 2019 HS grads, all of TX, ordered 8/31/2017 [but seems to have TX 17....]
-
-#create_sim_eps_race_table(data = fa20_oos_psat_sf, ord_nums = c('448922'), eps_codes = c('TX19','TX20','TX21','TX22','TX23','TX24')) # 
-#create_sim_eps_race_table(data = fa20_oos_psat_sf, ord_nums = c('448427'), eps_codes = c('TX19','TX20','TX21','TX22','TX23','TX24')) 
-#create_sim_eps_race_table(data = fa20_oos_psat_sf, ord_nums = c('448440'), eps_codes = c('TX19','TX20','TX21','TX22','TX23','TX24'))
-
-
-all_orders %>% str()
-
-orange_county_eps_codes
-
-# CA ORDER NUMBERS
-# 1 366935  42790 FA19 - CA PSAT AD {JAN18); ordered 1/17/2018; 2019/20/21 HS grad class; CA; PSAT 1110 - 1210
-# 8 366934  15806 FA19 - CA PSAT SE (JAN18); ordered 1/17/2018; 2019/20/21 hs grad class; CA; PSAT 1220-1290    
-# 7 366932  15931 FA19 - CA PSAT BE (JAN18); ordered 1/17/2018; 2019/20/21 hs grad class; CA; PSAT 1300 - 1520
-
-# 2 448375  33893 FA20 - CA PSAT AD {JAN19); ordered 1/8/2019; 2020 HS grad class; CA; PSAT 1070 - 1180
-# 5 448374  19775; FA20 - CA PSAT BE (JAN19); ordered 1/8/2019; 2020/21 hs grad class; CA; PSAT 1270-1520
-# 6 448420  19437; FA20 - CA PSAT SE (JAN19); ordered 1/8/2019; 2020/21 hs grad class; CA; PSAT 1190-1260
-
-# 4 546954  21102 FA21 - CA PSAT AD (JAN20); ordered 1/6/2020; 2021 HS grad class; CA; PSAT 1070-1180
-#12 546946  12061 FA21 - CA PSAT SE (JAN20); ordered 1/6/2020; 2021/2022 hs grad class; CA; PSAT 1190-1260
-#13 546945  11041 FA21 - CA PSAT BE (JAN20); ordered 1/6/2020; 2021/22 hs grad class; CA; PSAT 1270-1520
-
-
-for (orders in all_orders) {
+for (i in seq_len(nrow(orders_df))) {
   
-  metro_name_graph <- orders[1]
-  eps_codes_graph <- get(orders[2])  # First element as eps_codes_graph
-  graph_title <- orders[3]  # second element as graph title
-  ord_nums_graph <- orders[-c(1, 2, 3)]  # Remaining elements as ord_nums_graph
+  # Extract row i
+  row_i <- orders_df[i, ]
   
-  for (g in c('race', 'firstgen')) {
+  # Underscored name
+  metro_name_graph <- row_i$metro  # e.g. "long_island"
+  
+  eps_codes_graph  <- get(row_i$eps_codes, envir = .GlobalEnv)
+  graph_title      <- row_i$test_range
+  
+  # For the object name, we keep underscores
+  ord_nums_graph <- str_split(row_i$order_ids, "_")[[1]]
+  
+  for (g in c("race", "firstgen")) {
     
-    plot_name <- str_c('rq2',metro_name_graph, g, "plot_order", str_c(ord_nums_graph, collapse = "_"), sep = '_')
-    writeLines(str_c(plot_name))
+    plot_name <- str_c(
+      "rq2",
+      metro_name_graph,
+      g,
+      "plot_order",
+      str_c(ord_nums_graph, collapse = "_"),
+      sep = "_"
+    )
     
-    # Remove the object if it exists
     if (exists(plot_name, envir = .GlobalEnv)) {
       rm(list = plot_name, envir = .GlobalEnv)
     }
     
-    # Create the object
     assign(
       plot_name,
       create_sim_eps_graph(
-        data_graph    = lists_orders_zip_hs_df_sf,
+        data_graph     = lists_orders_zip_hs_df_sf,
         ord_nums_graph = ord_nums_graph,
         eps_codes_graph = eps_codes_graph,
-        variable = g,
-        title = graph_title
-      )
+        variable       = g,
+        title          = graph_title
+      ),
+      envir = .GlobalEnv
     )
   }
 }
 
+# Part #2) Generating row/col percent figures (patchwork logic)
+unique_metros <- unique(orders_df$metro)
 
-################
-# 1) Utility function to fetch the order IDs
-get_order_ids <- function(metro) {
+for (m in unique_metros) {
   
-  # Initialize a result list
-  result <- list()
+  # Convert underscores -> spaces, then title case
+  friendly_metro_name <- gsub("_", " ", m, fixed = TRUE)
+  friendly_metro_name <- tools::toTitleCase(friendly_metro_name)
   
-  # Chicago
-  if (metro == "chicago") {
-    result$first_order  <- 487984
-    result$second_order <- "488035_488053"
-    
-    # Houston
-  } else if (metro %in% c("houston")) {
-    result$first_order  <- 329702
-    
-    # Philadelphia, Northern NJ, etc.
-  } else if (metro %in% c("philadelphia", "northern new jersey",'long island','detroit','dallas')) {
-    result$first_order  <- 448922
-    result$second_order <- "448427_448440"
-    
-    # Los Angeles, Orange County, San Diego, Bay Area
-  } else if (metro %in% c("los angeles", "orange county", "san diego", "bay area")) {
-    result$first_order  <- 448375
-    result$second_order <- "448374_448420"
-    
-  } else {
-    stop("No matching order logic for metro: ", metro)
-  }
+  df_metro <- orders_df %>% filter(metro == m)
   
-  return(result)
-}
-
-
-# 2) Main loop to create & save the plots
-for (m in c("chicago", "philadelphia", "los angeles", 
-            "orange county", "san diego", "bay area", 
-            "northern new jersey", "long island", "detroit", 
-            "dallas", "houston")) {
-  
-  # Replace spaces with underscores for object/file naming
-  m_underscore <- str_replace_all(m, " ", "_")
-  
-  # Retrieve the order IDs for this metro
-  orders       <- get_order_ids(m)
-  first_order  <- orders$first_order
-  second_order <- orders$second_order
-  
-  # Check if there's a second order
-  has_two_orders <- !is.null(second_order) && nzchar(second_order)
+  order_groups <- df_metro$order_ids  # vector of strings like "448922_484698"
   
   for (g in c("race", "firstgen")) {
     
-    # For more readable figure titles:
     g_prefix <- if (g == "race") "Racial/ethnic" else "First-generation status"
     
     for (rc in c("row", "col")) {
       
-      # "plot_r" for row-percent, or "plot_c" for column-percent
       subslot <- if (rc == "row") "plot_r" else "plot_c"
+      plot_name_base <- str_c("rq2_", m, "_", g, "_", rc, "_plot")
       
-      # We'll use this base name for saving or identifying the figure
-      # (Note: we might attach the order ID below if needed)
-      plot_name_base <- str_c("rq2_", m_underscore, "_", g, "_", rc, "_plot")
-      
-      # Build a figure title
+      # Now incorporate friendly_metro_name into your figure_title
       if (rc == "row") {
         figure_title <- str_c(
           g_prefix,
           " composition of purchased student profiles by Geomarket, ",
-          tools::toTitleCase(m),
+          friendly_metro_name,
           " area"
         )
       } else {
@@ -237,204 +138,117 @@ for (m in c("chicago", "philadelphia", "los angeles",
           "Geomarket contribution to purchased student profiles by ",
           g_prefix,
           " group, ",
-          tools::toTitleCase(m),
+          friendly_metro_name,
           " area"
         )
       }
       
-      # --------------------------------------------------------------------
-      # NEW LOGIC:
-      #   1) If there's only ONE order -> single-plot approach
-      #   2) If there are TWO orders:
-      #        - row-percent => combine them
-      #        - col-percent => separate them
-      # --------------------------------------------------------------------
-      
-      if (has_two_orders) {
+      if (rc == "row") {
+        # Combine all subplots vertically
+        sub_plots_list <- vector("list", length(order_groups))
         
-        # 2-A) If row-percent => combine the two subplots
-        if (rc == "row") {
+        for (i in seq_along(order_groups)) {
+          og <- order_groups[i]
+          plot_obj_name <- str_c("rq2_", m, "_", g, "_plot_order_", og)
           
-          # Build object names for the first + second subplots
-          first_plot_obj_name  <- str_c("rq2_", m_underscore, "_", g, "_plot_order_", first_order)
-          second_plot_obj_name <- str_c("rq2_", m_underscore, "_", g, "_plot_order_", second_order)
-          
-          # Retrieve sub-plot objects
-          first_sub  <- get(first_plot_obj_name,  envir = .GlobalEnv)[[ subslot ]]
-          second_sub <- get(second_plot_obj_name, envir = .GlobalEnv)[[ subslot ]]
-          
-          # Combine them in a single column
-          combined_plot <- first_sub + second_sub + plot_layout(ncol = 1)
-          
-          # e.g. "rq2_chicago_race_row_plot.png"
-          plot_name <- plot_name_base
-          
-          # For clarity in console/log
-          writeLines(plot_name)
-          writeLines(figure_title)
-          
-          # Write the figure title to a .txt file
-          writeLines(
-            figure_title, 
-            file.path(graphs_dir, "rq2", str_c(plot_name, "_title.txt"))
-          )
-          
-          # Save the combined ggplot object
-          ggsave(
-            filename = file.path(graphs_dir, "rq2", str_c(plot_name, ".png")),
-            plot     = combined_plot,
-            width    = 16,
-            height   = 10,
-            bg       = "white"
-          )
-          
-          # Write out a .txt file with the footnotes
-          note_text <- c('Figure Notes:',str_c(
-            "- Excludes students with missing values for", g, sep = ' '
-          ))
-          writeLines(
-            note_text, 
-            file.path(graphs_dir, "rq2", str_c(plot_name, "_note.txt"))
-          )
-          
-          # 2-B) If col-percent => make two separate plots (one per order)
-        } else { 
-          
-          # We make two separate plots, one for each order ID
-          for (order_id in c(first_order, second_order)) {
-            
-            # e.g. "rq2_los_angeles_race_plot_order_448375"
-            single_plot_obj_name <- str_c("rq2_", m_underscore, "_", g, "_plot_order_", order_id)
-            
-            # Grab that sub-plot (row or col version)
-            single_subplot <- get(single_plot_obj_name, envir = .GlobalEnv)[[ subslot ]]
-            
-            # e.g. "rq2_los_angeles_race_col_plot_448375.png"
-            plot_name <- str_c(plot_name_base, "_", order_id)
-            
-            # For clarity in console/log
-            writeLines(plot_name)
-            writeLines(figure_title)
-            
-            # Write the figure title to a .txt file
-            writeLines(
-              figure_title, 
-              file.path(graphs_dir, "rq2", str_c(plot_name, "_title.txt"))
-            )
-            
-            # Save the separate plot
-            ggsave(
-              filename = file.path(graphs_dir, "rq2", str_c(plot_name, ".png")),
-              plot     = single_subplot,
-              width    = 16,
-              height   = 10,
-              bg       = "white"
-            )
-            
-            # Write out a .txt file with the footnotes
-            note_text <- c('Figure Notes:',str_c(
-              "- Excludes students with missing values for", g, sep = ' '
-            ))
-            writeLines(
-              note_text, 
-              file.path(graphs_dir, "rq2", str_c(plot_name, "_note.txt"))
-            )
+          if (!exists(plot_obj_name, envir = .GlobalEnv)) {
+            warning("Object ", plot_obj_name, " not found; skipping.")
+            next
           }
+          
+          sub_plots_list[[i]] <- get(plot_obj_name, envir = .GlobalEnv)[[subslot]]
         }
         
-        # --------------------------------------------------------------------
-        # 1) If there's ONLY one order (no second_order) => single-plot
-        # --------------------------------------------------------------------
-      } else {
+        combined_plot <- wrap_plots(sub_plots_list, ncol = 1)
+        plot_name <- plot_name_base
         
-        # There's only a first_order
-        single_plot_obj_name <- str_c("rq2_", m_underscore, "_", g, "_plot_order_", first_order)
-        single_subplot       <- get(single_plot_obj_name, envir = .GlobalEnv)[[ subslot ]]
+        message("Saving combined (row-percent) figure: ", plot_name)
+        writeLines(figure_title, file.path(graphs_dir, "rq2", str_c(plot_name, "_title.txt")))
         
-        # For single-order metros, we usually do just one figure name.
-        # BUT if rc == "col", you want the order number appended:
-        if (rc == "col") {
-          plot_name <- str_c(plot_name_base, "_", first_order)
-        } else {
-          plot_name <- plot_name_base
-        }
-        
-        # For clarity in console/log
-        writeLines(plot_name)
-        writeLines(figure_title)
-        
-        # Write the figure title to a .txt file
-        writeLines(
-          figure_title, 
-          file.path(graphs_dir, "rq2", str_c(plot_name, "_title.txt"))
-        )
-        
-        # Save the single plot
         ggsave(
           filename = file.path(graphs_dir, "rq2", str_c(plot_name, ".png")),
-          plot     = single_subplot,
+          plot     = combined_plot,
           width    = 16,
           height   = 10,
           bg       = "white"
         )
         
-        # Footnotes
-        note_text <- c('Figure Notes:',str_c(
-          "- Excludes students with missing values for", g, sep = ' '
-        ))
+        note_text <- c(
+          "Figure Notes:",
+          str_c("- Excludes students with missing values for ", g)
+        )
         writeLines(
           note_text, 
           file.path(graphs_dir, "rq2", str_c(plot_name, "_note.txt"))
         )
         
-      } # end if (has_two_orders)
-      
-    } # end rc loop
-    
-  }   # end g (race/firstgen) loop
-  
-}     # end m (metro) loop
-
-###########################
-############################ RUN FUNCTION create_race_by_firstgen_graph TO CREATE GRAPH OF RACE X FIRSTGEN
-###########################
-
-# NEXT 2/5: NEED TO MODIFY THE FONT SIZES FOR THIS
-
-# 1 487984  16926 # Illinois standard 2020; ordered 7/19/2019; HS class 2020, 2021; IL; SAT 1020-1150;  GPA A+ to B-
-# 5 488035  12842 # Illinois HS 2020; ordered 7/19/2019; HS class 2020, 2021; SAT 1160 - 1300; GPA A+ to B-
-# 9 488053   7259 # Illinois GPPA 2020 (no cf);ordered 7/19/2019; HS class 2020, 2021; SAT 1310-1600; GPA A+ to B-
-#create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('487984'), eps_codes = chi_eps_codes) %>% print(n=50) # 
-
-# philly metro area
-# order 448922: PSAT 1070 - 1180; order 448427: PSAT 1190 - 1260; order 448440: PSAT 1270 - 1520
-
-#create_race_by_firstgen_graph(lists_orders_zip_hs_df_sf, c('487984'), chi_eps_codes, 'chicago', exclude_race = c(1,8,12), title_suf = ', SAT score 1020 - 1150')
-#create_race_by_firstgen_graph(lists_orders_zip_hs_df_sf, c('488035','488053'), chi_eps_codes, 'chicago', exclude_race = c(1,8,12), title_suf = ', SAT score 1160 - 1600')
-
-#create_race_by_firstgen_graph(lists_orders_zip_hs_df_sf, c('448922'), philly_eps_codes, 'philadelphia', exclude_race = c(1,8,12), title_suf = ', SAT score 1070 - 1180')
-#create_race_by_firstgen_graph(lists_orders_zip_hs_df_sf, c('448427','448440'), philly_eps_codes, 'philadelphia', exclude_race = c(1,8,12), title_suf = ', SAT score 1190 - 1520')
-
-
-for (orders in all_orders) {
-  
-  metro_name_graph <- orders[1]
-    #writeLines(metro_name_graph)
-  eps_codes_graph <- get(orders[2])  # First element as eps_codes_graph
-    #writeLines(eps_codes_graph)
-  graph_title <- orders[3]  # second element as graph title
-    #writeLines(graph_title)  
-  ord_nums_graph <- orders[-c(1, 2, 3)]  # Remaining elements as ord_nums_graph
-    #writeLines(ord_nums_graph)
-  
-  create_race_by_firstgen_graph(
-    data_graph = lists_orders_zip_hs_df_sf, 
-    ord_nums_graph = ord_nums_graph, 
-    eps_codes_graph = eps_codes_graph, 
-    metro_name = metro_name_graph, 
-    exclude_race = c(1,8,12), 
-    title_suf = graph_title
-    )
-  
+      } else {
+        # COLUMN-PERCENT => separate figure per order group
+        for (og in order_groups) {
+          
+          plot_obj_name <- str_c("rq2_", m, "_", g, "_plot_order_", og)
+          if (!exists(plot_obj_name, envir = .GlobalEnv)) {
+            warning("Object ", plot_obj_name, " not found; skipping.")
+            next
+          }
+          
+          single_subplot <- get(plot_obj_name, envir = .GlobalEnv)[[subslot]]
+          plot_name <- str_c(plot_name_base, "_", og)
+          
+          message("Saving separate (col-percent) figure: ", plot_name)
+          writeLines(figure_title, file.path(graphs_dir, "rq2", str_c(plot_name, "_title.txt")))
+          
+          ggsave(
+            filename = file.path(graphs_dir, "rq2", str_c(plot_name, ".png")),
+            plot     = single_subplot,
+            width    = 16,
+            height   = 10,
+            bg       = "white"
+          )
+          
+          note_text <- c(
+            "Figure Notes:",
+            str_c("- Excludes students with missing values for ", g)
+          )
+          writeLines(
+            note_text, 
+            file.path(graphs_dir, "rq2", str_c(plot_name, "_note.txt"))
+          )
+        }
+      }
+    }
+  }
 }
 
+############################################################
+# Part #3) create_race_by_firstgen_graph() loop
+############################################################
+
+for (i in seq_len(nrow(orders_df))) {
+  
+  row_i <- orders_df[i, ]
+  
+  # 1) Underscored name for internal use
+  metro_name_graph <- row_i$metro  # e.g. "long_island"
+  
+  # 2) Get EPS codes object
+  eps_codes_graph <- get(row_i$eps_codes, envir = .GlobalEnv)
+  
+  # 3) We'll use only the test range as the suffix
+  #    (No leading commas or repeated metro name.)
+  graph_title <- row_i$test_range
+  custom_title_suf <- graph_title  # e.g. "PSAT score 1190 - 1260"
+  
+  # 4) Split order IDs
+  ord_nums_graph <- str_split(row_i$order_ids, "_")[[1]]
+  
+  # 5) Call the function
+  create_race_by_firstgen_graph(
+    data_graph     = lists_orders_zip_hs_df_sf,
+    ord_nums_graph = ord_nums_graph,
+    eps_codes_graph = eps_codes_graph,
+    metro_name     = metro_name_graph,  # still underscores internally
+    exclude_race   = c(1, 8, 12),
+    title_suf      = custom_title_suf   # pass the test range only
+  )
+}
