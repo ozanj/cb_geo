@@ -102,7 +102,7 @@ Concerns: Geomarket borders correlated with race/class; likely to be used in way
   - Match vertically ranked consumers to vertically ranked producers
 - @RN4982: like colleges compete for like students (SES)
 <p class="quote" style="font-size: 0.85em;">Recommend colleges target Geomarkets, schools targeted by peer colleges</p>
-<p style="display:none;">On occasion, senior spokespersons for the profession worry that students outside the main market areas remain forgotten and hence, unchallenged. Inevitably, the increasing competition for students, the expense of travel and mailings, and internal political constraints compel institutions to concentrate their efforts where they will do the most good. The result is a natural reinforcing of the basic socioeconomic patterns that gave shape in the first place to the structure of college choice [@RN4982, p. 44].</p>
+<p style="display:none;">On occasion, senior spokespersons for the profession worry that students outside the main [Geo]market areas remain forgotten and hence, unchallenged. Inevitably, the increasing competition for students, the expense of travel and mailings, and internal political constraints compel institutions to concentrate their efforts where they will do the most good. The result is a natural reinforcing of the basic socioeconomic patterns that gave shape in the first place to the structure of college choice [@RN4982, p. 44].</p>
 
 <!--
 
@@ -424,6 +424,64 @@ for (m in metros) {
 
 } # end metros loop
 
+############################################################################
+# 5) AI/AN results loop
+############################################################################
+
+writeLines("## AI/AN students")
+
+# The five metros (with 'nyny' last) and the single Native American order
+native_metros <- c("chicago", "dallas", "houston", "los_angeles", "nyny")
+native_order  <- "487927"
+
+# We want exactly 3 slides per metro, in this order:
+var_rc_pairs <- list(
+  c("firstgen", "row"),
+  c("firstgen", "col"),
+  c("race",     "row")
+)
+
+for (m in native_metros) {
+  
+  # Determine the heading text for each metro:
+  # If m == 'nyny', use "New York City".
+  # Otherwise, convert underscores -> spaces, then "Title Case + area".
+  heading_text <- if (m == "nyny") {
+    "New York City"
+  } else {
+    # Normal logic
+    metro_no_underscores <- gsub("_", " ", m, fixed = TRUE)
+    title_case           <- tools::toTitleCase(metro_no_underscores)
+    paste0(title_case, " area")
+  }
+  
+  # For each metro, we produce 3 slides
+  for (i in seq_along(var_rc_pairs)) {
+    
+    # If this is the 1st slide => show in TOC (no .hide).
+    # Otherwise => hide from TOC with {.hide}.
+    if (i == 1) {
+      writeLines(str_c("### ", heading_text))
+    } else {
+      writeLines(str_c("### ", heading_text, " {.hide}"))
+    }
+    
+    # Extract the variable (firstgen/race) and approach (row/col)
+    g  <- var_rc_pairs[[i]][1]
+    rc <- var_rc_pairs[[i]][2]
+    
+    # Build the figure name: e.g. "race_row_plot_487927"
+    graph_type_native <- str_c(g, "_", rc, "_plot_", native_order)
+    
+    # Call your helper function; it prints "#### <title from _title.txt>"
+    # and displays the figure + footnotes.
+    insert_figure(
+      rq         = "rq2",
+      metro      = m,
+      graph_type = graph_type_native
+    )
+  }
+}
 
 ```
 

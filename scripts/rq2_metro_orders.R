@@ -21,9 +21,6 @@ library(readr)
 # Note: We'll write to "metro_orders.csv" in the working directory.
 # -------------------------------------------------------------------------
 
-library(dplyr)
-library(readr)
-
 # 1) Your revised all_orders list (example below):
 all_orders <- list(
   # CHICAGO
@@ -253,9 +250,58 @@ all_orders <- list(
     "329702",
     "PSAT score 1010 - 1520",
     "Order number 329702 (ordered 8/31/2017): HS class 2019; State = TX; PSAT 1010-1520"
+  ),
+  ##### NATIVE AMERICAN ORDERS
+  # NYC
+  nyny = c(
+    "nyny",
+    "nyny_metro_eps_codes",
+    "487927",
+    "SAT score 1040 - 1600",
+    "Order number 487927 (ordered 7/19/2019): HS class 2020 OR 2021; Ethnicity/Race = American Indian or Alaska Native; SAT 1040-1600; GPA B- to A+"
+  ),
+  # CHICAGO
+  chicago = c(
+    "chicago",
+    "chi_eps_codes",
+    "487927",
+    "SAT score 1040 - 1600",
+    "Order number 487927 (ordered 7/19/2019): HS class 2020 OR 2021; Ethnicity/Race = American Indian or Alaska Native; SAT 1040-1600; GPA B- to A+"
+  ),
+  # HOUSTON
+  houston = c(
+    "houston",
+    "houston_eps_codes",
+    "487927",
+    "SAT score 1040 - 1600",
+    "Order number 487927 (ordered 7/19/2019): HS class 2020 OR 2021; Ethnicity/Race = American Indian or Alaska Native; SAT 1040-1600; GPA B- to A+"
+  ),
+  # LOS ANGELES
+  los_angeles = c(
+    "los_angeles",
+    "los_angeles_eps_codes",
+    "487927",
+    "SAT score 1040 - 1600",
+    "Order number 487927 (ordered 7/19/2019): HS class 2020 OR 2021; Ethnicity/Race = American Indian or Alaska Native; SAT 1040-1600; GPA B- to A+"
+  ),
+  # DALLAS
+  dallas = c(
+    "dallas",
+    "dallas_eps_codes",
+    "487927",
+    "SAT score 1040 - 1600",
+    "Order number 487927 (ordered 7/19/2019): HS class 2020 OR 2021; Ethnicity/Race = American Indian or Alaska Native; SAT 1040-1600; GPA B- to A+"
   )
 )
 
+
+# 487927 (ordered 7/19/2019); native american 2020; HS class 2020, 2021; SAT score 1040 - 1600; GPA A+ to B-; AIAN
+
+#1            New York-Newark-Jersey City, NY-NJ-PA 871
+#2               Chicago-Naperville-Elgin, IL-IN-WI 863
+#3             Houston-The Woodlands-Sugar Land, TX 860
+#4               Los Angeles-Long Beach-Anaheim, CA 818
+#5                  Dallas-Fort Worth-Arlington, TX 722
 
 # -------------------------------------------------------------------------
 # Create a data frame from all_orders
@@ -350,6 +396,7 @@ write_csv(orders_df, file.path(scripts_dir,"metro_orders.csv"))
 #4               Los Angeles-Long Beach-Anaheim, CA 818
 #5                  Dallas-Fort Worth-Arlington, TX 722
 #6             Riverside-San Bernardino-Ontario, CA 394
+
 #7                                             <NA> 335
 #8     Washington-Arlington-Alexandria, DC-VA-MD-WV 323
 #9                    San Antonio-New Braunfels, TX 295

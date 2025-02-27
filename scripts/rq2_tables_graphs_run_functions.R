@@ -126,7 +126,13 @@ for (i in seq_len(nrow(orders_df))) {
   }
 }
 
+# -------------------------------------------------------------------------
 # Part #2) Generating row/col percent figures (patchwork logic)
+# -------------------------------------------------------------------------
+
+# List the special AI/AN order(s) that should not be combined with others
+special_orders <- c("487927")
+
 unique_metros <- unique(orders_df$metro)
 
 for (m in unique_metros) {
@@ -143,6 +149,7 @@ for (m in unique_metros) {
   
   for (g in c("race", "firstgen")) {
     
+    # For non‐special orders, we build a default prefix
     g_prefix <- if (g == "race") "Racial/ethnic" else "First-generation status"
     
     for (rc in c("row", "col")) {
@@ -152,19 +159,18 @@ for (m in unique_metros) {
       plot_name_base <- str_c("rq2_", m, "_", g, "_", rc, "_plot")
       
       # ---------------------------------------------------------
-      # Build figure title (conditional on "Bay Area")
+      # Build the *default* figure title for non‐special orders
       # ---------------------------------------------------------
       if (rc == "row") {
         # e.g. "Racial/ethnic composition of purchased student profiles by Geomarket, Los Angeles area"
         if (friendly_metro_name == "Bay Area") {
-          figure_title <- str_c(
+          default_figure_title <- str_c(
             g_prefix,
             " composition of purchased student profiles by Geomarket, ",
             friendly_metro_name
-            # no " area" appended
           )
         } else {
-          figure_title <- str_c(
+          default_figure_title <- str_c(
             g_prefix,
             " composition of purchased student profiles by Geomarket, ",
             friendly_metro_name,
@@ -174,15 +180,14 @@ for (m in unique_metros) {
       } else {
         # e.g. "Geomarket contribution to purchased student profiles by Racial/ethnic group, Los Angeles area"
         if (friendly_metro_name == "Bay Area") {
-          figure_title <- str_c(
+          default_figure_title <- str_c(
             "Geomarket contribution to purchased student profiles by ",
             g_prefix,
             " group, ",
             friendly_metro_name
-            # no " area" appended
           )
         } else {
-          figure_title <- str_c(
+          default_figure_title <- str_c(
             "Geomarket contribution to purchased student profiles by ",
             g_prefix,
             " group, ",
@@ -193,17 +198,16 @@ for (m in unique_metros) {
       }
       
       # ------------------------------------------------------------------
-      # 1) ROW-PERCENT => COMBINE all subplots (and gather all figure notes)
+      # 1) ROW-PERCENT logic
       # ------------------------------------------------------------------
       if (rc == "row") {
         
-        sub_plots_list <- vector("list", length(order_groups))
+        # We'll store the combined subplots here
+        sub_plots_list <- list()
+        # We'll also collect figure_notes for the combined portion
+        row_fig_notes <- character(0)
         
-        # We'll also collect any figure_notes for these orders
-        row_fig_notes <- character(0)  # Start empty
-        
-        for (i in seq_along(order_groups)) {
-          og <- order_groups[i]
+        for (og in order_groups) {
           plot_obj_name <- str_c("rq2_", m, "_", g, "_plot_order_", og)
           
           if (!exists(plot_obj_name, envir = .GlobalEnv)) {
@@ -211,53 +215,100 @@ for (m in unique_metros) {
             next
           }
           
-          # Add subplot to the combined list
-          sub_plots_list[[i]] <- get(plot_obj_name, envir = .GlobalEnv)[[subslot]]
-          
-          # Look up the row in df_metro to get figure_note
-          row_og <- df_metro %>% filter(order_ids == og)
-          if (nrow(row_og) > 0) {
-            # Append the note for this order
-            row_fig_notes <- c(row_fig_notes, row_og$figure_note[1])
+          # If this order is special => use an "AI/AN" figure title
+          if (og %in% special_orders) {
+            
+            # Decide row-percent text for RACE vs FIRSTGEN
+            if (g == "race") {
+              figure_title <- "Racial/ethnic composition of purchased AI/AN student profiles by Geomarket"
+            } else {
+              figure_title <- "First-generation status composition of purchased AI/AN student profiles by Geomarket"
+            }
+            # If you want to append the metro name => uncomment:
+            # figure_title <- str_c(figure_title, ", ", friendly_metro_name, " area")
+            
+            single_subplot <- get(plot_obj_name, envir = .GlobalEnv)[[subslot]]
+            plot_name      <- str_c(plot_name_base, "_", og)
+            
+            message("Saving stand-alone (row-percent) figure for special order: ", plot_name)
+            writeLines(
+              figure_title, 
+              file.path(graphs_dir, "rq2", str_c(plot_name, "_title.txt"))
+            )
+            
+            # Look up figure_note for this order
+            row_og <- df_metro %>% filter(order_ids == og)
+            figure_note_local <- if (nrow(row_og) > 0) row_og$figure_note[1] else ""
+            
+            # Build the note text
+            note_text <- c(
+              "Figure Notes:",
+              str_c("- Excludes students with missing values for ", g, ". ", figure_note_local, ".")
+            )
+            
+            ggsave(
+              filename = file.path(graphs_dir, "rq2", str_c(plot_name, ".png")),
+              plot     = single_subplot,
+              width    = 16,
+              height   = 10,
+              bg       = "white"
+            )
+            
+            writeLines(
+              note_text, 
+              file.path(graphs_dir, "rq2", str_c(plot_name, "_note.txt"))
+            )
+            
+          } else {
+            # Non-special => combine
+            sub_plots_list[[length(sub_plots_list) + 1]] <-
+              get(plot_obj_name, envir = .GlobalEnv)[[subslot]]
+            
+            # Also collect the figure_note for combining
+            row_og <- df_metro %>% filter(order_ids == og)
+            if (nrow(row_og) > 0) {
+              row_fig_notes <- c(row_fig_notes, row_og$figure_note[1])
+            }
           }
+        } # end for (og in order_groups)
+        
+        # Combine "non-special" plots (if any exist)
+        if (length(sub_plots_list) > 0) {
+          
+          combined_plot <- wrap_plots(sub_plots_list, ncol = 1)
+          plot_name <- plot_name_base
+          
+          message("Saving combined (row-percent) figure: ", plot_name)
+          writeLines(
+            default_figure_title,
+            file.path(graphs_dir, "rq2", str_c(plot_name, "_title.txt"))
+          )
+          
+          ggsave(
+            filename = file.path(graphs_dir, "rq2", str_c(plot_name, ".png")),
+            plot     = combined_plot,
+            width    = 16,
+            height   = 10,
+            bg       = "white"
+          )
+          
+          # Build note_text with a single line about excludes + all notes
+          line2 <- str_c(
+            "- Excludes students with missing values for ", g, ". ",
+            paste(row_fig_notes, collapse = ". ")
+          )
+          line2 <- str_c(line2, ".")
+          
+          note_text <- c("Figure Notes:", line2)
+          writeLines(
+            note_text, 
+            file.path(graphs_dir, "rq2", str_c(plot_name, "_note.txt"))
+          )
         }
         
-        # Now build one combined figure
-        combined_plot <- wrap_plots(sub_plots_list, ncol = 1)
-        plot_name <- plot_name_base
-        
-        message("Saving combined (row-percent) figure: ", plot_name)
-        writeLines(figure_title, file.path(graphs_dir, "rq2", str_c(plot_name, "_title.txt")))
-        
-        ggsave(
-          filename = file.path(graphs_dir, "rq2", str_c(plot_name, ".png")),
-          plot     = combined_plot,
-          width    = 16,
-          height   = 10,
-          bg       = "white"
-        )
-        
-        # Build note_text with a single line containing:
-        #   - Excludes students with missing values for {g}.  + each figure_note separated by ". "
-        line2 <- str_c(
-          "- Excludes students with missing values for ", g, ". ",
-          paste(row_fig_notes, collapse = ". ")
-        )
-        line2 <- str_c(line2, '.')
-        
-        note_text <- c(
-          "Figure Notes:",
-          line2
-        )
-        
-        writeLines(
-          note_text, 
-          file.path(graphs_dir, "rq2", str_c(plot_name, "_note.txt"))
-        )
-        
-        # ------------------------------------------------------------
-        # 2) COLUMN-PERCENT => separate figure (one figure per order)
-        # ------------------------------------------------------------
+        # ------------------------------------------------------------------
+        # 2) COLUMN-PERCENT logic
+        # ------------------------------------------------------------------
       } else {
         
         for (og in order_groups) {
@@ -269,23 +320,41 @@ for (m in unique_metros) {
             next
           }
           
+          # If this order is special => AI/AN override
+          if (og %in% special_orders) {
+            
+            # Decide col-percent text for RACE vs FIRSTGEN
+            if (g == "race") {
+              figure_title <- "Geomarket contribution to purchased AI/AN student profiles by Racial/ethnic group"
+            } else {
+              figure_title <- "Geomarket contribution to purchased AI/AN student profiles by First-generation status group"
+            }
+            # If you want to append the metro name => uncomment:
+            # figure_title <- str_c(figure_title, ", ", friendly_metro_name, " area")
+            
+          } else {
+            # Non-special orders => use default
+            figure_title <- default_figure_title
+          }
+          
           single_subplot <- get(plot_obj_name, envir = .GlobalEnv)[[subslot]]
           plot_name      <- str_c(plot_name_base, "_", og)
           
           message("Saving separate (col-percent) figure: ", plot_name)
-          writeLines(figure_title, file.path(graphs_dir, "rq2", str_c(plot_name, "_title.txt")))
+          writeLines(
+            figure_title,
+            file.path(graphs_dir, "rq2", str_c(plot_name, "_title.txt"))
+          )
           
-          # Look up figure_note for this og
+          # Look up figure_note for this order
           row_og <- df_metro %>% filter(order_ids == og)
           figure_note_local <- if (nrow(row_og) > 0) row_og$figure_note[1] else ""
           
-          # Build the note text with figure_note appended
           note_text <- c(
             "Figure Notes:",
-            str_c("- Excludes students with missing values for ", g, '. ', figure_note_local,'.')
+            str_c("- Excludes students with missing values for ", g, ". ", figure_note_local, ".")
           )
           
-          # Save the figure
           ggsave(
             filename = file.path(graphs_dir, "rq2", str_c(plot_name, ".png")),
             plot     = single_subplot,
@@ -294,12 +363,10 @@ for (m in unique_metros) {
             bg       = "white"
           )
           
-          # Write out the notes
           writeLines(
             note_text, 
             file.path(graphs_dir, "rq2", str_c(plot_name, "_note.txt"))
           )
-          
         } # end for (og in order_groups)
         
       } # end if row vs col
@@ -309,6 +376,7 @@ for (m in unique_metros) {
   } # end g loop
   
 } # end for (m in unique_metros)
+
 
 ############################################################
 # Part #3) create_race_by_firstgen_graph() loop
