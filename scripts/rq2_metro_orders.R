@@ -251,6 +251,22 @@ all_orders <- list(
     "PSAT score 1010 - 1520",
     "Order number 329702 (ordered 8/31/2017): HS class 2019; State = TX; PSAT 1010-1520"
   ),
+  houston = c(
+    "houston",
+    "houston_eps_codes",
+    "404873",
+    "PSAT score 1120 - 1300",
+    "LA LA"
+  ),
+  # don't have firstgen status for these students
+  #houston = c(
+  #  "houston",
+  #  "houston_eps_codes",
+  #  "448007_548238",
+  #  "PSAT score 1470 - 1520",
+  #  "Order number 448007 (ordered 1/8/2019): HS class 2020; State = TX; PSAT 1470 - 1520; GPA B- to A+"
+  #),
+  # Order number 548238 (ordered 1/7/2020): HS class 2021; Selected states; 1470 - 1520; GPA B- to A+
   ##### NATIVE AMERICAN ORDERS
   # NYC
   nyny = c(
@@ -478,3 +494,10 @@ write_csv(orders_df, file.path(scripts_dir,"metro_orders.csv"))
 # Don’t have tx19,tx20,tx21,tx22
 # 546978 (ordered 1/6/2020); 2021 HS grad class; PSAT 1270 - 1520 [N]
 # Don’t have tx19,tx20,tx21,tx22
+
+lists_orders_zip_hs_df %>% filter(hs_state_code == 'TX') %>% 
+  mutate(univ_ord = str_c(univ_name,univ_id,ord_num,sep = '_')) %>% count(univ_ord) %>% arrange(desc(n)) %>% print(n=50) 
+
+
+lists_orders_zip_hs_df %>% filter(hs_state_code == 'TX' & univ_id =='228723') %>% 
+  mutate(univ_ord = str_c(univ_name,univ_id,ord_num,sep = '_')) %>% count(univ_ord) %>% arrange(desc(n)) %>% print(n=50) 

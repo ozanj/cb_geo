@@ -1,0 +1,2 @@
+Figure Notes:
+- Excludes students with missing values for race. Order number 448007 (ordered 1/8/2019): HS class 2020; State = TX; PSAT 1470 - 1520; GPA B- to A+.
