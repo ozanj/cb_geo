@@ -1,2 +1,2 @@
 Figure Notes:
-- Race/ethnicity categories not available in 1980 Census: Asian, non-Hispanic; Two+ races, non-Hispanic; NHPI, non-Hispanic; AIAN non-Hispanic
+- Household income measured using 2024 CPI

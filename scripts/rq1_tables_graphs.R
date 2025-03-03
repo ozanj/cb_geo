@@ -233,15 +233,15 @@ create_eps_graph <- function(eps_codes,
     stop("Please provide a valid `eps_codes` vector.")
   }
   
-  # create string for pathname
-  # If `prefix` isn't provided, fall back to the old logic:
+  # 1) Determine prefix for filenames
   if (is.null(prefix)) {
+    # Fall back to old logic: use the variable name for eps_codes
     file_prefix <- str_replace(deparse(substitute(eps_codes)), '_eps_codes', '')
   } else {
     file_prefix <- prefix
   }
   
-  # Main table creation pipeline
+  # 2) Build the main table to plot
   eps_table <- allyr_anal_tract_sf %>% 
     as.data.frame() %>%
     filter(eps %in% eps_codes) %>%
@@ -290,15 +290,15 @@ create_eps_graph <- function(eps_codes,
     mutate(eps_codename = fct_rev(factor(eps_codename))) %>%
     mutate(year = factor(year, levels = c(2020, 2000, 1980)))
   
-  # Debugging: Print intermediate table if debug is TRUE
+  # If debug=TRUE, show intermediate table
   if (debug) {
-    print(paste("Using statistic:", stat))
+    message("Using statistic: ", stat)
     print(head(eps_table))
   }
   
-  # Filter and create plots based on graph type
+  # 3) Filter table & build plot
   if (graph_type == "race") {
-    
+    # Race/ethnicity approach
     eps_table <- eps_table %>%
       filter(
         statistic == stat,
@@ -320,7 +320,7 @@ create_eps_graph <- function(eps_codes,
       ) +
       scale_y_continuous(labels = scales::percent_format()) +
       facet_wrap(~ year, ncol = 1, scales = "free_y") +
-      theme_custom + 
+      theme_custom +
       theme(
         legend.text  = element_text(size = 14),
         legend.title = element_text(size = 14),
@@ -333,8 +333,8 @@ create_eps_graph <- function(eps_codes,
       plot <- plot + scale_fill_manual(values = fill_palette)
     }
     
-  } else if (graph_type == "ses") {
-    
+  } else {
+    # SES approach
     eps_table <- eps_table %>%
       filter(
         statistic == stat,
@@ -359,8 +359,8 @@ create_eps_graph <- function(eps_codes,
       theme(
         strip.text.x = element_text(size = 12, face = "bold"),
         strip.text.y = element_text(size = 12, face = "bold", angle = 90),
-        axis.text.y = element_text(size = 12),
-        axis.text.x = element_text(size = 12),
+        axis.text.y  = element_text(size = 12),
+        axis.text.x  = element_text(size = 12),
         panel.spacing = unit(1, "lines"),
         legend.position = "none"
       ) +
@@ -376,88 +376,79 @@ create_eps_graph <- function(eps_codes,
       )
   }
   
+  # 4) Construct file names & write
   file_prefix_underscore <- str_replace_all(string = file_prefix, pattern = ' ', replacement = '_')
-  writeLines(file_prefix)
+  message("File prefix: ", file_prefix)
   
-  # create strings for file names
-  plot_name <- str_c('rq1', file_prefix_underscore, graph_type, sep = '_')
-  writeLines(plot_name)
+  plot_name <- str_c("rq1", file_prefix_underscore, graph_type, sep = "_")
+  message("Plot name: ", plot_name)
   
-  # Save plot to file
   ggsave(
-    filename = file.path(graphs_dir,'rq1', str_c(plot_name, '.png')),
+    filename = file.path(graphs_dir, "rq1", str_c(plot_name, ".png")),
     plot = plot,
     width = 14,
     height = 8,
-    bg = 'white'
+    bg = "white"
   )
   
-  # Define which_characteristics for figure title
+  # 5) Determine which_characteristics for figure_title
   if (graph_type == "race") {
-    which_characteristics <- 'Racial/ethnic composition' 
-  } else if (graph_type == "ses") {
-    which_characteristics <- 'Socioeconomic characteristics' 
+    which_characteristics <- "Racial/ethnic composition"
+  } else {
+    which_characteristics <- "Socioeconomic characteristics"
   }
   
-  # -------------------------------------------------------------
-  # (A) Build friendly_prefix and do if-else
-  # -------------------------------------------------------------
+  # 6) Friendly prefix, handle special cases for text
   friendly_prefix <- str_to_title(file_prefix)
   
-  # If user typed "dc maryland virginia", override with "D.C., Maryland, and Virginia"
+  # e.g. "dc maryland virginia" -> "D.C., Maryland, and Virginia"
   if (file_prefix == "dc maryland virginia") {
     friendly_prefix <- "D.C., Maryland, and Virginia"
-  } else if (friendly_prefix == "Bay Area") {
-    # omit "area"
+  }
+  
+  # Construct figure_title
+  if (friendly_prefix == "Bay Area") {
+    # Omit "area" for Bay Area
     figure_title <- str_c(
       which_characteristics,
       "of",
       friendly_prefix,
       "Geomarkets",
-      sep = ' '
+      sep = " "
     )
-    writeLines(figure_title)
-    
-    # Save the title to a .txt file
-    writeLines(figure_title, file.path(graphs_dir,'rq1', str_c(plot_name, 'title.txt', sep = '_'))) 
-    
-    # Build note text
+  } else {
+    # Normal approach: "<which_characteristics> of <friendly_prefix> area Geomarkets"
+    figure_title <- str_c(
+      which_characteristics,
+      "of",
+      friendly_prefix,
+      "area Geomarkets",
+      sep = " "
+    )
+  }
+  
+  message("Figure Title: ", figure_title)
+  
+  # 7) Build note_text differently for race vs. ses
+  if (graph_type == "race") {
     note_text <- c(
       "Figure Notes:",
       "- Race/ethnicity categories not available in 1980 Census: Asian, non-Hispanic; Two+ races, non-Hispanic; NHPI, non-Hispanic; AIAN non-Hispanic",
       note
     )
-    writeLines(note_text, file.path(graphs_dir,'rq1', str_c(plot_name, 'note.txt', sep = '_')))
-    
-    return(plot)
+  } else {
+    note_text <- c(
+      "Figure Notes:",
+      "- Household income measured using 2024 CPI",
+      note
+    )
   }
   
-  # Otherwise build the normal figure_title
-  # e.g. "Racial/ethnic composition of <friendly_prefix> area Geomarkets"
-  figure_title <- str_c(
-    which_characteristics,
-    "of",
-    friendly_prefix,
-    "area Geomarkets",
-    sep = ' '
-  )
+  # 8) Save figure_title and note_text
+  writeLines(figure_title, file.path(graphs_dir, "rq1", str_c(plot_name, "title.txt", sep = "_")))
+  writeLines(note_text,   file.path(graphs_dir, "rq1", str_c(plot_name, "note.txt",  sep = "_")))
   
-  writeLines(figure_title)
-  
-  # Save the title to a .txt file
-  writeLines(figure_title, file.path(graphs_dir,'rq1', str_c(plot_name, 'title.txt', sep = '_')))  
-  
-  # 2) Create the note text
-  note_text <- c(
-    "Figure Notes:",
-    "- Race/ethnicity categories not available in 1980 Census: Asian, non-Hispanic; Two+ races, non-Hispanic; NHPI, non-Hispanic; AIAN non-Hispanic",
-    note
-  )
-  
-  # 3) Write that text to a file
-  writeLines(note_text, file.path(graphs_dir,'rq1', str_c(plot_name, 'note.txt', sep = '_')))  
-  
-  # Return the plot
+  # Return the plot object
   return(plot)
 }
 

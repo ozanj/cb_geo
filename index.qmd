@@ -226,21 +226,21 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE)
 # Example directories
 graphs_dir <- file.path(".", "results", "graphs")
 
-# 1) Define the `insert_figure` helper function
+# Revised insert_figure() that does NOT print a heading
 insert_figure <- function(rq, metro, graph_type, base_path = graphs_dir) {
 
   # We'll use 'metro' directly since it's already underscored (e.g. "los_angeles").
-  fig_file  <- file.path(base_path, rq, str_c(rq, "_", metro, "_", graph_type, ".png"))
-  cap_file  <- file.path(base_path, rq, str_c(rq, "_", metro, "_", graph_type, "_title.txt"))
-  note_file <- file.path(base_path, rq, str_c(rq, "_", metro, "_", graph_type, "_note.txt"))
+  fig_file  <- file.path(base_path, rq, stringr::str_c(rq, "_", metro, "_", graph_type, ".png"))
+  cap_file  <- file.path(base_path, rq, stringr::str_c(rq, "_", metro, "_", graph_type, "_title.txt"))
+  note_file <- file.path(base_path, rq, stringr::str_c(rq, "_", metro, "_", graph_type, "_note.txt"))
 
-  # Print a heading / caption
+  # Print a heading/caption
   caption_text <- if (file.exists(cap_file)) readLines(cap_file, warn = FALSE) else "No Title Found"
   writeLines(paste0("#### ", caption_text))
 
   # Output the figure (if it exists)
   if (file.exists(fig_file)) {
-    writeLines(str_c("![](", fig_file, ")\n"))
+    writeLines(stringr::str_c("![](", fig_file, ")\n"))
   } else {
     writeLines(paste("*(Missing figure file:", fig_file, ")*\n"))
   }
@@ -249,7 +249,7 @@ insert_figure <- function(rq, metro, graph_type, base_path = graphs_dir) {
   if (file.exists(note_file)) {
     notes_txt <- readLines(note_file, warn = FALSE)
     writeLines(
-      str_c(
+      stringr::str_c(
         "<div class=\"footnote\">",
         paste0(notes_txt, collapse = "</br>"),
         "</div>"
@@ -362,6 +362,9 @@ for (m in metros) {
 
       # Gather all the underscore-delimited order_ids
       orders_for_m <- df_metro$order_ids
+      
+      # -- HERE is the new line to remove "487927" --
+      orders_for_m <- orders_for_m[ orders_for_m != "487927" ]      
 
       # We'll do 2 group types: race & firstgen
       for (i in seq_along(graph_types_rq2)) {
@@ -424,12 +427,44 @@ for (m in metros) {
 
 } # end metros loop
 
+
+
+# A special version insert_figure_aian for AI/AN that does NOT print a heading
+insert_figure_aian <- function(rq, metro, graph_type, base_path = graphs_dir) {
+  
+  fig_file  <- file.path(base_path, rq, paste0(rq, "_", metro, "_", graph_type, ".png"))
+  cap_file  <- file.path(base_path, rq, paste0(rq, "_", metro, "_", graph_type, "_title.txt"))
+  note_file <- file.path(base_path, rq, paste0(rq, "_", metro, "_", graph_type, "_note.txt"))
+
+  # Instead of printing a heading, let the AI/AN loop do it (#### subtitle).
+  # So we skip caption_text or print it differently if you want.
+
+  if (file.exists(fig_file)) {
+    writeLines(paste0("![](", fig_file, ")\n"))
+  } else {
+    writeLines(paste("*(Missing figure file:", fig_file, ")*\n"))
+  }
+
+  # Print footnotes (if the .txt file exists)
+  if (file.exists(note_file)) {
+    notes_txt <- readLines(note_file, warn = FALSE)
+    writeLines(
+      paste0(
+        "<div class=\"footnote\">",
+        paste0(notes_txt, collapse = "</br>"),
+        "</div>"
+      )
+    )
+  }
+}
+
+
 ############################################################################
 # 5) AI/AN results loop
 ############################################################################
 
-# Make AI/AN a top-level heading (level 1)
-writeLines("# AI/AN students")
+# (Level-1) "AI/AN students"
+writeLines("# AI/AN students\n")
 
 # The five metros (with 'nyny' last) and the single Native American order
 native_metros <- c("chicago", "dallas", "houston", "los_angeles", "nyny")
@@ -444,46 +479,44 @@ var_rc_pairs <- list(
 
 for (m in native_metros) {
   
-  # Determine the heading text for each metro:
-  # If m == 'nyny', use "New York City".
-  # Otherwise, convert underscores -> spaces, then "Title Case + area".
+  # (Level-2) heading for each metro (not a slide at slide-level=3)
   heading_text <- if (m == "nyny") {
     "New York City"
   } else {
-    # Normal logic
-    metro_no_underscores <- gsub("_", " ", m, fixed = TRUE)
-    title_case           <- tools::toTitleCase(metro_no_underscores)
-    paste0(title_case, " area")
+    m_no_underscores <- gsub("_", " ", m, fixed = TRUE)
+    m_title          <- tools::toTitleCase(m_no_underscores)
+    paste0(m_title, " area")
   }
-  
-  # For each metro, we produce 3 slides
+  writeLines(paste0("## ", heading_text, "\n"))
+
+  # For each var/rc pair, create a new slide at level-3 (always hidden in TOC)
   for (i in seq_along(var_rc_pairs)) {
     
-    # If this is the 1st slide => show in TOC (no .hide).
-    # Otherwise => hide from TOC with {.hide}.
-    if (i == 1) {
-      writeLines(str_c("## ", heading_text))
-    } else {
-      writeLines(str_c("## ", heading_text, " {.hide}"))
-    }
-    
-    # Extract the variable (firstgen/race) and approach (row/col)
     g  <- var_rc_pairs[[i]][1]
     rc <- var_rc_pairs[[i]][2]
-    
-    # Build the figure name: e.g. "race_row_plot_487927"
-    graph_type_native <- str_c(g, "_", rc, "_plot_", native_order)
-    
-    # Call your helper function; it prints a heading/caption
-    # and displays the figure + footnotes.
-    insert_figure(
+
+    # Always hidden from TOC => add "{.hide}" every time
+    writeLines(paste0("### ", heading_text, " (AI/AN) {.hide}\n"))
+
+    # (Level-4) subtitle on the same slide
+    subtitle <- if (g == "firstgen") {
+      "First-generation status composition of purchased AI/AN student profiles by geomarket"
+    } else if (g == "race") {
+      "Racial composition of purchased AI/AN student profiles by geomarket"
+    } else {
+      "Other composition of purchased AI/AN student profiles"
+    }
+    writeLines(paste0("#### ", subtitle, "\n"))
+
+    # Build figure name and call your "no-heading" figure function
+    graph_type <- paste0(g, "_", rc, "_plot_", native_order)
+    insert_figure_aian(
       rq         = "rq2",
       metro      = m,
-      graph_type = graph_type_native
+      graph_type = graph_type
     )
   }
 }
-
 ```
 
 # Discussion
