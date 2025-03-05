@@ -259,25 +259,25 @@ insert_figure <- function(rq, metro, graph_type, base_path = graphs_dir) {
 }
 
 # 2) Define your *underscored* metros / RQs
-metros <- c(
-  "atlanta",
-  "bay_area",
-  "boston",
-  "chicago",
-  "cleveland",
-  "dallas",
-  "dc_maryland_virginia",
-  "detroit",
-  "houston",
-  "long_island",
-  "los_angeles",
-  "miami",
-  "new_york_city",
-  "northern_new_jersey",
-  "orange_county",
-  "philadelphia",
-  "san_diego"
-)
+  metros <- c(
+    "atlanta",
+    "bay_area",
+    "boston",
+    "chicago",
+    "cleveland",
+    "dallas",
+    "dc_maryland_virginia",
+    "detroit",
+    "houston",
+    "long_island",
+    "los_angeles",
+    "miami",
+    "new_york_city",
+    "northern_new_jersey",
+    "orange_county",
+    "philadelphia",
+    "san_diego"
+  )
 
 rqs <- c("rq1", "rq2")
 
