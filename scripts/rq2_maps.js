@@ -104,7 +104,8 @@ function(el, x, choices) {
     orderOptionsHTML = '';
     order_region.forEach(function(curr, idx) {
       if (curr === active_attr.active_metro) {
-        orderOptionsHTML += '<div><input type="radio" class="leaflet-control-layers-selector" name="order-choice" data-order="' + order_num[idx] + '"><span> ' + order_num[idx].split('_').join(' & ') + ': ' + order_title[idx] + '</span></div>';
+        let t = 0;
+        orderOptionsHTML += '<div><input type="radio" class="leaflet-control-layers-selector" name="order-choice" data-order="' + order_num[idx] + '"><span> ' + order_num[idx].split('_').join(' & ').replace(/ & /g, match => ++t === 2 ? ', ' : match) + ': ' + order_title[idx] + '</span></div>';
       }
     });
     

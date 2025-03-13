@@ -1,4 +1,5 @@
 library(tidyverse)
+library(rmapshaper)
 
 
 source(file.path('scripts', 'directories.R'))

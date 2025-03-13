@@ -183,7 +183,27 @@ student_data <- purchased_data %>%
     all_nosomecollege = all_nocollege + all_somecollege
   )
 
-student_data_multi_orders <- lapply(c('488035_488053', '448427_448440', '448420_448374'), function(orders) {
+orders_data_full <- read_csv(file.path('scripts', 'metro_orders.csv')) %>% 
+  select(-eps_codes, -figure_note) %>% 
+  add_row(metro = 'chicago', order_ids = '392834_488035_392835_488053', test_range = 'SAT score 1160 - 1600') %>% 
+  add_row(metro = 'philadelphia', order_ids = '448427_448440', test_range = 'PSAT score 1190 - 1520') %>%  
+  add_row(metro = 'northern_new_jersey', order_ids = '448427_448440', test_range = 'PSAT score 1190 - 1520') %>%  
+  add_row(metro = 'long_island', order_ids = '448427_448440', test_range = 'PSAT score 1190 - 1520') %>%  
+  add_row(metro = 'dallas', order_ids = '448427_448440', test_range = 'PSAT score 1190 - 1520') %>%  
+  add_row(metro = 'detroit', order_ids = '448427_547005_448440_546978', test_range = 'PSAT score 1190 - 1520') %>% 
+  add_row(metro = 'los_angeles', order_ids = '448420_546946_448374_546945', test_range = 'PSAT score 1190 - 1520') %>%
+  add_row(metro = 'orange_county', order_ids = '448420_546946_448374_546945', test_range = 'PSAT score 1190 - 1520') %>% 
+  add_row(metro = 'san_diego', order_ids = '448420_546946_448374_546945', test_range = 'PSAT score 1190 - 1520') %>% 
+  add_row(metro = 'bay_area', order_ids = '448420_546946_448374_546945', test_range = 'PSAT score 1190 - 1520') %>%
+  mutate(
+    type = c(rep('rq2', 32), rep('aian', 5), rep('rq2', 10))
+  )
+
+names(orders_data_full) <- c('region', 'order_num', 'order_title', 'type')
+
+unique_orders <- unique(orders_data_full$order_num)
+
+student_data_multi_orders <- lapply(unique_orders[str_detect(unique_orders, '_')], function(orders) {
   student_data %>% 
     filter(ord_num %in% str_split(orders, '_')[[1]]) %>%
     mutate(ord_num = orders) %>% 
@@ -216,27 +236,6 @@ lists_orders_zip_hs_df %>%
   distinct() %>% 
   View()
 
-orders_data <- data.frame(
-  region = c(
-    rep('chicago', 4),
-    rep('philadelphia', 4), rep('northern_new_jersey', 4), rep('long_island', 4), rep('detroit', 4), rep('dallas', 4),
-    rep('los_angeles', 4), rep('orange_county', 4), rep('san_diego', 4), rep('bay_area', 4),
-    'houston'
-  ),
-  order_num = c(
-    '487984', '488035', '488053', '488035_488053',
-    rep(c('448922', '448427', '448440', '448427_448440'), 5),
-    rep(c('448375', '448420', '448374', '448420_448374'), 4),
-    '329702'
-  ),
-  order_title = c(
-    'SAT 1020-1150', 'SAT 1160-1300', 'SAT 1310-1600', 'SAT 1160-1600',
-    rep(c('PSAT 1070-1180', 'PSAT 1190-1260', 'PSAT 1270-1520', 'PSAT 1190-1520'), 5),
-    rep(c('PSAT 1070-1180', 'PSAT 1190-1260', 'PSAT 1270-1520', 'PSAT 1190-1520'), 4),
-    'PSAT 1010-1520'
-  )
-)
-
 race_vars <- data.frame(
   abbrev = c('all', 'white', 'black', 'hispanic', 'asian', 'nhpi', 'aian', 'multi', 'other', 'norace'),
   name = c('All', 'White, non-Hispanic', 'Black, non-Hispanic', 'Hispanic', 'Asian, non-Hispanic', 'NHPI, non-Hispanic', 'AIAN, non-Hispanic', '2+ Races, non-Hispanic', 'Other', 'Unknown/Missing')
@@ -247,11 +246,16 @@ edu_vars <- data.frame(
   name = c('All', 'No college', 'Some college', 'No or some college', 'BA+', 'Unknown/Missing')
 )
 
+regions_data[regions_data$region == 'nyny', 'region'] <- 'nyny'  # for the AIAN graphs
+
 
 # Map functions
 
-create_rq2_map <- function(metros) {
+create_rq2_map <- function(metros, map_type = 'rq2') {
   js <- read_file(file.path(scripts_dir, 'rq2_maps.js'))
+  
+  orders_data <- orders_data_full %>% 
+    filter(type == map_type)
   
   choices <- list(
     region_choices = regions_data %>% filter(region %in% metros) %>% select(region, region_name, latitude, longitude),
@@ -333,7 +337,7 @@ create_rq2_map <- function(metros) {
       addCircleMarkers(data = non_purchased, lng = ~st_coordinates(geometry)[,1], lat = ~st_coordinates(geometry)[,2], group = 'Non-Purchased High Schools',
                        radius = marker_size, fillOpacity = 1, opacity = 1, weight = 1.5, color = 'red', fillColor = 'red',
                        popup = ~hs_label, options = pathOptions(className = paste0('metro-', metro, ' order-pin ', non_purchased$np_order)))
-    
+
     # Markers for purchased schools (order-specific)
     for (order_num in order_nums) {
       p <- purchased %>% filter(ord_num == order_num)
@@ -373,6 +377,10 @@ create_rq2_map(c('bay_area', 'long_island'))
 saveWidget(create_rq2_map(c('philly', 'chicago')), file.path('.', 'results', 'maps', 'rq2_map_philly_chicago.html'), background = 'transparent', selfcontained = T)
 
 
-for (region in unique(orders_data$region)) {
-  saveWidget(create_rq2_map(region), file.path('.', 'results', 'maps', paste0('rq2_map_', region, '.html')), background = 'transparent', selfcontained = T)
+for (region in unique((orders_data_full %>% filter(type == 'rq2'))$region)) {
+  saveWidget(create_rq2_map(region, 'rq2'), file.path('.', 'results', 'maps', paste0('rq2_map_', region, '.html')), background = 'transparent', selfcontained = T)
+}
+
+for (region in unique((orders_data_full %>% filter(type == 'aian'))$region)) {
+  saveWidget(create_rq2_map(region, 'aian'), file.path('.', 'results', 'maps', paste0('rq2_aian_map_', region, '.html')), background = 'transparent', selfcontained = T)
 }

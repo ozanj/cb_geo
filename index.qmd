@@ -334,7 +334,7 @@ for (m in metros) {
       
       # Add RQ1 map
       writeLines(str_c("### Research question ", rq_num, " {.hide}"))
-      writeLines("#### Map")
+      writeLines(str_c("#### Racial/ethnic and socioeconomic characteristics of ", heading_text, " Geomarkets over time"))
       
       rq1_map <- str_c('./results/maps/rq1_map_', m, '.html')
       
@@ -345,6 +345,7 @@ for (m in metros) {
       
       writeLines(str_c('<iframe data-src="', rq1_map, '" src="about:blank" width=100% height=100% allowtransparency="true"></iframe>'))
       writeLines('<p class="fullscreen">Fullscreen</p>')
+      writeLines('<div class="footnote">Figure Notes:<br>- Race/ethnicity categories not available in 1980 Census: Asian, non-Hispanic; Two+ races, non-Hispanic; NHPI, non-Hispanic; AIAN non-Hispanic<br>- Household income measured using 2024 CPI</div>')
 
     # ---------------------------------------------
     # RQ2 Logic (row vs. col approach + race_by_firstgen)
@@ -412,14 +413,21 @@ for (m in metros) {
       
       # Add RQ2 map
       writeLines(str_c("### Research question ", rq_num, " {.hide}"))
-      writeLines("#### Map")
+      writeLines(str_c("#### Purchased student profiles by racial/ethnic composition and first-generation status, ", heading_text))
       
       writeLines(str_c(
         '<iframe data-src="./results/maps/rq2_map_',
         m,
-        '.html" src="about:blank" width=100% height=100% allowtransparency="true"></iframe>'
+        '.html" src="about:blank" width=100% height=100% style="max-height: 75%" allowtransparency="true"></iframe>'
       ))
       writeLines('<p class="fullscreen">Fullscreen</p>')
+      notes_txt <- readLines(file.path(graphs_dir, rq, str_c('rq2_', m, '_race_row_plot_note.txt')), warn = FALSE)
+      writeLines(
+        str_replace(
+          str_c('<div class="footnote">', paste0(notes_txt, collapse = "</br>"), '</div>'),
+          'Excludes students with missing values for race\\. ', ''
+        )
+      )
 
     } # end if (rq == "rq2")
 
@@ -516,6 +524,18 @@ for (m in native_metros) {
       graph_type = graph_type
     )
   }
+  
+  # Add RQ2 map
+  writeLines(paste0("### ", heading_text, " (AI/AN) {.hide}\n"))
+  writeLines(str_c("#### Purchased AI/AN student profiles by racial/ethnic composition and first-generation status"))
+  
+  writeLines(str_c(
+    '<iframe data-src="./results/maps/rq2_aian_map_',
+    m,
+    '.html" src="about:blank" width=100% height=100% allowtransparency="true"></iframe>'
+  ))
+  writeLines('<p class="fullscreen">Fullscreen</p>')
+  writeLines('<div class="footnote">Figure Notes:<br>- Order number 487927 (ordered 7/19/2019): HS class 2020 OR 2021; Ethnicity/Race = American Indian or Alaska Native; SAT 1040-1600; GPA B- to A+.</div>')
 }
 ```
 
@@ -556,6 +576,12 @@ Scholarship on postsecondary "organizational field"
 - Org field is "totality of relevant actors" [@RN527, p. 148]
   - Organizational field should be focus of regulation
   - Sociology should identify high-leverage actors/products in org field
+
+
+# Thank you!{.align-center}
+
+<div><img class="qr" src="./assets/images/qr_code.png" /></div>
+
 
 # References
 

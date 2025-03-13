@@ -35,17 +35,12 @@ $presentation-font-size-root: 30px;
     margin-bottom: 0;
     color: #777;
   }
-  .url {
-    display: inline-block;
-    margin: 4rem 0 4rem;
-    font-size: 0.8em;
-    color: #91adcb;
-    opacity: 1;
-    transition: opacity .15s ease;
-    &:hover {
-      color: #91adcb;
-      opacity: 0.7;
-    }
+  .qr {
+    width: 150px;
+    margin: 50px 0 20px;
+  }
+  .align-center {
+    text-align: center;
   }
   .author, .institute {
     font-size: 20px;
@@ -91,8 +86,8 @@ $presentation-font-size-root: 30px;
     padding-left: 10px;
   }
   .fullscreen {
-    margin-top: -25px;
-    padding-left: 5px;
+    margin-top: -20px;
+    float: right;
     cursor: pointer;
     transition: opacity .15s ease;
     &:before {
@@ -184,6 +179,7 @@ $presentation-font-size-root: 30px;
     iframe {
       max-width: 100%;
       max-height: 80%;
+      margin-bottom: 20px;
     }
   }
 }
