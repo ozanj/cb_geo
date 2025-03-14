@@ -179,6 +179,33 @@ philly_eps_table %>% print(n=100)
 saveRDS(socal_eps_table, file.path(tables_dir, "socal_eps_table.rds"))
 saveRDS(philly_eps_table, file.path(tables_dir, "philly_eps_table.rds"))
 
+# metros <- c(
+#   "atlanta",
+#   "bay_area",
+#   "boston",
+#   "chicago",
+#   "cleveland",
+#   "dallas",
+#   "dc_maryland_virginia",
+#   "detroit",
+#   "houston",
+#   "long_island",
+#   "los_angeles",
+#   "miami",
+#   "new_york_city",
+#   "northern_new_jersey",
+#   "orange_county",
+#   "philadelphia",
+#   "san_diego"
+# )
+# 
+# for (metro in metros) {
+#   saveRDS(
+#     create_eps_table(all_codes[[metro]]$eps, table_varlist),  # all_codes is from map_functions.R
+#     file.path(tables_dir, str_c('rq1_table_', metro, '.rds'))
+#   )
+# }
+
 ########## FUNCTION TO CREATE (INPUT DATA FRAME FOR) GRAPHS RELEVANT TO RQ1
 
 # Human-readable names for the variables (you can modify this list based on the variables passed in)

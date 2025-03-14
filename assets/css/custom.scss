@@ -246,9 +246,9 @@ $presentation-font-size-root: 30px;
 /* Tables */
 
 .table-wrapper {
-  height: 600px;
+  height: 550px;
+  margin-bottom: 30px;
   overflow: auto;
-  margin-top: 30px;
 }
 
 .reveal table {
@@ -275,4 +275,23 @@ $presentation-font-size-root: 30px;
 
 .cell-output-display:not(.no-overflow-x) {
   overflow-x: inherit !important;
+}
+
+.freeze-pane {
+  tr {
+    th, td {
+      &:nth-child(1) {
+        position: sticky;
+        left: 0;
+        border-right: 1px solid black;
+        z-index: 1;
+      }
+    }
+  }
+  thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    box-shadow: 0 -1px 0 #fefcfd;
+  }
 }
