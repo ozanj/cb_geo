@@ -226,6 +226,7 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE)
 
 # Example directories
 graphs_dir <- file.path(".", "results", "graphs")
+tables_dir <- file.path(".", "results", "tables")
 
 # Revised insert_figure() that does NOT print a heading
 insert_figure <- function(rq, metro, graph_type, base_path = graphs_dir) {
@@ -257,6 +258,25 @@ insert_figure <- function(rq, metro, graph_type, base_path = graphs_dir) {
       )
     )
   }
+}
+
+insert_rq1_table <- function(metro) {
+  table_df <- readRDS(file.path(tables_dir, str_c('rq1_table_', metro, '.rds')))
+  table_df[is.na(table_df)] <- NA_real_
+  
+  group_headings <- unique(table_df$variable)
+  nrows <- nrow(table_df) / length(group_headings)
+  i <- 1
+  
+  k <- kbl(table_df %>% select(-variable), escape = F, col.names = c('', rep(c('Mean', 'SD', 'P25', 'P50', 'P75'), 3)))
+  
+  for (g in group_headings) {
+    k <- k %>% pack_rows(g, i, i + nrows - 1, colnum = 1, label_row_css = '')
+    i <- i + nrows
+  }
+  
+  k %>% 
+    add_header_above(header = c(' ' = 1, '1980' = 5, '2000' = 5, '2020' = 5))
 }
 
 # 2) Define your *underscored* metros / RQs
@@ -332,6 +352,15 @@ for (m in metros) {
         writeLines(str_c("### Research question ", rq_num, if_else(i == 1, "", " {.hide}")))
         insert_figure(rq = rq, metro = m, graph_type = g)
       }
+      
+      # Add RQ1 table
+      writeLines(str_c("### Research question ", rq_num, " {.hide}"))
+      writeLines(str_c("#### Racial/ethnic and socioeconomic characteristics of ", heading_text, " Geomarkets over time"))
+      
+      writeLines('<div class="table-wrapper freeze-pane">')
+      writeLines(insert_rq1_table(m))
+      writeLines('</div>')
+      writeLines('<div class="footnote">Table Notes:<br>- Race/ethnicity categories not available in 1980 Census: Asian, non-Hispanic; Two+ races, non-Hispanic; NHPI, non-Hispanic; AIAN non-Hispanic<br>- Household income measured using 2024 CPI</div>')
       
       # Add RQ1 map
       writeLines(str_c("### Research question ", rq_num, " {.hide}"))
