@@ -35,7 +35,7 @@ Two recruiting products sold by College Board
 
 College Board "Geomarkets" are an input in both products
 
-- Geomarkets carve states and metro areas into smaller geographic regions meant to define local recruiting markets [@RN4982]
+- Geomarkets carve states and metro areas into smaller geographic regions
 
 Concerns: Geomarket borders correlated with race/class; likely to be used in ways that undermine equality of opportunity
 
@@ -77,12 +77,13 @@ Concerns: Geomarket borders correlated with race/class; likely to be used in way
 - Categorize students into 4 market segments -- local, in-state, regional, national -- based on SAT score-sending behavior
   - local: send most scores to colleges within Geomarket
   - regional: send most scores out-of-state but in-region (e.g., Midwest)
-- "Good" colleges should look for regional and national students
-  - Like @RN2247, except College Board creates product from it
-  - @RN4982 create outputs that become EPS software
+- Selective colleges should look for regional and national students
+- @RN4982 create outputs that become EPS software
+
+<!--   - Like @RN2247, except College Board creates product from it -->
 
 ### Scholarship on Quantification {.hide}
-#### Discussions of correlation and homophily by @RN4975[chapter 1]
+#### Discussions of correlation and homophily by @RN4975
 
 <p class="quote">**Correlation**: extent to which variables move together</p>
 <p style="display:none;">Our research has simply demonstrated what everyone has always known: communities with high levels of family income and parental education are also communities in which students have higher than average SATs and more far-reaching aspirations” [@RN4982, p. 42].</p>
@@ -185,7 +186,7 @@ Concerns: Geomarket borders correlated with race/class; likely to be used in way
 - Student lists purchased by 14 public universities from 2016-2020
   - 414 student lists associated with 2.5 million prospects
     - Data: search filter criteria; and de-identified student-level data
-    - Each prospect has a home and a HS zip code (point geoms)
+    - Each prospect has home and HS zip code (point geometry)
 - Analyze purchases that include all Geomarkets in a metro area
   - Show who included/excluded if we filter on particular Geomarkets
 
