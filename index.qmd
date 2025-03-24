@@ -264,19 +264,82 @@ insert_rq1_table <- function(metro) {
   table_df <- readRDS(file.path(tables_dir, str_c('rq1_table_', metro, '.rds')))
   table_df[is.na(table_df)] <- NA_real_
   
-  group_headings <- unique(table_df$variable)
-  nrows <- nrow(table_df) / length(group_headings)
-  i <- 1
+  headings <- unique(table_df$variable)
+  headings_group <- rep(nrow(table_df) / length(headings), length(headings))
+  names(headings_group) <- headings
   
-  k <- kbl(table_df %>% select(-variable), escape = F, col.names = c('', rep(c('Mean', 'SD', 'P25', 'P50', 'P75'), 3)))
-  
-  for (g in group_headings) {
-    k <- k %>% pack_rows(g, i, i + nrows - 1, colnum = 1, label_row_css = '')
-    i <- i + nrows
-  }
-  
-  k %>% 
+  kbl(table_df %>% select(-variable), escape = F, col.names = c('', rep(c('Mean', 'SD', 'P25', 'P50', 'P75'), 3))) %>% 
+    pack_rows(index = headings_group, colnum = 1, label_row_css = '') %>% 
     add_header_above(header = c(' ' = 1, '1980' = 5, '2000' = 5, '2020' = 5))
+}
+
+insert_rq2_table <- function(metro, table_type, rq_name = 'rq2') {
+  table_df <- readRDS(file.path(tables_dir, str_c(rq_name, '_table_', metro, '.rds')))[[table_type]]
+  table_df[is.na(table_df)] <- NA_real_
+  table_df$order_ids <- as_factor(table_df$order_ids)
+
+  orders <- str_c(if_else(str_detect(unique(table_df$order_ids), '_'), 'Orders ', 'Order '), sub('_', ' & ', unique(table_df$order_ids)), ', ', unique(table_df$test_range))
+  orders_group <- table(table_df$order_ids)
+  names(orders_group) <- orders
+  
+  if (table_type == 'race') {
+    tables_group <- rep(nrow(table_df) / length(orders) / length(unique(table_df$table)), length(unique(table_df$table)))
+    names(tables_group) <- c('Count of purchased students', 'Purchased students by geomarket', 'Purchased students by racial/ethnic group')
+  
+    return(
+      kbl(
+        table_df %>%
+          mutate(
+            across(all, \(x) format(round(x, 0), big.mark = ',')),
+            across(race_known, ~ if_else(table == 'col_pct_table' & eps_codename != 'All', sprintf('%.1f', .), format(round(., 0), big.mark = ','))),
+            across(white:nhpi, ~ if_else(table == 'count_table' | (table == 'col_pct_table' & eps_codename == 'All'), format(round(., 0), big.mark = ','), sprintf('%.1f', .)))
+          ) %>%
+          select(-table, -order_ids, -test_range),
+        align = 'lrrrrrrrrr', escape = F,
+        col.names = c('', 'All', 'Race known', 'White', 'Asian', 'Black', 'Hispanic', '2+ races', 'AIAN', 'NHPI')
+      ) %>% 
+        pack_rows(index = orders_group, colnum = 1, label_row_css = 'background-color: #eaeaea; padding: 10px 7.5px;') %>% 
+        pack_rows(index = rep(tables_group, length(orders)), colnum = 1, label_row_css = '')
+    )
+  } else if (table_type == 'firstgen') {
+    tables_group <- rep(nrow(table_df) / length(orders) / length(unique(table_df$table)), length(unique(table_df$table)))
+    names(tables_group) <- c('Count of purchased students', 'Purchased students by geomarket', 'Purchased students by first-generation status')
+    
+    return(
+      kbl(
+        table_df %>%
+          mutate(
+            across(all, \(x) format(round(x, 0), big.mark = ',')),
+            across(known, ~ if_else(table == 'col_pct_table' & eps_codename != 'All', sprintf('%.1f', .), format(round(., 0), big.mark = ','))),
+            across(no_col:not_first, ~ if_else(table == 'count_table' | (table == 'col_pct_table' & eps_codename == 'All'), format(round(., 0), big.mark = ','), sprintf('%.1f', .)))
+          ) %>%
+          select(-unknown, -table, -order_ids, -test_range),
+        align = 'lrrrrr', escape = F,
+        col.names = c('', 'All', 'First-gen known', 'No college', 'Some college', 'Not first-gen')
+      ) %>% 
+        pack_rows(index = orders_group, colnum = 1, label_row_css = 'background-color: #eaeaea; padding: 10px 7.5px;') %>% 
+        pack_rows(index = rep(tables_group, length(orders)), colnum = 1, label_row_css = '')
+    )
+  } else if (table_type == 'race_firstgen') {
+    group_df <- table_df %>% group_by(order_ids, stu_race_cb) %>% summarise(n = n())
+    race_group <- group_df$n
+    names(race_group) <- str_replace(str_to_title(group_df$stu_race_cb), 'Or', 'or')
+    
+    return(
+      kbl(
+        table_df %>% 
+          mutate(
+            across(all, \(x) format(round(x, 0), big.mark = ',')),
+            across(row_no_col:row_not_first_gen, \(x) sprintf('%.1f', x))
+          ) %>% 
+          select(-stu_race_cb, -order_ids, -test_range),
+        align = 'lrrrr', escape = F,
+        col.names = c('', 'All', 'No college', 'Some college', 'Not first-gen')
+      ) %>% 
+        pack_rows(index = orders_group, colnum = 1, label_row_css = 'background-color: #eaeaea; padding: 10px 7.5px;') %>% 
+        pack_rows(index = race_group, colnum = 1, label_row_css = '')
+    )
+  }
 }
 
 # 2) Define your *underscored* metros / RQs
@@ -395,7 +458,14 @@ for (m in metros) {
       orders_for_m <- df_metro$order_ids
       
       # -- HERE is the new line to remove "487927" --
-      orders_for_m <- orders_for_m[ orders_for_m != "487927" ]      
+      orders_for_m <- orders_for_m[ orders_for_m != "487927" ]  
+      
+      get_notes <- function(missing_txt = '') {
+        str_replace(
+          str_c('<div class="footnote">', paste0(readLines(file.path(graphs_dir, rq, str_c('rq2_', m, '_race_row_plot_note.txt')), warn = FALSE), collapse = "</br>"), '</div>'),
+          'Excludes students with missing values for race\\. ', missing_txt
+        )
+      }
 
       # We'll do 2 group types: race & firstgen
       for (i in seq_along(graph_types_rq2)) {
@@ -429,6 +499,19 @@ for (m in metros) {
 
         } # end rc loop
         
+        # Add RQ2 table
+        writeLines(str_c("### Research question ", rq_num, " {.hide}"))
+        writeLines(if_else(
+          g == 'race',
+          str_c('#### Racial/ethnic composition of purchased student profiles by Geomarket, ', heading_text),
+          str_c('#### First-generation status of purchased student profiles by Geomarket, ', heading_text)
+        ))
+
+        writeLines('<div class="table-wrapper freeze-pane">')
+        writeLines(insert_rq2_table(m, g))
+        writeLines('</div>')
+        writeLines(get_notes())
+        
       } # end g loop
 
       # -------------------------------------------
@@ -441,6 +524,15 @@ for (m in metros) {
         insert_figure(rq = "rq2b", metro = m, graph_type = graph_type_rbf)
       }
       
+      # Add RQ2B table
+      writeLines(str_c("### Research question ", rq_num, " {.hide}"))
+      writeLines(str_c("#### First-generation status by race for ", heading_text, " Geomarkets"))
+
+      writeLines('<div class="table-wrapper freeze-pane">')
+      writeLines(insert_rq2_table(m, 'race_firstgen'))
+      writeLines('</div>')
+      writeLines(get_notes('Excludes students who have missing values for race or parental education. '))
+      
       # Add RQ2 map
       writeLines(str_c("### Research question ", rq_num, " {.hide}"))
       writeLines(str_c("#### Purchased student profiles by racial/ethnic composition and first-generation status, ", heading_text))
@@ -451,13 +543,7 @@ for (m in metros) {
         '.html" src="about:blank" width=100% height=100% style="max-height: 75%" allowtransparency="true"></iframe>'
       ))
       writeLines('<p class="fullscreen">Fullscreen</p>')
-      notes_txt <- readLines(file.path(graphs_dir, rq, str_c('rq2_', m, '_race_row_plot_note.txt')), warn = FALSE)
-      writeLines(
-        str_replace(
-          str_c('<div class="footnote">', paste0(notes_txt, collapse = "</br>"), '</div>'),
-          'Excludes students with missing values for race\\. ', ''
-        )
-      )
+      writeLines(get_notes())
 
     } # end if (rq == "rq2")
 
@@ -553,6 +639,21 @@ for (m in native_metros) {
       metro      = m,
       graph_type = graph_type
     )
+    
+    # Add RQ2 table
+    if ((g == 'firstgen' && rc == 'col') | (g == 'race' && rc == 'row')) {
+      writeLines(paste0("### ", heading_text, " (AI/AN) {.hide}\n"))
+      writeLines(if_else(
+        g == 'race',
+        str_c('#### Racial/ethnic composition of purchased student profiles by Geomarket, ', heading_text),
+        str_c('#### First-generation status of purchased student profiles by Geomarket, ', heading_text)
+      ))
+
+      writeLines('<div class="table-wrapper freeze-pane">')
+      writeLines(insert_rq2_table(m, g, 'rq2_aian'))
+      writeLines('</div>')
+      writeLines('<div class="footnote">Figure Notes:<br>- Order number 487927 (ordered 7/19/2019): HS class 2020 OR 2021; Ethnicity/Race = American Indian or Alaska Native; SAT 1040-1600; GPA B- to A+.</div>')
+    }
   }
   
   # Add RQ2 map

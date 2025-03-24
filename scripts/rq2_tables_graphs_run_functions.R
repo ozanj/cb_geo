@@ -56,6 +56,61 @@ source(file = file.path(scripts_dir, 'rq2_tables_graphs_create_functions.R'))
 # 1) Load the CSV into a data frame
 orders_df <- read_csv(file.path(scripts_dir,"metro_orders.csv"))
 
+# get_table_data <- function(metro_df) {
+#   list(
+#     race = do.call(bind_rows, lapply(1:nrow(metro_df), function(i) {
+#       res <- create_sim_eps_race_table(data = lists_orders_zip_hs_df_sf, ord_nums = str_split(metro_df[[i, 'order_ids']], '_')[[1]], eps_codes = get(metro_df[[i, 'eps_codes']]))
+#       
+#       for (r in names(res)) {
+#         names(res[[r]]) <- sub('^stu_|^r_|^c_', '', names(res[[r]]))
+#         if ('known' %in% names(res[[r]])) {
+#           res[[r]] <- res[[r]] %>% select(-race_known) %>% rename('race_known' = 'known')
+#         }
+#         res[[r]]$table <- r
+#       }
+#       
+#       do.call(bind_rows, res) %>% mutate(order_ids = metro_df[[i, 'order_ids']], test_range = metro_df[[i, 'test_range']])
+#     })),
+#     firstgen = do.call(bind_rows, lapply(1:nrow(metro_df), function(i) {
+#       res <- create_sim_eps_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = str_split(metro_df[[i, 'order_ids']], '_')[[1]], eps_codes = get(metro_df[[i, 'eps_codes']]))
+#       
+#       for (r in names(res)) {
+#         if (r %in% c('row_pct_table', 'col_pct_table')) {
+#           res[[r]] <- res[[r]] %>% select(-stu_known)
+#         }
+#         names(res[[r]]) <- sub('^stu_|^r_|^c_', '', names(res[[r]]))
+#         res[[r]]$table <- r
+#       }
+#       
+#       do.call(bind_rows, res) %>% mutate(order_ids = metro_df[[i, 'order_ids']], test_range = metro_df[[i, 'test_range']])
+#     })),
+#     race_firstgen = do.call(bind_rows, lapply(1:nrow(metro_df), function(i) {
+#       create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = str_split(metro_df[[i, 'order_ids']], '_')[[1]], eps_codes = get(metro_df[[i, 'eps_codes']]), exclude_race = '') %>%
+#         mutate(order_ids = metro_df[[i, 'order_ids']], test_range = metro_df[[i, 'test_range']])
+#     }))
+#   )
+# }
+# 
+# rq2_orders_df <- orders_df %>% filter(order_ids != '487927')
+# 
+# for (m in unique(rq2_orders_df$metro)) {
+#   metro_df <- rq2_orders_df %>% filter(metro == m)
+#   
+#   l <- get_table_data(metro_df)
+#   
+#   saveRDS(l, file.path('.', 'results', 'tables', str_c('rq2_table_', m, '.rds')))
+# }
+# 
+# aian_orders_df <- orders_df %>% filter(order_ids == '487927')
+# 
+# for (m in unique(aian_orders_df$metro)) {
+#   metro_df <- aian_orders_df %>% filter(metro == m)
+#   
+#   l <- get_table_data(metro_df)
+#   
+#   saveRDS(l, file.path('.', 'results', 'tables', str_c('rq2_aian_table_', m, '.rds')))
+# }
+
 orders_df
 # Part #1) Creating "rq2_{metro}_{g}_plot_order_{ids}" objects
 # via create_sim_eps_graph()
