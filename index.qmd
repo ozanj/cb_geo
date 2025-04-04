@@ -26,30 +26,30 @@ include-in-header: ./assets/html/header.html
 
 # Introduction
 
-### Introduction {.hide}
+### [__College Board _Student Search Service_, order \#448922__](./assets/images/geomarket_orders_redacted.pdf){target="_blank"} {.hide}
 
-- [College Board Student Search Service, order \#448922](./assets/images/geomarket_orders_redacted.pdf){target="_blank"}
-
-Sorting students into colleges, perspectives from sociology
+__Sorting students into colleges, perspectives from sociology:__
 
 - Status attainment model [e.g., @RN915]
 - Cultural capital model [e.g., @RN1228]
 <!-- - "Schools as sorting machines" [@RN4873] -->
 - Enrollment management behavior of colleges [e.g., @RN3519]
 
-Sociology misses an important mechanism of social reproduction:
+__Sociology misses an important mechanism of social reproduction:__
 
 - Third-party vendors/products sort students on behalf of colleges
 - Recommendations based on historical snapshots of student demand
 
-We investigate "Geomarkets," an input in two College Board recruiting products
+__"Geomarkets" are an input in two College Board recruiting products:__
+
+- Student Search Service (est. 1972); Enrollment Planning Service (est. 1984)
+
+__Research questions:__
 
 1. What is SES, racial variation between, within Geomarkets? Over time?
 1. What is SES and racial composition of included vs. excluded prospects when student list purchases filter on particular Geomarkets?
 
-
-
-<!-- Research interest: how quantification reproduces social stratification -->
+<!-- 
 
 ### Introduction og {.hide}
 
@@ -67,7 +67,7 @@ Concerns: Geomarket borders correlated with race/class; likely to be used in way
 1. What is SES, racial variation between, within Geomarkets? Over time?
 1. What is SES and racial composition of included vs. excluded prospects when student list purchases filter on particular Geomarkets?
 
-<!-- Research interest: how quantification reproduces social stratification -->
+ -->
 
 ### Geomarkets around Chicago-land {.hide}
 
@@ -85,81 +85,140 @@ Concerns: Geomarket borders correlated with race/class; likely to be used in way
 :::
 :::
 
-# Scholarship on Enrollment Management
+### Presentation Outline {.hide}
 
+1. Enrollment management: Background \& scholarship
+1. Empirical case and theory
+1. Methods
+1. Results
+1. Discussion
+    - Creating a "knowledge infrastructure" [@RN5025] to study the role of private firms and private equity funding in education
 
-### __The U.S. Market for Higher Education__
-#### _A National Voucher System_
+# Enrollment Management: Background \& Scholarship
 
-- Federal government
-  - Takes a "steer, don't row" approach
-  - Subsidizes higher education by providing Title IV grants and loans to students
-  - Department of Education regulates Title IV institutions
-- Students
-  - Attend college to improve career, social, and civic outcomes
-  - Pay for college using: 
-    - Household savings; grants and loans from federal, state, private sources
-- Direct providers (Title IV institutions)
-  - A mix of public, private nonprofit, for-profit providers
-  - Funding follows students to whichever institution they enroll in
-    - A national voucher system
-  - Colleges have a financial incentive to enroll students, so competition for students
-
-
-### __Student Lists are a Match-Making Intermediary__
-#### _Connecting Colleges to Prospective Students_
-  
-@RN2247 on emergence of a national higher education system
-
-- Information costs were primary barrier to efficient matches
-  - Students want to attend best college, but don't know options or costs
-  - Colleges want to enroll best students, but don't know who or where they are
-- SAT causes "dramatic fall" in cost of "information about students" (p. 102)
-
-In 1972, College Board began selling lists of prospects to colleges [@belkin2019-studata]
-
-- Student list contains contract info of prospective students who meet "search filter" criteria (e.g., test score GPA) specified by the college
-  
-"Lead generation" is process of connecting merchants to potential consumers
-
-- "List-based" lead generation
-  - Based on direct mail business model, but has evolved into "database arketing"
-- "Behavioral-based" targeting
-  - Target users of a platform while they use that platform or a partner platform
-  - Contemporary lead generation in higher education moving here
-
-### __Enrollment Management (EM)__ {.columns-2}
-#### _And the Enrollment Funnel_
+### __Enrollment Management (EM)__ {.hide .columns-2}
 
 ::: columns
 
-:::: {.column width=50%}
+:::: {.column width=65%}
+
+__Enrollment management__
 
 - EM profession integrates techniques from marketing and economics in order to "influence the characteristics and the size of enrolled student bodies" [@RN2771, p. xiv]
-- EM office subsumes activities of recruiting, admissions, financial aid
+- EM office controls recruiting, admissions, fin aid
 
-__Interventions along the funnel__
+__Interventions along enrollment funnel__
 
 - Convert prospects to leads 
   - Purchase student lists
 - Convert leads/inquiries to applicants
   - Email, mail, school visits
 - Convert applicants to admits
-  - Decide who to admit
+  - Holistic review [e.g., @RN4146]
 - Convert admits to enrollees
   - Financial aid offers [e.g., @RN2241]
 ::::
 
-:::: {.column width=50%}
-```{r, echo=FALSE, out.width="60%", fig.cap=""}
+:::: {.column width=35%}
+
+__Enrollment Funnel__
+```{r, echo=FALSE, out.width="85%", fig.cap=""}
 knitr::include_graphics("./assets/images/enroll_funnelv2.png")
 ```
 ::::
 
 :::
 
+### __Scholarship on Recruiting "in the Wild"__{.hide}
 
-# Background and Theory
+__Sociological ethnographies of enrollment management__
+
+- Private Colleges: visit affluent "feeder schools" to maintain relationships with HS guidance counselors [@RN3519; @RN4407]
+- For-profits: door-to-door visits to local, low-income communities of color [@cottom2017lower]
+
+__Web-scraped the travel schedules of public research and selective private univs__
+
+- Visit rich, mostly White public schools [@RN4758]
+- Disproportionate visits to private schools [@RN5023]
+- "Recruitment redlining": circuitous avoidance of Black and Latinx communities along visit paths [@RN4759] [INSERT CLICKABLE IMAGE OF LA MAP]
+
+___Recruiting not a practice wholly done by colleges...___
+
+- Data vendors and consultancies help colleges find students
+
+
+### <span style="font-size:0.9em;">__U.S. Higher Education Market: A National Voucher System__</span> {.hide}
+
+__Federal government__
+
+- Takes a "steer, don't row" approach
+- Subsidizes higher education by providing Title IV grants and loans to students
+- Department of Education regulates Title IV institutions
+
+__Students__
+
+- Attend college to improve career, social, and civic outcomes
+- Pay for college using: 
+  - Household savings; grants and loans from federal, state, private sources
+
+__Direct providers (Title IV institutions)__
+
+- A mix of public, private nonprofit, for-profit providers
+- Funding follows students to whichever institution they enroll in
+  - A national voucher system
+- Colleges have a financial incentive to enroll students, so competition for students
+
+
+### __Student Lists are a Match-Making Intermediary__{.hide}
+  
+__@RN2247 on emergence of a national higher education system:__
+
+- Information costs were primary barrier to efficient matches
+  - Students want to attend best college, but don't know options or costs
+  - Colleges want to enroll best students, but don't know who or where they are
+- SAT causes "dramatic fall" in cost of "information about students" (p. 102)
+
+__"Lead generation" is process of connecting merchants to potential consumers__
+
+- "List-based" lead generation based on direct-mail model (legacy)
+  - In 1972, College Board began selling lists of prospects to colleges
+- "Behavioral-based" targeting (contemporary)
+  - Target users of a platform while they use that platform or a partner platform
+
+__Students who opt into College Board _Search_ are [@RN4739]:__
+
+  - 25% more likely to enroll in a four-year university after high school
+  - 31% more likely to graduate college within four years 
+- Magnitude of effects largest for Black, Latinx, and first-gen college students 
+
+### __College Board Lists and Student Outcomes__{.hide}
+#### _Howell, Hurwitz, Mabel et al. (2021)_
+
+```{r, fig.align="left"}
+knitr::include_graphics("./assets/images/cb-fig-1.png")
+```
+
+### __The Student List Project__{.hide}
+
+[THIS SLIDE NEEDS LOTS OF WORK; NEED TO SHOW THE SEARCH FILTERS AS PROBLEMATIC]
+Public records requests to public universities in CA, IL, MN, TX, AZ from 2016-2020
+
+- "Order summary" specifying search filter criteria [(Sample)](https://drive.google.com/drive/u/1/folders/18CHMlUIa5OO0zRkET7eSIzYnvk4S9_U1)
+- De-identified prospect-level student list [(Sample)](https://drive.google.com/drive/u/1/folders/1rDIAuHLsh3IfglSsqhNuCmYsfnbtc0tV)  
+
+
+__What is the relationship between using academic and geographic filters and the demographic composition of resulting student lists?__ [@RN5012]
+
+- Analyze descriptive relationships observed in list purchases from College Board and HSLS:09 simulated relationships
+- Findings: Racial (and socioeconomic) inequity results from:
+  - College Board student list databases exclude non-test-takers
+  - Test scores and geographic filters compound disparities in excluded prospects
+
+MOTIVATE THIS STUDY
+
+
+
+# Emprical Case and Theory
 
 ### Background{.hide}
 #### Geomarkets and Market Segment Model created by @RN4982
@@ -167,6 +226,7 @@ knitr::include_graphics("./assets/images/enroll_funnelv2.png")
 <p class="quote">Geomarkets</p>
 <p style="display:none;">Boundaries [often] match formal political and educational divisions, reflecting natural channels of communication. **Each major metro area is composed of several markets, usually corresponding to the inner city, a first ring of suburbs, and an outer ring of suburbs.** In more sparsely populated areas, communities are sometimes combined in order to make the analysis meaningful. [@RN4982, p. 4].</p>
 
+- Geomarkets carve states and metro areas into smaller geographic regions
 - Meant to reproduce the recruiting territories of admissions officers
 - @RN4982 has 143 Geomarkets in 3 regions; EPS has 304
 
