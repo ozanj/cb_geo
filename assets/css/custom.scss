@@ -1,14 +1,19 @@
 /*-- scss:defaults --*/
 
-@import url('https://fonts.googleapis.com/css2?family=Kulim+Park:wght@200;400;600;700&family=Manrope:wght@200;400;600;700&display=swap');
+/* 1) Comment out old fonts */
+/* @import url('https://fonts.googleapis.com/css2?family=Kulim+Park:wght@200;400;600;700&family=Manrope:wght@200;400;600;700&display=swap'); */
 
-// colors
+/* 2) Import IBM Plex Sans instead */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@200;400;600;700&display=swap');
+
+/* colors */
 $link-color: #909090;
 
-// fonts
-$font-family-sans-serif: 'Manrope', Helvetica, sans-serif;
-$presentation-heading-font: 'Kulim Park', Helvetica, sans-serif;
-$presentation-font-size-root: 30px;
+/* fonts */
+$font-family-sans-serif: 'IBM Plex Sans', sans-serif;
+$presentation-heading-font: 'IBM Plex Sans', sans-serif;
+$presentation-font-size-root: 28px;
+
 
 
 /*-- scss:rules --*/

@@ -28,6 +28,31 @@ include-in-header: ./assets/html/header.html
 
 ### Introduction {.hide}
 
+- [College Board Student Search Service, order \#448922](./assets/images/geomarket_orders_redacted.pdf){target="_blank"}
+
+Sorting students into colleges, perspectives from sociology
+
+- Status attainment model [e.g., @RN915]
+- Cultural capital model [e.g., @RN1228]
+<!-- - "Schools as sorting machines" [@RN4873] -->
+- Enrollment management behavior of colleges [e.g., @RN3519]
+
+Sociology misses an important mechanism of social reproduction:
+
+- Third-party vendors/products sort students on behalf of colleges
+- Recommendations based on historical snapshots of student demand
+
+We investigate "Geomarkets," an input in two College Board recruiting products
+
+1. What is SES, racial variation between, within Geomarkets? Over time?
+1. What is SES and racial composition of included vs. excluded prospects when student list purchases filter on particular Geomarkets?
+
+
+
+<!-- Research interest: how quantification reproduces social stratification -->
+
+### Introduction og {.hide}
+
 Two recruiting products sold by College Board
 
 - Student Search Service (est. 1972): purchase contact information of prospects that meet "search filter" criteria [@RN5012]
@@ -59,6 +84,80 @@ Concerns: Geomarket borders correlated with race/class; likely to be used in way
 ![](./assets/images/territories/chicagoland_territories_u_chicago_redacted.png)
 :::
 :::
+
+# Scholarship on Enrollment Management
+
+
+### __The U.S. Market for Higher Education__
+#### _A National Voucher System_
+
+- Federal government
+  - Takes a "steer, don't row" approach
+  - Subsidizes higher education by providing Title IV grants and loans to students
+  - Department of Education regulates Title IV institutions
+- Students
+  - Attend college to improve career, social, and civic outcomes
+  - Pay for college using: 
+    - Household savings; grants and loans from federal, state, private sources
+- Direct providers (Title IV institutions)
+  - A mix of public, private nonprofit, for-profit providers
+  - Funding follows students to whichever institution they enroll in
+    - A national voucher system
+  - Colleges have a financial incentive to enroll students, so competition for students
+
+
+### __Student Lists are a Match-Making Intermediary__
+#### _Connecting Colleges to Prospective Students_
+  
+@RN2247 on emergence of a national higher education system
+
+- Information costs were primary barrier to efficient matches
+  - Students want to attend best college, but don't know options or costs
+  - Colleges want to enroll best students, but don't know who or where they are
+- SAT causes "dramatic fall" in cost of "information about students" (p. 102)
+
+In 1972, College Board began selling lists of prospects to colleges [@belkin2019-studata]
+
+- Student list contains contract info of prospective students who meet "search filter" criteria (e.g., test score GPA) specified by the college
+  
+"Lead generation" is process of connecting merchants to potential consumers
+
+- "List-based" lead generation
+  - Based on direct mail business model, but has evolved into "database arketing"
+- "Behavioral-based" targeting
+  - Target users of a platform while they use that platform or a partner platform
+  - Contemporary lead generation in higher education moving here
+
+### __Enrollment Management (EM)__ {.columns-2}
+#### _And the Enrollment Funnel_
+
+::: columns
+
+:::: {.column width=50%}
+
+- EM profession integrates techniques from marketing and economics in order to "influence the characteristics and the size of enrolled student bodies" [@RN2771, p. xiv]
+- EM office subsumes activities of recruiting, admissions, financial aid
+
+__Interventions along the funnel__
+
+- Convert prospects to leads 
+  - Purchase student lists
+- Convert leads/inquiries to applicants
+  - Email, mail, school visits
+- Convert applicants to admits
+  - Decide who to admit
+- Convert admits to enrollees
+  - Financial aid offers [e.g., @RN2241]
+::::
+
+:::: {.column width=50%}
+```{r, echo=FALSE, out.width="60%", fig.cap=""}
+knitr::include_graphics("./assets/images/enroll_funnelv2.png")
+```
+::::
+
+:::
+
 
 # Background and Theory
 
@@ -216,7 +315,7 @@ Analyses (RQ1 and RQ2)
 
 # Results
 
-```{r setup, echo=FALSE, results = 'asis'}
+```{r setup, echo=FALSE, results = 'asis', eval = FALSE}
 
 library(tidyverse)
 library(kableExtra)  # For collapse_rows() to work
