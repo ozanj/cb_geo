@@ -5,7 +5,8 @@ author: ['Ozan Jaquette', 'Karina Salazar', 'Crystal Han']
 institute: ['UCLA', 'University of Arizona', 'Stanford University']
 bibliography: ./assets/bib/cb_geomarket_bib.bib
 format:
-  revealjs: 
+  revealjs:
+    revealjs-plugins: [multimodal]   # ← correct key
     theme: [default, ./assets/css/custom.scss]
     controls: true
     controls-layout: bottom-right
@@ -28,21 +29,25 @@ include-in-header: ./assets/html/header.html
 
 ### [__College Board _Student Search Service_, order \#448922__](./assets/images/geomarket_orders_redacted.pdf){target="_blank"} {.hide}
 
-__Sorting students into colleges, perspectives from sociology:__
+__"Geomarkets" carve states and metro areas into smaller geographic regions__
+
+- Geomarkets are an input in two College Board recruiting products:
+  - Student Search Service (est. 1972); Enrollment Planning Service (est. 1984)
+
+__Perspectives from sociology on sorting students into colleges:__
 
 - Status attainment model [e.g., @RN915]
 - Cultural capital model [e.g., @RN1228]
-<!-- - "Schools as sorting machines" [@RN4873] -->
 - Enrollment management behavior of colleges [e.g., @RN3519]
+- Sociology ignores third-party products that sort students on behalf of colleges
+  - Designed to amplify historic inequality in student demand
 
+<!-- 
 __Sociology misses an important mechanism of social reproduction:__
 
 - Third-party vendors/products sort students on behalf of colleges
-- Recommendations based on historical snapshots of student demand
-
-__"Geomarkets" are an input in two College Board recruiting products:__
-
-- Student Search Service (est. 1972); Enrollment Planning Service (est. 1984)
+  - Amplify past structural inequality in student demand
+ -->
 
 __Research questions:__
 
@@ -87,12 +92,13 @@ Concerns: Geomarket borders correlated with race/class; likely to be used in way
 
 ### Presentation Outline {.hide}
 
-1. Enrollment management: Background \& scholarship
-1. Empirical case and theory
-1. Methods
-1. Results
-1. Discussion
-    - Creating a "knowledge infrastructure" [@RN5025] to study the role of private firms and private equity funding in education
+<br>
+
+1. <span style="color:blue">Enrollment management: Background & scholarship</span>  
+1. <span style="color:red">Empirical case and theory</span>  
+1. <span style="color:red">Methods</span>  
+1. <span style="color:red">Results</span>  
+1. <span style="color:blue">Discussion<br>– Creating a "knowledge infrastructure" [@RN5025] to study the role of private firms and private equity funding in education</span>
 
 # Enrollment Management: Background \& Scholarship
 
@@ -140,11 +146,12 @@ __Web-scraped the travel schedules of public research and selective private univ
 
 - Visit rich, mostly White public schools [@RN4758]
 - Disproportionate visits to private schools [@RN5023]
-- "Recruitment redlining": circuitous avoidance of Black and Latinx communities along visit paths [@RN4759] [INSERT CLICKABLE IMAGE OF LA MAP]
+- "Recruitment redlining": circuitous avoidance of Black and Latinx communities along visit paths [@RN4759] ([LA map](#){data-modal-type="image" data-modal-url="assets/images/recruitment_redlining_map.jpg"})
 
-___Recruiting not a practice wholly done by colleges...___
+___But recruiting process not wholly done by colleges...___
 
-- Data vendors and consultancies help colleges find students
+- Third-party vendors and consultancies help colleges find and recruit students
+<!-- [LA map](#){data-modal-type="image" data-modal-url="assets/images/chicago_geomarkets.png"} -->
 
 
 ### <span style="font-size:0.9em;">__U.S. Higher Education Market: A National Voucher System__</span> {.hide}
@@ -216,6 +223,8 @@ __What is the relationship between using academic and geographic filters and the
 
 MOTIVATE THIS STUDY
 
+- Filters used by public research universities
+- [Link](#){data-modal-type="image" data-modal-url="assets/images/research_univ_list_filters.png"}
 
 
 # Emprical Case and Theory
@@ -375,7 +384,7 @@ Analyses (RQ1 and RQ2)
 
 # Results
 
-```{r setup, echo=FALSE, results = 'asis', eval = TRUE}
+```{r setup, echo=FALSE, results = 'asis', eval = FALSE}
 
 library(tidyverse)
 library(kableExtra)  # For collapse_rows() to work
