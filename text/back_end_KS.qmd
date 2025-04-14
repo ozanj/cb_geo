@@ -368,6 +368,10 @@ We also examine the contributions of each Geomarket to the pool of prospects bas
 
 @fig-chicago-rq2-midSAT-ses and @fig-chicago-rq2-highSAT-ses demonstrate Geomarket contribution patterns by first-generation college student status become increasingly pronounced in orders targeting middle-range (1160-1300) and high-range (1310-1600) SAT scores, respectively. At the middle SAT score range, the City of Chicago Geomarket contributes a substantially larger share of first-generation students whose parents did not attend college—38%, compared to 17% of all prospects in this range, representing a 21-percentage-point disparity. This disproportionality increases to a 25-percentage-point difference at the highest SAT score thresholds, where the City of Chicago accounts for 40% of such first-generation students, despite representing only 15% of all prospects in this score range.
 
+Finally, we examine Geomarket contributions to prospect pools by both first-generation college student status and race/ethnicity. @fig-chicago-rq2-lowSAT-combo presents the Geomarket distribution of the 15,183 total prospects (whose first-generation status and race/ethnicity is known) included in low-range SAT (120-1150). For example, among all White prospects (n=7,605) whose contact information was purchased in this SAT score range, approximately 11% were first-generation college students whose parents did not attend college, 22% had parents who attended some college but did not complete their degree, and 67% were not first-generation college students. However, @fig-chicago-rq2-lowSAT-combo shows the City of Chicago and South and Southwest Suburbs Geomarkets disproportionately contribute larger shares of White first-generation college students who parents did not attend college (22% and 15%, respectively) and whose parents attended some college but never completed their degrees (29% and 28%, respectively). In contrast, Geomarkets such as Chain of Lakes (72%), North Shore (88%), Evanston and Skokie (73%) contribute a disproportionately larger share of White prospects who are not first-generation college students.
+
+@fig-chicago-rq2-lowSAT-combo indicates these Geomarket patterns persist across all other racial/ethnic categories. The City of Chicago consistently contributed a disproportionately larger share of first-generation college students who parents did not attend college across all racial/ethnic categories. However, the magnitude of this disproportionality varied- from a 3-percentage-point difference for Black prospects to a 21 percentage-point difference for Asian prospects. While Asian, Black, and Hispanic prospects who are not first-generation college students make up a relatively smaller portion of the overall pool, @fig-chicago-rq2-lowSAT-combo suggests that such prospects are primarily contributed by the Chain of Lakes, North Shore, and Evanston and Skokie Geomarkets.
+
 ## Dallas
 
 ## Los Angeles
@@ -443,6 +447,24 @@ knitr::include_graphics('./../assets/images/rq2_chicago_midSAT_ses.png')
 
 ```{r fig-chicago-rq2-highSAT-ses, echo = FALSE, fig.align = 'center', fig.cap = "Chicago Geomarket Contribution to Purchased Student profiles by First-Generation Status, High-Range SAT orders", out.width = "100%"}
 knitr::include_graphics('./../assets/images/rq2_chicago_highSAT_ses.png')
+#knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
+#![The enrollment funnel](assets/images/enrollment_funnel.png)
+```
+
+```{r fig-chicago-rq2-lowSAT-combo, echo = FALSE, fig.align = 'center', fig.cap = "Chicago Geomarket Contribution to Purchased Student profiles by First-Generation Status, Low-Range SAT orders", out.width = "100%"}
+knitr::include_graphics('./../assets/images/rq2_chicago_lowSAT_combo.png')
+#knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
+#![The enrollment funnel](assets/images/enrollment_funnel.png)
+```
+
+```{r fig-chicago-rq2-midSAT-combo, echo = FALSE, fig.align = 'center', fig.cap = "Chicago Geomarket Contribution to Purchased Student profiles by First-Generation Status, Middle-Range SAT orders", out.width = "100%"}
+knitr::include_graphics('./../assets/images/rq2_chicago_midSAT_combo.png')
+#knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
+#![The enrollment funnel](assets/images/enrollment_funnel.png)
+```
+
+```{r fig-chicago-rq2-highSAT-combo, echo = FALSE, fig.align = 'center', fig.cap = "Chicago Geomarket Contribution to Purchased Student profiles by First-Generation Status, High-Range SAT orders", out.width = "100%"}
+knitr::include_graphics('./../assets/images/rq2_chicago_highSAT_combo.png')
 #knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
