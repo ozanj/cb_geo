@@ -221,7 +221,7 @@ __Analyze who included in purchases: (1) simulated, [HSLS:09](https://nces.ed.go
 - Racial inequity results from:
   - College Board student list databases exclude non-test-takers
   - Test scores and geographic filters compound disparities in excluded prospects
-    - [SAT scores + Segment map, LA](#){data-modal-type="image" data-modal-url="assets/images/la_segment_map.png"}
+    - [SAT scores + Segment, LA map](#){data-modal-type="image" data-modal-url="assets/images/la_segment_map.png"}
     - CRYSTAL -- REPLACE W/ STATIC MAP THAT JUST HAS LA
 - Collge Board creates new geographic filters that include/exclude ([FIGURE](#){data-modal-type="image" data-modal-url="assets/images/research_univ_list_filters.png"})
 
@@ -231,46 +231,37 @@ __Analyze who included in purchases: (1) simulated, [HSLS:09](https://nces.ed.go
 
 ### *The Structure of College Choice* [@RN4982] {.hide}
 
-> Admissions officers are tellers of stories – about the colleges they represent, about the colleges they attended, about each other, and about the vagabond life of college recruiting...We begin with this celebration of sotrytelling...[because] the intuitions of admissions officers comprise a remarkably systematic body of knowledge about the college selection process (p. 9-10).
+__Project goal: "capture and quantify" (p. 11) knowledge of admissions officers__
 
-Goal to "capture and quantify" (p. 11) knowledge of admissions officers, based on idea that "a good recruiter knows where to look for prospective applicants, as seen in the students’ willingness or reluctance to travel" (p. 11)
+> Admissions officers are tellers of stories – about the colleges they represent, about the colleges they attended, about each other, and about the vagabond life of college recruiting...We begin with this celebration of sotrytelling...[because] the intuitions of admissions officers comprise a remarkably systematic body of knowledge about the college selection process (p. 9-10).<br><br>A good recruiter knows where to look for prospective applicants, as seen in the students’ willingness or reluctance to travel (p. 11).
 
-Creates three geographic levels: region, state, community (Geomarket)
 
-<p class="quote">"initial task was to define enrollment markets in a manner consistent with admissions officers’ intuitive understanding of student pools" (p. 4)</p>
-<p style="display:none;">'There are only three kinds of college-bound students: those who want to live at home, those who want to live on campus but bring their laundry home, and those who want to go far enough from home that Mom and Dad can’t visit without calling first.'</p>
+<p class="quote">Initial task "was to define enrollment markets in a manner consistent with admissions officers’ intuitive understanding of student pools" (p. 4)</p>
+<p style="display:none;">'There are only three kinds of college-bound students: those who want to live at home, those who want to live on campus but bring their laundry home, and those who want to go far enough from home that Mom and Dad can’t visit without calling first.' (p. 11)</p>
 
+- Creates three geographic levels: region, state, community (Geomarket)
 
 <p class="quote">Geomarkets carve states and metro areas into smaller geographic regions</p>
-<p style="display:none;">Boundaries [often] match formal political and educational divisions, reflecting natural channels of communication. **Each major metro area is composed of several markets, usually corresponding to the inner city, a first ring of suburbs, and an outer ring of suburbs.** In more sparsely populated areas, communities are sometimes combined in order to make the analysis meaningful. [@RN4982, p. 4].</p>
+<p style="display:none;">Boundaries [often] match formal political and educational divisions, reflecting natural channels of communication. **Each major metro area is composed of several markets, usually corresponding to the inner city, a first ring of suburbs, and an outer ring of suburbs.** In more sparsely populated areas, communities are sometimes combined in order to make the analysis meaningful. [@RN4982, pp. 11-12].</p>
 
 - Meant to reproduce the recruiting territories of admissions officers
-
-<!--   College Board published the book, provided data, and financed the project, as part of their “efforts to help colleges estimate their enrollment potential, efforts which had faltered largely because the smallest geographic unit used in these analyses was the state” (Zemsky & Oedel, 1983, p. x). -->
-
 
 
 ### __Creating the Market Segment Model__{.hide}
 
-College Board provides data, funding, and publishes book
-
--  as part their "efforts to help colleges estimate their enrollment potential, efforts which had faltered largely because the smallest geographic unit used in these analyses was the state (Zemsky & Oedel, 1983, p. x).
+> We sought not a complex mathematical model, but a straightforward classification system that would track the pattern of SAT-score submissions to create a map of student choice. The Market Segment Model we developed was nothing more than a set of simple rules for disaggregating high school seniors into similar groups. The model worked because students, once so disaggregated, appeared to behave in remarkably consistent ways (p. 4).
 
 **Market Segment Model predicts how demand for a college varies by Geomarket**
-
-> We sought not a complex mathematical model, but a straightforward classification system that would track the pattern of SAT-score submissions to create a map of student choice. The Market Segment Model we developed was nothing more than a set of simple rules for disaggregating high school seniors into similar groups (p. 4).
 
 - Categorize students into 4 market segments -- local, in-state, regional, national -- based on SAT score-sending behavior
   - local: send most scores to colleges within Geomarket
   - regional: send most scores out-of-state but in-region (e.g., Midwest)
   - Selective colleges should look for regional and national students
-- @RN4982 create outputs that become EPS software
+  
+<p class="quote">College Board underwrites project to enter enrollment management space</p>
+<p style="display:none;">efforts to help colleges estimate their enrollment potential, efforts which had faltered largely because the smallest geographic unit used in these analyses was the state [@RN4982, p. x]</p>
 
-<!--   
-The model worked because students, once so disaggregated, appeared to behave in remarkably consistent ways
-
-- Like @RN2247, except College Board creates product from it 
-  - *Market Segment Profile*; *Institutional Profile*-->
+- @RN4982 outputs are basis for College Board EPS software
 
 ### Scholarship on Quantification {.hide}
 #### Discussions of correlation and homophily by @RN4975
