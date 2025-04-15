@@ -376,7 +376,13 @@ Geomarket contribution patterns to prospect pools by both first-generation colle
 
 @fig-chicago-rq2-highSAT-combo shows the magnitude of Geomarket contribution disparities increases at the highest SAT score range (1310-1600), partly driven by the relatively fewer number of first-generation college students included within these orders. Again, the City of Chicago Geomarket disproportionately contributes a disproportionate share of first-generation Asian college students (43% across both parental education categories) and first-generation Hispanic college students (52% across both parental education categories) in comparison to the overall distribution of first-generation college students within each racial/ethnic category (13% for Asian and 40% for Hispanic, respectively). Conversely, nearly all other Geomarkets contribute a disproportionately larger share of non-first generation college students across all racial/ethnic categories.
 
-## Dallas
+## Dallas-Fort Worth
+
+### Geomarket Changes Over Time \[Need better RQ1 heading\]
+
+The six Geomarkets within the Dallas-Fort Worth metropolitan area are illustrated in @fig-dallas-maps by total population across the three census periods. The Dallas-Fort Worth region represents a unique metroplex case formed by the convergence of two separate metropolitan areas, which creates a unique urban spatial structure that differs from the classic model originally proposed by @RN4982. As depicted in @fig-dallas-maps, two distinct inner-city core Geomarkets - City of Dallas and City of Fort Worth- are seperated by a centrally located suburban Geomarket encompassing Irving, Arlington, & Grand Prairie. These central Geomarkets are surrounded by the more conventional outre ring of suburban Geomarkets (Dallas Co, Collin & Rockwall Co, and West of Dallas/Ft. Worth Metroplex).
+
+From 1980 to 2020, the population of the overall Dallas-Fort Worth metropolitan area increased substantially from approximately 2.7 Million to 6.8 Million. @fig-dallas-maps showcases all six Geomarkets experienced population growth over the three census periods. However, the most pronounced increases occured in the West of Dallas/Ft. Worth Metroplex and Collin and Rockwall Co Geomarkets, which grew from approximately 340,000 to 1.4 Million and 170,000 to 1.2 Million, respectively. These population trends, as shown in @fig-dallas-maps, suggest population growth has been partly driven by urban sprawl from the metropolitan centers - City of Forth Worth and City of Dallas - into the surrounding suburban and rural areas of the metropolitan areas. This outward expansion may also account for the comparatively larger geographic size of the West of Dallas/Fort Worth Metroplex Geomarket.
 
 ## Los Angeles
 
@@ -469,6 +475,12 @@ knitr::include_graphics('./../assets/images/rq2_chicago_midSAT_combo.png')
 
 ```{r fig-chicago-rq2-highSAT-combo, echo = FALSE, fig.align = 'center', fig.cap = "Chicago Geomarket Contribution to Purchased Student profiles by First-Generation Status, High-Range SAT orders", out.width = "100%"}
 knitr::include_graphics('./../assets/images/rq2_chicago_highSAT_combo.png')
+#knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
+#![The enrollment funnel](assets/images/enrollment_funnel.png
+```
+
+```{r fig-dallas-maps, echo = FALSE, fig.align = 'center', fig.cap = "Dallas-Forth Worth Geomarkets, Total Population 1980-2020", out.width = "100%"}
+knitr::include_graphics('./../assets/images/dallas_maps.png')
 #knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
