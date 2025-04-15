@@ -207,48 +207,61 @@ knitr::include_graphics("./assets/images/cb-fig-1.png")
 
 ### __The Student List Project__{.hide}
 
-[THIS SLIDE NEEDS LOTS OF WORK; NEED TO SHOW THE SEARCH FILTERS AS PROBLEMATIC]
-Public records requests to public universities in CA, IL, MN, TX, AZ from 2016-2020
+__Public records requests to public univs in CA, IL, MN, TX, AZ, 2016-2020__
 
-- "Order summary" specifying search filter criteria [(Sample)](https://drive.google.com/drive/u/1/folders/18CHMlUIa5OO0zRkET7eSIzYnvk4S9_U1)
-- De-identified prospect-level student list [(Sample)](https://drive.google.com/drive/u/1/folders/1rDIAuHLsh3IfglSsqhNuCmYsfnbtc0tV)  
-
+- for each purchase, request: (1) [order summary](https://drive.google.com/drive/u/1/folders/18CHMlUIa5OO0zRkET7eSIzYnvk4S9_U1); (2) [prospect-level data](https://drive.google.com/drive/u/1/folders/1rDIAuHLsh3IfglSsqhNuCmYsfnbtc0tV)
 
 __What is the relationship between using academic and geographic filters and the demographic composition of resulting student lists?__ [@RN5012]
 
-- Analyze descriptive relationships observed in list purchases from College Board and HSLS:09 simulated relationships
-- Findings: Racial (and socioeconomic) inequity results from:
+- Student list products are "selection devices" [@RN4778]
+- Utilize "racialized inputs"[@RN4786], disadvantage non-white communities because they have been historically excluded from input (e.g., zip codes, AP)
+
+__Analyze who included in purchases: (1) simulated, [HSLS:09](https://nces.ed.gov/surveys/hsls09/); (2) College Board__
+
+- Racial inequity results from:
   - College Board student list databases exclude non-test-takers
   - Test scores and geographic filters compound disparities in excluded prospects
+    - [SAT scores + Segment, LA map](#){data-modal-type="image" data-modal-url="assets/images/la_segment_map.png"}
+    - CRYSTAL -- REPLACE W/ STATIC MAP THAT JUST HAS LA
+- Collge Board creates new geographic filters that include/exclude ([FIGURE](#){data-modal-type="image" data-modal-url="assets/images/research_univ_list_filters.png"})
 
-MOTIVATE THIS STUDY
-
-- Filters used by public research universities
-- [Link](#){data-modal-type="image" data-modal-url="assets/images/research_univ_list_filters.png"}
 
 
 # Emprical Case and Theory
 
-### Background{.hide}
-#### Geomarkets and Market Segment Model created by @RN4982
+### *The Structure of College Choice* [@RN4982] {.hide}
 
-<p class="quote">Geomarkets</p>
-<p style="display:none;">Boundaries [often] match formal political and educational divisions, reflecting natural channels of communication. **Each major metro area is composed of several markets, usually corresponding to the inner city, a first ring of suburbs, and an outer ring of suburbs.** In more sparsely populated areas, communities are sometimes combined in order to make the analysis meaningful. [@RN4982, p. 4].</p>
+__Project goal: "capture and quantify" (p. 11) knowledge of admissions officers__
 
-- Geomarkets carve states and metro areas into smaller geographic regions
+> Admissions officers are tellers of stories – about the colleges they represent, about the colleges they attended, about each other, and about the vagabond life of college recruiting...We begin with this celebration of sotrytelling...[because] the intuitions of admissions officers comprise a remarkably systematic body of knowledge about the college selection process (p. 9-10).<br><br>A good recruiter knows where to look for prospective applicants, as seen in the students’ willingness or reluctance to travel (p. 11).
+
+
+<p class="quote">Initial task "was to define enrollment markets in a manner consistent with admissions officers’ intuitive understanding of student pools" (p. 4)</p>
+<p style="display:none;">'There are only three kinds of college-bound students: those who want to live at home, those who want to live on campus but bring their laundry home, and those who want to go far enough from home that Mom and Dad can’t visit without calling first.' (p. 11)</p>
+
+- Creates three geographic levels: region, state, community (Geomarket)
+
+<p class="quote">Geomarkets carve states and metro areas into smaller geographic regions</p>
+<p style="display:none;">Boundaries [often] match formal political and educational divisions, reflecting natural channels of communication. **Each major metro area is composed of several markets, usually corresponding to the inner city, a first ring of suburbs, and an outer ring of suburbs.** In more sparsely populated areas, communities are sometimes combined in order to make the analysis meaningful. [@RN4982, pp. 11-12].</p>
+
 - Meant to reproduce the recruiting territories of admissions officers
-- @RN4982 has 143 Geomarkets in 3 regions; EPS has 304
 
-**Market Segment Model**
 
-- Predicts how demand for a college varies by Geomarket, based on characteristics of households in Geomarket
+### __Creating the Market Segment Model__{.hide}
+
+> We sought not a complex mathematical model, but a straightforward classification system that would track the pattern of SAT-score submissions to create a map of student choice. The Market Segment Model we developed was nothing more than a set of simple rules for disaggregating high school seniors into similar groups. The model worked because students, once so disaggregated, appeared to behave in remarkably consistent ways (p. 4).
+
+**Market Segment Model predicts how demand for a college varies by Geomarket**
+
 - Categorize students into 4 market segments -- local, in-state, regional, national -- based on SAT score-sending behavior
   - local: send most scores to colleges within Geomarket
   - regional: send most scores out-of-state but in-region (e.g., Midwest)
-- Selective colleges should look for regional and national students
-- @RN4982 create outputs that become EPS software
+  - Selective colleges should look for regional and national students
+  
+<p class="quote">College Board underwrites project to enter enrollment management space</p>
+<p style="display:none;">efforts to help colleges estimate their enrollment potential, efforts which had faltered largely because the smallest geographic unit used in these analyses was the state [@RN4982, p. x]</p>
 
-<!--   - Like @RN2247, except College Board creates product from it -->
+- @RN4982 outputs are basis for College Board EPS software
 
 ### Scholarship on Quantification {.hide}
 #### Discussions of correlation and homophily by @RN4975
