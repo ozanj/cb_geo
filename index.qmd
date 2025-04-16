@@ -223,7 +223,6 @@ __Analyze who included in purchases: (1) simulated, [HSLS:09](https://nces.ed.go
   - College Board student list databases exclude non-test-takers
   - Test scores and geographic filters compound disparities in excluded prospects
     - [SAT scores + Segment, LA map](#){data-modal-type="image" data-modal-url="assets/images/la_segment_map.png"}
-    - CRYSTAL -- REPLACE W/ STATIC MAP THAT JUST HAS LA
 - Collge Board creates new geographic filters that include/exclude ([FIGURE](#){data-modal-type="image" data-modal-url="assets/images/research_univ_list_filters.png"})
 
 
