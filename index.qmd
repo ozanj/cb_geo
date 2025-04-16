@@ -110,7 +110,7 @@ Concerns: Geomarket borders correlated with race/class; likely to be used in way
 
 __Enrollment management__
 
-- EM profession integrates techniques from marketing and economics in order to "influence the characteristics and the size of enrolled student bodies" [@RN2771, p. xiv]
+- EM profession integrates techniques from marketing and economics to "influence the characteristics and the size of enrolled student bodies" [@RN2771, p. xiv]
 - EM office controls recruiting, admissions, fin aid
 
 __Interventions along enrollment funnel__
@@ -155,6 +155,7 @@ ___But recruiting process not wholly done by colleges...___
 
 
 ### <span style="font-size:0.9em;">__U.S. Higher Education Market: A National Voucher System__</span> {.hide}
+#### Motivating the role of student lists in college access
 
 __Federal government__
 
@@ -871,15 +872,148 @@ for (m in native_metros) {
   - Targeting non-white students in affluent Geomarkets yields mostly non-first-gen
 
 
-### Discussion{.hide}
-#### Contribution to scholarship
+## EM Industry Dynamics
 
-Scholarship on quantification (in education)
+### __Dynamics in the Market for Student List Data__{.hide}
 
-- Hasn't examined quantification that classifies consumers for producers
-  - Structural inequality $\rightarrow$ unequal student demand for college
+[Jaquette, O., Salazar, K., & Martin, P. M. (2022). *The student list business*.](https://ticas.org/wp-content/uploads/2022/09/The-Student-List-Business_-Primer-and-Market-Dynamics.pdf)
+
+
+1. __Centrality of consulting firms to EM industry__
+    - In our data collection, ~50\% of univs outsourced student list purchases
+1. __Technology and new data sources to identify+serve prospects__
+    - "Free" college search engines (e.g., Cappex)
+    - College planning software purchased by k-12 districts (e.g., Naviance, Scoir)
+1. __Test optional and moves by incumbents__
+    - Test-optional reduces coverage advantage of testing companies
+    - ACT becomes an edtech firm (epic fail); College Board has AP+savvy
+1. __From owner-operated to private-equity owned firms__
+    - 1990s - 2000s = firm entry; 2010s = vertical+horizontal acquisitions
+      - [Vista Equity Partners portfolio](https://www.vistaequitypartners.com/companies/portfolio/)
+      - [EAB](https://eab.com/) + [Ruffalo Noel Levitz](https://www.ruffalonl.com/) claim to serve more than 3,000 colleges
+    - Consulting firms sell software-as-service "solutions"
+      - Build subscription recruiting platforms around database of prospects
+
+<!-- This is a comment in the Quarto document body
+
+### __Enrollment Management (EM) Consulting Firms__{.hide}
+#### _From Owner-Operated to Private Equity_
+
+- Domains of EM consulting along the student lifecycle
+  - Marketing/recruiting, pricing and financial aid, student success, advancement
+  - Colleges hire EM firms to choose tuition price and "discounting" strategy
+    - Typically based on modeling behavior of past applicants
+  
+Evolution of EM consultancies mirrors evolution of for-profit colleges [@list_biz; @RN5027; @RN5022]
+
+- 1980s and 1990s: rise of owner-operated firms
+  - In 1983, Bill Royall founds Royall & Co., direct marketing for political campaigns
+- 2010s: acquisitions and market concentration from private equity investment
+  - In 2015, Advisory Board Company purchases Royall & Co. for $850 million (2015 CPI), Royall renamed EAB
+  - In 2017, Vista Equity Partners buys EAB for $1.5 billion
+- By 2022:
+  - EAB claims to serve more than 1,100 colleges [@eabcomm]
+  - Ruffalo Noel Levitz (RNL) claims to serve 1,900 orgs [@rnlabout]
+
+ -->
+ 
+### __The EAB Story: Acquire and Integrate__{.hide}
+#### _Acquistiions in lead generation [@list_biz; @RN5027]_
+
+
+Goal of acquisitions is to make colleges depend on EAB (software) products
+
+- [YouVisit](https://www.youvisit.com/), 2019 -- virtual tours
+- Cappex (now [appily](https://www.appily.com/)), 2020 -- college search engine
+- Hobsons, 2021 -- edtech/consulting firm
+  - PowerSchool buys Naviance; [EAB becomes exclusive reseller of Intersect](#){data-modal-type="image" data-modal-url="assets/images/intersect_connection_subscription_renewal_notice_university_utah_1_7_2022_redacted.png"}
+    - (PowerSchool IPO in 2021; acquired by Bain Capital in 2024)
+- [Concourse](https://discover.concourseglobal.net/student/start), 2022 -- direct admissions
+
+EAB creates [Enroll360](https://eab.com/solutions/enroll360/) in 2021:
+
+<blockquote style="font-size: 0.9em;">
+We spent the last couple of years creating a connected recruitment ecosystem.... This work led us to join forces with several leading companies: Cappex, Intersect, Wisr, and YouVisit....Individually, each solution can solve important challenges at various stages of the enrollment funnel...By bringing these capabilities together, our vision is to reinvent how enrollment leaders reach their goals [@koppenheffer_2021].
+</blockquote>
+
+### __The Private Equity Business Model__ {.hide .columns-2}
+#### _Software Subscriptions and Upselling_
+
+::: columns
+
+:::: {.column width=50%}
+
+[Vista Equity Partners. (2021). _The next frontier of software investment and the private markets_](https://info.vistaequitypartners.com/rs/vistaequitypartnersiiillc/images/vista-equity-partners-whitepaper-uk-next-frontier-software-investment-private-markets.PDF)
+```{r, echo=FALSE, out.width="80%", fig.cap=""}
+knitr::include_graphics("./assets/images/vista_software_value_proposition.png")
+```
+
+
+::::
+
+:::: {.column width=50%}
+
+[Securities and Exchange Commission. (2022). _Form 10-K: PowerSchool Holdings, Inc. for fiscal year ended Dec. 31, 2021_](https://s27.q4cdn.com/190453437/files/doc_financials/2021/q4/78e2074c-196d-4e96-b3e6-e471d3ac452e.pdf), p. 43:
+
+<blockquote style="font-size: 0.9em;">
+Many customers begin their journey with us by using only two of our 15 products... As customers begin to appreciate the benefits of an integrated software platform..., they increase the number of solutions they buy from us... Our future revenue growth is dependent upon our ability to expand our customers’ use of our platform, and our go-to-market efforts are designed to drive cross-sell growth (p. 43).
+</blockquote>
+::::
+
+:::
+
+
+
+
+## Organizational Field of College Access
+
+### __Organizational Fields [@RN527]__{.hide}
+
+<p class="quote">"Organizational field" salient to college access, according to prior research</p>
+<p style="display:none;">Those organizations that, in the aggregate, constitute a recognized area of institutional life: key suppliers, resource and product consumers, regulatory agencies, and other organizations that produce similar services or products. The virtue of this unit of analysis is that it directs our attention...to the totality of relevant actors [@RN527, p. 148].</p>
+
+- Economics $\rightarrow$ effects of schools and policies (district/state/federal) on students
+- Sociology $\rightarrow$ how schools and households sort students into colleges
+  - Status attainment model [e.g., @RN915]
+  - Cultural capital model [e.g., @RN1228; @RN4991]
+  - Enrollment management behavior of colleges [e.g., @RN3519]
+  
+__Research ignores third-party vendors that classify consumers for producers__
+
+- Structural inequality $\rightarrow$ unequal student demand for college
   - Third-party products take snapshot student demand $\rightarrow$ encourage supply-side to amplify structural inequalities observed on demand-side
-- @RN5005 show effect of quantification, but not mechanisms of *how* quantification produces inequality
+- Vendors have structured college access for decades [@RN5045]
+  - Private equity + data science + software-as-service $\rightarrow$ financiers controlling process of sorting students to colleges
+- Organizational field should be focus of regulation
+  
+
+## Building a Knowledge Infrastructure
+
+
+### The "Knowledge Infrastructure" of Education Research{.hide}
+
+__Knowledge infrastructures (KIs) [@RN5025]__
+
+- "Systems of observation and measurement" [@RN5025, p. 743] that provide the foundation for scalable research
+- Collect, process, and distribute data in ways that "enable certain kinds of knowledge production while channeling researchers away from questions not readily answerable within...that infrastructure” [@RN5025, p. 742]
+
+__The KI of education policy research__
+
+- Data on students and schools from district, state, and federal sources
+- Researchers investigated for-profit colleges because for-profit colleges (direct providers) and students included in ongoing data collections
+
+__Expanding the KI to consider private firms and private equity__
+
+- Case-study research
+  - Granular data; critical analyses; gnarly data collection; difficult to scale
+- Secondary data subscriptions
+  - Can these data be leveraged to 
+
+
+
+
+
+### ya ya ya {.hide}
 
 Scholarship on postsecondary "organizational field"
 
