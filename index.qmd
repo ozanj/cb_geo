@@ -260,7 +260,7 @@ __Project goal: "capture and quantify" (p. 11) knowledge of admissions officers_
   - Selective colleges should look for regional and national students
   
 <p class="quote">College Board underwrites project to enter enrollment management space</p>
-<p style="display:none;">efforts to help colleges estimate their enrollment potential, efforts which had faltered largely because the smallest geographic unit used in these analyses was the state [@RN4982, p. x]</p>
+<p style="display:none;">We asked the College Board if it might provide the database we required. Coincidentally, the Board was reviewing its own efforts to help colleges estimate their enrollment potential, efforts which had faltered largely because the smallest geographic unit used in these analyses was the state [@RN4982, p. x]</p>
 
 - @RN4982 outputs are basis for College Board EPS software
 
@@ -854,8 +854,7 @@ for (m in native_metros) {
 
 # Discussion
 
-### Discussion{.hide}
-#### Summary of results
+### Summary of results{.hide}
 
 **RQ1: SES and racial variation over time between, within Geomarkets**
 
@@ -1004,25 +1003,10 @@ __The KI of education policy research__
 
 __Expanding the KI to consider private firms and private equity__
 
-- Case-study research
+- Case-study research (e.g., this study)
   - Granular data; critical analyses; gnarly data collection; difficult to scale
-- Secondary data subscriptions
-  - Can these data be leveraged to 
-
-
-
-
-
-### ya ya ya {.hide}
-
-Scholarship on postsecondary "organizational field"
-
-- Soc-of-ed focuses on schools (and policies) as "sorting machines"
-  - But third-party vendors have structured college access for decades
-- Org field is "totality of relevant actors" [@RN527, p. 148]
-  - Organizational field should be focus of regulation
-  - Sociology should identify high-leverage actors/products in org field
-
+- Data subscriptions created for investment community (e.g., PitchBook, Orbis)
+  - Can these data be leveraged to expand the domain of education research?
 
 # Thank you!{.align-center}
 
