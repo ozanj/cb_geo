@@ -1,0 +1,97 @@
+---
+title: "Structuring College Access: The Market Segment Model and College Board Geomarkets"
+author: ["Ozan Jaquette (UCLA)", "Karina Salazar (University of Arizona)"]
+bibliography: ./../assets/bib/cb_geomarket_bib.bib
+csl: ./../assets/bib/apa.csl
+format:
+  pdf:
+    documentclass: article
+    #papersize: letter
+    number-sections: true
+    number-depth: 2
+    #toc: FALSE
+    #pandoc_args: !expr rmdfiltr::add_wordcount_filter(rmdfiltr::add_citeproc_filter(args = NULL))
+    #keep_tex: true
+    extensions: [andrewheiss/wordcount]
+editor: visual
+geometry:
+  margin=1in
+fontsize: 11pt
+header-includes:
+  - \usepackage{setspace}
+  - \doublespacing
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+#library(bookdown)
+
+# https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_pdf.pdf
+library(kableExtra)
+
+#hey ho This many words: {{< words-total >}}
+```
+
+
+# Discussion
+
+The discussions of correlation and homophily by @RN4975 describe the logic of The Market Segment model and also how the enrollment management industry thinks about the process of recruiting students. The thesis of the Market Segment Model is that of the status attainment model, that student demand for college is a function of parental education and parental income. @RN4982 demonstrated this thesis by showing the correlation between student SAT score-sending behavior and measures of class. @RN4982 argued that households of particular class and college aspirations are likely to live in particular parts of a metropolitan area and that these geographic territories can be meaningfully captured by Geomarkets. This argument relies on the assumption of homophily, that birds of a feather flock together. Drawing from this logic, colleges should identify their core student market segment -- local, in-state, regional, or national -- identify Geomarkets that contain large numbers of households from this market segment, and then target high schools and communities within these Geomarkets. This information is contained in the Market Segment Profile (Appendix A), which is a standard output of EPS software. When considering new Geomarkets to target, colleges should consider which Geomarkets have large numbers of households that are interested in colleges that are direct competitors. This information is contained in the Institutional Profile (Appendix A). Thus, the recommendations of the Market Segment Model can be boiled down to finding those Geomarkets with your desired class of student and targeting those high schools and communities that are popular with colleges like yours.
+[WHAT IS MISSING HERE: YOU DON'T TALK ABOUT HOW A SNAPSHOT OF THE PAST IS USED TO MAKE DECISIONS ABOUT FUTURE RECRUITING]
+
+Interestingly, @RN4982 claim that the Market Segment Model merely formalizes the logic that admissions officers from selective colleges had been utilizing for decades. The idea is that good students from good families want to go to good colleges that are far from home. These good families are found in particular parts -- Geomarkets -- of metropolitan areas and students from other parts of the metro have the achievement and disposition to attend their local college. The Market Segment Model formalized this logic and commodified it in Enrollment Planning Service (EPS) software that helped colleges identify desirable Geomarkets and desirable high schools within those Geomarkets. As suggested by @RN5007, once commodified and quantified, the local knowledge of admissions officers becomes redundant. 
+
+Technologies that target target customers based on geography utilize racial and class segregation [@RN4775; @RN4849; @RN4975]. Geographic segmentation has become increasingly granular over time. Geomarkets were a landmark innovation in Geographic segmentation in the context of education. College Board provided data for @RN4982 because "the Board was reviewing its own efforts to help colleges estimate their enrollment potential, efforts which had faltered largely because the smallest geographic unit used in these analyses was the state" (p. x).
+
+Research question 1 investigates racial and socioeconomic variation between and within Geomarkets over time. We find that Geomarkets are highly correlated with race and class. For examle, KARINA GIVE A COUPLE OF FINDINGS. 
+
+These findings are not surprising given the extent of race and class segregation in the US. Furthermore, the correlation between Geomarkets and class is expcted because geomarket borders were created in service of the Market Segment Model, a model which views demand for higher education as a function of class. Interestingly, @RN4982 literally have nothing to say about race and demand for higher education. @RN4982 is written around New England, with a particular focus on Geomarkets in Connecticut and Massachusetts. Their silence is about race is conspicuous given that Busing was a political contentious issue in Boston and nearby metropolitan areas. 
+
+We show that in 1980, when Geomarkets were being created, that Black people tended to be highly concentrated in the poorest Geomarket in the metropolitan area. Examples include, CA7 -- City of Oakland, MA 6 -- Boston & Cambridge, OH 4 -- City of Cleveland (East), TX17 -- City of Houston (East), TX19 -- City of Dallas, CA21 -- South & South Central Los Angeles, and PA5 -- Philadelphia County. In a handful of metropolitan areas (e.g., Cleveland), Black people remain conentrated in the poorest Geomarkets. In Chicago-Land, 
+
+Some metro areas follow a pattern whereby Black residents [KARINA -- ONE OR TWO SENTENCES]
+
+Research question 2 analyzes the socioeconomic and racial composition of included versus excluded prospects under the hypothetical scenario that a student list purchase 
+
+Research question 2 analyzes the socioeconomic and racial composition of student list purchases that include all Geomarkets in a metro area. We examine which Geomarkets these prospects live in as a means of assessing the consequences of student list purchases that exclude particular Geomarkets. This question is motivated by the @RN4982 recommendation that selective colleges that enroll students from the regional and national market segment should target affluent Geomarkets, while community colleges and non-selective 4-year colleges should focus on middle- and working-class Geomarkets [OTHER RATIONALE FOR THIS RQ FROM BOBBY?].
+
+KARINA -- ADD ONE OR TWO PARAGRAPHS SUMMARIZING RESULTS.
+
+These analyses contribute to scholarship about how students are sorted into colleges. The status attainment model argues that college destination is a function of parental education and occupation [@RN1273; @RN1271; @RN1272]. Indeed, the Market Segment Model can be seen as a market research application of the status attainment model. @RN5033 finds that Asian American students -- particularly children of Chinese, Indian, Korean, and Vietnamese immigrants -- tend to have high levels of educational achievement even if their parents do not, while the educational achievement of later-generation Asian Americans conforms to status attainment theory. In our analyses of prospects included in student list purchases, Asian American prospects from poor Geomarkets tended to be first-generation students while Asian American prospects from affluent Geomarkets tended to have parents with a BA. Drawing from @RN5033, one explanation for this finding is that Asian students living in low-income Geomarkets tend to have parents who immigrated to the U.S. whereas Asian students living in affluent Geomarkets are more likely to have parents who were born in the U.S. 
+
+The cultural capital model explains a process by which upper and upper-middle class families sort themselves into selective colleges by providing their children with the pedigree (academic, extracurricular) valued by selective colleges, information about how to navigate the admissions gauntlet, and social networks that provide an inside track [@RN1228; @RN1241; @RN4991; @RN1814]. The cultural capital model explains how affluent households maintain a disproportionate enrollment share at selective institutions in an era of holistic admissions that has the purported mission of increasing racial and class diversity. <!--Amidst concern about discrimination against Asian students at Ivy Plus institutions, @RN4991 shows how private admissions consultants coach Asian American students to......NEED TO REVISE THIS .-->
+
+Both the status attainment model and the cultural capital model are demand-side explanations for why education is a "social sieve" [@RN2377; @RN5046] that allows for a modicum of social mobility while maintaining a much larger flow of intergenerational class transmission [@RN861]. The relative sizes of these flows can be observed in @RN4722, which obtained parental income from federal income tax returns for every college in the U.S. The disproportionate enrollment share of high income families at selective private colleges -- and even at most public research universities -- is staggering. @RN1297[p. 241-242] observes that educational credentials are property that "support their holders' claims for intermarriages with notable families\ldots, claims to monopolize socially and economically advantageous positions" and the claims made by educational credentials "are a setback for talent (charisma) in favor of property" that comes from "the desire for restricting the supply for these positions and their monopolization by the owners of educational certificates."
+ 
+Complementing the cultural capital explanation of how students are sorted into colleges are the supply-side explanations of the credentialism literature and the more recent literature on enrollment management. The credentialism literature recognizes that colleges have a financial incentive for educational credentials to be required for socially and economically advantageous positions [@RN865; @RN861; @RN880; @RN869]. The enrollment management literature describes which prospects colleges want to enroll and what colleges do to get these students, at different stages of the enrollment funnel [@RN3519; @RN4324; @RN3522; @RN4407; @RN4758; @RN3544; @RN3547; @cottom2017lower]. @RN3519 and @RN4321 describe a tacit arrangement between high school guidance counselors on the demand side and college admissions officers on the supply side. High school guidance counselors at well-resourced schools, especially private schools, are motivated to give their students a competitive advantage in admissions. Meanwhile, college admissions officers are motivated to enroll students who can afford full tuition price and are likely to donate in the future. These mutually beneficial desires are consummated by recognzing that upper and upper-middle class applicants satisfy the extracurricular needs of the college. The band needs oboists. The lacrosse team needs players. Quantitative analyses of visits from colleges to high schools are consistent with @RN3519; selective private colleges and public research universities devote most of their recruiting resources on courting students from privileged schools and communities [@RN5023; @RN4758]. However, the extant enrollment management literature is flawed in that it views recruiting as something that is done by individual colleges.
+
+We argue that existing explanations how students are sorted into colleges miss an important supply-side mechanism, third-party vendors that sort students on behalf of colleges. Based on a snapshot of student demand from 1980, @RN4982 created the Market Segment Model and Geomarkets. @RN4982 argues that demand for higher education is correlated with class, ingoring the historical structural barriers that produced class- and race-based inequality in student demand. In itself, this explanation is basically the same as the status attainment model. However, the College Board goes further by commodifying the Market Segment Model into products that tell colleges which Geomarkets to target. Therefore, third-party products encourage supply-side enrollment management behaviors to amplify historical structural inequalities observed on the demand-side. Geomarkets were incorporated into the Student Search Service product. We show that that excluding low-income, non-white Geomarkets from student list purchases results in the disproportionate exclusion of first-generation, non-white students with strong test scores. 
+
+## Enrollment Management Industry
+
+The growing salience of third-party vendors warrants a reconfiguration of the organizational field that is salient to college access. @RN527[p. 148] define organizational fields as, "those organizations that, in the aggregate, constitute a recognized area of institutional life: key suppliers, resource and product consumers, regulatory agencies, and other organizations that produce similar services or products" and that "the virtue of this unit of analysis is that it directs our attention\ldots to the totality of relevant actors." Sociological literatures salient to college access devote substantive attention to schools, colleges, families, and communities. @RN3547 shows how local external stakeholders intervene on admissions standards. @RN4991 describes the role of independent admissions consultants hired by families as third-party vendors that engage on the demand-side. College access scholarship from economics analyzes the effects of policies (district/state/federal) and the effects of information interventions [CITE HOXBY TYPE]. None of these explanations seriously consider the growing role of third-party vendors, which are increasingly owned by private equity interests and offer software-as-service platforms that perform core functions for schools and colleges.
+
+@list_biz describes four key dynamics in the enrollment management (EM) industry, with a focus on the market for student list data. First, EM consulting firms are central to the creation and implementation of recruiting campaigns [@RN5027]. When we issued records requests to public universities about their student list purchases, at least 50\% of universities indicated that they outsourced student list purchases to an EM consultancy []. In many cases, the university was buying names each year but no university employee had knowledge about which student list vendors they were buying names from. This reliance on EM consultancies is partially explained by the high level of burnout and employee turnover in the EM profession [@hoover_em]. 
+
+Second, technological advances created means of identifying and serving prospects. College Board began selling the contact information of test-takers in 1972 [@belkin2019-studata]. ACT followed suit and the two testing companies enjoyed a near duopoly for several decades. This business can be described as list-based lead generation based on the direct-mail model. "Free" college search engines (e.g., Cappex, Niche) yielded news sources of student list data. Another source of student list data is college planning software purchased by high school districts and utilized by high school students and guidance counselors. The most widely-known product is Naviance, which claims to be used by more than used by more than 10 million K-12 students and by 40% ofUS high schools [@powerschool]. *Naviance* college planning software feeds into the *Intersect* recruiting platform, which allows colleges to target Naviance users while they are on the platform. *Intersect* is an example of behavioral-based -- as opposed to list-based -- targeting. However, key to both approaches is the extent to which the product is built around a large, proprietary database of prospects. This can be observed in the justification for the purchase of Intersect from a University of Utah procurement document [@utah_procurement]:
+
+> The marketing services being purchased operates within the PowerSchool Naviance platform, which is a proprietary system, that no other company has access to. There is unique group of prospective students who are only in the PowerSchool Naviance platform. We have spoken with several vendors where we can reach out to prospective students. Each vendor has their own proprietary website or database where select students can be reached.
+
+The third dynamic in the EM industry has been the growth of test-optional movement, which reduces both the number of paying test-takers and the coverage of student list products sold by College Board and ACT. ACT responded to uncertainty in their core testing business by attempting to become an edtech company, failing miserably, and being acquired by Nexus Capital.
+
+The fourth dynamic is the transformation from owner-operated to private-equity owned firms and the blurring between consultancy and software vendors. The 1980s and 1990s was a period of market entry in EM, mostly consistent of college admissions professionals or professors who decided to hang up a shingle [@RN5027]. The 2010s were a period of acquisitions and concentration. After regulatory scrutiny pushed private-equity interests out of for-profit college market [@RN5022], private equity investors saw value in acquiring firms that provided services to direct providers. Drawing from resource dependence theory, @list_biz describe the proliferation of horizontal acquisitions grow market share and vertical acquisitions designed to increase customer reliance. 
+
+EAB is the exemplar private equity darling. START HERE ON MONDAY. THE SLIDE IS 
+
+The EAB Story: Acquire and Integrate
+Acquistiions in lead generation (Jaquette, Salazar, and Martin 2022; Marcus 2024)
+Consulting firms sell software-as-service “solutions”
+Build subscription recruiting platforms around database of prospects
+In their analysis of quantifying school quality in England, @RN5005 [p. 517] observe that "one problem with school league tables \ldots is that the measures of school quality often merely reflect the social origins of those who attend a particular school." Similarly, considering prior research showing that SAT scores are substantially a function of social origin [@RN1273], the Market Segment Model argues that student demand for higher education is mostly a function of social origin.
+
+Institutional theory defines the organizational field as "those organizations that, in the aggregate, constitute a recognized area of institutional life: key suppliers, resource and product consumers, regulatory agencies, and other organizations that produce similar services and products" [@RN527, p. 143].
+
+# References
+
+::: {#refs}
+:::
+

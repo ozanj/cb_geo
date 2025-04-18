@@ -869,6 +869,30 @@ for (m in native_metros) {
   - Compared to students from affluent Geomarkets, Asian and Hispanic students from low-income Geomarkets tend to be first-gen
   - Targeting non-white students in affluent Geomarkets yields mostly non-first-gen
 
+## Organizational Field of College Access
+
+### __Organizational Fields [@RN527]__{.hide}
+
+<p class="quote">"Organizational field" salient to college access, according to prior research</p>
+<p style="display:none;">Those organizations that, in the aggregate, constitute a recognized area of institutional life: key suppliers, resource and product consumers, regulatory agencies, and other organizations that produce similar services or products. The virtue of this unit of analysis is that it directs our attention...to the totality of relevant actors [@RN527, p. 148].</p>
+
+<!-- - Economics $\rightarrow$ effects of schools and policies (district/state/federal) on students -->
+
+__Sociology $\rightarrow$ how schools and households sort students into colleges__
+
+- Demand-side explanations
+  - Status attainment model [e.g., @RN915]
+  - Cultural capital model [e.g., @RN1228; @RN4991]
+- Supply-side explanations
+  - The "credentialism" literature [e.g., @RN865; @RN861]
+  - Enrollment management behavior of colleges [e.g., @RN3519]
+  
+__Research ignores third-party vendors that classify consumers for producers__
+
+- Structural inequality $\rightarrow$ unequal student demand for college
+  - Third-party products take snapshot student demand $\rightarrow$ encourage supply-side to amplify structural inequalities observed on demand-side
+- Vendors have structured college access for decades [@RN5045]
+  - Private equity + data science + software-as-service $\rightarrow$ financiers control which students sorted to which colleges
 
 ## EM Industry Dynamics
 
@@ -922,7 +946,7 @@ Evolution of EM consultancies mirrors evolution of for-profit colleges [@list_bi
 Goal of acquisitions is to make colleges depend on EAB (software) products
 
 - [YouVisit](https://www.youvisit.com/), 2019 -- virtual tours
-- Cappex (now [appily](https://www.appily.com/)), 2020 -- college search engine
+- [Cappex](https://www.appily.com/), 2020 -- college search engine
 - Hobsons, 2021 -- edtech/consulting firm
   - PowerSchool buys Naviance; [EAB becomes exclusive reseller of Intersect](#){data-modal-type="image" data-modal-url="assets/images/intersect_connection_subscription_renewal_notice_university_utah_1_7_2022_redacted.png"}
     - (PowerSchool IPO in 2021; acquired by Bain Capital in 2024)
@@ -961,29 +985,6 @@ Many customers begin their journey with us by using only two of our 15 products.
 :::
 
 
-
-
-## Organizational Field of College Access
-
-### __Organizational Fields [@RN527]__{.hide}
-
-<p class="quote">"Organizational field" salient to college access, according to prior research</p>
-<p style="display:none;">Those organizations that, in the aggregate, constitute a recognized area of institutional life: key suppliers, resource and product consumers, regulatory agencies, and other organizations that produce similar services or products. The virtue of this unit of analysis is that it directs our attention...to the totality of relevant actors [@RN527, p. 148].</p>
-
-- Economics $\rightarrow$ effects of schools and policies (district/state/federal) on students
-- Sociology $\rightarrow$ how schools and households sort students into colleges
-  - Status attainment model [e.g., @RN915]
-  - Cultural capital model [e.g., @RN1228; @RN4991]
-  - Enrollment management behavior of colleges [e.g., @RN3519]
-  
-__Research ignores third-party vendors that classify consumers for producers__
-
-- Structural inequality $\rightarrow$ unequal student demand for college
-  - Third-party products take snapshot student demand $\rightarrow$ encourage supply-side to amplify structural inequalities observed on demand-side
-- Vendors have structured college access for decades [@RN5045]
-  - Private equity + data science + software-as-service $\rightarrow$ financiers controlling process of sorting students to colleges
-- Organizational field should be focus of regulation
-  
 
 ## Building a Knowledge Infrastructure
 
