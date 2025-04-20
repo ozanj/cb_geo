@@ -196,7 +196,7 @@ orders_data_full <- read_csv(file.path('scripts', 'metro_orders.csv')) %>%
   add_row(metro = 'san_diego', order_ids = '448420_546946_448374_546945', test_range = 'PSAT score 1190 - 1520') %>% 
   add_row(metro = 'bay_area', order_ids = '448420_546946_448374_546945', test_range = 'PSAT score 1190 - 1520') %>%
   mutate(
-    type = c(rep('rq2', 32), rep('aian', 5), rep('rq2', 10))
+    type = c(rep('rq2', 31), rep('aian', 5), rep('rq2', 10))
   )
 
 names(orders_data_full) <- c('region', 'order_num', 'order_title', 'type')
