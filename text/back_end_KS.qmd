@@ -473,6 +473,37 @@ knitr::include_graphics('./../assets/images/rq1-dallas-race.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
 
+```{r fig-dallas-rq1-ses, echo = FALSE, fig.align = 'center', fig.cap = "Socioeconomic Characteristics of Dallas Area Geomarkets, 1980-2020", out.width = "100%"}
+knitr::include_graphics('./../assets/images/rq1-dallas-ses.png')
+#knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
+#![The enrollment funnel](assets/images/enrollment_funnel.png)
+```
+
+```{r fig-dallas-rq2-race, echo = FALSE, fig.align = 'center', fig.cap = "Racial/Ethnic Composition of Purchased Student Profiles by Geomarket, Dallas Area", out.width = "100%"}
+knitr::include_graphics('./../assets/images/rq2-dallas-race.png')
+#knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
+#![The enrollment funnel](assets/images/enrollment_funnel.png)
+```
+
+```{r fig-dallas-rq2-midSAT-race, echo = FALSE, fig.align = 'center', fig.cap = "Dallas Geomarket Contribution to Purchased Student profiles by Racial/ethnic group, Middle-Range SAT orders", out.width = "100%"}
+knitr::include_graphics('./../assets/images/rq2_dallas_midSAT_race.png')
+#knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
+#![The enrollment funnel](assets/images/enrollment_funnel.png)
+
+```
+
+```{r fig-dallas-rq2-midSAT-ses, echo = FALSE, fig.align = 'center', fig.cap = "Dallas Geomarket Contribution to Purchased Student profiles by First-Generation Status, Middle-Range SAT orders", out.width = "100%"}
+knitr::include_graphics('./../assets/images/rq2_chicago_midSAT_ses.png')
+#knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
+#![The enrollment funnel](assets/images/enrollment_funnel.png)
+```
+
+```{r fig-dallas-rq2-midSAT-combo, echo = FALSE, fig.align = 'center', fig.cap = "Dallas Geomarket Contribution to Purchased Student profiles by First-Generation Status, Middle-Range SAT orders", out.width = "100%"}
+knitr::include_graphics('./../assets/images/rq2_dallas_midSAT_combo.png')
+#knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
+#![The enrollment funnel](assets/images/enrollment_funnel.png)
+```
+
 \clearpage
 
 <!-- TABLES -->
