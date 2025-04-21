@@ -360,7 +360,7 @@ For instance, @fig-chicago-rq2-lowSAT-race shows the contributions of each Geoma
 
 Nearly one half (n=7,728) of all prospects whose contact information was purchased in these lower SAT score orders identified as White. With the exception of the City of Chicago, @fig-chicago-rq2-lowSAT-race shows all Geomarkets contributed to the pool of White prospects at rates nearly proportional to their overall contributions to all included prospects. The City of Chicago Geomarket, however, contributed only 5% of White prospects, despite accounting for 20% of all included prospects. Similar patterns are observed for Asian students, with proportional contributions by Geomarket largely consistent with thier overall distribution, exept for Evanston and Skokie (12% versus 4% for all prospects) contributing disproportionately larger shares and the South and Southwest Suburbs (10% versus 26% for all prospects) contributing smaller shares relative to their overall representation.
 
-In contrast, these representational patterns are reversed for Black and Hispanic prospects in @fig-chicago-rq2-lowSAT-race. Among the more than 2,000 Black students included in these orders, the City of Chicago and South and Southwest Suburbs contributed disproportionately higher shares - 48% and 34%, respectively- compared to their overall contributions of 20% and 26% of all included prospects, whereas all other Geomarkets contributed substantially smaller proportions of Black prospects. The City of Chicago Geomarket also contributed larger shares of the nearly 5,000 Hispanic students (35% versus 20% for all prospects), while all other Geomarkets contributed comprable or relatively smaller proportions of Hispanic prospects than their overall representation among all included prospects.
+In contrast, these representational patterns are reversed for Black and Hispanic prospects in @fig-chicago-rq2-lowSAT-race. Among the more than 2,000 Black students included in these orders, the City of Chicago and South and Southwest Suburbs contributed disproportionately higher shares, 48% and 34%, respectively, compared to their overall contributions of 20% and 26% of all included prospects, whereas all other Geomarkets contributed substantially smaller proportions of Black prospects. The City of Chicago Geomarket also contributed larger shares of the nearly 5,000 Hispanic students (35% versus 20% for all prospects), while all other Geomarkets contributed comprable or relatively smaller proportions of Hispanic prospects than their overall representation among all included prospects.
 
 @fig-chicago-rq2-midSAT-race and @fig-chicago-rq2-highSAT-race similarly depict Geomarket contributions for pools of prospects resulting from orders targeting middle-range (1160-1300) and high-range (1310-1600) SAT scores. Both figures demonstrate how representational Geomarket patterns across race/ethnicity remain relatively consistent even as SAT scores increase. For instance, @fig-chicago-rq2-midSAT-race shows that the Chain of Lakes, North Shore, and Western Suburbs Geomarkets contributed similar proportions of White and Asian students, yet smaller proportions of Black and Hispanic students, relative to their overall representation among all included prospects. The Northwest Suburbs and Evanston and Skokie similarly contributed a disproportionately higher share of Asian prospects, but lower shares of Black and Hispanic students. Conversely, the South and Southwest Suburbs Geomarket contributed a substantially larger proportion of Black students, while the City of Chicago yielded larger proportions of both Black and Hispanic students- again, relative to their overall representation among all included prospects targeted at middle range SAT scores. Despite declines in the overall number of Black (n=240) and Hispanic (n=950) prospects included in orders filtering for high-ranges of SAT scores (1310-1600), @fig-chicago-rq2-highSAT-race shows overall Geomarket contribution patterns persist.
 
@@ -372,7 +372,7 @@ Finally, we examine Geomarket contributions to prospect pools by both first-gene
 
 @fig-chicago-rq2-lowSAT-combo indicates these Geomarket patterns persist across other racial/ethnic categories. The City of Chicago Geomarket consistently contributed a disproportionately large share of first-generation college students whose parents did not attend college across all racial/ethnic categories. However, the magnitude of this disproportionality varied- from a 3-percentage-point difference for Black prospects to a 21 percentage-point difference for Asian prospects. Among Hispanic students, contributions to the first-generation prospect pool were notably balanced across Geomarkets, with the exception of North Shore and Evanston and Skokie Geomarkets, which contributed substantially lower shares of first-generation Hispanic students. Although Asian and Black prospects who are not first-generation college students make up a relatively smaller portion of the overall pool, @fig-chicago-rq2-lowSAT-combo suggests that such prospects are primarily contributed by the Chain of Lakes, North Shore, and Evanston and Skokie Geomarkets.
 
-Geomarket contribution patterns to prospect pools by both first-generation college student status and race/ethnicity become more pronounced as SAT score thresholds increase. For instance, @fig-chicago-rq2-midSAT-combo presents prospect pools disaggregated by both first-generation college student status and race/ethnicity within the middle-range SAT score (1160–1300) orders. The City of Chicago Geomarket still contributes a disproportionately larger share of first -generation college students - both those whose parents did not attend college and those whose parents attended some college but did not complete a degree - across most racial and ethnic groups. However, the magnitude of this disproportionately for City of Chicago becomes even greater for Asian students, with a nearly 30-percentage-point difference collectively for all first-generation college students (35% no college and 22% some college) relative to their overall Geomarket representation (28%). Similar to patterns observed at lower SAT score thresholds, the Geomarket contributions to first-generation Hispanic college students remain relatively balanced. All Geomarkets, with the exception of North Shore (22%) and Evanston and Skokie (32%), contributed more than 50% first-generation Hispanic college students across both parental education categories to the overall prospect pool.
+Geomarket contribution patterns to prospect pools by both first-generation college student status and race/ethnicity become more pronounced as SAT score thresholds increase. For instance, @fig-chicago-rq2-midSAT-combo presents prospect pools disaggregated by both first-generation college student status and race/ethnicity within the middle-range SAT score (1160–1300) orders. The City of Chicago Geomarket still contributes a disproportionately larger share of first-generation college students for both those whose parents did not attend college and those whose parents attended some college but did not complete a degree across most racial and ethnic groups. However, the magnitude of this disproportionately for City of Chicago becomes even greater for Asian students, with a nearly 30-percentage-point difference collectively for all first-generation college students (35% no college and 22% some college) relative to their overall Geomarket representation (28%). Similar to patterns observed at lower SAT score thresholds, the Geomarket contributions to first-generation Hispanic college students remain relatively balanced. All Geomarkets, with the exception of North Shore (22%) and Evanston and Skokie (32%), contributed more than 50% first-generation Hispanic college students across both parental education categories to the overall prospect pool.
 
 @fig-chicago-rq2-highSAT-combo shows the magnitude of Geomarket contribution disparities increases at the highest SAT score range (1310-1600), partly driven by the relatively fewer number of first-generation college students included within these orders. Again, the City of Chicago Geomarket disproportionately contributes a disproportionate share of first-generation Asian college students (43% across both parental education categories) and first-generation Hispanic college students (52% across both parental education categories) in comparison to the overall distribution of first-generation college students within each racial/ethnic category (13% for Asian and 40% for Hispanic, respectively). Conversely, nearly all other Geomarkets contribute a disproportionately larger share of non-first generation college students across all racial/ethnic categories.
 
@@ -380,11 +380,11 @@ Geomarket contribution patterns to prospect pools by both first-generation colle
 
 ### Geomarket Changes Over Time \[Need better RQ1 heading\]
 
-The six Geomarkets within the Dallas-Fort Worth metropolitan area are illustrated in @fig-dallas-maps by total population across the three census periods. The Dallas-Fort Worth region represents a unique metroplex case formed by the convergence of two separate metropolitan areas, which creates a unique urban spatial structure that differs from the classic model originally proposed by @RN4982. As depicted in @fig-dallas-maps, two distinct inner-city core Geomarkets - City of Dallas and City of Fort Worth- are seperated by a centrally located suburban Geomarket encompassing Irving, Arlington, & Grand Prairie. These central Geomarkets are surrounded by the more conventional outre ring of suburban Geomarkets (Dallas County, Collin and Rockwall Counties, and West of Dallas/Ft. Worth Metroplex).
+The six Geomarkets within the Dallas-Fort Worth metropolitan area are illustrated in @fig-dallas-maps by total population across the three census periods. The Dallas-Fort Worth region represents a unique metroplex case formed by the convergence of two separate metropolitan areas, which creates a unique urban spatial structure that differs from the classic model originally proposed by @RN4982. As depicted in @fig-dallas-maps, two distinct inner-city core Geomarkets (City of Dallas and City of Fort Worth) are seperated by a centrally located suburban Geomarket encompassing Irving, Arlington, & Grand Prairie. These central Geomarkets are surrounded by the more conventional outre ring of suburban Geomarkets (Dallas County, Collin and Rockwall Counties, and West of Dallas/Ft. Worth Metroplex).
 
 From 1980 to 2020, the population of the overall Dallas-Fort Worth metropolitan area increased substantially from approximately 2.7 Million to 6.8 Million. @fig-dallas-maps showcases all six Geomarkets experienced population growth over the three census periods. However, the most pronounced increases occured in the West of Dallas/Ft. Worth Metroplex and Collin & Rockwall Counties Geomarkets, which grew from approximately 340,000 to 1.4 Million and 170,000 to 1.2 Million, respectively. These population trends, as shown in @fig-dallas-maps, suggest population growth has been partly driven by urban sprawl from the metropolitan centers - City of Forth Worth and City of Dallas - into the surrounding suburban and rural areas of the metropolitan areas. This outward expansion may also account for the comparatively larger geographic size of the West of Dallas/Fort Worth Metroplex Geomarket.
 
-Figure X presents the racial and ethnic composition of each Geomarket within the Dallas-Fort Worth metropolitan area across the three census periods. In 1980, all Geomarkets were predominantly White, with White populations ranging from 62% in City of Dallas to nearly 92% in West of Dallas/Ft. Worth Metroplex. By 2000, however, Geomarkets located in the central part of the metropolitan area exhibited a a more balanced racial/ethnic distribution, including Dallas County (58% White, 16% Black, 19% Hispanic; 6% Asian Pacific Islander), Irving, Arlington, and Grand Prairie (54% White, 12% Black, 26% Hispanic; 16% Asian Pacific Islander), and City of Fort Worth (57% White, 16% Black, 22% Hispanic; 3% Asian Pacific Islander). In contrast, Collin & Rockwall Counties and West of Dallas/Fort Worth Metroplex Geomarkets remained predominantly White in 2000 - 78% and 80%, respectively. Notably, by 2000, the City of Dallas was no longer a predominantly White Geomarket, with a racial/ethnic composition of approximately 24% Black, 30% Hispanic, and 3% Asian Pacific Islander residents.
+Figure X presents the racial and ethnic composition of each Geomarket within the Dallas-Fort Worth metropolitan area across the three census periods. In 1980, all Geomarkets were predominantly White, with White populations ranging from 62% in City of Dallas to nearly 92% in West of Dallas/Ft. Worth Metroplex. By 2000, however, Geomarkets located in the central part of the metropolitan area exhibited a a more balanced racial/ethnic distribution, including Dallas County (58% White, 16% Black, 19% Hispanic; 6% Asian Pacific Islander), Irving, Arlington, and Grand Prairie (54% White, 12% Black, 26% Hispanic; 16% Asian Pacific Islander), and City of Fort Worth (57% White, 16% Black, 22% Hispanic; 3% Asian Pacific Islander). In contrast, Collin & Rockwall Counties and West of Dallas/Fort Worth Metroplex Geomarkets remained predominantly White in 2000 at 78% and 80%, respectively. Notably, by 2000, the City of Dallas was no longer a predominantly White Geomarket, with a racial/ethnic composition of approximately 24% Black, 30% Hispanic, and 3% Asian Pacific Islander residents.
 
 These shifts in racial and ethnic composition within and across Geomarkets became more pronounced between 2000 and 2020. The Collin and Rockwall and West of Dallas/Fort Worth Metroplex Geomarkets experienced continued declines in their share of White residents. However, both Geomarkets remained predominantly White (58% and 63%, respectively) relative to all other Geomarkets. In contrast, all other Geomarkets experienced continued increases in the shares of Black and Hispanic residents, resulting in a diminished previously White-majority populations for Dallas CO (33% White, 23% Black, 32% Hispanic; 9% Asian Pacific Islander), Irving, Arlington, and Grand Prairie (30% White, 20% Black, 36% Hispanic; 12% Asian Pacific Islander), and City of Fort Worth (46% White, 15% Black, 33% Hispanic; 4% Asian Pacific Islander). Lastly, continuous increases in the shares of Black and Hispanic residents further diversified the City of Dallas, making it the most racially/ethnically diverse Geomarket in the Dallas-Fort Worth metropolitan area.
 
@@ -393,6 +393,10 @@ Socioeconomic demographics of median income, percent living below poverty, and e
 Figure X also illustrates changes in the percentage of residents living in poverty within Geomarkets over time, revealing shifting dynamics across Geomarkets similar to those observed in median household income. In 1980, poverty rates were comparably low in both for Collin & Rockwall Counties and Dallas County, moderate in the Irving, Arlington, and Grand Prarie and West of Dallas/Ft. Worth Metroplex Geomarkets, and higherst for City of Dallas and City of Fort Worth Geomarkets. Overtime, poverty rates declined in Collin & Rockwall Counties and West of Dallas/Ft. Worth Metroplex, while increasing for all other Geomarkets. These divergent trends resulted in a widening gap in poverty levels across the Dallas-Fort Worth metropolitan area. A similar widening disparity is evident evident in educational attainment. Although all Geomarkets experienced increases in the percentage of residents with a bachelor's degree or higher between 1980 and 2020, the Collin & Rockwall Counties Geomarket experienced a substantially greater increase - from 23.1% in 1980 to 50% in 2020- maintaining the gap with other Geomarkets in terms of educational attainment.
 
 ## Los Angeles
+
+### Geomarket Changes Over Time \[Need better RQ1 heading\]
+
+The 11 Geomarkets within the Los Angeles metropolitan area are illustrated in Figure X by total population across the three census periods. The Los Angeles region is one of the only multi-nuclei cases metroplex case formed by the convergence of two separate metropolitan areas, which creates a unique urban spatial structure that differs from the classic model originally proposed by @RN4982. As depicted in @fig-dallas-maps, two distinct inner-city core Geomarkets - City of Dallas and City of Fort Worth- are seperated by a centrally located suburban Geomarket encompassing Irving, Arlington, & Grand Prairie. These central Geomarkets are surrounded by the more conventional outre ring of suburban Geomarkets (Dallas County, Collin and Rockwall Counties, and West of Dallas/Ft. Worth Metroplex).
 
 # Discussion
 
@@ -433,8 +437,8 @@ knitr::include_graphics('./../assets/images/rq1_chicago_ses.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
 
-```{r fig-chicago-rq2-lowSAT-race, echo = FALSE, fig.align = 'center', fig.cap = "Chicago Geomarket Contribution to Purchased Student profiles by Racial/ethnic group, Low-Range SAT orders", out.width = "100%"}
-knitr::include_graphics('./../assets/images/rq2_chicago_lowSAT_race.png')
+```{r fig-chicago-rq2-race, echo = FALSE, fig.align = 'center', fig.cap = "Racial/Ethnic Composition of Purchased Student Profiles by Geomarket, Chicago Area", out.width = "100%"}
+knitr::include_graphics('./../assets/images/rq2_chicago_race.png')
 #knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
@@ -445,32 +449,8 @@ knitr::include_graphics('./../assets/images/rq2_chicago_midSAT_race.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
 
-```{r fig-chicago-rq2-highSAT-race, echo = FALSE, fig.align = 'center', fig.cap = "Chicago Geomarket Contribution to Purchased Student profiles by Racial/ethnic group, High-Range SAT orders", out.width = "100%"}
-knitr::include_graphics('./../assets/images/rq2_chicago_highSAT_race.png')
-#knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
-#![The enrollment funnel](assets/images/enrollment_funnel.png)
-```
-
-```{r fig-chicago-rq2-lowSAT-ses, echo = FALSE, fig.align = 'center', fig.cap = "Chicago Geomarket Contribution to Purchased Student profiles by First-Generation Status, Low-Range SAT orders", out.width = "100%"}
-knitr::include_graphics('./../assets/images/rq2_chicago_lowSAT_ses.png')
-#knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
-#![The enrollment funnel](assets/images/enrollment_funnel.png)
-```
-
 ```{r fig-chicago-rq2-midSAT-ses, echo = FALSE, fig.align = 'center', fig.cap = "Chicago Geomarket Contribution to Purchased Student profiles by First-Generation Status, Middle-Range SAT orders", out.width = "100%"}
 knitr::include_graphics('./../assets/images/rq2_chicago_midSAT_ses.png')
-#knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
-#![The enrollment funnel](assets/images/enrollment_funnel.png)
-```
-
-```{r fig-chicago-rq2-highSAT-ses, echo = FALSE, fig.align = 'center', fig.cap = "Chicago Geomarket Contribution to Purchased Student profiles by First-Generation Status, High-Range SAT orders", out.width = "100%"}
-knitr::include_graphics('./../assets/images/rq2_chicago_highSAT_ses.png')
-#knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
-#![The enrollment funnel](assets/images/enrollment_funnel.png)
-```
-
-```{r fig-chicago-rq2-lowSAT-combo, echo = FALSE, fig.align = 'center', fig.cap = "Chicago Geomarket Contribution to Purchased Student profiles by First-Generation Status, Low-Range SAT orders", out.width = "100%"}
-knitr::include_graphics('./../assets/images/rq2_chicago_lowSAT_combo.png')
 #knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
@@ -481,14 +461,14 @@ knitr::include_graphics('./../assets/images/rq2_chicago_midSAT_combo.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
 
-```{r fig-chicago-rq2-highSAT-combo, echo = FALSE, fig.align = 'center', fig.cap = "Chicago Geomarket Contribution to Purchased Student profiles by First-Generation Status, High-Range SAT orders", out.width = "100%"}
-knitr::include_graphics('./../assets/images/rq2_chicago_highSAT_combo.png')
-#knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
-#![The enrollment funnel](assets/images/enrollment_funnel.png
-```
-
 ```{r fig-dallas-maps, echo = FALSE, fig.align = 'center', fig.cap = "Dallas-Forth Worth Geomarkets, Total Population 1980-2020", out.width = "100%"}
 knitr::include_graphics('./../assets/images/dallas_maps.png')
+#knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
+#![The enrollment funnel](assets/images/enrollment_funnel.png)
+```
+
+```{r fig-dallas-rq1-race, echo = FALSE, fig.align = 'center', fig.cap = "Racial/Ethnic Composition of Dallas Area Geomarkets, 1980-2020", out.width = "100%"}
+knitr::include_graphics('./../assets/images/rq1-dallas-race.png')
 #knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
