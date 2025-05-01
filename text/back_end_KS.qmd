@@ -91,15 +91,26 @@ Lastly, choice of metropolitan cases was informed by student list data availabil
 
 Our case selection process resulted in three metropolitan cases: Chicago, Dallas-Fort Worth, and Los Angeles.
 
-**Analyses**. Analyses are simultaneously descriptive and spatial. We answer RQ1 by producing Geomarket-level tables and graphs that show how the Geomarkets in a selected metropolitan area vary on racial and socioeconomic characteristics and how they vary over time. For example, in the San Francisco Bay Area, how does the City of Oakland Geomarket (CA07) differ from the Alameda County Exluding Oakland Geomarket (CA08). We also produce interactive maps at the census tract-level to show more granular variation within and between Geomarkets.
+**Analyses**. Analyses are simultaneously descriptive and spatial. We answer RQ1 by producing Geomarket-level tables and graphs that show how the Geomarkets in a selected metropolitan area vary on racial and socioeconomic characteristics and how they vary over time. We also produce interactive maps at the census tract-level to show more granular variation within and between Geomarkets.
 
-We answer RQ2 by analyzing student list purchases that encompassed all Geomarkets in a selected metropolitan areas. Descriptive tables and graphs describe the racial and socioeconomic characteristics of prospects that would have been included/excluded had the purchase filtered on particular Geomarkets. Interactive maps provide a more granual visualization of where prospects lived and went to high school. For example, for purchased profiles who lived in the Chester County Geomarket (PA02) \[OR PHILADELPHIA PA05\] and identified as Black, where in the county did these students live and which high schools did they attend?
+We answer RQ2 by analyzing student list purchases that encompassed all Geomarkets in a selected metropolitan areas. Descriptive tables and graphs describe the racial and socioeconomic characteristics of prospects that would have been included/excluded had the purchase filtered on particular Geomarkets. We also create interactive maps of prospect pools by Geomarket contributions to provide a more granular visualization of analyses.
+
+```{=html}
+
+<!-- [DO WE NEED THIS LEVEL OF DETAIL???]
+
+For example, for purchased profiles who lived in the Chester County Geomarket (PA02) [OR PHILADELPHIA PA05] and identified as Black, where in the county did these students live and which high schools did they attend?
+
+ For example, for purchased profiles who lived in the Chester County Geomarket (PA02) [OR PHILADELPHIA PA05] and identified as Black, where in the county did these students live and which high schools did they attend?
 
 NEXT STEPS: CREATE TABLE FOR PHILLY STUDENT LIST PURCHASES THAT FOCUSES ON FIRST GEN STATUS.
 
 Our conceptual framework suggests that racial and socioeconomic inequality is Geomarket regions is associated with the number of geomarkets in the metropolitan area. and is associated with the patterns of racial segregation in the metropolitan area. comment more on this.
 
 Below, we use simulations and actual student list purchases that filtered on geomarkets. In purchases that filtered on test-score and/or GPA thresholds, we can simluate who would be included and excluded had certain Geomarkets were been selected. In purchases that filter on geomarkets, we can get an initial sense of who is included in geomarkets targeted by regional state colleges versus research universities.
+
+-->
+```
 
 # Findings
 
