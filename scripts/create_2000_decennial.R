@@ -53,7 +53,8 @@ list.files(path = scripts_dir)
 
 ###### LOAD EPS SHAPE FILE DATA
 
-  load(file.path(eps_data_dir, 'eps_shapes.RData'))
+  load(file.path(eps_data_dir, 'eps_shapes_2000.RData'))
+  eps_geometry_zcta <- eps_2000
 
 ######## READ IN SHAPE FILE FOR 2000 CENSUS TRACTS
 
@@ -666,9 +667,9 @@ d2000_sf1a_tract_sf %>% select(gisjoin) %>% as.data.frame() %>% group_by(gisjoin
     st_transform(5070)
   
   # save in analysis data file
-  save(d2000_sf1a_anal_eps_sf, file = file.path(data_dir,'analysis_data', 'd2000_sf1a_anal_eps_sf.RData'))
+  save(d2000_sf1a_anal_eps_sf, file = file.path(shape_dir,'analysis_data', 'd2000_sf1a_anal_eps_sf.RData'))
   
-  load(file = file.path(data_dir,'analysis_data', 'd2000_sf1a_anal_eps_sf.RData'))
+  load(file = file.path(shape_dir,'analysis_data', 'd2000_sf1a_anal_eps_sf.RData'))
   
   # results for "important" vars
   d2000_sf1a_anal_eps %>% 

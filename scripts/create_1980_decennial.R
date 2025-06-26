@@ -60,7 +60,8 @@ scripts_dir <- file.path('.','scripts') #
 
 ###### LOAD EPS SHAPE FILE DATA
   
-  load(file.path(eps_data_dir, 'eps_shapes.RData'))
+  load(file.path(eps_data_dir, 'eps_shapes_1980.RData'))
+  eps_geometry_zcta <- eps_1980
   
 ####### READ IN DATA
 
@@ -671,7 +672,7 @@ scripts_dir <- file.path('.','scripts') #
     households_tot = if_else(dig001==0,NA,dec001), # total number of households
     inc_house_med_all  = if_else(die001==0,NA,die001), # median household income
     inc_house_agg_all = if_else(dig001==0,NA,dig001), # aggregate household income
-    households_tot_calc = rowSums(select(., did001:did016), na.rm = TRUE), # calculated number of households that have values for household income bands
+    households_tot_calc = rowSums(select(., did001:did017), na.rm = TRUE), # calculated number of households that have values for household income bands
     #inc_house_mean_all = inc_house_agg_all/households_tot_calc, # mean income at tract-level, based on calculated number of houses that report income
     
     pov_denom = if_else(is.na(di8001) & is.na(di8002), NA, 

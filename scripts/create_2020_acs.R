@@ -53,7 +53,8 @@ list.files(path = scripts_dir)
 
 ###### LOAD EPS SHAPE FILE DATA
 
-  load(file.path(eps_data_dir, 'eps_shapes.RData'))
+load(file.path(eps_data_dir, 'eps_shapes_2020.RData'))
+eps_geometry_zcta <- eps_2020
 
 ######## READ IN SHAPE FILE FOR 2020 CENSUS TRACTS
 
@@ -130,28 +131,32 @@ acs2020_vars %>% filter(name %in% variables) %>% print()
 # READ IN TRACT-LEVEL 2016-2020 ACS DATA FROM TIDYCENSUS
 
   # List of all state abbreviations plus Washington, D.C.
-  states <- c(state.abb, "DC")
-  states
+  # states <- c(state.abb, "DC")
+  # states
+  # 
+  # # Initialize an empty list to store data
+  # all_data <- list()
+  # 
+  # # Loop through each state to get tract-level data
+  # for (state in states) {
+  #   state_data <- get_acs(
+  #     geography = "tract",
+  #     state = state,
+  #     variables = variables,
+  #     year = 2020,
+  #     survey = "acs5",
+  #     output = "wide"
+  #   )
+  #   all_data[[state]] <- state_data
+  # }
+  # 
+  # # Combine all the state data into one data frame
+  # acs2020_ab_tract <- bind_rows(all_data)
+  # rm(states,state,all_data,state_data)
   
-  # Initialize an empty list to store data
-  all_data <- list()
+  # save(acs2020_ab_tract, file = file.path(shape_dir, '2020', 'acs2020_ab_tract_raw.RData'))
   
-  # Loop through each state to get tract-level data
-  for (state in states) {
-    state_data <- get_acs(
-      geography = "tract",
-      state = state,
-      variables = variables,
-      year = 2020,
-      survey = "acs5",
-      output = "wide"
-    )
-    all_data[[state]] <- state_data
-  }
-
-  # Combine all the state data into one data frame
-  acs2020_ab_tract <- bind_rows(all_data)
-  rm(states,state,all_data,state_data)
+  load(file.path(shape_dir, '2020', 'acs2020_ab_tract_raw.RData'))
   
   acs2020_ab_tract %>% glimpse()
 
@@ -291,6 +296,7 @@ st_crs(eps_geometry_zcta) == st_crs(acs2020_ab_tract_sf)
         # 0.001×69=0.069 miles, or approximately 364 feet.
   # this is very computationally/time intensive! [like 45 minutes +]
     acs2020_tract_eps_intersect <- st_intersection(acs2020_ab_tract_sf, eps_geometry_zcta)
+
     
   # check if geometry is valid
     valid_geom <- st_is_valid(acs2020_tract_eps_intersect) # check to see whether geometries are "valid"; valid geometries needed for st_intersect
@@ -671,9 +677,9 @@ acs2020_ab_anal_eps <- acs2020_ab_anal_tract %>%
   
   
   # save in analysis data file
-  save(acs2020_ab_anal_eps_sf, file = file.path(data_dir,'analysis_data', 'acs2020_ab_anal_eps_sf.RData'))
+  save(acs2020_ab_anal_eps_sf, file = file.path(shape_dir, 'analysis_data', 'acs2020_ab_anal_eps_sf.RData'))
   
-  load(file = file.path(data_dir,'analysis_data', 'acs2020_ab_anal_eps_sf.RData'))
+  load(file = file.path(shape_dir, 'analysis_data', 'acs2020_ab_anal_eps_sf.RData'))
   
   # results for "important" vars
   acs2020_ab_anal_eps %>% 

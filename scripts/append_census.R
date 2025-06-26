@@ -119,6 +119,8 @@ options(scipen = 999)
   
   allyr_anal_eps_sf %>% glimpse()
   
+  save(allyr_anal_eps_sf, file = file.path(shape_dir, 'analysis_data', 'allyr_anal_eps_sf.RData'))
+  
   rm(d1980_stf1f3_anal_eps_sf,d2000_sf1a_anal_eps_sf,acs2020_ab_anal_eps_sf)
 
 ########### LOAD TRACT-LEVEL DATA
@@ -182,6 +184,8 @@ options(scipen = 999)
   allyr_anal_tract_sf <- st_transform(allyr_anal_tract_sf, crs = 4326)
   
   #allyr_anal_tract_sf <- st_make_valid(allyr_anal_tract_sf) # is the issue that geometries are not valid or that they are GEOMETRYCOLLECTION
+  
+  save(allyr_anal_tract_sf, file = file.path(shape_dir, 'analysis_data', 'allyr_anal_tract_sf.RData'))
   
   rm(d1980_stf1f3_anal_tract_sf,d2000_sf1a_anal_tract_sf,acs2020_ab_anal_tract_sf_fixed)
   
