@@ -1,2 +1,0 @@
-Figure Notes:
-- Excludes students with missing values for race. LA LA.

@@ -538,6 +538,10 @@ insert_rq2_table <- function(metro, table_type, rq_name = 'rq2') {
         pack_rows(index = rep(tables_group, length(orders)), colnum = 1, label_row_css = '')
     )
   } else if (table_type == 'race_firstgen') {
+    x <- unique(table_df$eps_codename)  # Move "All" row to the end after rest of EPS rows
+    table_df$eps_codename <- factor(table_df$eps_codename, levels = c(x[x != 'All'], 'All'))
+    table_df <- table_df %>% arrange(order_ids, stu_race_cb, eps_codename)
+    
     group_df <- table_df %>% group_by(order_ids, stu_race_cb) %>% summarise(n = n())
     race_group <- group_df$n
     names(race_group) <- str_replace(str_to_title(group_df$stu_race_cb), 'Or', 'or')

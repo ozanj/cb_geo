@@ -223,7 +223,8 @@ source(file = file.path(scripts_dir, 'metro_eps_codes.R'))
 ###### LOAD EPS SHAPE FILE DATA
 
 
-load(file.path(eps_data_dir, 'eps_shapes.RData'))
+load(file.path(eps_data_dir, 'eps_shapes_2020.RData'))
+eps_geometry_zcta <- eps_2020
 
 eps_geometry_zcta %>% class()
 eps_geometry_zcta %>% glimpse()
