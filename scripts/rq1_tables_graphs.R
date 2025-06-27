@@ -46,9 +46,8 @@ source(file = file.path('scripts', 'directories.R'))
 
 ######## DATA PREP
 
-# run script that appends data
-list.files(path = file.path('.',scripts_dir))
-source(file = file.path(scripts_dir, 'append_census.R'))
+# load tract-level data
+load(file.path(shape_dir, 'analysis_data', 'allyr_anal_tract_sf.RData'))
 
 # script that creates character vectors for EPS codes
 source(file = file.path(scripts_dir, 'metro_eps_codes.R'))
@@ -228,13 +227,19 @@ graph_var_names <- list(
   "pct_nhisp_multi" = "% Two+, non-Hispanic",
   "mean_inc_house" = "Mean income",
   "med_inc_house" = "Median income",
+  "pov_yes" = "Poverty",
+  "pov_no" = "Not poverty",
   "pct_pov_yes" = "% in poverty",
+  "edu_lths_all" = "Less than HS",
+  "edu_hs_all" = "HS",
+  "edu_ltba_all" = "Less than BA",
+  "edu_baplus_all" = "BA+",
   "pct_edu_baplus_all" = "% with BA+"
 )
 graph_var_names
 
 # Define graph_vars in the desired order
-graph_varlist <- c("nhisp_white", "nhisp_black", "hisp_all", "nhisp_asian", "nhisp_nhpi", "nhisp_api", "nhisp_native", "nhisp_multi", "pct_nhisp_white", "pct_nhisp_black", "pct_hisp_all", "pct_nhisp_asian", "pct_nhisp_nhpi", "pct_nhisp_api", "pct_nhisp_native", "pct_nhisp_multi", "med_inc_house", "mean_inc_house", "pct_pov_yes", "pct_edu_baplus_all")
+graph_varlist <- c("nhisp_white", "nhisp_black", "hisp_all", "nhisp_asian", "nhisp_nhpi", "nhisp_api", "nhisp_native", "nhisp_multi", "pct_nhisp_white", "pct_nhisp_black", "pct_hisp_all", "pct_nhisp_asian", "pct_nhisp_nhpi", "pct_nhisp_api", "pct_nhisp_native", "pct_nhisp_multi", "med_inc_house", "mean_inc_house", "pov_no", "pov_yes", "pct_pov_yes", "edu_hs_all", "edu_ltba_all", "edu_baplus_all", "edu_lths_all", "pct_edu_baplus_all")
 
 create_eps_graph <- function(eps_codes, 
                              prefix = NULL,
@@ -274,6 +279,7 @@ create_eps_graph <- function(eps_codes,
     filter(eps %in% eps_codes) %>%
     mutate(eps_codename = str_c(eps, eps_name, sep = ", ")) %>%
     mutate(across(contains("_inc"), ~ (.x / 1000))) %>%
+    mutate(pov_no = if_else(is.na(pov_no), pov_denom - pov_yes, pov_no)) %>%  # pov_no is NA for 2020
     group_by(eps_codename, year) %>%
     summarize(
       across(all_of(graph_vars), ~ sum(.x, na.rm = TRUE), .names = "sum_{.col}"),
@@ -310,7 +316,9 @@ create_eps_graph <- function(eps_codes,
           "% White, non-Hispanic", "% Asian, non-Hispanic", "% API, non-Hispanic", 
           "% Black, non-Hispanic", "% Hispanic", "% Two+, non-Hispanic", 
           "% NHPI, non-Hispanic", "% AIAN, non-Hispanic",
-          "Median income", "Mean income", "% in poverty", "% with BA+"
+          "Median income", "Mean income",
+          "Poverty", "Not poverty", "% in poverty",
+          "Less than HS", "HS", "Less than BA", "BA+", "% with BA+"
         )
       )
     ) %>%
@@ -322,6 +330,8 @@ create_eps_graph <- function(eps_codes,
     message("Using statistic: ", stat)
     print(head(eps_table))
   }
+  
+  saveRDS(eps_table, file.path(tables_dir, str_c('rq1_table_', str_replace_all(file_prefix, ' ', '_'), '.rds')))
   
   # 3) Filter table & build plot
   if (graph_type == "race") {

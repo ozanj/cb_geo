@@ -270,6 +270,7 @@ $presentation-font-size-root: 28px;
     border-bottom: 1px solid black;
     vertical-align: bottom;
     empty-cells: show !important;
+    white-space: nowrap;
   }
   td {
     border-bottom: none;
