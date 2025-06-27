@@ -448,7 +448,7 @@ insert_rq1_table <- function(metro) {
   var_order <- c(
     '% White, non-Hispanic', '% Asian, non-Hispanic', '% Black, non-Hispanic', '% Hispanic',
     '% Two+, non-Hispanic', '% NHPI, non-Hispanic', '% AIAN, non-Hispanic',
-    'Median income', 'Mean income', '% in poverty', '% with BA+'
+    'Median income', '% in poverty', '% with BA+'
   )
   
   race_df <- table_df %>% filter(statistic == 'sum', str_detect(variable, '^[^%]*Hispanic'), !str_detect(variable, 'API')) %>%
