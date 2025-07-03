@@ -141,3 +141,23 @@ san_diego_eps_codes
 # North San Diego County CA29
 # South San Diego County excluding San Diego CA30
 # City of San Diego CA31
+
+all_codes <- list(
+  philadelphia = list(name = 'Philadelphia', eps = philly_eps_codes),
+  dallas = list(name = 'Dallas', eps = dallas_eps_codes),
+  atlanta = list(name = 'Atlanta', eps = atl_eps_codes),
+  chicago = list(name = 'Chicago', eps = chi_eps_codes),
+  cleveland = list(name = 'Cleveland', eps = cleveland_eps_codes),
+  northern_new_jersey = list(name = 'Northern New Jersey', eps = nj_north_metro_eps_codes),
+  houston = list(name = 'Houston', eps = houston_eps_codes),
+  bay_area = list(name = 'Bay Area', eps = bay_area_eps_codes),
+  long_island = list(name = 'Long Island', eps = long_island_eps_codes),
+  new_york_city = list(name = 'New York, New York', eps = nyny_metro_eps_codes),
+  detroit = list(name = 'Detroit', eps = detroit_eps_codes),
+  boston = list(name = 'Boston', eps = boston_eps_codes),
+  miami = list(name = 'Miami', eps = miami_eps_codes),
+  dc_maryland_virginia = list(name = 'DMV', eps = dmv_eps_codes),
+  orange_county = list(name = 'Orange County', eps = orange_county_eps_codes),
+  san_diego = list(name = 'San Diego', eps = san_diego_eps_codes),
+  los_angeles = list(name = 'Los Angeles', eps = los_angeles_eps_codes)
+)

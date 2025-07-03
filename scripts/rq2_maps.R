@@ -246,7 +246,7 @@ edu_vars <- data.frame(
   name = c('All', 'No college', 'Some college', 'No or some college', 'BA+', 'Unknown/Missing')
 )
 
-regions_data[regions_data$region == 'nyny', 'region'] <- 'nyny'  # for the AIAN graphs
+# regions_data[regions_data$region == 'new_york_city', 'region'] <- 'nyny'  # for the AIAN graphs
 
 
 # Map functions
@@ -266,12 +266,8 @@ create_rq2_map <- function(metros, map_type = 'rq2') {
   
   highlight_shp <- highlightOptions(weight = 1, color = '#606060', dashArray = '')
   
-  m <- leaflet() %>%
+  m <- leaflet(options = leafletOptions(zoomControl = T, zoomSnap = 0, zoomDelta = 0.5)) %>%
     addProviderTiles(providers$CartoDB.Positron) %>%
-    
-    # addEasyButton(easyButton(
-    #   icon = 'fa-globe', title = 'Select Metro Area',
-    #   onClick = JS("function(btn, map){ $('.custom-control').not('#metro-control').slideUp(); $('#metro-control').slideToggle(); }"))) %>% 
     
     addEasyButton(easyButton(
       icon = 'fa-file', title = 'Select Order Number',
@@ -294,7 +290,9 @@ create_rq2_map <- function(metros, map_type = 'rq2') {
       addPolygons(data = eps, opacity = 1, color = 'purple', fillOpacity = 0, weight = 2, label = ~paste0('<b style="font-size:11px">', eps, ' - ', eps_name, '</b>') %>% lapply(htmltools::HTML), group = 'MSA', options = c(className = paste0('metro-shape metro-', metro))) %>% 
       
       # EPS outline
-      addPolylines(data = eps, opacity = 1, color = 'purple', weight = 2, options = c(className = paste0('metro-shape metro-line-', metro)))
+      addPolylines(data = eps, opacity = 1, color = 'purple', weight = 2, options = c(className = paste0('metro-shape metro-line-', metro))) %>% 
+      
+      addLabelOnlyMarkers(data = st_point_on_surface(eps), label = ~paste0('<b style="font-size:11px">', eps, ' - ', eps_name, '</b>') %>% lapply(htmltools::HTML), labelOptions = labelOptions(noHide = TRUE, direction = 'top', className = 'label'))
     
     for (v in names(base_vars)) {
       

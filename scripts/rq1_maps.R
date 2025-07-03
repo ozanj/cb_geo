@@ -17,15 +17,11 @@ create_rq1_map <- function(metros, shared_legend = F) {
   choices <- list(region_choices = regions_data %>% filter(region %in% metros) %>% select(region, region_name, latitude, longitude))
   
   highlight_shp <- highlightOptions(weight = 2, color = '#606060', dashArray = '', bringToFront = T, sendToBack = T)
-  
+
   yrs <- c(1980, 2000, 2020)
   
-  m <- leaflet() %>%
-    addProviderTiles(providers$CartoDB.Positron) # %>%
-    
-    # addEasyButton(easyButton(
-    #   icon = 'fa-globe', title = 'Select Metro Area',
-    #   onClick = JS("function(btn, map){ $('.custom-control').not('#metro-control').slideUp(); $('#metro-control').slideToggle(); }")))
+  m <- leaflet(options = leafletOptions(zoomControl = T, zoomSnap = 0, zoomDelta = 0.5)) %>%
+    addProviderTiles(providers$CartoDB.Positron)
   
   for (metro in metros) {
     print(metro)
@@ -34,16 +30,16 @@ create_rq1_map <- function(metros, shared_legend = F) {
     eps <- eps_data %>% filter(eps %in% region$eps[[1]])
     tract <- tract_data %>% filter(eps %in% region$eps[[1]])
     
-    m <- m %>%
-      
-      # Metro outline
-      addPolygons(data = eps %>% filter(year == 2020), opacity = 1, color = 'purple', fillOpacity = 0, weight = 2, label = ~paste0('<b style="font-size:11px">', eps, ' - ', eps_name, '</b>') %>% lapply(htmltools::HTML), group = 'MSA', options = c(className = paste0('metro-shape metro-line metro-', metro)))
-    
     for (y in yrs) {
       m <- m %>%
         
+        # Metro outline
+        addPolygons(data = eps %>% filter(year == y), opacity = 1, color = 'purple', fillOpacity = 0, weight = 2, label = ~paste0('<b style="font-size:11px">', eps, ' - ', eps_name, '</b>') %>% lapply(htmltools::HTML), group = 'MSA', options = c(className = paste0('metro-shape metro-', metro, ' year-', y))) %>% 
+        
         # EPS outline
-        addPolylines(data = eps %>% filter(year == y), opacity = 1, color = 'purple', weight = 2, options = c(className = paste0('metro-shape metro-', metro, ' level-tract year-', y)))
+        addPolylines(data = eps %>% filter(year == y), opacity = 1, color = 'purple', weight = 2, options = c(className = paste0('metro-shape metro-', metro, ' level-tract year-', y))) %>% 
+        
+        addLabelOnlyMarkers(data = st_point_on_surface(eps %>% filter(year == y)), label = ~paste0('<b style="font-size:11px">', eps, ' - ', eps_name, '</b>') %>% lapply(htmltools::HTML), labelOptions = labelOptions(noHide = TRUE, direction = 'top', className = paste0('label label-', y)))
     }
     
     for (v in names(base_vars)) {

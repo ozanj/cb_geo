@@ -26,20 +26,7 @@ function(el, x, choices) {
   $('.easy-button-button').css('width', 'auto');
   $('.easy-button-button .button-state .fa').css({'float': 'left', 'margin-top': '8px'});
   
-  // $('button[title="Select Metro Area"] .button-state').append('<span style="display: inline-block; float: left; padding-left: 5px;">Select Metro Area</span>');
   $('button[title="Select Order Number"] .button-state').append('<span style="display: inline-block; float: left; padding-left: 5px;">Select Order Number</span>');
-  
-  // metro selection options
-  
-  // let metroControlHTML = '<div id="metro-control" class="leaflet-control-layers leaflet-control leaflet-control-layers-expanded custom-control" style="width: auto; height: auto;">';
-  
-  // region_name.forEach(function(curr, idx) {
-  //   metroControlHTML += '<div><input type="radio" class="leaflet-control-layers-selector" name="metro-choice" data-region="' + region[idx] + '" data-lat="' + latitude[idx] + '" data-lng="' + longitude[idx] + '"><span> ' + curr + '</span></div>';
-  // });
-    
-  // metroControlHTML += '</div>';
-  
-  // $('button[title="Select Metro Area"]').parent().after(metroControlHTML);
   
   // order selection options
   
@@ -85,6 +72,11 @@ function(el, x, choices) {
   $('#hs-race-container').slideUp(0);
   $('#hs-edu-container').slideUp(0);
   
+  // label toggle button
+  let labelHTML = '<div style="height: 0; border-top: 1px solid #ddd; margin: 5px -10px 5px -6px;"></div><div><input type="checkbox" class="leaflet-control-layers-selector" id="label-toggle"><span> Show EPS labels</span></div>'
+  
+  $('.leaflet-control-layers-overlays').append(labelHTML);
+  
   // handle collapsible selection
   
   $('.collapsible-label').on('click', function(e) {
@@ -115,25 +107,6 @@ function(el, x, choices) {
     $('input[data-order="' + active_attr.active_order + '"]').trigger('click');
   }
     
-  // $('input[name="metro-choice"]').on('change', function(e) {
-  //   let $this = $(this);
-    
-  //   let metro = $this.attr('data-region'),
-  //       lat = $this.attr('data-lat'),
-  //       lng = $this.attr('data-lng');
-        
-  //   active_attr.active_metro = metro;
-  //   update_base_layer();
-
-  //   myMap.setView([lng, lat], 8.5);
-    
-  //   updateOrderOptions();
-  //   update_pins();
-    
-  //   update_sel_text();
-  //   update_legend();
-  // });
-    
   $(document).on('change', 'input[name="order-choice"]', function(e) {
     let $this = $(this);
     
@@ -153,6 +126,10 @@ function(el, x, choices) {
     active_attr.active_edu = $(this).attr('data-edu');
     update_pins();
   });
+  
+  $('#label-toggle').on('change', function() {
+    $('.label').css('opacity', $(this).is(':checked') ? 100 : 0);
+  })
   
   let update_base_layer = function() {
     $('.metro-shape').css('display', 'none');
@@ -252,8 +229,8 @@ function(el, x, choices) {
   };
   
   $('.legend, #metro-control, #order-control').css('display', 'none');
+  $('.label').css('opacity', 0)
   
-  // $('input[data-region="' + active_attr.active_metro + '"]').trigger('click');
   $('input[data-race="' + active_attr.active_race + '"]').trigger('click');
   $('input[data-edu="' + active_attr.active_edu + '"]').trigger('click');
   

@@ -1,32 +1,17 @@
 library(tidyverse)
 library(rmapshaper)
+library(formattable)
 
 
 source(file.path('scripts', 'directories.R'))
-source(file.path(scripts_dir, 'append_census.R'))
+# source(file.path(scripts_dir, 'append_census.R'))
 source(file.path(scripts_dir, 'metro_eps_codes.R'))
 
-all_codes <- list(
-  philadelphia = list(name = 'Philadelphia', eps = philly_eps_codes),
-  dallas = list(name = 'Dallas', eps = dallas_eps_codes),
-  atlanta = list(name = 'Atlanta', eps = atl_eps_codes),
-  chicago = list(name = 'Chicago', eps = chi_eps_codes),
-  cleveland = list(name = 'Cleveland', eps = cleveland_eps_codes),
-  northern_new_jersey = list(name = 'Northern New Jersey', eps = nj_north_metro_eps_codes),
-  houston = list(name = 'Houston', eps = houston_eps_codes),
-  bay_area = list(name = 'Bay Area', eps = bay_area_eps_codes),
-  long_island = list(name = 'Long Island', eps = long_island_eps_codes),
-  new_york_city = list(name = 'New York, New York', eps = nyny_metro_eps_codes),
-  detroit = list(name = 'Detroit', eps = detroit_eps_codes),
-  boston = list(name = 'Boston', eps = boston_eps_codes),
-  miami = list(name = 'Miami', eps = miami_eps_codes),
-  dc_maryland_virginia = list(name = 'DMV', eps = dmv_eps_codes),
-  orange_county = list(name = 'Orange County', eps = orange_county_eps_codes),
-  san_diego = list(name = 'San Diego', eps = san_diego_eps_codes),
-  los_angeles = list(name = 'Los Angeles', eps = los_angeles_eps_codes)
-)
+load(file.path(shape_dir, 'analysis_data', 'allyr_anal_tract_sf.RData'))
+load(file.path(shape_dir, 'analysis_data', 'allyr_anal_eps_sf.RData'))
 
-sf_use_s2(T)
+
+# sf_use_s2(T)
 
 regions_data <- data.frame(
   region = flatten_chr(map(names(all_codes), \(x) rep(x, length(all_codes[[x]]$eps)))),
@@ -74,28 +59,10 @@ format_vars <- function(data_df) {
     )
 }
 
-sf_use_s2(F)
-
-eps_shapes_from_tract <- allyr_anal_tract_sf %>%
-  filter(eps %in% flatten_chr(regions_data$eps)) %>% 
-  select(year, eps, geometry) %>%
-  ms_simplify(keep = 0.1, keep_shapes = T) %>% 
-  st_make_valid() %>% 
-  group_by(year, eps) %>% 
-  summarise(
-    geometry = st_union(geometry),
-    .groups = 'drop'
-  )
-
-sf_use_s2(T)
-
 eps_data <- allyr_anal_eps_sf %>% 
   filter(eps %in% flatten_chr(regions_data$eps)) %>%
   select(year, eps, eps_name, n_tracts, sum_tot_all, med_inc_house, pct_nhisp_white, pct_nhisp_black, pct_hisp_all, pct_nhisp_asian, pct_nhisp_nhpi, pct_nhisp_native, pct_nhisp_multi, pct_pov_yes, pct_edu_baplus_all, geometry) %>% 
-  rename('geometry_eps' = 'geometry') %>% 
-  as.data.frame() %>% 
-  left_join(as.data.frame(eps_shapes_from_tract), by = c('year', 'eps')) %>%
-  st_sf(sf_column_name = 'geometry') %>% 
+  # ms_simplify(keep = 0.1, keep_shapes = T) %>% 
   format_vars()
 
 eps_data %>% as.data.frame() %>% 
@@ -107,7 +74,7 @@ eps_data %>% as.data.frame() %>%
 tract_data <- allyr_anal_tract_sf %>% 
   filter(eps %in% flatten_chr(regions_data$eps)) %>% 
   select(year, eps, eps_name, gisjoin, geoid, proportion, tot_all, med_inc_house, pct_nhisp_white, pct_nhisp_black, pct_hisp_all, pct_nhisp_asian, pct_nhisp_nhpi, pct_nhisp_native, pct_nhisp_multi, pct_pov_yes, pct_edu_baplus_all, geometry) %>% 
-  ms_simplify(keep = 0.1, keep_shapes = T) %>% 
+  # ms_simplify(keep = 0.1, keep_shapes = T) %>%
   rename('sum_tot_all' = 'tot_all') %>% 
   format_vars() %>% 
   mutate(

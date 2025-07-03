@@ -16,26 +16,12 @@ function(el, x, choices) {
   $('.easy-button-button').css('width', 'auto');
   $('.easy-button-button .button-state .fa').css({'float': 'left', 'margin-top': '8px'});
   
-  // $('button[title="Select Metro Area"] .button-state').append('<span style="display: inline-block; float: left; padding-left: 5px;">Select Metro Area</span>');
-  
-  // metro selection options
-  
-  // let metroControlHTML = '<div id="metro-control" class="leaflet-control-layers leaflet-control leaflet-control-layers-expanded custom-control" style="width: auto; height: auto;">';
-  
-  // region_name.forEach(function(curr, idx) {
-  //   metroControlHTML += '<div><input type="radio" class="leaflet-control-layers-selector" name="metro-choice" data-region="' + region[idx] + '" data-lat="' + latitude[idx] + '" data-lng="' + longitude[idx] + '"><span> ' + curr + '</span></div>';
-  // });
-    
-  // metroControlHTML += '</div>';
-  
-  // $('button[title="Select Metro Area"]').parent().after(metroControlHTML);
-  
   // year selection options
   
   let yearControlHTML = '<p style="margin: 5px; font-weight: 600;">Year</p><div style="display: flex;">';
   
   ['1980', '2000', '2020'].forEach(function(curr, idx) {
-    yearControlHTML += '<div' + (idx === 0 ? '' : ' style="margin-left: 5px;"') + '><input type="radio" class="leaflet-control-layers-selector" name="year-choice" data-year="' + curr + '"><span>' + curr + '</span></div>';
+    yearControlHTML += '<div' + (idx === 0 ? '' : ' style="margin-left: 5px;"') + '><input type="radio" class="leaflet-control-layers-selector" name="year-choice" data-year="' + curr + '"><span> ' + curr + '</span></div>';
   });
   
   yearControlHTML += '</div><p style="margin: 5px; font-weight: 600;">Census data</p>';
@@ -47,12 +33,17 @@ function(el, x, choices) {
   let levelControlHTML = '<p style="margin: 5px; font-weight: 600;">Level</p><div style="display: flex; margin-bottom: 5px;">';
   
   ['EPS', 'Tract'].forEach(function(curr, idx) {
-    levelControlHTML += '<div' + (idx === 0 ? '' : ' style="margin-left: 5px;"') + '><input type="radio" class="leaflet-control-layers-selector" name="level-choice" data-level="' + curr.toLowerCase() + '"><span>' + curr + '</span></div>';
+    levelControlHTML += '<div' + (idx === 0 ? '' : ' style="margin-left: 5px;"') + '><input type="radio" class="leaflet-control-layers-selector" name="level-choice" data-level="' + curr.toLowerCase() + '"><span> ' + curr + '</span></div>';
   });
   
   levelControlHTML += '</div>';
   
   $('.leaflet-control-layers-base').append(levelControlHTML);
+  
+  // label toggle button
+  let labelHTML = '<div><input type="checkbox" class="leaflet-control-layers-selector" id="label-toggle"><span> Show EPS labels</span></div>'
+  
+  $('.leaflet-control-layers-overlays').append(labelHTML);
   
   // race/ethnicity selection options
   
@@ -78,22 +69,6 @@ function(el, x, choices) {
   $('.leaflet > .leaflet-control-container > .leaflet-top.leaflet-left').append(selTextHTML);
   
   // handle selections
-    
-  // $('input[name="metro-choice"]').on('change', function(e) {
-  //   let $this = $(this);
-    
-  //   let metro = $this.attr('data-region'),
-  //       lat = $this.attr('data-lat'),
-  //       lng = $this.attr('data-lng');
-        
-  //   active_attr.active_metro = metro;
-  //   update_base_layer();
-    
-  //   myMap.setView([lng, lat], 8.5);
-    
-  //   update_sel_text();
-  //   update_legend();
-  // });
   
   $('input[name="year-choice"]').on('change', function(e) {
     let $this = $(this);
@@ -104,6 +79,7 @@ function(el, x, choices) {
     update_base_layer();
     
     update_sel_text();
+    update_labels();
   });
   
   $('input[name="level-choice"]').on('change', function(e) {
@@ -117,12 +93,25 @@ function(el, x, choices) {
     update_legend();
   });
   
+  $('#label-toggle').on('change', function() {
+    active_attr.show_labels = $(this).is(':checked');
+    update_labels();
+  })
+  
+  let update_labels = function() {
+    $('.label').css('opacity', 0);
+    
+    if (active_attr.show_labels) {
+      $('.label-' + active_attr.active_year).css('opacity', 100);
+    }
+  }
+  
   let update_base_layer = function() {
     $('.metro-shape').css('display', 'none');
     update_sel_text();
     
     if (active_attr.active_base === 'MSA') {
-      $('.metro-' + active_attr.active_metro + '.metro-line').css('display', 'inherit');
+      $('.metro-' + active_attr.active_metro + '.year-' + active_attr.active_year).css('display', 'inherit');
     } else {
       $('.metro-' + active_attr.active_metro + '.level-' + active_attr.active_level + '.year-' + active_attr.active_year).css('display', 'inherit');
     }
@@ -141,7 +130,7 @@ function(el, x, choices) {
         $('input[data-level="eps"]').trigger('click');
       }
       
-      $('input[data-year], input[data-level]').prop('disabled', true);
+      $('input[data-level]').prop('disabled', true);
     }
     
     if (['% Asian, non-Hispanic', '% NHPI, non-Hispanic', '% AIAN, non-Hispanic', '% 2+ Races, non-Hispanic'].includes(active_attr.active_base)) {
@@ -155,11 +144,7 @@ function(el, x, choices) {
   // handle selection text update
   
   let update_sel_text = function() {
-    let sel_text = region_name[region.indexOf(active_attr.active_metro)] // $('input[data-region="' + active_attr.active_metro + '"]').next().text();
-    
-    if (active_attr.active_base !== 'MSA') {
-      sel_text += ' in ' + active_attr.active_year;
-    }
+    let sel_text = region_name[region.indexOf(active_attr.active_metro)] + ' in ' + active_attr.active_year;  // $('input[data-region="' + active_attr.active_metro + '"]').next().text();
 
     $('#selection-text').text(sel_text);
   };
@@ -221,13 +206,15 @@ function(el, x, choices) {
     active_base: 'MSA',
     active_metro: region[0],
     active_level: 'eps',
-    active_year: '1980'
+    active_year: '1980',
+    show_labels: false
   };
   
   $('.legend, #metro-control').css('display', 'none');
   
-  // $('input[data-region="' + active_attr.active_metro + '"]').trigger('click');
   $('input[data-year="' + active_attr.active_year + '"]').trigger('click');
   $('input[data-level="' + active_attr.active_level + '"]').trigger('click');
+  
+  $('.leaflet-control-layers-separator').css('display', 'inherit');
   
 }
