@@ -372,13 +372,28 @@ create_eps_graph <- function(eps_codes,
     
   } else {
     # SES approach
-    eps_table <- eps_table %>%
+    inc_table <- eps_table %>%
       filter(
         statistic == stat,
-        variable %in% c("Median income", "% in poverty", "% with BA+")
+        variable == "Median income"
       )
     
-    plot <- eps_table %>%
+    pov_table <- eps_table %>% 
+      filter(statistic == 'sum', variable %in% c('Poverty', 'Not poverty')) %>%
+      group_by(eps_codename, year, statistic) %>% mutate(value = value / sum(value) * 100) %>% ungroup() %>% 
+      filter(variable == 'Poverty') %>% 
+      mutate(variable = '% in poverty')
+    
+    edu_table <- eps_table %>%
+      filter(statistic == 'sum', variable %in% c('Less than HS', 'HS', 'Less than BA', 'BA+')) %>%
+      group_by(eps_codename, year, statistic) %>% mutate(value = value / sum(value) * 100) %>% ungroup() %>% 
+      filter(variable == 'BA+') %>% 
+      mutate(variable = '% with BA+')
+    
+    plot <- bind_rows(inc_table, pov_table, edu_table) %>% 
+      mutate(
+        variable = factor(variable, levels = c('Median income', '% in poverty', '% with BA+')),
+      ) %>%
       ggplot(aes(x = eps_codename, y = value)) +
       geom_col(fill = "grey50", position = position_dodge(width = 0.8), width = 0.7) +
       coord_flip() +
