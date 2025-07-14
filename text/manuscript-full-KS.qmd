@@ -642,14 +642,19 @@ Although scholars cannot share subscription data, they can share code to process
 \endgroup
 \doublespacing
 \clearpage
+\pagenumbering{gobble}
 ```
 <!-- TABLES -->
 
-```{r fig-chicago-recruiting, echo = FALSE, fig.align = 'center', fig.cap = "The College Board Enrollment Planning Service Chicago Geomarkets (left) and University of Chicago Recruiting Territories (right)", out.width = "85%"}
+::: {.landscape}
+
+```{r fig-chicago-recruiting, echo = FALSE, fig.align = 'center', fig.cap = "The College Board Enrollment Planning Service Chicago Geomarkets (left) and University of Chicago Recruiting Territories (right)", out.width = "100%"}
 knitr::include_graphics('./../assets/images/chicago_recruiting.png')
 #knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
+
+:::
 
 ```{r fig-em-funnel, echo = FALSE, fig.align = 'center', fig.cap = "The Enrollment Funnel", out.width = "45%"}
 knitr::include_graphics('./../assets/images/enroll_funnelv2.png')
@@ -657,7 +662,9 @@ knitr::include_graphics('./../assets/images/enroll_funnelv2.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
 
-```{r fig-geomarket-methods, echo=FALSE,out.width="49%", fig.cap="caption",fig.align='center',fig.cap = "Chicago, College Board and Recreated Geomarkets"}
+::: {.landscape}
+
+```{r fig-geomarket-methods, echo=FALSE,out.width="100%", fig.cap="caption",fig.align='center',fig.cap = "Chicago, College Board and Recreated Geomarkets"}
 knitr::include_graphics('./../assets/images/eps/chicago_geos.png')
 
 ```
@@ -671,6 +678,8 @@ knitr::include_graphics('./../assets/images/chicago_maps.png')
 #knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
+
+:::
 
 ```{r fig-chicago-rq1-race, echo = FALSE, fig.align = 'center', fig.cap = "Racial/Ethnic Composition of Chicago Area Geomarkets, 1980-2020", out.width = "100%"}
 knitr::include_graphics('./../results/graphs/rq1/rq1_chicago_race.png')
@@ -716,11 +725,15 @@ knitr::include_graphics('./../results/graphs/rq2b/rq2b_chicago_order_392834_4880
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
 
+::: {.landscape}
+
 ```{r fig-dallas-maps, echo = FALSE, fig.align = 'center', fig.cap = "Dallas-Forth Worth Geomarkets, Total Population 1980-2020", out.width = "100%"}
 knitr::include_graphics('./../assets/images/dallas_maps.png')
 #knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
+
+:::
 
 ```{r fig-dallas-rq1-race, echo = FALSE, fig.align = 'center', fig.cap = "Racial/Ethnic Composition of Dallas Area Geomarkets, 1980-2020", out.width = "100%"}
 knitr::include_graphics('./../results/graphs/rq1/rq1_dallas_race.png')
@@ -768,11 +781,15 @@ knitr::include_graphics('./../results/graphs/rq2b/rq2b_dallas_order_448427_race_
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
 
+::: {.landscape}
+
 ```{r fig-la-maps, echo = FALSE, fig.align = 'center', fig.cap = "Los Angeles Geomarkets, Total Population 1980-2020", out.width = "100%"}
 knitr::include_graphics('./../assets/images/la-maps.png')
 #knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
+
+:::
 
 ```{r fig-la-rq1-race, echo = FALSE, fig.align = 'center', fig.cap = "Racial/Ethnic Composition of Los Angeles Area Geomarkets, 1980-2020", out.width = "100%"}
 
