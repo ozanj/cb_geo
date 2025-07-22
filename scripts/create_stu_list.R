@@ -63,7 +63,7 @@ acs_zip <- acs_income_zip %>%
 ################### FINAL SAMPLE FOR EMPIRICAL REPORT
 
 #remove extra dataframes
-rm(lists_orders_zip_df)
+#rm(lists_orders_zip_df)
 
 #remove MN universities from ordersdf
 orders_df %>% count(univ_id, univ_name)
@@ -121,6 +121,28 @@ lists_orders_zip_hs_df <- lists_orders_zip_hs_df %>% mutate(
                        univ_id=="228723" , "research", "regional"))
 
 lists_orders_zip_hs_df %>% count(univ_name, univ_type)
+
+
+################### FINAL SAMPLE FOR AJS MANUSCRIPT
+
+# keep only orders that have accompanying students lists 
+
+# How many total orders did we get across all universities?
+orders_df %>% count(univ_name) # 14 universities (+2 MN univs removed above)
+orders_df %>% summarise(n=n_distinct(order_num)) # 835 total lists from 14 universities
+orders_df %>% summarise(sum(num_students, na.rm = TRUE))#total prospects from order sum 4669973
+
+# How many total lists we get across all universities?
+lists_orders_zip_hs_df %>% count(univ_name) # total lists from 13 universities (-NAU only gave us orders)
+lists_orders_zip_hs_df %>% summarise(n=n_distinct(ord_num)) #596 lists
+lists_orders_zip_hs_df %>% nrow() #3665455 prospects
+
+#How many orders + accompanying lists do we have across universities?
+final_sample <- subset(lists_orders_zip_hs_df, ord_num %in% orders_df$order_num)
+final_sample %>% count(univ_name) # from 11 universities 
+final_sample %>% summarise(n=n_distinct(ord_num)) #414 lists
+final_sample %>% nrow() #2,549,085
+
 
 
 ################### CREATE FILTER DUMMIES   

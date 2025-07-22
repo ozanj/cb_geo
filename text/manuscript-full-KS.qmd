@@ -269,7 +269,7 @@ Quantification "disciplines" [@RN5007] actors to react in particular ways. EPS s
 
 [^9]: Software documentation by @RN5017 states that, "EPS market codes are proprietary market codes owned by the College Board and are used to categorize external organizations and people into geographical areas\ldots. Some admissions offices use EPS market codes to focus their recruiting efforts in geographic areas in which they believe they will be the most successful."
 
-[^10]: Quantification often reduces the decision-making authority of local actors [@RN5007]. The Market Segment Model sought to replicate the aggregate knowledge of local admissions officers. Once this knowledge was quantified and commodified onto a CD-ROM, the local expertise of admissions officers becomes less valuable. The EPS product increases the ability of a college admissions leader -- working with College Board staff or an EM consultant -- to plan recruiting efforts centrally. In background conversations, EM professionals told us that EPS software enabled colleges to plan travel without relying on admissions officers having strong local knowledge of their territories. However, EPS software often recommended visiting the same sets of affluent, high-achieving high schools that were receiving visits from other colleges. We were told that savvier, quantitatively-adept admissions offices used EPS to visit schools that EPS recommended ignoring because there would be less competition for the good students who attended these high schools. Finally, Geomarkets were created to mirror the territories of admissions officers [@RN4982]. In turn, as Geomarkets became more salient, admissions offices often structured their territories around Geomarkets. On background, admissions officers and enrollment consultants told us it remains common parlance to hear an admissions officer say something like, "I recruit 'PA 2'," which refers to the "Chester County, PA Geomarket." In states a college recruits heavily from, admissions officers are often assigned specific Geomarkets as their territory. This can be seen in the Chicago-land recruiting territories of University of Chicago, Lake Forest College, and Saint Mary's College. <!--\[ADD TO APPENDIX CRYSTAL\]-->
+[^10]: Quantification often reduces the decision-making authority of local actors [@RN5007]. The Market Segment Model sought to replicate the aggregate knowledge of local admissions officers. Once this knowledge was quantified and commodified onto a CD-ROM, the local expertise of admissions officers becomes less valuable. The EPS product increases the ability of a college admissions leader -- working with College Board staff or an EM consultant -- to plan recruiting efforts centrally. In background conversations, EM professionals told us that EPS software enabled colleges to plan travel without relying on admissions officers having strong local knowledge of their territories. However, EPS software often recommended visiting the same sets of affluent, high-achieving high schools that were receiving visits from other colleges. We were told that savvier, quantitatively-adept admissions offices used EPS to visit schools that EPS recommended ignoring because there would be less competition for the good students who attended these high schools. Finally, Geomarkets were created to mirror the territories of admissions officers [@RN4982]. In turn, as Geomarkets became more salient, admissions offices often structured their territories around Geomarkets. On background, admissions officers and enrollment consultants told us it remains common parlance to hear an admissions officer say something like, "I recruit 'PA 2'," which refers to the "Chester County, PA Geomarket." In states a college recruits heavily from, admissions officers are often assigned specific Geomarkets as their territory. This can be seen in the Chicago-land recruiting territories of University of Chicago in @fig-chicago-recruiting. <!--\[ADD TO APPENDIX CRYSTAL\]-->
 
 Because Geomarkets are foundational to EPS software, our first research question is interested in the extent to which this geographical building block is associated with race and class. We ask (RQ1), what is the socioeconomic and racial variation between Geomarkets and how does this variation change over time? @RN4982 viewed demand for higher education as a function of class. They developed 143 Geomarkets borders with an eye towards identifying geographic areas that differed from one another in terms of class composition, while [@RN5016] created the remaining Geomarket borders with an eye towards distinguishing geographies based on college-going behaviors. Considering the extent of class-based residential segregation in the U.S. [@reardon2011], we expect substantial socioeconomic inequality between Geomarkets in large metropolitan areas.
 
@@ -338,7 +338,7 @@ The data collection sample for this project was all public universities in Calif
 
 Firm representation substantially increased the success of data collection. Nevertheless, data collection remained difficult. Some universities provided records that were not usable for quantitative analyses (e.g., summary statistics across multiple orders; or data did not contain important fields). Some universities did not provide records based on legitimate legal grounds (e.g., data not in university possession; not required to create records that do not currently exist). We learned that many universities outsourced student list purchases to third-party consulting firms, particularly [EAB](https://eab.com/). Unfortunately, we were rarely able to obtain usable data from these universities. Several universities denied requests based on questionable legal rationale, but we lacked the resources to litigate.
 
-The primary data source for our second research question is student lists purchased from College Board for which we received both (a) the order summary data and (b) the de-identified prospect-level student list data. This sample includes a total of 414 orders associated with 2,549,085 prospects made by 14 public universities located in California, Illinois, Texas, and Arizona. Although these lists were purchased by individual universities, the set of prospects included in each list is a function of the search criteria specified for that student list purchase. The resulting student lists could hypothetically extend to any university placing student lists orders based on the same filter criteria. In other words, any observed patterns in the findings below would remain constant for any university selecting the same filters.[^18] Therefore, we utilize these data not to analyze the behavior of individual universities, but to identify which prospective students are included when a particular set of search criteria are selected.
+The primary data source for our second research question is student lists purchased from College Board. Originally collected from a larger project sample (Author, BLINDED), the data for this study's sample includes a total of 414 orders associated with 2,549,085 prospects made by 11 public universities located in California, Illinois, Texas, and Arizona. Although these lists were purchased by individual universities, the set of prospects included in each list is a function of the search criteria specified for that student list purchase. The resulting student lists could hypothetically extend to any university placing student lists orders based on the same filter criteria. In other words, any observed patterns in the findings below would remain constant for any university selecting the same filters.[^18] Therefore, we utilize these data not to analyze the behavior of individual universities, but to identify which prospective students are included when a particular set of search criteria are selected.
 
 [^18]: The caveat to this statement is that most purchases select to exclude prospect profiles that were previously purchased by the university.
 
@@ -646,14 +646,12 @@ Although scholars cannot share subscription data, they can share code to process
 ```
 <!-- TABLES -->
 
-::: {.landscape}
-
+::: landscape
 ```{r fig-chicago-recruiting, echo = FALSE, fig.align = 'center', fig.cap = "The College Board Enrollment Planning Service Chicago Geomarkets (left) and University of Chicago Recruiting Territories (right)", out.width = "100%"}
 knitr::include_graphics('./../assets/images/chicago_recruiting.png')
 #knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
-
 :::
 
 ```{r fig-em-funnel, echo = FALSE, fig.align = 'center', fig.cap = "The Enrollment Funnel", out.width = "45%"}
@@ -662,8 +660,7 @@ knitr::include_graphics('./../assets/images/enroll_funnelv2.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
 
-::: {.landscape}
-
+::: landscape
 ```{r fig-geomarket-methods, echo=FALSE,out.width="100%", fig.cap="caption",fig.align='center',fig.cap = "Chicago, College Board and Recreated Geomarkets"}
 knitr::include_graphics('./../assets/images/eps/chicago_geos.png')
 
@@ -678,7 +675,6 @@ knitr::include_graphics('./../assets/images/chicago_maps.png')
 #knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
-
 :::
 
 ```{r fig-chicago-rq1-race, echo = FALSE, fig.align = 'center', fig.cap = "Racial/Ethnic Composition of Chicago Area Geomarkets, 1980-2020", out.width = "100%"}
@@ -725,14 +721,12 @@ knitr::include_graphics('./../results/graphs/rq2b/rq2b_chicago_order_392834_4880
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
 
-::: {.landscape}
-
+::: landscape
 ```{r fig-dallas-maps, echo = FALSE, fig.align = 'center', fig.cap = "Dallas-Forth Worth Geomarkets, Total Population 1980-2020", out.width = "100%"}
 knitr::include_graphics('./../assets/images/dallas_maps.png')
 #knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
-
 :::
 
 ```{r fig-dallas-rq1-race, echo = FALSE, fig.align = 'center', fig.cap = "Racial/Ethnic Composition of Dallas Area Geomarkets, 1980-2020", out.width = "100%"}
@@ -781,14 +775,12 @@ knitr::include_graphics('./../results/graphs/rq2b/rq2b_dallas_order_448427_race_
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
 
-::: {.landscape}
-
+::: landscape
 ```{r fig-la-maps, echo = FALSE, fig.align = 'center', fig.cap = "Los Angeles Geomarkets, Total Population 1980-2020", out.width = "100%"}
 knitr::include_graphics('./../assets/images/la-maps.png')
 #knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
-
 :::
 
 ```{r fig-la-rq1-race, echo = FALSE, fig.align = 'center', fig.cap = "Racial/Ethnic Composition of Los Angeles Area Geomarkets, 1980-2020", out.width = "100%"}
