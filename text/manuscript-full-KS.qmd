@@ -342,7 +342,7 @@ The primary data source for our second research question is student lists purcha
 
 [^18]: The caveat to this statement is that most purchases select to exclude prospect profiles that were previously purchased by the university.
 
-In particular, we answer the second research question by analyzing particular student list purchases that did *not* utilize the Geomarket search filter and purchased prospects from all Geomarkets in a particular metropolitan area.[^19] For each prospect, we know their home zip code and, therefore, which Geomarket they belong to. Our analyses then show which students would have been included or excluded from the student list purchase had the purchase filtered on particular Geomarkets.
+In particular, we answer the second research question by analyzing particular student list purchases that did *not* utilize the Geomarket search filter and purchased prospects from all Geomarkets in a particular metropolitan area.[^19] For each prospect, we know their high school, and the exact longitude and latitude of their high school, which we use to assign high school students to Geomarkets. Our analyses then show which students would have been included or excluded from the student list purchase had the purchase filtered on particular Geomarkets.
 
 [^19]: For analyses of Dallas, Detroit, Long Island, Northern New Jersey, and Philadelphia, we utilize data from student list purchases that did filter on Geomarkets but included all Geomarkets in the region.
 
