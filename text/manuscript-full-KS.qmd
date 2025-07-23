@@ -1,6 +1,6 @@
 ---
 title: "Structuring College Access: The Market Segment Model and College Board Geomarkets"
-author: ["Ozan Jaquette (UCLA)", "Karina Salazar (University of Arizona)", "Crystal Han (Stanford University)"]
+# author: ["Ozan Jaquette (UCLA)", "Karina Salazar (University of Arizona)", "Crystal Han (Stanford University)"]
 bibliography: ./../assets/bib/cb_geomarket_bib.bib
 csl: ./../assets/bib/chicago-author-date.csl
 format:
