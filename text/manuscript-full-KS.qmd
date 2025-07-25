@@ -640,8 +640,8 @@ Although scholars cannot share subscription data, they can share code to process
 
 ```{=tex}
 \endgroup
-\doublespacing
 \clearpage
+\singlespacing
 ```
 <!-- TABLES -->
 
@@ -672,11 +672,21 @@ knitr::include_graphics('./../assets/images/chicago_maps.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
 
+```{=tex}
+\clearpage
+```
+
 ```{r fig-chicago-rq1-race, echo = FALSE, fig.align = 'center', fig.cap = "Racial/Ethnic Composition of Chicago Area Geomarkets, 1980-2020", out.width = "100%"}
 knitr::include_graphics('./../results/graphs/rq1/rq1_chicago_race.png')
 #knitr::include_graphics('./../assets/images/rq1_chicago_race.png') [OLD RESULTS BASED ON ZIP GEOMARKETS]
 #knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
+```
+
+**Note**: Race/ethnicity categories not available in 1980 Census: Asian, non-Hispanic; Two+ races, non-Hispanic; NHPI, non-Hispanic; AIAN non-Hispanic
+
+```{=tex}
+\clearpage
 ```
 
 ```{r fig-chicago-rq1-ses, echo = FALSE, fig.align = 'center', fig.cap = "Socioeconomic Characteristics of Chicago Area Geomarkets, 1980-2020", out.width = "100%"}
@@ -686,11 +696,23 @@ knitr::include_graphics('./../results/graphs/rq1/rq1_chicago_ses.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
 
+**Note**: Household income measured using 2024 CPI
+
+```{=tex}
+\clearpage
+```
+
 ```{r fig-chicago-rq2-race, echo = FALSE, fig.align = 'center', fig.cap = "Racial/Ethnic Composition of Purchased Student Profiles by Geomarket, Chicago Area", out.width = "100%"}
 knitr::include_graphics('./../results/graphs/rq2/rq2_chicago_race_row_plot.png')
 #knitr::include_graphics('./../assets/images/rq2_chicago_race.png') [OLD RESULTS BASED ON ZIP GEOMARKETS]
 #knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
+```
+
+**Note**: Excludes students with missing values for race. Order number 392833 (ordered 7/10/2018): HS class 2019 OR 2020; state = IL; SAT 1020 - 1150; GPA B- to A+. Order number 487984 (ordered 7/19/2019): HS class 2020 OR 2021; state = IL; SAT 1020 - 1150; GPA B- to A+. Order number 392834 (ordered 7/10/2018): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300. Order number 488035 (ordered 7/19/2019): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300; GPA B- to A+. Order number 392835 (ordered 7/9/2018): HS class 2019 OR 2020; state = IL; SAT 1310 - 1600; GPA B- to A+. Order number 488053 (ordered 7/19/2019): HS class 2020 OR 2021; state = IL; SAT 1310 - 1600; GPA B- to A+.
+
+```{=tex}
+\clearpage
 ```
 
 ```{r fig-chicago-rq2-midSAT-race, echo = FALSE, fig.align = 'center', fig.cap = "Chicago Geomarket Contribution to Purchased Student profiles by Racial/Ethnic Group, Middle-Range SAT orders", out.width = "100%"}
@@ -701,11 +723,23 @@ knitr::include_graphics('./../results/graphs/rq2/rq2_chicago_race_col_plot_39283
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
 
+**Note**: Excludes students with missing values for race. Order number 392834 (ordered 7/10/2018): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300. Order number 488035 (ordered 7/19/2019): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300; GPA B- to A+.
+
+```{=tex}
+\clearpage
+```
+
 ```{r fig-chicago-rq2-midSAT-ses, echo = FALSE, fig.align = 'center', fig.cap = "Chicago Geomarket Contribution to Purchased Student profiles by First-Generation Status, Middle-Range SAT orders", out.width = "100%"}
 knitr::include_graphics('./../results/graphs/rq2/rq2_chicago_firstgen_col_plot_392834_488035.png')
 #knitr::include_graphics('./../assets/images/rq2_chicago_midSAT_ses.png') [OLD RESULTS BASED ON ZIP GEOMARKETS]
 #knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
+```
+
+**Note**: Excludes students with missing values for firstgen. Order number 392834 (ordered 7/10/2018): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300. Order number 488035 (ordered 7/19/2019): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300; GPA B- to A+.
+
+```{=tex}
+\clearpage
 ```
 
 ```{r fig-chicago-rq2-midSAT-combo, echo = FALSE, fig.align = 'center', fig.cap = "Chicago Geomarket Contribution to Purchased Student profiles by Racial/Ethnic Group and First-Generation Status, Middle-Range SAT orders", out.width = "100%"}
@@ -716,10 +750,20 @@ knitr::include_graphics('./../results/graphs/rq2b/rq2b_chicago_order_392834_4880
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
 
-```{r fig-dallas-maps, echo = FALSE, fig.align = 'center', fig.cap = "Dallas-Forth Worth Geomarkets, Total Population 1980-2020", out.width = "100%"}
+**Note**: Excludes students who have missing values for race or parental education. Order number 392834 (ordered 7/10/2018): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300. Order number 488035 (ordered 7/19/2019): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300; GPA B- to A+.
+
+```{=tex}
+\clearpage
+```
+
+```{r fig-dallas-maps, echo = FALSE, fig.align = 'center', fig.cap = "Dallas-Forth Worth Geomarkets, Total Population 1980-2020", out.width = "95%"}
 knitr::include_graphics('./../assets/images/dallas_maps.png')
 #knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
+```
+
+```{=tex}
+\clearpage
 ```
 
 ```{r fig-dallas-rq1-race, echo = FALSE, fig.align = 'center', fig.cap = "Racial/Ethnic Composition of Dallas Area Geomarkets, 1980-2020", out.width = "100%"}
@@ -727,6 +771,12 @@ knitr::include_graphics('./../results/graphs/rq1/rq1_dallas_race.png')
 #knitr::include_graphics('./../assets/images/rq1-dallas-race.png') [OLD RESULTS BASED ON ZIP GEOMARKETS]
 #knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
+```
+
+**Note**: Race/ethnicity categories not available in 1980 Census: Asian, non-Hispanic; Two+ races, non-Hispanic; NHPI, non-Hispanic; AIAN non-Hispanic
+
+```{=tex}
+\clearpage
 ```
 
 ```{r fig-dallas-rq1-ses, echo = FALSE, fig.align = 'center', fig.cap = "Socioeconomic Characteristics of Dallas Area Geomarkets, 1980-2020", out.width = "100%"}
@@ -737,11 +787,23 @@ knitr::include_graphics('./../results/graphs/rq1/rq1_dallas_ses.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
 
+**Note**: Household income measured using 2024 CPI
+
+```{=tex}
+\clearpage
+```
+
 ```{r fig-dallas-rq2-race, echo = FALSE, fig.align = 'center', fig.cap = "Racial/Ethnic Composition of Purchased Student Profiles by Geomarket, Dallas Area", out.width = "100%"}
 knitr::include_graphics('./../results/graphs/rq2/rq2_dallas_race_row_plot.png')
 #knitr::include_graphics('./../assets/images/rq2-dallas-race.png') [OLD RESULTS BASED ON ZIP GEOMARKETS]
 #knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
+```
+
+**Note**: Excludes students with missing values for race. Order number 448922 (ordered 1/9/2019): HS class 2020; selected Geomarkets; PSAT 1070 - 1180. Order number 448427 (ordered 1/8/2019): HS class 2020; selected Geomarkets; PSAT 1190 - 1260. Order number 448440 (ordered 1/8/2019): HS class 2020; selected Geomarkets; PSAT 1270 - 1520.
+
+```{=tex}
+\clearpage
 ```
 
 ```{r fig-dallas-rq2-midSAT-race, echo = FALSE, fig.align = 'center', fig.cap = "Dallas Geomarket Contribution to Purchased Student profiles by Racial/Ethnic Group, Middle-Range SAT orders", out.width = "100%"}
@@ -752,12 +814,24 @@ knitr::include_graphics('./../results/graphs/rq2/rq2_dallas_race_col_plot_448427
 
 ```
 
+**Note**: Excludes students with missing values for race. Order number 448427 (ordered 1/8/2019): HS class 2020; selected Geomarkets; PSAT 1190 - 1260.
+
+```{=tex}
+\clearpage
+```
+
 ```{r fig-dallas-rq2-midSAT-ses, echo = FALSE, fig.align = 'center', fig.cap = "Dallas Geomarket Contribution to Purchased Student profiles by First-Generation Status, Middle-Range SAT orders", out.width = "100%"}
 knitr::include_graphics('./../results/graphs/rq2/rq2_dallas_firstgen_col_plot_448427.png')
 
 #knitr::include_graphics('./../assets/images/rq2_chicago_midSAT_ses.png') [OLD RESULTS BASED ON ZIP GEOMARKETS]
 #knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
+```
+
+**Note**: Excludes students with missing values for firstgen. Order number 448427 (ordered 1/8/2019): HS class 2020; selected Geomarkets; PSAT 1190 - 1260.
+
+```{=tex}
+\clearpage
 ```
 
 ```{r fig-dallas-rq2-midSAT-combo, echo = FALSE, fig.align = 'center', fig.cap = "Dallas Geomarket Contribution to Purchased Student profiles by Racial/Ethnic Group and First-Generation Status, Middle-Range SAT orders", out.width = "100%"}
@@ -768,10 +842,20 @@ knitr::include_graphics('./../results/graphs/rq2b/rq2b_dallas_order_448427_race_
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
 
-```{r fig-la-maps, echo = FALSE, fig.align = 'center', fig.cap = "Los Angeles Geomarkets, Total Population 1980-2020", out.width = "100%"}
+**Note**: Excludes students who have missing values for race or parental education. Order number 448427 (ordered 1/8/2019): HS class 2020; selected Geomarkets; PSAT 1190 - 1260.
+
+```{=tex}
+\clearpage
+```
+
+```{r fig-la-maps, echo = FALSE, fig.align = 'center', fig.cap = "Los Angeles Geomarkets, Total Population 1980-2020", out.width = "95%"}
 knitr::include_graphics('./../assets/images/la-maps.png')
 #knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
+```
+
+```{=tex}
+\clearpage
 ```
 
 ```{r fig-la-rq1-race, echo = FALSE, fig.align = 'center', fig.cap = "Racial/Ethnic Composition of Los Angeles Area Geomarkets, 1980-2020", out.width = "100%"}
@@ -783,12 +867,24 @@ knitr::include_graphics('./../results/graphs/rq1/rq1_los_angeles_race.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
 
+**Note**: Race/ethnicity categories not available in 1980 Census: Asian, non-Hispanic; Two+ races, non-Hispanic; NHPI, non-Hispanic; AIAN non-Hispanic
+
+```{=tex}
+\clearpage
+```
+
 ```{r fig-la-rq1-ses, echo = FALSE, fig.align = 'center', fig.cap = "Socioeconomic Characteristics of Los Angeles Area Geomarkets, 1980-2020", out.width = "100%"}
 knitr::include_graphics('./../results/graphs/rq1/rq1_los_angeles_ses.png')
 
 #knitr::include_graphics('./../assets/images/rq1_la_ses.png') [OLD RESULTS BASED ON ZIP GEOMARKETS]
 #knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
+```
+
+**Note**: Household income measured using 2024 CPI
+
+```{=tex}
+\clearpage
 ```
 
 ```{r fig-la-rq2-race, echo = FALSE, fig.align = 'center', fig.cap = "Racial/Ethnic Composition of Purchased Student Profiles by Geomarket, Los Angeles Area", out.width = "100%"}
@@ -799,12 +895,24 @@ knitr::include_graphics('./../results/graphs/rq2/rq2_los_angeles_race_row_plot.p
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
 
+**Note**: Excludes students with missing values for race. Order number 448375 (ordered 1/8/2019): HS class 2020; State = CA; PSAT 1070 - 1180. Order number 546954 (ordered 1/6/2020): HS class 2021; State = CA; PSAT 1070 - 1180. Order number 448420 (ordered 1/8/2019): HS class 2020 OR 2021; State = CA; PSAT 1190 - 1260. Order number 546946 (ordered 1/6/2020): HS class 2021 OR 2022; State = CA; PSAT 1190 - 1260. Order number 448374 (ordered 1/8/2019): HS class 2020 OR 2021; State = CA; PSAT 1270 - 1520. Order number 546945 (ordered 1/6/2020): HS class 2021 OR 2022; State = CA; PSAT 1270 - 1520.
+
+```{=tex}
+\clearpage
+```
+
 ```{r fig-la-rq2-midSAT-race, echo = FALSE, fig.align = 'center', fig.cap = "Los Angeles Geomarket Contribution to Purchased Student profiles by Racial/Ethnic Group, Middle-Range SAT orders", out.width = "100%"}
 knitr::include_graphics('./../results/graphs/rq2/rq2_los_angeles_race_col_plot_448420_546946.png')
 #knitr::include_graphics('./../assets/images/rq2_la_midSAT_race.png')[RESULTS BASED ON ZIP GEOMARKETS]
 #knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 
+```
+
+**Note**: Excludes students with missing values for race. Order number 448420 (ordered 1/8/2019): HS class 2020 OR 2021; State = CA; PSAT 1190 - 1260. Order number 546946 (ordered 1/6/2020): HS class 2021 OR 2022; State = CA; PSAT 1190 - 1260.
+
+```{=tex}
+\clearpage
 ```
 
 ```{r fig-la-rq2-midSAT-ses, echo = FALSE, fig.align = 'center', fig.cap = "Los Angeles Geomarket Contribution to Purchased Student profiles by First-Generation Status, Middle-Range SAT orders", out.width = "100%"}
@@ -814,9 +922,17 @@ knitr::include_graphics('./../results/graphs/rq2/rq2_los_angeles_firstgen_col_pl
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
 
+**Note**: Excludes students with missing values for firstgen. Order number 448420 (ordered 1/8/2019): HS class 2020 OR 2021; State = CA; PSAT 1190 - 1260. Order number 546946 (ordered 1/6/2020): HS class 2021 OR 2022; State = CA; PSAT 1190 - 1260.
+
+```{=tex}
+\clearpage
+```
+
 ```{r fig-la-rq2-midSAT-combo, echo = FALSE, fig.align = 'center', fig.cap = "Los Angeles Geomarket Contribution to Purchased Student profiles by Racial/Ethnic Group and First-Generation Status, Middle-Range SAT orders", out.width = "100%"}
 knitr::include_graphics('./../results/graphs/rq2b/rq2b_los_angeles_order_448420_546946_race_by_firstgen.png')
 #knitr::include_graphics('./../assets/images/rq2_la_midSAT_combo.png')[RESULTS BASED ON ZIP GEOMARKETS]
 #knitr::include_graphics('./../../outputs/figures/enrollment_funnel.png')
 #![The enrollment funnel](assets/images/enrollment_funnel.png)
 ```
+
+**Note**: Excludes students who have missing values for race or parental education. Order number 448420 (ordered 1/8/2019): HS class 2020 OR 2021; State = CA; PSAT 1190 - 1260. Order number 546946 (ordered 1/6/2020): HS class 2021 OR 2022; State = CA; PSAT 1190 - 1260.
