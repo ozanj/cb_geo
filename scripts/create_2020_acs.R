@@ -96,6 +96,7 @@ edu_var_names <- edu_variables$name
 
 variables <- c(
   "B19025_001E",  # Aggregate household income (from table B19025)
+  "B11001_001E",   # total number of households; use for calculating mean household income
   "B19001_001E",  # "Total households" — This variable gives the total number of households that reported income data at the census tract level.
   "B19013_001E",  # "Median Household Income in the Past 12 Months (in 2020 Inflation-Adjusted Dollars)"
   "B17017_002E",  # "Number of households living below poverty level" 
@@ -128,38 +129,93 @@ variables
 
 acs2020_vars %>% filter(name %in% variables) %>% print()
 
+# RETREIVE MEAN INCOME, WHICH IS PART OF SUBJECT-TABLE DATASET
+
+# get the variable list for 2020 ACS 5‑year *subject* tables
+sub_vars <- load_variables(2020, "acs5/subject", cache = TRUE)
+
+mean_inc_vars <- sub_vars %>% filter(name == "S1901_C01_013") 
+mean_inc_vars$label
+mean_inc_vars$concept
+
+#append income variable description to description of other ACS variables
+acs2020_vars <- acs2020_vars %>% bind_rows(mean_inc_vars)
+acs2020_vars
+rm(mean_inc_vars,sub_vars)
+
+
 # READ IN TRACT-LEVEL 2016-2020 ACS DATA FROM TIDYCENSUS
 
   # List of all state abbreviations plus Washington, D.C.
-  # states <- c(state.abb, "DC")
+  #  states <- c(state.abb, "DC")
   # states
   # 
-  # # Initialize an empty list to store data
-  # all_data <- list()
+  # # # Initialize an empty list to store data
+  #  all_data <- list()
   # 
   # # Loop through each state to get tract-level data
-  # for (state in states) {
-  #   state_data <- get_acs(
-  #     geography = "tract",
-  #     state = state,
-  #     variables = variables,
-  #     year = 2020,
-  #     survey = "acs5",
-  #     output = "wide"
-  #   )
-  #   all_data[[state]] <- state_data
-  # }
+  #  for (state in states) {
+  #    state_data <- get_acs(
+  #      geography = "tract",
+  #      state = state,
+  #      variables = variables,
+  #      year = 2020,
+  #      survey = "acs5",
+  #      output = "wide"
+  #    )
+  #    all_data[[state]] <- state_data
+  #  }
   # 
   # # Combine all the state data into one data frame
-  # acs2020_ab_tract <- bind_rows(all_data)
-  # rm(states,state,all_data,state_data)
-  
-  # save(acs2020_ab_tract, file = file.path(shape_dir, '2020', 'acs2020_ab_tract_raw.RData'))
+  #  acs2020_ab_tract <- bind_rows(all_data)
+  #  rm(states,state,all_data,state_data)
+  # 
+  #  save(acs2020_ab_tract, file = file.path(shape_dir, '2020', 'acs2020_ab_tract_raw.RData'))
   
   load(file.path(shape_dir, '2020', 'acs2020_ab_tract_raw.RData'))
   
   acs2020_ab_tract %>% glimpse()
 
+  # # List of all state abbreviations plus Washington, D.C.
+  #  states <- c(state.abb, "DC")
+  #  states
+  # 
+  # # Initialize an empty list to store data
+  #  all_data <- list()
+  # 
+  # # Loop through each state to get tract-level data
+  #  for (state in states) {
+  #    state_data <- get_acs(
+  #      geography = "tract",
+  #      state = state,
+  #      variables = "S1901_C01_013",  # mean household income ($)
+  #      year = 2020,
+  #      survey = "acs5",
+  #      dataset   = "acs5/subject",    # <- key difference
+  #      output = "wide"
+  #    )
+  #    all_data[[state]] <- state_data
+  #  }
+  # 
+  #  # Combine all the state data into one data frame
+  #  acs2020_ab_tract_mean_inc <- bind_rows(all_data)
+  #  acs2020_ab_tract_mean_inc %>% glimpse()
+  #  rm(states,state,all_data,state_data)
+  # 
+  #   save(acs2020_ab_tract_mean_inc, file = file.path(shape_dir, '2020', 'acs2020_ab_tract_mean_inc_raw.RData'))
+  
+  load(file.path(shape_dir, '2020', 'acs2020_ab_tract_mean_inc_raw.RData'))  
+  
+# CHECK OUT TWO DATAFRAMES
+  acs2020_ab_tract %>% glimpse()
+  acs2020_ab_tract_mean_inc %>% glimpse()
+  
+  acs2020_ab_tract <- acs2020_ab_tract %>% inner_join(
+    y = acs2020_ab_tract_mean_inc %>% select(-NAME), # has this one: S1901_C01_013
+    by = 'GEOID'
+  )
+  
+  acs2020_ab_tract %>% glimpse()  
 # ADD VARIABLE LABELS FROM load_variables() FUNCTION TO ACS DATA
   
   # Use str_subset to get the variables matching the pattern, vars that end with E
@@ -427,10 +483,11 @@ acs2020_ab_anal_tract <- acs2020_tract_eps_intersect %>% as.data.frame() %>%
   # INCOME AND POVERTY VARIABLES
   rename(
     #income
-    households_tot = b19001_001e, # "Total households" — This variable gives the total number of households that reported income data at the census tract level.
+    households_tot = b11001_001e, # total number of households; use for calculating mean household income
     inc_house_agg = b19025_001e, # "Estimate!!Aggregate household income in the past 12 months (in 2020 inflation-adjusted dollars)"
     inc_house_med = b19013_001e, # "Estimate!!Median household income in the past 12 months (in 2020 inflation-adjusted dollars)"
-      
+    inc_house_mean = s1901_c01_013e, # pre calculated version
+    
     # poverty
     pov_yes = b17017_002e,
     pov_denom = b17017_001e
@@ -520,10 +577,11 @@ acs2020_ab_anal_tract <- acs2020_tract_eps_intersect %>% as.data.frame() %>%
 #acs2020_ab_anal_tract %>% select(c15002i_002e, c15002i_007e,edu_tot_hisp) %>% View()
 
 acs2020_ab_anal_tract %>% glimpse()
+#acs2020_ab_anal_tract %>% count(proportion)
 
 # create character vector of names of variables to be summed
 # remove income variables that should not be summed
-sum_vars <- acs2020_ab_anal_tract %>% select(-c(eps,geometry,geoid,inc_house_med,proportion)) %>% names()
+sum_vars <- acs2020_ab_anal_tract %>% select(-c(eps,geometry,geoid,inc_house_med,inc_house_mean,proportion)) %>% names()
 sum_vars
 
 #5 = adjust tract data by proportion
@@ -563,14 +621,15 @@ acs2020_ab_anal_tract_sf <- acs2020_ab_anal_tract %>%
     
     # create mean income variable
     # sum of agg inc across all tracts/ (sum of total households across all tracts)
-    mean_inc_house = inc_house_agg/households_tot,
+    mean_inc_house_calc = inc_house_agg/households_tot,
     
     # Convert 2020 dollars to 2024 dollars using CPI data
     # CPI for 2020: 258.811
     # CPI for 2024: 314.175
     # Formula: Adjusted Amount = Original Amount * (CPI in 2024 / CPI in 2020) = (og amoun)t * (314.175/258.811) = (og amount) * 1.213917
-    mean_inc_house = mean_inc_house*1.213917,
+    mean_inc_house_calc = mean_inc_house_calc*1.213917,
     med_inc_house = inc_house_med*1.213917,
+    mean_inc_house = inc_house_mean*1.213917,
     
     # create percent poverty variables
     pct_pov_yes = pov_yes/pov_denom*100,  
@@ -594,7 +653,8 @@ acs2020_ab_anal_tract_sf <- acs2020_ab_anal_tract %>%
     by = c('geoid','eps')
   ) %>% 
   # transform into sf object, using WGS84 CRS which leaflet mapping says is required
-  st_as_sf() %>% st_transform(crs = 4326)
+  st_as_sf() %>% st_transform(crs = 4326) %>% select(-c(inc_house_med,inc_house_mean))
+
 
   acs2020_ab_anal_tract_sf %>% glimpse()
   acs2020_ab_anal_tract_sf %>% class()
@@ -604,7 +664,8 @@ acs2020_ab_anal_tract_sf <- acs2020_ab_anal_tract %>%
   
   load(file = file.path(shape_dir,'analysis_data', 'acs2020_ab_anal_tract_sf.RData'))
 
-
+  acs2020_ab_anal_tract %>% glimpse()
+  
 # create eps-level analysis dataset
 acs2020_ab_anal_eps <- acs2020_ab_anal_tract %>% 
   group_by(eps) %>% summarize(
@@ -614,6 +675,9 @@ acs2020_ab_anal_eps <- acs2020_ab_anal_tract %>%
     
     # median of median household income at tract-level
     med_inc_house_med = median(inc_house_med, na.rm = TRUE),
+    
+    # median of mean household income
+    med_inc_house_mean = median(inc_house_mean, na.rm = TRUE),
     
   ) %>% 
   mutate(
@@ -640,14 +704,15 @@ acs2020_ab_anal_eps <- acs2020_ab_anal_tract %>%
     
     # create mean income variable
     # sum of agg inc across all tracts/ (sum of total households across all tracts)
-    mean_inc_house = sum_inc_house_agg/sum_households_tot,
+    mean_inc_house_calc = sum_inc_house_agg/sum_households_tot,
     
     # Convert 2020 dollars to 2024 dollars using CPI data
     # CPI for 2020: 258.811
     # CPI for 2024: 314.175
     # Formula: Adjusted Amount = Original Amount * (CPI in 2024 / CPI in 2020) = (og amoun)t * (314.175/258.811) = (og amount) * 1.213917
-    mean_inc_house = mean_inc_house*1.213917,
+    mean_inc_house_calc = mean_inc_house_calc*1.213917,
     med_inc_house_med = med_inc_house_med*1.213917,
+    med_inc_house_mean = med_inc_house_mean*1.213917,
     
     # create percent poverty variables
     pct_pov_yes = sum_pov_yes/sum_pov_denom*100,  
