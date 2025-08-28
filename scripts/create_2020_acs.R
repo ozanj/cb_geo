@@ -351,21 +351,21 @@ st_crs(eps_geometry_zcta) == st_crs(acs2020_ab_tract_sf)
         # 0.001 degrees of latitude would be about 0.001 × 69 =0.069
         # 0.001×69=0.069 miles, or approximately 364 feet.
   # this is very computationally/time intensive! [like 45 minutes +]
-    acs2020_tract_eps_intersect <- st_intersection(acs2020_ab_tract_sf, eps_geometry_zcta)
+    # acs2020_tract_eps_intersect <- st_intersection(acs2020_ab_tract_sf, eps_geometry_zcta)
 
     
   # check if geometry is valid
-    valid_geom <- st_is_valid(acs2020_tract_eps_intersect) # check to see whether geometries are "valid"; valid geometries needed for st_intersect
-    summary(valid_geom) 
+    # valid_geom <- st_is_valid(acs2020_tract_eps_intersect) # check to see whether geometries are "valid"; valid geometries needed for st_intersect
+    # summary(valid_geom) 
       # with using st_simplify with dTolerance = 0.001: 13567 obs FALSE; 84147 obs TRUE; this was worse performance than prior to st_simplify
       # without using st_simplify: 9,523 FALSE, 88129 TRUE
-    rm(valid_geom)
+    # rm(valid_geom)
     
   # make geometries valid
-    acs2020_tract_eps_intersect <- st_make_valid(acs2020_tract_eps_intersect)    
+    # acs2020_tract_eps_intersect <- st_make_valid(acs2020_tract_eps_intersect)    
     
   # save/load for use    
-   save(acs2020_tract_eps_intersect, file = file.path(shape_dir,'2020', 'acs2020_tract_eps_intersect.RData'))
+   # save(acs2020_tract_eps_intersect, file = file.path(shape_dir,'2020', 'acs2020_tract_eps_intersect.RData'))
 
   # load object created by st_intersection
     load(file = file.path(shape_dir,'2020', 'acs2020_tract_eps_intersect.RData'))
@@ -451,7 +451,7 @@ acs2020_ab_anal_tract <- acs2020_tract_eps_intersect %>% as.data.frame() %>%
     # amp3e019. "Estimates: Hispanic or Latino: Two or more races"
     # amp3e020. "Estimates: Hispanic or Latino: Two or more races: Two races including Some other race"
     # amp3e021. "Estimates: Hispanic or Latino: Two or more races: Two races excluding Some other race, and three or more races"  
-  select(-c(name,b03002_010e,b03002_011e,b03002_020e,b03002_021e)) %>% 
+  select(-c(name,b03002_010e,b03002_011e,b03002_020e,b03002_021e,b19001_001e)) %>% 
   # RENAME AND CREATE VARS OF POPULATION BY RACE, ETHNICITY, AND AGE
   rename(
     tot_all = b03002_001e,
@@ -579,6 +579,9 @@ acs2020_ab_anal_tract <- acs2020_tract_eps_intersect %>% as.data.frame() %>%
 acs2020_ab_anal_tract %>% glimpse()
 #acs2020_ab_anal_tract %>% count(proportion)
 
+# inc_house_mean (s1901_c01_013e) = inc_house_agg (b19025_001e) / households_tot (b11001_001e)
+acs2020_ab_anal_tract %>% select(geoid, inc_house_agg, households_tot, inc_house_mean) %>% mutate(inc_house_mean_calc = inc_house_agg / households_tot) %>% View()
+
 # create character vector of names of variables to be summed
 # remove income variables that should not be summed
 sum_vars <- acs2020_ab_anal_tract %>% select(-c(eps,geometry,geoid,inc_house_med,inc_house_mean,proportion)) %>% names()
@@ -587,11 +590,19 @@ sum_vars
 #5 = adjust tract data by proportion
   #Adjust any tract-level variables (e.g., population counts) by multiplying them by the proportion of the tract within each geomarket.
 
+acs2020_ab_anal_tract <- acs2020_ab_anal_tract %>% 
+  mutate(
+    proportion = case_when(
+      proportion > 0.99 ~ 1,
+      proportion < 0.01 ~ 0,
+      .default = NA_real_
+    )
+  )
+
+table(acs2020_ab_anal_tract$proportion, useNA = 'always')  # 24353 tracts fall in a EPS (0.99+ proportion), while rest of 3785 tracts are not it (<0.01 proportion)
+
 acs2020_ab_anal_tract <- acs2020_ab_anal_tract %>%
-  mutate(across(
-    .cols = all_of(sum_vars),
-    .fns = ~ .x * proportion
-  ))  
+  filter(proportion == 1)  # get rid of tracts that are just slivers (not actually part of EPS)
 
 acs2020_ab_anal_tract %>% glimpse()
 
