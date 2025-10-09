@@ -215,11 +215,13 @@ Geomarkets were incorporated into the *College Board* "student list" product nam
 
 We argue that Geomarket borders are substantially correlated with class and race. This correlation is partly intentional. @RN4982 viewed student demand as a function of class. @RN4982 sought to create Geomarkets that contained many high SES students willing to attend colleges far from home, for example "CT 3--Fairfield County." When colleges use the Market Segment Model, "the result is a natural reinforcing of the basic socioeconomic patterns that gave shape in the first place to the structure of college choice" [@RN4982, p. 44]. Considering the nature of U.S. segregation [@rothstein2017color], Geomarkets may also be correlated with race.
 
+```{=html}
 <!--  
 we argue that utilizing Geomarket filters to purchase student lists can contribute to socioeconomic and racial inequality on college opportunity. 
 
 Using data about past correlations -- here, Geomarket borders created with reference to 1980 SAT score sending behaviors -- to make future recommendations amplifies the effects of historical structural inequalities. 
 -->
+```
 
 We draw from "quantification" scholarship in sociology [@RN5007; @RN5005] and data studies [@RN4849; @RN4975]. To the extent that Geomarket borders are correlated with class and race, student list purchases that filter on Geomarkets can yield systematic socioeconomic and racial exclusion in college opportunity [@RN4887]. We address two research questions:
 

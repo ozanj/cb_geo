@@ -1,0 +1,271 @@
+---
+#title: "Structuring College Access: The Market Segment Model and College Board Geomarkets"
+#author: ["Ozan Jaquette (UCLA)", "Karina Salazar (University of Arizona)"]
+bibliography: ./../assets/bib/cb_geomarket_bib.bib
+csl: ./../assets/bib/apa.csl
+format:
+  pdf:
+    documentclass: article
+    number-sections: true
+    number-depth: 2
+    #extensions: [andrewheiss/wordcount]
+    fig_caption: true
+    keep_tex: true  # Optional: Keeps the intermediate .tex file for debugging
+    titlepage: false
+editor: visual
+geometry: "top=0.75in, bottom=0.5in, left=1in, right=1in"
+fontsize: 11pt
+header-includes:
+  - \usepackage{setspace}
+  #- \doublespacing
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhf{}
+  - \cfoot{\thepage}
+  - \fancypagestyle{plain}{
+      \fancyhf{}
+      \cfoot{\thepage}
+    }
+  - \renewcommand{\headrulewidth}{0pt}  % Remove the top header line
+  #- \renewcommand{\footrulewidth}{0.4pt}  # Keeps the bottom line    
+  - \usepackage{booktabs}
+  - \usepackage{multirow}
+  - \usepackage{array}
+  - \usepackage{colortbl}
+  - \usepackage{longtable}
+  - \usepackage{caption}
+  - \usepackage{pdflscape} 
+  - \usepackage{rotating}
+  - \usepackage{float}       # Required for [ht] specifier
+  - \usepackage{graphicx}    # Required for \resizebox  
+  - |
+    \captionsetup{
+      justification=raggedright,
+      singlelinecheck=false
+    }
+  - \setlength{\aboverulesep}{0pt}
+  - \setlength{\belowrulesep}{0pt}
+  - \setlength{\extrarowheight}{0pt}
+  - \setlength{\cmidrulekern}{0pt}
+  - \renewcommand{\arraystretch}{1.0}
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(bookdown)
+
+# https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_pdf.pdf
+library(kableExtra)
+library(tidyverse)
+#hey ho This many words: {{< words-total >}}
+
+
+```
+
+```{r load_objects, include = FALSE}
+getwd()
+#load(file = file.path('.','..','..','cb_geomarket_shape','list_data','list_sf.RData'))
+
+socal_eps_table <- readRDS(file.path('.','..','results','tables', "socal_eps_table.rds"))
+philly_eps_table <- readRDS(file.path('.','..','results','tables', "philly_eps_table.rds"))
+chi_eps_table <- readRDS(file.path('.','..','results','tables', "chi_eps_table.rds"))
+```
+
+```{r create_table_functions, include = FALSE}
+
+format_eps_table <- function(df, 
+                             years = c(1980, 2000, 2020), 
+                             metro_area, 
+                             format = "latex", 
+                             label = NULL) {
+  
+  # Load necessary libraries
+  library(dplyr)
+  library(kableExtra)
+  
+  # Validate the provided years
+  valid_years <- c(1980, 2000, 2020)
+  if (!all(years %in% valid_years)) {
+    stop("Invalid year(s) provided. Only 1980, 2000, and 2020 are allowed.")
+  }
+  
+  # Define column names for the table (excluding "Variable" and "EPS Name")
+  col_names <- c(
+    "Geomarket name", 
+    rep(c("Mean", "SD", "P25", "P50", "P75"), times = length(years))
+  )
+  
+  # Build a vector of selected columns based on the years provided
+  selected_columns <- c("variable", "eps_codename")
+  for (year in years) {
+    selected_columns <- c(
+      selected_columns, 
+      paste0("mean_", year), 
+      paste0("sd_", year), 
+      paste0("p25_", year), 
+      paste0("p50_", year), 
+      paste0("p75_", year)
+    )
+  }
+  
+  # Check if all selected columns exist in df
+  missing_columns <- setdiff(selected_columns, colnames(df))
+  if (length(missing_columns) > 0) {
+    stop(paste("The following required columns are missing in the data frame:", 
+               paste(missing_columns, collapse = ", ")))
+  }
+  
+  # Select only the relevant columns from the dataframe and add row number for grouping
+  df_selected <- df %>%
+    select(all_of(selected_columns)) %>%
+    mutate(
+      eps_codename = gsub("([%#&_{}])", "\\\\\\1", eps_codename), # Escape special characters in Geomarket names
+      row_num = row_number()
+    )
+  
+  # Create headers for the years, merging cells appropriately
+  year_header <- c(" " = 1)  # First column is "Geomarket name"
+  for (year in years) {
+    year_header <- c(year_header, setNames(5, as.character(year)))  # Each year spans 5 columns
+  }
+  
+  # Create alignment vector, adding a vertical line after the first column
+  align <- c("l|", rep("r", length(col_names) - 1))
+  
+  # Prepare group indices for grouping rows in the table
+  group_indices <- df_selected %>%
+    group_by(variable) %>%
+    summarize(
+      start_row = min(row_num),
+      end_row = max(row_num)
+    ) %>%
+    ungroup()
+  
+  # Remove 'variable' and 'row_num' columns before creating the table
+  df_kable <- df_selected %>%
+    select(-variable, -row_num)
+  
+  # Construct the caption with the LaTeX label if provided
+  if (!is.null(label)) {
+    # Use double backslash to ensure proper LaTeX command
+    caption_text <- paste0(
+      "Racial/ethnic and socioeconomic characteristics of Geomarkets around ", 
+      metro_area, 
+      " \\label{tab:", label, "}"
+    )
+  } else {
+    caption_text <- paste0(
+      "Racial/ethnic and socioeconomic characteristics of Geomarkets around ", 
+      metro_area
+    )
+  }
+  
+  # Generate the table using kable
+  table <- df_kable %>%
+    kbl(
+      format = format,
+      digits = 1,
+      col.names = col_names,
+      align = align,
+      caption = caption_text,
+      booktabs = TRUE,
+      longtable = TRUE,
+      escape = FALSE  # Prevent LaTeX from escaping the caption content
+    ) %>%
+    # Add a header row for the years
+    add_header_above(year_header, bold = TRUE, escape = FALSE) %>%
+    # Style the table with repeating header
+    kable_styling(
+      full_width = FALSE,
+      position = "left",
+      font_size = 10,
+      latex_options = c("hold_position", "repeat_header", "striped")
+    ) %>%
+    # Specify that the column names row is bold
+    row_spec(0, bold = TRUE)
+  
+  # Apply group_rows to add group labels and horizontal lines using kableExtra
+  for (i in seq_len(nrow(group_indices))) {
+    table <- table %>%
+      kableExtra::group_rows(
+        group_label = group_indices$variable[i],
+        start = group_indices$start_row[i],
+        end = group_indices$end_row[i]
+      )
+  }
+  
+  return(table)
+}
+
+
+```
+
+```{=html}
+<!--  
+\thispagestyle{empty} 
+\newpage 
+\setcounter{page}{1}
+Please submit a detailed 2-page précis that includes a brief discussion of the topic, pertinent literature and
+theory, research methods, findings, and study significance
+
+EXPECTED OUTLINE
+- topic and RQs
+- literature and theory
+- methods
+- findings
+- significance
+
+THEME
+- What can we do about it? Sociologists as change agents
+
+HOW TO CONNECT WITH THE THEME
+- sociology of organizations knows that regulating an industry requires understanding the organizational field, which includes third-party vendors and products. these third party vendors and agents structure college access in ways that benefit historically privileged groups and contribute to accumulation of capital
+- we must understand the field before we can regulate it; CFPB has 
+Education policy has been dominated by economists. economics doesn't have the theoretical concepts necessary 
+-->
+```
+
+\setlength{\headsep}{0pt}
+\setlength{\headheight}{0pt}
+\begin{center} Structuring College Access: The Market Segment Model and College Board Geomarkets \end{center}
+\vspace{-0.5cm}
+
+# ABSTRACT
+
+College Board (CB) "Geomarkets" carve metropolitan areas into smaller geographies. Geomarkets are a "search filter" in the CB "student list" product that enables colleges to acquire prospect contact information. If Geomarket borders are correlated with race and class, using Geomarkets to target prospects may amplify inequality. We address two questions: What is the socioeconomic and racial variation between Geomarkets? How does the socioeconomic and racial composition of included versus excluded prospects vary if student list purchases filter on Geomarkets? We answer RQ1 using Census data and RQ2 using data from actual student list purchases.
+
+# PRECIS
+
+**BACKGROUND.** In 1983, Zemsky and Oedel authored *The Structure of College Choice*. Based on an analysis of 1980 SAT score-sending behavior and published by *The College Board* (CB), @RN4982 developed the Market Segment Model and created "Geomarkets." The Market Segment Model predicts how student demand for a particular college varies across local geographic markets based on the characteristics of students in those local markets.
+
+Geomarkets are geographic areas that divide states and large metropolitan areas into "community-based enrollment markets" [@RN4982, p. 14] for recruiting purposes. Figure 1 shows New York City area Geomarkets. Geomarkets were incorporated into the CB "student list" product named Student Search Service. Student lists have been the primary source of lead generation in U.S. higher education for over 50 years [@belkin2019-studata; @list_biz]. Lists contain contact information for prospective students. The Student Search Service database consists of CB test-takers. Colleges control which prospect profiles they purchase by selecting search filters, such as high school graduation year, SAT score, AP score, state, etc. Geomarket filters enable colleges to target prospects living in particular Geomarkets.
+
+**THEORY & RQs.** We analyze the Market Segment Model and Geomarkets using scholarship on quantification [e.g., @RN5003], particularly the discussions of correlation and homophily from @RN4975. Predictive analytics are based on correlation. The 1980 SAT score-sending data analyzed by @RN4982 can be conceived as "training data," which was used to define four "market segments" of students: "local" students, who send most SAT scores to colleges in their Geomarket; "in-state" students, who primarily send scores to colleges in their state; "regional" students, who send most scores to colleges outside their state but in their region (e.g., New England); and "national" students. @RN4982 analyzed the student characteristics correlated with student market segment and concluded that student demand was primarily a function of class. The overarching thesis of the Market Segment Model is homophily, the idea that similar colleges compete with one another for similar students. @RN4982 [p. 42-45] states that selective colleges primarily draw from students in the "regional" and "national" segments and, therefore, their student list purchases should focus on Geomarkets with large numbers of affluent, highly educated households.
+
+When we use data on past correlations to make recommendations about the future, we amplify the effects of historic structural inequality [@RN4794]. A snapshot of student demand in 1980, itself a consequence of historical structural inequality, became inscribed into the Student Search Service product. The result is a supply-side that reinforces structural inequalities observed on the demand-side. We address two research questions:
+
+1.  What is the socioeconomic and racial variation between Geomarkets in metropolitan areas? How does this variation change over time?
+2.  How does the socioeconomic and racial composition of included versus excluded prospects vary when student list purchases filter on particular Geomarkets?
+
+**SIGNIFICANCE.** Academic scholarship on enrollment management tends to focus on students (micro), policies (macro), and organizations (meso). Scholars have not analyzed third-party classification systems and products that colleges utilize to classify prospective students. CB Geomarkets, utilized in the CB Student Search Service, offers one such case.
+
+**DATA SOURCES**. To answer RQ1, we utilize census tract-level data from the 1980 Decennial Census, 2000 Decennial Census, and 2020 5-year American Community Survey (ACS). Variables of interest include: race/ethnicity; mean and median household income; percent of households below poverty line; and BA attainment of people aged 25+. We obtained shapefiles for CB Geomarkets from a 2012 *R-bloggers* post. We assigned census tracts to Geomarkets.
+
+To answer RQ2, we issued public records requests about student lists purchased by 14 public universities from 2016 through 2020. For 414 CB student list purchases, associated with about 2.6 million prospects, we received both (1) the order summary -- showing which search filters were utilized -- and (2) the de-identified prospect-level data, including race, ethnicity, zip code, and high school. Figure 2 shows the partial order summary for a purchase that filtered on the 2020 high school graduating class, PSAT scores of 1070 to 1180, and selected Geomarkets.
+
+**METHOD**. The methods are simultaneously descriptive and spatial. We utilize a case study design in which metropolitan areas are cases. Like @RN4759, we envision focusing on 2-4 metropolitan areas, including the historical context of segregation and gentrification. An appendix will show results for a larger number of metropolitan areas.
+
+To answer RQ1, we produce tables/graphs that show how Geomarkets around a metropolitan area vary on racial and socioeconomic characteristics and how they vary over time. We produce interactive maps at the census tract-level to show more granular variation within and between Geomarkets. We address RQ2 by analyzing actual student list purchases that encompass all Geomarkets around a given metropolitan area, showing which prospects would have been excluded if had the purchase had filtered on particular Geomarkets.
+
+**PRELIMINARY FINDINGS**. For RQ1, Table 1 shows racial and socioeconomic characteristics for Geomarkets around Chicago. Figure 3 is a screenshot of an interactive choropleth map of Los Angeles, showing Geomarket borders and the tract-level %Hispanic in 2020. Figure 4 shows tract-level median household income around Los Angeles.
+
+Results for RQ2 show how many purchased prospects from each racial/ethnic group live in each Geomarket. These prospects would have been excluded had the purchase filtered on Geomarkets and not selected that Geomarket. Table 2, Table 3, and Table 4, respectively, show counts, column percentages, and row percentages for the Philadelphia metropolitan area, based on a purchase that filtered on students from the 2020 high school class who scored between 1070 and 1180 on the PSAT. Table 3 shows that "PA5--Philadelphia County" contains 15% of all purchased prospect profiles but 44% of Black prospects, indicating that opportunity for Black students is sensitive to the inclusion of this Geomarket. Figure 5 is a screenshot of a (very) preliminary interactive map for this purchase, with marker size indicating the number of purchased prospect profiles who attended that high school and separate markers by race/ethnicity.
+
+**PRESENTATION PLAN**. I will provide a succinct background about CB Geomarkets and the Student Search Service product, but I will omit discussion of theory. I will show actual student list purchases that target the Chicago-land area but exclude the City of Chicago Geomarket. Next, I will show which prospects are excluded by this decision. Finally, I will engage participants in a discussion about contemporary third-party products that classify students on behalf of colleges. How can practitioners and policymakers effectively interrogate these products to avoid unintentional exclusion along racial and class dimensions?
+
+\newpage
+
+# References
+
+::: {#refs}
+:::
