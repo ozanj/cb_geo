@@ -18,20 +18,48 @@ load(file.path(eps_data_dir, 'tracts_1980.RData'))
 load(file.path(eps_data_dir, 'tracts_2000.RData'))
 load(file.path(eps_data_dir, 'tracts_2020.RData'))
 
-metro <- tracts_2020 %>% filter(str_detect(GEOID, '^17(097|031|043|197)'))
+counties <- '^48'
+metro <- tracts_2020 %>% filter(str_detect(GEOID, counties))
 # metro <- tracts_2000 %>% filter(str_detect(gisjoin2, '^170(097|031|043|197)'))
 # metro <- tracts_1980 %>% filter(str_detect(gisjoin2, '^170(097|031|043|197)'))
 
 # Load previously traced shapes for reference
 eps_2020 <- tracts_2020 %>%
   mutate(eps = case_when(
-    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'IL 7.txt')), ',')[[1]] ~ 'IL 7',
-    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'IL 8.txt')), ',')[[1]] ~ 'IL 8',
-    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'IL 9.txt')), ',')[[1]] ~ 'IL 9',
-    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'IL10.txt')), ',')[[1]] ~ 'IL10',
-    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'IL11.txt')), ',')[[1]] ~ 'IL11',
-    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'IL12.txt')), ',')[[1]] ~ 'IL12',
-    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'IL13.txt')), ',')[[1]] ~ 'IL13'
+    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'TX 1.txt')), ',')[[1]] ~ 'X1',
+    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'TX 2.txt')), ',')[[1]] ~ 'X2',
+    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'TX 3.txt')), ',')[[1]] ~ 'X3',
+    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'TX 4.txt')), ',')[[1]] ~ 'X4',
+    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'TX 5.txt')), ',')[[1]] ~ 'X5',
+    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'TX 6.txt')), ',')[[1]] ~ 'X6',
+    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'TX 7.txt')), ',')[[1]] ~ 'X7',
+    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'TX 8.txt')), ',')[[1]] ~ 'X8',
+    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'TX 9.txt')), ',')[[1]] ~ 'X9',
+    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'TX10.txt')), ',')[[1]] ~ 'X10',
+    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'TX11.txt')), ',')[[1]] ~ 'X11',
+    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'TX12.txt')), ',')[[1]] ~ 'X12',
+    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'TX13.txt')), ',')[[1]] ~ 'X13',
+    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'TX14.txt')), ',')[[1]] ~ 'X14',
+    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'TX15.txt')), ',')[[1]] ~ 'X15',
+    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'TX16.txt')), ',')[[1]] ~ 'X16',
+    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'TX17.txt')), ',')[[1]] ~ 'X17',
+    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'TX18.txt')), ',')[[1]] ~ 'X18',
+    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'TX19.txt')), ',')[[1]] ~ 'X19',
+    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'TX20.txt')), ',')[[1]] ~ 'X20',
+    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'TX21.txt')), ',')[[1]] ~ 'X21',
+    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'TX22.txt')), ',')[[1]] ~ 'X22',
+    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'TX23.txt')), ',')[[1]] ~ 'X23',
+    GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'TX24.txt')), ',')[[1]] ~ 'X24'
+    # GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'CA25.txt')), ',')[[1]] ~ 'X25',
+    # GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'CA26.txt')), ',')[[1]] ~ 'X26',
+    # GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'CA27.txt')), ',')[[1]] ~ 'X27',
+    # GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'CA28.txt')), ',')[[1]] ~ 'X28',
+    # GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'CA29.txt')), ',')[[1]] ~ 'X29',
+    # GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'CA30.txt')), ',')[[1]] ~ 'X30',
+    # GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'CA31.txt')), ',')[[1]] ~ 'X31',
+    # GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'CA32.txt')), ',')[[1]] ~ 'X32',
+    # GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'CA33.txt')), ',')[[1]] ~ 'X33',
+    # GEOID %in% str_split(read.table(file.path(tracts_dir, '2020', 'CA34.txt')), ',')[[1]] ~ 'X34'
   )) %>%
   filter(!is.na(eps)) %>%
   group_by(eps) %>%
@@ -71,7 +99,7 @@ eps_2020 <- tracts_2020 %>%
 shinyApp(
   ui = fluidPage(
     'Trace out EPS shape by selecting tracts below:',
-    leafletOutput('map'),
+    leafletOutput('map', height = '800px'),
     verbatimTextOutput('selected')
   ),
   
@@ -84,7 +112,7 @@ shinyApp(
     output$map <- renderLeaflet({
       leaflet(options = leafletOptions(zoomControl = T, zoomSnap = 0, zoomDelta = 0.5)) %>%
         addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolylines(data = counties_2020 %>% filter(str_detect(GEOID, '^17(097|031|043|197)')), color = 'black', opacity = 1, weight = 4) %>%
+        addPolylines(data = counties_2020 %>% filter(str_detect(GEOID, counties)), color = 'black', opacity = 1, weight = 4) %>%
         addPolygons(data = eps_2020, label = ~eps, weight = 4, opacity = 1, color = 'purple') %>%
         # addPolygons(data = eps_2000, label = ~eps, weight = 4, opacity = 1, color = 'green') %>%
         # addPolygons(data = eps_1980, label = ~eps, weight = 4, opacity = 1, color = 'blue') %>%

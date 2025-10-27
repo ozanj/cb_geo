@@ -1,0 +1,959 @@
+---
+title: '2020 Geomarkets + CBSA'
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: paged
+---
+
+```{r setup, include = F}
+options(width = 10000)
+knitr::opts_chunk$set(warning = F, message = F, echo = F, comment = '')
+
+library(tidyverse)
+library(leaflet)
+
+scripts_dir <- '.'
+
+eps_data_dir <- file.path('..', 'data', 'eps_market')
+```
+
+```{r}
+# EPS shapes (2020)
+load(file.path(eps_data_dir, 'eps_shapes_2020.RData'))
+
+# County shapes (2020)
+load(file.path(eps_data_dir, 'counties_2020.RData'))
+
+# CBSA shapes (2020)
+load(file.path(eps_data_dir, 'cbsa_2020.RData'))
+```
+
+
+```{r}
+plot_map <- function(eps_codes, palette = c(RColorBrewer::brewer.pal(11, 'Spectral'), 'black', 'white')) {
+  state <- unique(str_match(eps_codes, '^[A-Z]{2}')[,1])
+  
+  if (length(state) > 1) print(state)
+  
+  cbsas <- cbsa_2020 %>% filter(str_detect(NAME, str_c(', ', state)) | str_detect(NAME, str_c('-', state)))
+  metros <- cbsas %>% filter(LSAD == 'M1')
+  micros <- cbsas %>% filter(LSAD == 'M2')
+
+  m <- leaflet() %>% 
+    addProviderTiles(providers$CartoDB.Positron) %>% 
+    addPolygons(data = counties_2020 %>% filter(STUSPS %in% state) %>% sf::st_transform(crs = 4326), label = ~NAMELSAD, color = 'gray', weight = 1, group = 'Counties')
+  
+  if (nrow(metros) > 0) {
+    m <- m %>%
+      addPolygons(data = metros %>% sf::st_transform(crs = 4326), label = ~NAMELSAD, color = 'gray', weight = 1, group = 'CBSA (Metro Area)')
+  }
+  
+  if (nrow(micros) > 0) {
+    m <- m %>%
+      addPolygons(data = micros %>% sf::st_transform(crs = 4326), label = ~NAMELSAD, color = 'gray', weight = 1, group = 'CBSA (Micro Area)')
+  }
+  
+  bbox <- sf::st_bbox(eps_2020 %>% filter(eps %in% eps_codes)) %>% as.vector()
+  
+  for (i in seq_along(eps_codes)) {
+    m <- m %>% 
+      addPolygons(data = eps_2020 %>% filter(eps == eps_codes[[i]]), label = ~paste0('<b>', eps, '</b>') %>% lapply(htmltools::HTML), color = if_else(i %in% 5:7, '#c4c4c4', palette[[i]]), fillColor = palette[[i]], weight = 1, group = 'EPS from 2020 tracts')
+  }
+  
+  m <- m %>% 
+    addPolylines(data = eps_2020 %>% filter(eps %in% eps_codes), color = 'black', opacity = 1, weight = 2, group = 'EPS from 2020 tracts') %>% 
+    addLayersControl(
+      position = 'bottomleft',
+      overlayGroups = c('EPS from 2020 tracts', 'CBSA (Metro Area)', 'CBSA (Micro Area)', 'Counties'),
+      options = layersControlOptions(collapsed = F)
+    ) %>% 
+    fitBounds(bbox[1], bbox[2], bbox[3], bbox[4]) %>% 
+    hideGroup('CBSA (Metro Area)') %>% 
+    hideGroup('CBSA (Micro Area)') %>% 
+    hideGroup('Counties')
+  
+  m
+}
+```
+
+# All CBSAs
+
+- **Metro Areas**: Pink
+- **Micro Areas**: Gray
+
+```{r}
+leaflet() %>% addProviderTiles(providers$CartoDB.Positron) %>%
+  addPolygons(data = cbsa_2020 %>% filter(LSAD == 'M1') %>% sf::st_transform(crs = 4326), label = ~NAMELSAD, weight = 1, opacity = 1, color = 'pink') %>%
+  addPolygons(data = cbsa_2020 %>% filter(LSAD == 'M2') %>% sf::st_transform(crs = 4326), label = ~NAMELSAD, weight = 1, opacity = 1, color = '#cccccc')
+```
+
+
+# 1) ME, NH, VT, CT and MA (excluding Boston)
+
+## Connecticut (CT)
+
+- **CT 1**: New London and Windham County
+- **CT 2**: New Haven and Middlesex County
+- **CT 3**: Fairfield County
+- **CT 4**: Waterbury and Litchfield County
+- **CT 5**: Hartford and Tolland County
+
+```{r}
+plot_map(
+  c('CT 1', 'CT 2', 'CT 3', 'CT 4', 'CT 5')
+)
+```
+
+## Maine (ME)
+
+- **ME 1**: Portland and Southern Maine
+- **ME 2**: Augusta and Central Maine
+- **ME 3**: Bangor and Norther Maine
+
+```{r}
+plot_map(
+  c('ME 1', 'ME 2', 'ME 3')
+)
+```
+
+## Massachusetts (MA)
+
+- **MA 1**: Berkshire and Franklin Counties
+- **MA 2**: Springfield and Hampshire County
+- **MA 3**: Fitchburg and North Worcester County
+- **MA11**: Worcester
+
+```{r}
+plot_map(
+  c('MA 1', 'MA 2', 'MA 3', 'MA11')
+)
+```
+
+## New Hampshire
+
+- **NH 1**: Seacost
+- **NH 2**: Merrimack Valley (Manchester)
+- **NH 3**: Monadnock and Lake Sunapee
+- **NH 4**: Lakes and White Mountain
+
+```{r}
+plot_map(
+  c('NH 1', 'NH 2', 'NH 3', 'NH 4')
+)
+```
+
+## Vermont
+
+- **VT 1**: Burlington
+- **VT 2**: Southern Vermont
+- **VT 3**: Northern and Eastern Vermont
+
+```{r}
+plot_map(
+  c('VT 1', 'VT 2', 'VT 3')
+)
+```
+
+# 2) RI and Greater Boston
+
+## Rhode Island
+
+- **RI 1**: Providence and Northern Rhode Island
+- **RI 2**: Southern Rhode Island
+
+```{r}
+plot_map(
+  c('RI 1', 'RI 2')
+)
+```
+
+## Greater Boston
+
+- **MA 4**: Essex County
+- **MA 5**: Cape Cod and Islands
+- **MA 6**: Boston and Cambridge
+- **MA 7**: Quincy and Plymouth County
+- **MA 8**: Lowell, Concord and Wellesley
+- **MA 9**: Norfolk and Bristol County
+- **MA10**: Milton, Lexington and Waltham
+
+```{r}
+plot_map(
+  c('MA 4', 'MA 5', 'MA 6', 'MA 7', 'MA 8', 'MA 9', 'MA10')
+)
+```
+
+# 6) NJ (North)
+
+## New Jersey (North)
+
+- **NJ 7**: Union County
+- **NJ 8**: Essex and Souther Passaic County
+- **NJ 9**: Hudson County
+- **NJ10**: Bergen County
+- **NJ11**: Morris and Norther Passaic County
+- **NJ12**: Sussex, Warren and Hunterdon Counties
+
+```{r}
+plot_map(
+  c('NJ 7', 'NJ 8', 'NJ 9', 'NJ10', 'NJ11', 'NJ12')
+)
+```
+
+
+# 7) NJ (South)
+
+## New Jersey (South)
+
+- **NJ 1**: Southern Jersey
+- **NJ 2**: Camden and Burlington County
+- **NJ 3**: Jersey Shore and Pinelands
+- **NJ 4**: Middlesex County
+- **NJ 5**: Monmouth County
+- **NJ 6**: Somerset and Mercer Counties
+
+```{r}
+plot_map(
+  c('NJ 1', 'NJ 2', 'NJ 3', 'NJ 4', 'NJ 5', 'NJ 6')
+)
+```
+
+# 8) DE and Greater Philadeliphia
+
+## Delaware
+
+- **DE 1**: New Castle County
+- **DE 2**: Kent and Sussex Counties
+
+```{r}
+plot_map(
+  c('DE 1', 'DE 2')
+)
+```
+
+## Greater Philadelphia
+
+- **PA 1**: Bucks County
+- **PA 2**: Chester County
+- **PA 3**: Delaware County
+- **PA 4**: Montgomery County
+- **PA 5**: Philadelphia County
+
+```{r}
+plot_map(
+  c('PA 1', 'PA 2', 'PA 3', 'PA 4', 'PA 5')
+)
+```
+
+# 9) PA (Excluding Philadelphia)
+
+## Pennsylvania (excluding Philadelphia)
+
+- **PA 6**: Lehigh Valley
+- **PA 7**: Northeastern Pennsylvania
+- **PA 8**: North Central Pennsylvania
+- **PA 9**: Northwestern Pennsylvania
+- **PA10**: Southern Pennsylvania (East)
+- **PA11**: Southern Pennsylvania (West)
+- **PA12**: Allegheny County
+- **PA13**: Unnamed
+
+```{r}
+plot_map(
+  c('PA 6', 'PA 7', 'PA 8', 'PA 9', 'PA10', 'PA11', 'PA12', 'PA13')
+)
+```
+
+# 10) MD
+
+## Maryland
+
+- **MD 1**: Western Maryland
+- **MD 2**: Montgomery Metropolitan
+- **MD 3**: Central Maryland excluding Baltimore
+- **MD 4**: Eastern Shore
+- **MD 5**: Prince Georges Metropolitan
+- **MD 6**: Southern Maryland
+- **MD 7**: Baltimore (Urban)
+
+```{r}
+plot_map(
+  c('MD 1', 'MD 2', 'MD 3', 'MD 4', 'MD 5', 'MD 6', 'MD 7')
+)
+```
+
+# 11) DC and Northern VA
+
+## District of Columbia
+
+- **DC 1**: District of Columbia
+
+```{r}
+plot_map(
+  c('DC 1')
+)
+```
+
+## Northern Virginia
+
+- **VA 1**: Arlington and Alexandria
+- **VA 2**: Fairfax County
+- **VA 3**: North Central Virginia
+
+```{r}
+plot_map(
+  c('VA 1', 'VA 2', 'VA 3')
+)
+```
+
+# 12) KY, TN, WV and VA (excluding Northern VA)
+
+## Kentucky
+
+- **KY 1**: Lexington and Fayette
+- **KY 2**: Louisville and Western Kentucky
+
+```{r}
+plot_map(
+  c('KY 1', 'KY 2')
+)
+```
+
+## Tennessee
+
+- **TN 1**: Chattanooga
+- **TN 2**: Knoxville
+- **TN 3**: Memphis
+- **TN 4**: Nashville and Davidson
+
+```{r}
+plot_map(
+  c('TN 1', 'TN 2', 'TN 3', 'TN 4')
+)
+```
+
+## West Virginia
+
+- **WV 1**: Charleston and Huntington
+- **WV 2**: Northern West Virginia
+
+```{r}
+plot_map(
+  c('WV 1', 'WV 2')
+)
+```
+
+## Virginia (excluding Northern VA)
+
+- **VA 4**: Northern Neck
+- **VA 5**: Central Virginia
+- **VA 6**: Richmond
+- **VA 7**: Southside Virginia
+- **VA 8**: Tidewater
+- **VA 9**: Shenandoah
+- **VA10**: Southwest Virginia
+
+```{r}
+plot_map(
+  c('VA 4', 'VA 5', 'VA 6', 'VA 7', 'VA 8', 'VA 9', 'VA10')
+)
+```
+
+# 13) NC and SC
+
+## North Carolina
+
+- **NC 1**: Coastal Plains
+- **NC 2**: East Central
+- **NC 3**: Research Triangle
+- **NC 4**: Sand Hills
+- **NC 5**: North Piedmont
+- **NC 6**: South Piedmont
+- **NC 7**: Western North Carolina
+
+```{r}
+plot_map(
+  c('NC 1', 'NC 2', 'NC 3', 'NC 4', 'NC 5', 'NC 6', 'NC 7')
+)
+```
+
+## South Carolina
+
+- **SC 1**: Pee Dee
+- **SC 2**: Low Country
+- **SC 3**: Mid Lands
+- **SC 4**: East Piedmont
+- **SC 5**: West Piedmont
+
+```{r}
+plot_map(
+  c('SC 1', 'SC 2', 'SC 3', 'SC 4', 'SC 5')
+)
+```
+
+# 14) Northern GA
+
+## Northern Georgia
+
+- **GA 1**: Cherokee, Cobb and Douglass Counties
+- **GA 2**: Fulton County
+- **GA 3**: DeKalb and Gwinnett Counties
+- **GA 4**: Clayton, Fayette, Henry and Rockdale Counties
+- **GA 5**: Northeast Georgia
+- **GA 8**: Northwest Georgia
+
+```{r}
+plot_map(
+  c('GA 1', 'GA 2', 'GA 3', 'GA 4', 'GA 5', 'GA 8')
+)
+```
+
+# 15) LA, MS, AL, GA (South) and FL (North)
+
+## Louisiana
+
+- **LA 1**: Baton Rouge
+- **LA 2**: New Orleans
+- **LA 3**: Shreveport
+
+```{r}
+plot_map(
+  c('LA 1', 'LA 2', 'LA 3')
+)
+```
+
+## Mississippi
+
+- **MS 1**: Jackson
+- **MS 2**: Northern Mississippi
+
+```{r}
+plot_map(
+  c('MS 1', 'MS 2')
+)
+```
+
+## Alabama
+
+- **AL 1**: Birmingham and Tuscaloosa
+- **AL 2**: Huntsville and Florence
+- **AL 3**: Mobile
+- **AL 4**: Montgomery
+
+```{r}
+plot_map(
+  c('AL 1', 'AL 2', 'AL 3', 'AL 4')
+)
+```
+
+## Georgia (South)
+
+- **GA 6**: Southeast Georgia
+- **GA 7**: Southwest Georgia
+
+```{r}
+plot_map(
+  c('GA 6', 'GA 7')
+)
+```
+
+## Florida (North)
+
+- **FL 1**: Panhandle
+- **FL 2**: Crown
+- **FL 3**: East Central
+
+```{r}
+plot_map(
+  c('FL 1', 'FL 2', 'FL 3')
+)
+```
+
+# 16) FL (South), AS, GU, MP, PR, UM and VI
+
+## Florida (South)
+
+- **FL 4**: West Central
+- **FL 5**: Broward, Martin and Palm Beach Counties
+- **FL 6**: Dade County
+- **FL 7**: Collier, Hendry and Monroe Counties
+
+```{r}
+plot_map(
+  c('FL 4', 'FL 5', 'FL 6', 'FL 7')
+)
+```
+
+# 17) OH
+
+## Ohio
+
+- **OH 1**: Northwest Ohio
+- **OH 2**: North Central Ohio
+- **OH 3**: City of Cleveland (West)
+- **OH 4**: City of Cleveland (East)
+- **OH 5**: Cuyahoga, Geauga, and Lake Counties
+- **OH 6**: Northeast Ohio
+- **OH 7**: West Central Ohio
+- **OH 8**: Central Ohio
+- **OH 9**: Greater Cincinnati
+- **OH10**: Southeast Ohio
+
+```{r}
+plot_map(
+  c('OH 1', 'OH 2', 'OH 3', 'OH 4', 'OH 5', 'OH 6', 'OH 7', 'OH 8', 'OH 9', 'OH10')
+)
+```
+
+# 18) MI and WI
+
+## Michigan
+
+- **MI 1**: Wayne County
+- **MI 2**: Detroit's Northern Suburbs
+- **MI 3**: Ann Arbor
+- **MI 4**: Capital District
+- **MI 5**: Kalamazoo and Grand Rapids
+- **MI 6**: "The Thumb"
+- **MI 7**: Northern Michigan
+
+```{r}
+plot_map(
+  c('MI 1', 'MI 2', 'MI 3', 'MI 4', 'MI 5', 'MI 6', 'MI 7')
+)
+```
+
+## Wisconsin
+
+- **WI 1**: Madison and Janesville
+- **WI 2**: Milwaukee and Racine
+- **WI 3**: Northern Wisconsin
+
+```{r}
+plot_map(
+  c('WI 1', 'WI 2', 'WI 3')
+)
+```
+
+# 19) Greater Chicago
+
+## Greater Chicago
+
+- **IL 7**: Chain of Lakes
+- **IL 8**: Northwest Suburbs
+- **IL 9**: North Shore
+- **IL10**: Evanston and Skokie
+- **IL11**: City of Chicago
+- **IL12**: Western Suburbs
+- **IL13**: South and Southwest Suburbs
+
+```{r}
+plot_map(
+  c('IL 7', 'IL 8', 'IL 9', 'IL10', 'IL11', 'IL12', 'IL13')
+)
+```
+
+# 20) IL and IN (excluding Chicago)
+
+## Illinois
+
+- **IL 1**: Rockford
+- **IL 2**: Quad Cities
+- **IL 3**: Peoria
+- **IL 4**: Springfield
+- **IL 5**: Decatur and Champaign
+- **IL 6**: Southern Illinois
+
+```{r}
+plot_map(
+  c('IL 1', 'IL 2', 'IL 3', 'IL 4', 'IL 5', 'IL 6')
+)
+```
+
+## Indiana
+
+- **IN 1**: "The Region"
+- **IN 2**: Northwest Indiana
+- **IN 3**: South Bend and Elkhart
+- **IN 4**: Northeast Indiana
+- **IN 5**: West Central Indiana
+- **IN 6**: East Central Indiana
+- **IN 7**: Greater Indianapolis
+- **IN 8**: West Indiana
+- **IN 9**: South Central Indiana
+- **IN10**: East Indiana
+- **IN11**: Southwest Indiana
+- **IN12**: Southeast Indiana
+
+```{r}
+plot_map(
+  c('IN 1', 'IN 2', 'IN 3', 'IN 4', 'IN 5', 'IN 6', 'IN 7', 'IN 8', 'IN 9', 'IN10', 'IN11', 'IN12')
+)
+```
+
+# 21) ND, SD, MN, IA, NE, KS, MO, AR and OK
+
+## North Dakota
+
+- **ND 1**: Fargo and Eastern North Dakota
+- **ND 2**: Western North Dakota
+
+```{r}
+plot_map(
+  c('ND 1', 'ND 2')
+)
+```
+
+## South Dakota
+
+- **SD 1**: Souix Falls and Eastern South Dakota
+- **SD 2**: Western South Dakota
+
+```{r}
+plot_map(
+  c('SD 1', 'SD 2')
+)
+```
+
+## Minnesota
+
+- **MN 1**: Twin Cities
+- **MN 2**: Northern Minnesota
+
+```{r}
+plot_map(
+  c('MN 1', 'MN 2')
+)
+```
+
+## Iowa
+
+- **IA 1**: Cedar Rapids and Eastern Iowa
+- **IA 2**: Des Moines and Western Iowa
+
+```{r}
+plot_map(
+  c('IA 1', 'IA 2')
+)
+```
+
+## Nebraska
+
+- **NE 1**: Lincoln
+- **NE 2**: Omaha
+- **NE 3**: Western Nebraska
+
+```{r}
+plot_map(
+  c('NE 1', 'NE 2', 'NE 3')
+)
+```
+
+## Kansas
+
+- **KS 1**: Kansas City and Topeka
+- **KS 2**: Wichita and Western Kansas
+
+```{r}
+plot_map(
+  c('KS 1', 'KS 2')
+)
+```
+
+## Missouri
+
+- **MO 1**: Kansas City and St. Joseph
+- **MO 2**: St. Louis and Eastern Missouri
+- **MO 3**: Springfield and Southern Missouri
+
+```{r}
+plot_map(
+  c('MO 1', 'MO 2', 'MO 3')
+)
+```
+
+## Arkansas
+
+- **AR 1**: Little Rock
+- **AR 2**: Northern Arkansas
+
+```{r}
+plot_map(
+  c('AR 1', 'AR 2')
+)
+```
+
+## Oklahoma
+
+- **OK 1**: Oklahoma City and Western Oklahoma
+- **OK 2**: Tulsa and Western Oklahoma
+
+```{r}
+plot_map(
+  c('OK 1', 'OK 2')
+)
+```
+
+# 22) TX (excluding Dallas-Ft. Worth and Houston)
+
+## Texas (excluding D-FW and Houston)
+
+- **TX 1**: Amarillo, Panhandle and South Plains
+- **TX 2**: El Paso
+- **TX 3**: Midland, Odessa, and Trans Pecos
+- **TX 4**: Abilene and San Angelo
+- **TX 5**: Red River Area
+- **TX 6**: Austin and Central Texas
+- **TX 7**: Waco, Temple and Killeen
+- **TX 8**: East Texas
+- **TX 9**: Beaumont and Port Arthur
+- **TX10**: Central Gulf Coast, Wharton County and Victoria County
+- **TX11**: South Texas Valley
+- **TX13**: Del Rio, Uvalde County, and Bexar County Area
+- **TX14**: City of San Antonio
+
+```{r}
+plot_map(
+  c('TX 1', 'TX 2', 'TX 3', 'TX 4', 'TX 5', 'TX 6', 'TX 7', 'TX 8', 'TX 9', 'TX10', 'TX11', 'TX13', 'TX14')
+)
+```
+
+# 23) Greater Dallas-Ft.Worth
+
+## Greater Dallas-Ft.Worth
+
+- **TX19**: City of Dallas
+- **TX20**: City of Ft. Worth
+- **TX21**: Irving, Arlington and Grand Prairie
+- **TX22**: Dallas County excluding City of Dallas
+- **TX23**: Collin and Rockwall Counties
+- **TX24**: Counties West of Dallas/Ft. Worth Metroplex
+
+```{r}
+plot_map(
+  c('TX19', 'TX20', 'TX21', 'TX22', 'TX23', 'TX24')
+)
+```
+
+# 24) Greater Houston
+
+## Greater Houston
+
+- **TX12**: Brazos and Trinity Valley
+- **TX15**: Northwest Houston and Conroe School District
+- **TX16**: Southwest Houston Metro Area
+- **TX17**: City of Houston (East)
+- **TX18**: Galveston and East Harris Counties
+
+```{r}
+plot_map(
+  c('TX12', 'TX15', 'TX16', 'TX17', 'TX18')
+)
+```
+
+# 25) AZ, NM, CO & UT
+
+## Arizona
+
+- **AZ 1**: Phoenix
+- **AZ 2**: Tuscon
+- **AZ 3**: Northern Arizona
+
+```{r}
+plot_map(
+  c('AZ 1', 'AZ 2', 'AZ 3')
+)
+```
+
+## New Mexico
+
+- **NM 1**: Albuquerque and Northern New Mexico
+- **NM 2**: Southern New Mexico
+
+```{r}
+plot_map(
+  c('NM 1', 'NM 2')
+)
+```
+
+## Colorado
+
+- **CO 1**: Colorado Springs and Southeastern Colorado
+- **CO 2**: Metro and Northeastern Colorado
+- **CO 3**: Mountain Western Colorado
+
+```{r}
+plot_map(
+  c('CO 1', 'CO 2', 'CO 3')
+)
+```
+
+## Utah
+
+- **UT 1**: Salt Lake City, Ogden & Provo
+- **UT 2**: Southern Utah
+
+```{r}
+plot_map(
+  c('UT 1', 'UT 2')
+)
+```
+
+# 26) HI and Southern CA (excluding Los Angeles)
+
+## Southern California
+
+- **CA12**: Central Coast
+- **CA13**: Santa Barbara and West Ventura Counties
+- **CA27**: Riverside, San Bernardino and Ontario
+- **CA28**: South Orange County
+- **CA29**: North San Diego County excluding San Diego
+- **CA30**: South San Diego County excluding San Diego
+- **CA31**: City of San Diego
+- **CA32**: Central Valley North
+- **CA33**: Central Valley South
+- **CA34**: Greater Imperial Valley
+
+```{r}
+plot_map(
+  c('CA12', 'CA13', 'CA27', 'CA28', 'CA29', 'CA30', 'CA31', 'CA32', 'CA33', 'CA34')
+)
+```
+
+
+# 27) Greater Los Angeles
+
+## Greater Los Angeles
+
+- **CA14**: San Fernando Valley (West)
+- **CA15**: San Fernando Valley (East)
+- **CA16**: Glendale and Pasadena
+- **CA17**: West Los Angeles and West Beach
+- **CA18**: Hollywood and Wilshire
+- **CA19**: East Los Angeles
+- **CA20**: South Bay
+- **CA21**: South and Central Los Angeles
+- **CA22**: Long Beach
+- **CA23**: Covina and West Covina
+- **CA24**: Whittier and North Orange County
+- **CA25**: Anaheim
+- **CA26**: Santa Ana
+
+```{r}
+plot_map(
+  c('CA14', 'CA15', 'CA16', 'CA17', 'CA18', 'CA19', 'CA20', 'CA21', 'CA22', 'CA23', 'CA24', 'CA25', 'CA26')
+)
+```
+
+# 28) NV and Northern CA
+
+## Nevada
+
+- **NV 1**: Las Vegas
+- **NV 2**: Reno
+
+```{r}
+plot_map(
+  c('NV 1', 'NV 2')
+)
+```
+
+## Northern California
+
+- **CA 1**: Far Northern California
+- **CA 2**: Valley of the Moon
+- **CA 3**: Sacramento County
+- **CA 4**: Marin County
+- **CA 5**: San Francisco County
+- **CA 6**: Contra Costa County
+- **CA 7**: City of Oakland
+- **CA 8**: Alameda County excluding Oakland
+- **CA 9**: San Mateo County
+- **CA10**: City of San Jose
+- **CA11**: Santa Clara County excluding San Jose
+
+```{r}
+plot_map(
+  c('CA 1', 'CA 2', 'CA 3', 'CA 4', 'CA 5', 'CA 6', 'CA 7', 'CA 8', 'CA 9', 'CA10', 'CA11')
+)
+```
+
+
+# 29) WA, OR, ID, MT, WY and AK
+
+## Washington
+
+- **WA 1**: Greater Seattle
+- **WA 2**: South Sound
+- **WA 3**: Greater Spokane
+- **WA 4**: Greater Washington (East)
+- **WA 5**: Greater Washington (West)
+- **WA 6**: Bellingham
+
+```{r}
+plot_map(
+  c('WA 1', 'WA 2', 'WA 3', 'WA 4', 'WA 5', 'WA 6')
+)
+```
+
+## Oregon
+
+- **OR 1**: Greater Portland (West)
+- **OR 2**: Greater Portland (East)
+- **OR 3**: Northern Valley
+- **OR 4**: Southern Valley
+- **OR 5**: Southwest Valley
+- **OR 6**: East Oregon
+
+```{r}
+plot_map(
+  c('OR 1', 'OR 2', 'OR 3', 'OR 4', 'OR 5', 'OR 6')
+)
+```
+
+## Idaho
+
+- **ID 1**: Boise City
+- **ID 2**: Northern Idaho
+
+```{r}
+plot_map(
+  c('ID 1', 'ID 2')
+)
+```
+
+## Montana
+
+- **MT 1**: Billings and Eastern Montana
+- **MT 2**: Western Montana
+
+```{r}
+plot_map(
+  c('MT 1', 'MT 2')
+)
+```
+
+## Wyoming
+
+- **WY 1**: Casper and Chayenne
+- **WY 2**: Western Wyoming
+
+```{r}
+plot_map(
+  c('WY 1', 'WY 2')
+)
+```
+
+## Alaska
+
+- **AK 1**: Anchorage, Kenai, and Mat-su District
+- **AK 2**: Greater Alaska
+
+```{r}
+plot_map(
+  c('AK 1', 'AK 2')
+)
+```

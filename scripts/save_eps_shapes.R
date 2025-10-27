@@ -1,5 +1,6 @@
 library(tidyverse)
 library(tidycensus)
+library(tigris)
 library(sf)
 library(leaflet)
 
@@ -45,12 +46,13 @@ source(file.path(scripts_dir, 'metro_eps_codes.R'))
 # save(tracts_2000, file = file.path(eps_data_dir, 'tracts_2000.RData'))
 
 # Tract shapes (2020)
+# states <- c(state.abb, 'DC')
 # tracts_2020 <- do.call(
 #   bind_rows,
-#   lapply(c('GA', 'CA', 'MA', 'IL', 'OH', 'TX', 'DC', 'MD', 'VA', 'MI', 'NY', 'FL', 'NJ', 'PA'), function(st) {
+#   lapply(states, function(st) {
 #     tracts(
 #       state = st,
-#       cb = TRUE, 
+#       cb = TRUE,
 #       year = 2020
 #     )
 #   })
@@ -88,6 +90,14 @@ source(file.path(scripts_dir, 'metro_eps_codes.R'))
 # 
 # save(county_subdivisions_2020, file = file.path(eps_data_dir, 'county_subdivisions_2020.RData'))
 
+# CBSA shapes (2020)
+# cbsa_2020 <- core_based_statistical_areas(
+#   cb = TRUE,
+#   year = 2020
+# )
+# 
+# save(cbsa_2020, file = file.path(eps_data_dir, 'cbsa_2020.RData'))
+
 # Place shapes (2020)
 # places_2020 <- do.call(
 #   bind_rows,
@@ -121,8 +131,8 @@ load(file.path(eps_data_dir, 'tracts_2020.RData'))
 # Save shapes
 # ------------
 
-get_shapes <- function(tracts_df, geo_col, yr, eps) {
-  eps_files <- str_c(eps, '.txt')
+get_shapes <- function(tracts_df, geo_col, yr, eps_files) {
+  eps <- str_split(eps_files, '\\.txt', simplify = T)[,1]
   tracts_df %>% 
     mutate(eps = case_when(!!!rlang::parse_exprs(str_c(geo_col, ' %in% str_split(read.table("', file.path(tracts_dir, yr, eps_files), '"), ",")[[1]] ~ "', eps, '"')))) %>% 
     filter(!is.na(eps)) %>% 
@@ -132,18 +142,18 @@ get_shapes <- function(tracts_df, geo_col, yr, eps) {
 }
 
 get_shape_df <- function(tracts_df, geo_col, yr) {
-  eps_df <- do.call(
-    bind_rows,
-    lapply(names(all_codes), function(metro) {
-      get_shapes(tracts_df, geo_col, yr, all_codes[[metro]]$eps)
-    })
-  )
+  eps_files <- list.files(file.path(tracts_dir, yr))
+  eps_df <- get_shapes(tracts_df, geo_col, yr, eps_files)
   
   eps_df %>% 
-    mutate(geometry = if_else(
-      eps == 'CA11',
-      st_difference((eps_df %>% filter(eps == 'CA11'))$geometry, (eps_df %>% filter(eps == 'CA10'))$geometry),
-      geometry
+    mutate(geometry = case_when(
+      # CA10 is completely inside CA11
+      eps == 'CA11' ~ st_difference((eps_df %>% filter(eps == 'CA11'))$geometry, (eps_df %>% filter(eps == 'CA10'))$geometry),
+      # PA12 is completely inside PA13
+      eps == 'PA13' ~ st_difference((eps_df %>% filter(eps == 'PA13'))$geometry, (eps_df %>% filter(eps == 'PA12'))$geometry),
+      # TX14 is completely inside TX13
+      eps == 'TX13' ~ st_difference((eps_df %>% filter(eps == 'TX13'))$geometry, (eps_df %>% filter(eps == 'TX14'))$geometry),
+      T ~ geometry
     ))
 }
 
