@@ -957,3 +957,76 @@ plot_map(
   c('AK 1', 'AK 2')
 )
 ```
+
+
+# Other
+
+Not in `connections-geographies-cb.pdf`, so base the shapes off the original zip code EPS geomarkets. (See: `cb_geo/data/eps_market/eps_shapes.RData` and `cb_geo/data/eps_market/eps_names.csv`)
+
+## Hawaii
+
+- **HI 1**: Island of Oahu
+- **HI 2**: Remaining Hawaiian Islands
+
+```{r}
+plot_map(
+  c('HI 1', 'HI 2')
+)
+```
+
+## New York
+
+- **NY 1**: Southern Tier West
+- **NY 2**: Erie Co
+- **NY 3**: Genesee Valley & N. Frontier
+- **NY 4**: Rochester & Monroe Co
+- **NY 5**: Finger Lakes Region
+- **NY 6**: Central New York
+- **NY 7**: Saint Lawrence Valley
+- **NY 8**: Adirondacks
+- **NY 9**: Tri Cities
+- **NY10**: Central Hudson Valley
+- **NY11**: Catskills
+- **NY12**: Southern Tier East
+- **NY13**: Rockland Co
+
+```{r}
+plot_map(
+  c('NY 1', 'NY 2', 'NY 3', 'NY 4', 'NY 5', 'NY 6', 'NY 7', 'NY 8', 'NY 9', 'NY10', 'NY11', 'NY12', 'NY13')
+)
+```
+
+## Long Island
+
+- **NY16**: Southern Nassau Co
+- **NY17**: Northern Nassau Co
+- **NY18**: Central Nassau Co
+- **NY19**: Northwest Suffolk Co
+- **NY20**: Southwest Suffolk Co
+- **NY21**: East Suffolk Co
+
+```{r}
+plot_map(
+  c('NY16', 'NY17', 'NY18', 'NY19', 'NY20', 'NY21')
+)
+```
+
+## NY, NY
+
+- **NY14**: Staten Island
+- **NY15**: Westchester Co
+- **NY22**: Southeast Brooklyn
+- **NY23**: West Brooklyn
+- **NY24**: Northeast Brooklyn
+- **NY25**: East Bronx
+- **NY26**: West Bronx
+- **NY27**: Manhattan
+- **NY28**: South Queens
+- **NY29**: Northwest Queens
+- **NY30**: Northeast Queens
+
+```{r}
+plot_map(
+  c('NY14', 'NY15', 'NY22', 'NY23', 'NY24', 'NY25', 'NY26', 'NY27', 'NY28', 'NY29', 'NY30')
+)
+```
