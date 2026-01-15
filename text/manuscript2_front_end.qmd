@@ -1,0 +1,110 @@
+---
+title: "Structuring College Access: The Market Segment Model and College Board Geomarkets"
+# author: ["Ozan Jaquette (UCLA)", "Karina Salazar (University of Arizona)", "Crystal Han (Stanford University)"]
+bibliography: ./../assets/bib/cb_geomarket_bib.bib
+csl: ./../assets/bib/chicago-author-date.csl
+format:
+  #docx:
+  pdf:
+    documentclass: article
+    #papersize: letter
+    number-sections: true
+    number-depth: 2
+    #toc: FALSE
+    #pandoc_args: !expr rmdfiltr::add_wordcount_filter(rmdfiltr::add_citeproc_filter(args = NULL))
+    #keep_tex: true
+    extensions: [andrewheiss/wordcount]
+editor: visual
+geometry:
+  margin=1in
+fontsize: 11pt
+header-includes:
+  - \usepackage{setspace}
+  - \doublespacing
+---
+
+
+\pagenumbering{roman}
+\newpage
+
+**ABSTRACT**
+
+The Structure of College Choice (1983) created "Geomarkets" and the "Market Segment Model." Geomarkets carve metropolitan areas into smaller geographies that define local recruiting markets. The Market Segment Model predicts demand for a college in a Geomarket as a function of socioeconomic characteristics. Geomarkets became an input for College Board recruiting products, including their "student list" product, which provides colleges with the contact information of prospective students who meet desired search filter criteria. We draw from scholarship on quantification and address two questions: What is the socioeconomic and racial variation between Geomarkets? How does the socioeconomic and racial composition of included versus excluded prospects vary if student list purchases filter on Geomarkets? We answer RQ1 using Census data and RQ2 using data from actual student list purchases. Geomarket borders are highly correlated with race and class. Student list purchases that exclude low-income Geomarkets systematically overlook high-scoring non-White and first-generation students.
+
+<!-- *The Structure of College Choice* [@RN4982] created "Geomarkets" and the "Market Segment Model" (MSM). Geomarkets carve states and metropolitan areas into smaller geographic units to define local recruiting markets. MSM predicts how student demand for a college varies by Geomarket, based on household socioeconomic characteristics. Geomarkets became an input for two College Board recruiting products. First, the Enrollment Planning Service informs which Geomarkets and high schools a college recruits from. Second, the Student Search Service sells prospective student contact information -- or "student lists" -- which colleges filter by Geomarket to determine which prospect profiles to purchase. Drawing from scholarship on quantification, particularly discussions of correlation and homophily, we conceptualize how recruiting products incorporate Geomarkets. We address two research questions: What is the socioeconomic and racial variation between Geomarkets? How does the socioeconomic and racial composition of included versus excluded prospects vary when student lists filter on Geomarkets? We answer RQ1 by analyzing Census data from 1980, 2000, and 2020. RQ2 analyzes data on student lists purchased by public universities, collected through public records requests. Using a quantitative case study design with metropolitan areas as cases, descriptive statistics and interactive maps suggest Geomarkets mirror deeply-rooted patterns of racial and class segregation. Moreover, student lists that exclude low-income Geomarkets systematically overlook non-White students, first-generation students, and especially first-generation non-White students. -->
+
+\newpage
+\pagenumbering{gobble}
+\pagenumbering{arabic}
+
+# Introduction
+
+text
+@RN4982 say this
+
+# Literature and Case
+
+## Literature Review
+
+## College Board Geomarkets and Student Search Service
+
+# Theoretical Framework: Market Devices
+
+<!-- OG FIRST PARAGRAPH
+Core concepts in the market devices literature are market devices, agencement, and performativity. 
+Market devices are the assemblage of techniques, theories, and culture that make economic action possible [@callon1998embeddedness]. Drawing from Krippner’s [-@RN5070] study of insurance, an example of a market device is the statistical models that assign individuals to "risk pools" for insurance products. Market devices shift scholarly attention to the individual components -- including techniques, theories, cultural logics, and histories -- that are foundational to products and to markets [@RN5071] The analysis of market devices in insurance also includes the long history of mutualism that the insurance industry emerges from. Market devices are also useful because they shift source of social inequality from organizations to markets. @RN5070 argues that the statistical models underlying insurance products are "gendered market devices" because gender is one of the variables used to assign people to different risk pools. -->
+
+We conceive of Geomarkets, the Market Segment Model, and the subsequent Enrollment Planning Service product as examples of "market devices" [@RN5064; @RN5067]. The market devices literature directs scholarly attention to (1) the heterogeneous components that constitute markets—including techniques, theories, cultural logics, and historical legacies—(2) the ways actors engage with and enact these components in practice, and (3) the consequences of these engagements for how markets are organized, stabilized, and transformed. Core concepts in the literature are market devices, agencement, and performativity.
+
+Market devices can be defined as calculative tools (e.g., algorithms, metrics, graphs, rankings) that are incorporated into products or economic transactions. @RN4777[p. 1176] define market devices as "the technologies that make economic action possible." @RN5064[p. 2] define market devices as a, "way of referring to the material and discursive assemblages that intervene in the construction of markets." Let's unpack this. Whereas "material" refers to physical or technical tools, technologies, or infrastructures, like spreadsheets, algorithms or software, "discursive" refers to representational elements, like categories, metrics, or rankings. "Assemblages" refers to a bundle of heterogeneous components that work together. From this perspective, market devices build upon and consist of other market devices. "Intervene" means that market devices are non-neutral things that actively shape outcomes. Finally, "construction of markets" implies that markets do not exist a priori waiting to be observed. Rather, market devices construct markets. 
+
+In the market devices framework, neither market devices nor actors have agency in isolation from one another. "Agencements" are socio-technical -- that is, simultaneously social and technical -- arrangements that configure actors and market devices in ways that make certain actions possible. To make these concepts concrete, consider the case of US News College Rankings. The market device is the ranking tool itself -- which consists of data inputs, and [and other market devices including] an algorithm, and a ranked list published on a website. Agencements refer to the ways that actors utilize the rankings market device. For example, prospective students incorporate rankings in their college search process, employers use rankings to decide which colleges they will recruit from, and college administrators make resource allocation decisions designed to move up in the rankings [@RN5003].
+
+Market devices have a distinctive relationship to theory (e.g., pricing theory, status attainment theory, statistical theory). Theories themselves are not market devices; they are abstract ideas that can be applied to specific contexts. For example, homophily is the idea that people who share similar characteristics are more likely to connect [CITE]. Theories become part of market devices when components of the theory are embedded into the device. For example, commercial social networks like Facebook and Twitter incorporate friend and follow recommendation algorithms, which are market devices. These algorithms make recommendations to users based on similarity metrics -- shared attributes, behaviors, network positions -- that are drawn from the logic of homophily [@RN4975].
+
+
+"Performativity" describes the consequences of market devices. Performativity is the idea that economic theories do not merely describe behavior, rather market devices are constructed and acted upon in ways the bring about behavior consistent with the theory [@RN5064; @RN5067]. The canonical study, @RN5067 provide a historical sociology of the Chicago Board Options Exchange, which opened in 1973. An option is a contract that gives the holder the right to buy or sell an asset (e.g., a stock) at a given price. Economists Fischer Black and Myron Scholes developed the Black-Scholes model -- a calculative market device -- to predict the price of options @RN5074, eventually winning the Nobel Prize in Economics. Initially, the Black-Scholes algorithm did not accurately predict the price of options. Black-Scholes model predictions became more accurate over time because options traders began embedding the logic and components of the model into spreadsheets/software. That is, the models predictions became more accurate because the model produced the prices it predicted! Though they draw from institutional theory rather than market devices, @RN1776 provide an example of performativity for the case of US News College Rankings. The reputational assessment of senior administrators was a substantial component of the rankings algorithm. @RN1776 show that administrators based their assessment scores on the prior overall rankings. Therefore, the rankings algorithm disciplines administrators to provide assessments that are consistent with the prior rankings.
+
+In their theory-building literature review, "Toward an Economic Sociology of Race," @RN4777 argue that the market devices literature provides novel insights about the mechanisms underlying structural inequality. One empirical example is the analysis of the Houston residential real estate market by @RN4779;@RN4801. Every home listing is assigned to a market device called the Houston Association of Realtors' Market Areas. Most market areas -- 70 of the 98 -- were racially homogeneous. @RN4779[p. 641] observed that "50 of these 70 market areas were majority-white -- a disproportionately high number given that only 31 percent of the population within the encompassing area is white." On average, majority-white market areas contained about 20,000 residents, while majority-Black and majority-Hispanic market areas, respectively, contained 61,000 and 88,000 residents. Majority-white market areas also exhibited greater class-homogeneity. Because appraisals are based on recent comparable sales within the same market area (agencement), homes in high-income white neighborhoods received higher appraisal values than homes in high-income Black or Hispanic neighborhoods. College Board Geomarkets exhibit similar differences in granularity. For example, the affluent, predominantly White "IL 9 - North Shore" Geomarket, had a 2020 population of about 161,000 while "IL 12 - South and Southwest Suburbs" Geomarket had a 2020 population of about 1.2 million.
+
+<!-- 
+@RN5070 offers an empirical illustration in her analysis of insurance products. @RN5070 [p. 598] observes that prior feminist organizational scholarship considers gender discrimination an "organizational matter -- a product of administrative routines such as hiring procedures, promotion protocols \ldots \[but\] this approach reinforced the notion that markets do not themselves contribute to discriminatory outcomes." Drawing on documents from lawsuits filed by the National Association for Women, @RN5070 provides a historical document analysis that centers on the statistical models used to create life and car insurance products. She describes these models as "gendered market devices" because gender is one of the input variables utilized to assign individuals to different "risk pools."
+-->
+
+HERE: THERE IS PROBABLY A PARAGRAPH THAT DESCRIBES HOW SCHOLARSHIP ON MARKET DEVICES PUBLISHED IN EDUCATION JOURNALS. 
+The market devices literature, considered part of the economic sociology, overlaps with other literatures in sociology and data studies. Most substantively, market devices are connected to scholarship on "infrastructures" from data studies [@RN5060], the "quantification" literature from sociology, and the the interdisciplinary literature on algorithmic bias [].
+
+Although each of these literatures is valuable, the market devices literature provides a useful lens for understanding how third-party vendors and products are assembled into arrangements that perform core functions for schools and colleges, with consequential effects. The literature recognizes that market devices are built upon other market devices. Products are market devices that are composed of many market devices. This perspective legitimizes scholarly attention to individual components that are foundational to products and to markets [@RN5071], facilitating scholarship that sacrifices breadth for depth. For example, rather than analyzing insurance products as a whole, @RN5070 focuses on the statistical models that assign people to different risk pools. Moreover, the market devices literature legitimizes scholarly attention to the technical details of how market devices are constructed because technical details have consequences [@RN5067; @RN5078]. The flexibility of scope offered by the market devices facilitates flexibility in the choice of data sources for empirical analyses. For scholarship that traces how a set of theories or techniques become embedded in one or more products, the market devices literature answers the essential question, ‘my study is a case of what?’ 
+
+WHAT TO DO THURSDAY:
+
+- PUT YOUR RQ AND YOUR ANALYSES INTO CHAT-GPT AND ASK THEM WHICH CONCEPTS OF MARKET DEVICES IT SPEAKS TO; AND THEN APPLY IT
+
+The market devices literature is situated within the economic sociology subfield. After some debate \[CITE\], it became part of the orthodoxy. Sociology of education draws heavily from organizational sociology [@RN5097] but less so from economic sociology and, to our knowledge, has not substantively utilized the market devices literature as a foundation for empirical scholarship.
+
+
+
+
+The market devices literature offers great utility for the sociology of education subfield. The market devices literature examines how techniques, theories, culture, and agency interract in ways that make economic action possible [@RN4777; @RN5087]. Market devices are built upon other market devices and products are market devices that are composed of many market devices. This perspective legitimizes scholarly attention to individual components that are foundational to products and to markets [@RN5071], facilitating scholarship that sacrifices breadth for depth. For example, rather than analyzing insurance products as a whole, @RN5070 focuses on the statistical models that assign people to different risk pools. Moreover, the market devices literature legitimizes scholarly attention to the technical details of how market devices are constructed because technical details have consequences [@RN5067; @RN5078]. The flexibility of scope offered by the market devices literature is poignant for the sociology of education as third-party products increasingly perform core functions on behalf of schools and colleges. For scholarship that traces how a set of theories or techniques become embedded in one or more products, the market devices literature answers the essential question, ‘my study is a case of what?’ The market devices literature is situated within the economic sociology subfield. After some debate \[CITE\], it became part of the orthodoxy. Sociology of education draws heavily from organizational sociology [@RN5097] but less so from economic sociology and, to our knowledge, has not substantively utilized the market devices literature as a foundation for empirical scholarship.
+
+We conceive of College Board Geomarkets and the Market Segment Model as market devices that are based on previous market devices and become inputs into subsequent market devices. The SAT is a market device that enables (agencement) colleges to compare students from different schools. An additional agencement is that students can send their SAT scores to colleges they are interested in. The Market Segment Model is a theory \[model? algorithm?\] of student demand that categorizes students into different market segments based on SAT score-sending behavior. Geomarkets are a market device that defines geographic localities and enables colleges to compares these localities based on the number of students from each market segment. Geomarkets are then incorporated into the Enrollment Planning Service product -- enabling colleges to decide which Geomarkets to recruit from and which high schools to visit [@RN4980] -- and the Student Search Service product -- enabling colleges to purchase the contact information of prospective students residing in desired Geomarkets. The high school visit patterns of colleges -- the object of empirical analysis in this manuscript -- speak to the performativity consequences of Geomarkets, the Market Segment Model, and EPS, whereby \ldots \[state what we expect to happe\]
+
+# Data and Methods
+
+text
+
+
+# References
+
+\singlespacing
+
+\begingroup
+\small
+
+::: {#refs}
+:::
+
+\endgroup
+\clearpage
+\singlespacing
+
