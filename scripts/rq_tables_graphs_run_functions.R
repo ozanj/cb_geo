@@ -674,6 +674,197 @@ for (m in unique_metros) {
 
 
 ############################################################
+# Part #2A) Create RQ2 overlay contribution plots
+#           Race-only and first-gen-only versions
+############################################################
+
+# These plots answer:
+# 1) Where do racial/ethnic groups come from?
+#    - Gray bar = all race-known prospects
+#    - Blue lollipop = focal racial/ethnic group
+#
+# 2) Where do first-gen and not-first-gen prospects come from?
+#    - Gray bar = all first-gen-known prospects
+#    - Blue lollipop = focal first-generation-status group
+
+dir.create(
+  file.path(graphs_dir, "rq2"),
+  showWarnings = FALSE,
+  recursive = TRUE
+)
+
+# Main student-list orders only.
+# Exclude the special AI/AN order and Houston from regular RQ2 student-list plots.
+rq2_overlay_orders_df <- orders_df %>%
+  filter(
+    order_ids != "487927",
+    metro != "houston"
+  )
+
+for (i in seq_len(nrow(rq2_overlay_orders_df))) {
+  
+  row_i <- rq2_overlay_orders_df[i, ]
+  
+  metro_this <- row_i$metro
+  order_ids_this <- row_i$order_ids
+  test_range_this <- row_i$test_range
+  figure_note_this <- row_i$figure_note
+  
+  message(
+    "Creating RQ2 overlay contribution plots for: ",
+    metro_this,
+    ", order group ",
+    order_ids_this
+  )
+  
+  # ----------------------------------------------------------
+  # 1) Build inputs
+  # ----------------------------------------------------------
+  
+  ord_nums_this <- stringr::str_split(order_ids_this, "_")[[1]]
+  eps_codes_this <- get(row_i$eps_codes, envir = .GlobalEnv)
+  
+  # ----------------------------------------------------------
+  # 2) Create race overlay plot
+  # ----------------------------------------------------------
+  
+  race_overlay_df <- create_rq2_race_contribution_overlay_df(
+    data       = lists_orders_zip_hs_df_sf,
+    ord_nums   = ord_nums_this,
+    eps_codes  = eps_codes_this,
+    metro      = metro_this,
+    order_ids  = order_ids_this,
+    test_range = test_range_this
+  )
+  
+  race_plot_obj <- create_rq2_race_contribution_overlay_plot(
+    plot_df    = race_overlay_df,
+    sort_order = "geomarket"
+  )
+  
+  race_plot_name <- stringr::str_c(
+    "rq2_",
+    metro_this,
+    "_race_contribution_overlay_plot_",
+    order_ids_this
+  )
+  
+  n_geomarkets_race <- race_overlay_df %>%
+    dplyr::distinct(eps_codename) %>%
+    nrow()
+  
+  race_plot_height <- max(
+    8,
+    4.5 + 0.55 * n_geomarkets_race
+  )
+  
+  ggsave(
+    filename = file.path(graphs_dir, "rq2", stringr::str_c(race_plot_name, ".png")),
+    plot     = race_plot_obj,
+    width    = 14,
+    height   = race_plot_height,
+    bg       = "white"
+  )
+  
+  race_title_tex <- c(
+    stringr::str_c("#### ", attr(race_plot_obj, "figure_title")),
+    "",
+    stringr::str_c("*", attr(race_plot_obj, "figure_subtitle"), "*")
+  )
+  
+  writeLines(
+    race_title_tex,
+    file.path(graphs_dir, "rq2", stringr::str_c(race_plot_name, "_title.tex"))
+  )
+  
+  race_note_text <- c(
+    "Figure Notes:",
+    stringr::str_c(
+      "- Gray bars show the share of all race-known purchased student profiles contributed by each Geomarket. ",
+      "Blue lollipops show the share of the focal racial/ethnic group contributed by each Geomarket. ",
+      "Geomarkets are sorted by Geomarket number. ",
+      "Excludes students with missing values for race/ethnicity. ",
+      "Figure shows White, Asian, Black, and Hispanic groups; it excludes Two+, non-Hispanic; AIAN, non-Hispanic; and NHPI, non-Hispanic groups. ",
+      figure_note_this
+    )
+  )
+  
+  writeLines(
+    race_note_text,
+    file.path(graphs_dir, "rq2", stringr::str_c(race_plot_name, "_note.txt"))
+  )
+  
+  # ----------------------------------------------------------
+  # 3) Create first-gen overlay plot
+  # ----------------------------------------------------------
+  
+  firstgen_overlay_df <- create_rq2_firstgen_contribution_overlay_df(
+    data       = lists_orders_zip_hs_df_sf,
+    ord_nums   = ord_nums_this,
+    eps_codes  = eps_codes_this,
+    metro      = metro_this,
+    order_ids  = order_ids_this,
+    test_range = test_range_this
+  )
+  
+  firstgen_plot_obj <- create_rq2_firstgen_contribution_overlay_plot(
+    plot_df    = firstgen_overlay_df,
+    sort_order = "geomarket"
+  )
+  
+  firstgen_plot_name <- stringr::str_c(
+    "rq2_",
+    metro_this,
+    "_firstgen_contribution_overlay_plot_",
+    order_ids_this
+  )
+  
+  n_geomarkets_firstgen <- firstgen_overlay_df %>%
+    dplyr::distinct(eps_codename) %>%
+    nrow()
+  
+  firstgen_plot_height <- max(
+    7,
+    4.5 + 0.65 * n_geomarkets_firstgen
+  )
+  
+  ggsave(
+    filename = file.path(graphs_dir, "rq2", stringr::str_c(firstgen_plot_name, ".png")),
+    plot     = firstgen_plot_obj,
+    width    = 14,
+    height   = firstgen_plot_height,
+    bg       = "white"
+  )
+  
+  firstgen_title_tex <- c(
+    stringr::str_c("#### ", attr(firstgen_plot_obj, "figure_title")),
+    "",
+    stringr::str_c("*", attr(firstgen_plot_obj, "figure_subtitle"), "*")
+  )
+  
+  writeLines(
+    firstgen_title_tex,
+    file.path(graphs_dir, "rq2", stringr::str_c(firstgen_plot_name, "_title.tex"))
+  )
+  
+  firstgen_note_text <- c(
+    "Figure Notes:",
+    stringr::str_c(
+      "- Gray bars show the share of all first-gen-known purchased student profiles contributed by each Geomarket. ",
+      "Blue lollipops show the share of the focal first-generation-status group contributed by each Geomarket. ",
+      "Geomarkets are sorted by Geomarket number. ",
+      "Excludes students with missing values for first-generation status. ",
+      figure_note_this
+    )
+  )
+  
+  writeLines(
+    firstgen_note_text,
+    file.path(graphs_dir, "rq2", stringr::str_c(firstgen_plot_name, "_note.txt"))
+  )
+}
+
+############################################################
 # Part #2B) Create RQ2 race x first-gen contribution plots
 #           Two-lollipop version
 ############################################################

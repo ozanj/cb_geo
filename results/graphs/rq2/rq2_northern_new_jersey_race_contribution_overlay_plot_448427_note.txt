@@ -1,0 +1,2 @@
+Figure Notes:
+- Gray bars show the share of all race-known purchased student profiles contributed by each Geomarket. Blue lollipops show the share of the focal racial/ethnic group contributed by each Geomarket. Geomarkets are sorted by Geomarket number. Excludes students with missing values for race/ethnicity. Figure shows White, Asian, Black, and Hispanic groups; it excludes Two+, non-Hispanic; AIAN, non-Hispanic; and NHPI, non-Hispanic groups. Order number 448427 (ordered 1/8/2019): HS class 2020; selected Geomarkets; PSAT 1190 - 1260

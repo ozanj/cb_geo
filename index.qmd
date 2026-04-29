@@ -840,8 +840,9 @@ for (m in metros) {
     # racially minoritized and first-generation prospects?
     #
     # Uses:
-    # - old rq2 race column-percent graphs
-    # - old rq2 firstgen column-percent graphs
+    # - new rq2 race contribution overlay graphs
+    # - new rq2 firstgen contribution overlay graphs
+    # - new rq2 race x firstgen contribution graphs
     # ---------------------------------------------
     } else if (rq == "rq2") {
 
@@ -860,53 +861,80 @@ for (m in metros) {
 
       first_rq2_slide <- TRUE
 
-      for (g in graph_types_rq_composition) {
+      # -------------------------------------------------------
+      # RQ2A: Race contribution overlay plots
+      # -------------------------------------------------------
 
-        for (order_id in orders_for_m) {
+      for (order_id in orders_for_m) {
 
-          writeLines(str_c(
-            "### Research question ",
-            rq_num,
-            if_else(first_rq2_slide, "", " {.hide}")
-          ))
+        writeLines(str_c(
+          "### Research question ",
+          rq_num,
+          if_else(first_rq2_slide, "", " {.hide}")
+        ))
 
-          graph_type_col <- str_c(g, "_col_plot_", order_id)
+        graph_type_race_overlay <- str_c(
+          "race_contribution_overlay_plot_",
+          order_id
+        )
 
-          # Files still live in results/graphs/rq2/
-          insert_figure(
-            rq = "rq2",
-            metro = m,
-            graph_type = graph_type_col
-          )
+        insert_figure(
+          rq = "rq2",
+          metro = m,
+          graph_type = graph_type_race_overlay
+        )
 
-          first_rq2_slide <- FALSE
-        }
+        first_rq2_slide <- FALSE
       }
 
       # -------------------------------------------------------
-      # RQ2C: Race x first-gen contribution plots
+      # RQ2B: First-gen contribution overlay plots
       # -------------------------------------------------------
-      
+
       for (order_id in orders_for_m) {
-      
+
         writeLines(str_c(
           "### Research question ",
           rq_num,
           " {.hide}"
         ))
-      
+
+        graph_type_firstgen_overlay <- str_c(
+          "firstgen_contribution_overlay_plot_",
+          order_id
+        )
+
+        insert_figure(
+          rq = "rq2",
+          metro = m,
+          graph_type = graph_type_firstgen_overlay
+        )
+      }
+
+      # -------------------------------------------------------
+      # RQ2C: Race x first-gen contribution plots
+      # -------------------------------------------------------
+
+      for (order_id in orders_for_m) {
+
+        writeLines(str_c(
+          "### Research question ",
+          rq_num,
+          " {.hide}"
+        ))
+
         graph_type_rfgen_contrib <- str_c(
           "race_firstgen_contribution_plot_",
           order_id
         )
-      
+
         insert_figure(
           rq = "rq2",
           metro = m,
           graph_type = graph_type_rfgen_contrib
         )
-      }      
-    # ---------------------------------------------
+      }    # ---------------------------------------------
+      
     # RQ3 Logic: What happens when a Geomarket is excluded?
     #
     # Formal:

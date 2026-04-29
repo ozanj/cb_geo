@@ -572,6 +572,774 @@ create_sim_eps_race_firstgen_table <- function(
 
 
 ############################################################
+# CREATE RQ2 OVERLAY CONTRIBUTION GRAPHS
+# Race-only and first-gen-only versions
+############################################################
+
+
+############################################################
+# 1) RACE CONTRIBUTION OVERLAY DATA
+############################################################
+
+create_rq2_race_contribution_overlay_df <- function(
+    data,
+    ord_nums,
+    eps_codes,
+    metro = NULL,
+    order_ids = NULL,
+    test_range = NULL,
+    race_keep = c(
+      "White, non-Hispanic",
+      "Asian, non-Hispanic",
+      "Black, non-Hispanic",
+      "Hispanic"
+    )
+) {
+  
+  # ----------------------------------------------------------
+  # 1) Build race table from existing function
+  # ----------------------------------------------------------
+  
+  table_list <- create_sim_eps_race_table(
+    data      = data,
+    ord_nums  = ord_nums,
+    eps_codes = eps_codes
+  )
+  
+  count_df <- table_list$count_table
+  col_df   <- table_list$col_pct_table
+  
+  # ----------------------------------------------------------
+  # 2) Lookup for race contribution columns and totals
+  # ----------------------------------------------------------
+  
+  race_lookup <- tibble::tibble(
+    col_name = c(
+      "c_white",
+      "c_asian",
+      "c_black",
+      "c_hispanic",
+      "c_multi",
+      "c_aian",
+      "c_nhpi"
+    ),
+    total_col = c(
+      "stu_white",
+      "stu_asian",
+      "stu_black",
+      "stu_hispanic",
+      "stu_multi",
+      "stu_aian",
+      "stu_nhpi"
+    ),
+    group = c(
+      "White, non-Hispanic",
+      "Asian, non-Hispanic",
+      "Black, non-Hispanic",
+      "Hispanic",
+      "Two+, non-Hispanic",
+      "AIAN, non-Hispanic",
+      "NHPI, non-Hispanic"
+    )
+  ) %>%
+    dplyr::filter(group %in% race_keep)
+  
+  # ----------------------------------------------------------
+  # 3) Get group totals from All row
+  # ----------------------------------------------------------
+  
+  totals_df <- count_df %>%
+    dplyr::filter(eps_codename == "All") %>%
+    tidyr::pivot_longer(
+      cols = dplyr::all_of(c("race_known", race_lookup$total_col)),
+      names_to = "total_col",
+      values_to = "total_n"
+    )
+  
+  baseline_total <- totals_df %>%
+    dplyr::filter(total_col == "race_known") %>%
+    dplyr::pull(total_n)
+  
+  focal_totals <- race_lookup %>%
+    dplyr::left_join(totals_df, by = "total_col") %>%
+    dplyr::select(group, total_n)
+  
+  # ----------------------------------------------------------
+  # 4) Build long contribution dataframe
+  # ----------------------------------------------------------
+  
+  focal_df <- col_df %>%
+    dplyr::filter(eps_codename != "All") %>%
+    dplyr::select(
+      eps_codename,
+      baseline_pct = c_known,
+      dplyr::all_of(race_lookup$col_name)
+    ) %>%
+    tidyr::pivot_longer(
+      cols = dplyr::all_of(race_lookup$col_name),
+      names_to = "col_name",
+      values_to = "focal_pct"
+    ) %>%
+    dplyr::left_join(
+      race_lookup %>% dplyr::select(col_name, group),
+      by = "col_name"
+    ) %>%
+    dplyr::left_join(
+      focal_totals,
+      by = "group"
+    ) %>%
+    dplyr::mutate(
+      group = factor(group, levels = race_keep),
+      baseline_group = "All race-known prospects",
+      baseline_total = baseline_total,
+      metro = metro,
+      order_ids = order_ids,
+      test_range = test_range,
+      facet_label = stringr::str_c(
+        group,
+        "\nN = ",
+        scales::comma(round(total_n))
+      )
+    )
+  
+  return(focal_df)
+}
+
+
+############################################################
+# 2) RACE CONTRIBUTION OVERLAY PLOT
+############################################################
+
+create_rq2_race_contribution_overlay_plot <- function(
+    plot_df,
+    title = NULL,
+    subtitle = NULL,
+    metro_label = NULL,
+    sort_order = c("geomarket", "focal", "baseline"),
+    point_size = 1.4,
+    focal_line_width = 0.55,
+    baseline_bar_width = 4.4,
+    show_value_labels = FALSE
+) {
+  
+  sort_order <- match.arg(sort_order)
+  
+  # ----------------------------------------------------------
+  # 1) Order Geomarkets within race/facet
+  # ----------------------------------------------------------
+  
+  df_ordered <- plot_df %>%
+    dplyr::mutate(
+      geomarket_num = readr::parse_number(eps_codename),
+      
+      # Revised facet label: group name + n on same line
+      facet_label = stringr::str_c(
+        group,
+        " (n = ",
+        scales::comma(round(total_n)),
+        ")"
+      ),
+      
+      sort_value = dplyr::case_when(
+        sort_order == "geomarket" ~ geomarket_num,
+        sort_order == "focal"     ~ -focal_pct,
+        sort_order == "baseline"  ~ -baseline_pct,
+        TRUE ~ geomarket_num
+      )
+    ) %>%
+    dplyr::group_by(group) %>%
+    dplyr::arrange(
+      is.na(sort_value),
+      sort_value,
+      is.na(geomarket_num),
+      geomarket_num,
+      eps_codename,
+      .by_group = TRUE
+    ) %>%
+    dplyr::mutate(
+      geomarket_order = dplyr::row_number()
+    ) %>%
+    dplyr::ungroup()
+  
+  # ----------------------------------------------------------
+  # 2) Order facet labels
+  # ----------------------------------------------------------
+  
+  group_levels <- levels(df_ordered$group)
+  
+  facet_levels <- df_ordered %>%
+    dplyr::distinct(group, facet_label) %>%
+    dplyr::arrange(match(group, group_levels)) %>%
+    dplyr::pull(facet_label)
+  
+  df_ordered <- df_ordered %>%
+    dplyr::mutate(
+      facet_label = factor(facet_label, levels = facet_levels)
+    )
+  
+  # ----------------------------------------------------------
+  # 3) Numeric y positions, globally unique across facets
+  # ----------------------------------------------------------
+  
+  y_lookup <- df_ordered %>%
+    dplyr::select(group, facet_label, eps_codename, geomarket_order) %>%
+    dplyr::distinct() %>%
+    dplyr::mutate(
+      facet_label = factor(facet_label, levels = facet_levels)
+    ) %>%
+    dplyr::arrange(facet_label, geomarket_order) %>%
+    dplyr::group_by(facet_label) %>%
+    dplyr::mutate(
+      n_in_facet = dplyr::n(),
+      y_within_facet = n_in_facet - dplyr::row_number() + 1
+    ) %>%
+    dplyr::ungroup()
+  
+  facet_offsets <- y_lookup %>%
+    dplyr::distinct(facet_label, n_in_facet) %>%
+    dplyr::arrange(facet_label) %>%
+    dplyr::mutate(
+      facet_offset = dplyr::lag(cumsum(n_in_facet), default = 0)
+    )
+  
+  y_lookup <- y_lookup %>%
+    dplyr::left_join(
+      facet_offsets,
+      by = c("facet_label", "n_in_facet")
+    ) %>%
+    dplyr::mutate(
+      y_base = facet_offset + y_within_facet
+    )
+  
+  df_plot <- df_ordered %>%
+    dplyr::left_join(
+      y_lookup %>%
+        dplyr::select(group, facet_label, eps_codename, geomarket_order, y_base),
+      by = c("group", "facet_label", "eps_codename", "geomarket_order")
+    ) %>%
+    dplyr::mutate(
+      focal_label = stringr::str_c(
+        scales::number(focal_pct, accuracy = 0.1),
+        "%"
+      ),
+      baseline_label = stringr::str_c(
+        scales::number(baseline_pct, accuracy = 0.1),
+        "%"
+      )
+    )
+  
+  # ----------------------------------------------------------
+  # 4) Y-axis breaks and labels
+  # ----------------------------------------------------------
+  
+  y_breaks_df <- y_lookup %>%
+    dplyr::arrange(y_base)
+  
+  y_breaks <- y_breaks_df$y_base
+  y_labels <- y_breaks_df$eps_codename
+  
+  # ----------------------------------------------------------
+  # 5) Title/subtitle defaults
+  # ----------------------------------------------------------
+  
+  if (is.null(metro_label)) {
+    
+    metro_label <- plot_df$metro[1] %>%
+      stringr::str_replace_all("_", " ") %>%
+      tools::toTitleCase()
+    
+    if (!is.na(metro_label) && metro_label != "Bay Area") {
+      metro_label <- stringr::str_c(metro_label, " area")
+    }
+  }
+  
+  if (is.null(title)) {
+    title <- stringr::str_c(
+      "Where do racial/ethnic groups come from, ",
+      metro_label,
+      "?"
+    )
+  }
+  
+  if (is.null(subtitle)) {
+    
+    test_range_this <- plot_df$test_range[1]
+    
+    subtitle <- stringr::str_c(
+      test_range_this,
+      " — focal racial/ethnic groups overlaid on all race-known prospects"
+    )
+  }
+  
+  # ----------------------------------------------------------
+  # 6) Build plot
+  # ----------------------------------------------------------
+  
+  plot <- ggplot2::ggplot(df_plot) +
+    
+    ggplot2::geom_segment(
+      ggplot2::aes(
+        x = 0,
+        xend = baseline_pct,
+        y = y_base,
+        yend = y_base,
+        color = "All race-known prospects"
+      ),
+      linewidth = baseline_bar_width,
+      lineend = "butt"
+    ) +
+    
+    ggplot2::geom_segment(
+      ggplot2::aes(
+        x = 0,
+        xend = focal_pct,
+        y = y_base,
+        yend = y_base,
+        color = "Focal racial/ethnic group"
+      ),
+      linewidth = focal_line_width,
+      lineend = "round"
+    ) +
+    
+    ggplot2::geom_point(
+      ggplot2::aes(
+        x = focal_pct,
+        y = y_base,
+        color = "Focal racial/ethnic group"
+      ),
+      size = point_size
+    ) +
+    
+    ggplot2::facet_wrap(
+      ~ facet_label,
+      scales = "free_y",
+      ncol = 2
+    ) +
+    ggplot2::scale_y_continuous(
+      breaks = y_breaks,
+      labels = y_labels,
+      expand = ggplot2::expansion(add = c(0.6, 0.6))
+    ) +
+    ggplot2::scale_x_continuous(
+      labels = function(x) {
+        stringr::str_c(scales::number(x, accuracy = 1), "%")
+      }
+    ) +
+    ggplot2::scale_color_manual(
+      values = c(
+        "Focal racial/ethnic group" = "#0072B2",
+        "All race-known prospects" = "gray82"
+      )
+    ) +
+    ggplot2::labs(
+      x = "Share of group contributed by Geomarket",
+      y = NULL,
+      color = NULL
+    ) +
+    ggplot2::theme_minimal(base_size = 11) +
+    ggplot2::theme(
+      panel.grid.minor = ggplot2::element_blank(),
+      panel.grid.major.y = ggplot2::element_blank(),
+      strip.text = ggplot2::element_text(face = "bold", hjust = 0),
+      axis.text.y = ggplot2::element_text(size = 8),
+      axis.text.x = ggplot2::element_text(size = 10),
+      axis.title.x = ggplot2::element_text(size = 11),
+      legend.position = "bottom"
+    )
+  
+  if (show_value_labels) {
+    
+    plot <- plot +
+      ggplot2::geom_text(
+        ggplot2::aes(
+          x = focal_pct,
+          y = y_base,
+          label = focal_label,
+          color = "Focal racial/ethnic group"
+        ),
+        hjust = -0.15,
+        size = 3,
+        show.legend = FALSE
+      ) +
+      ggplot2::coord_cartesian(clip = "off")
+  }
+  
+  attr(plot, "figure_title") <- title
+  attr(plot, "figure_subtitle") <- subtitle
+  
+  return(plot)
+}
+
+
+############################################################
+# 3) FIRST-GEN CONTRIBUTION OVERLAY DATA
+############################################################
+
+create_rq2_firstgen_contribution_overlay_df <- function(
+    data,
+    ord_nums,
+    eps_codes,
+    metro = NULL,
+    order_ids = NULL,
+    test_range = NULL,
+    firstgen_detail = c("collapsed", "disaggregated")
+) {
+  
+  firstgen_detail <- match.arg(firstgen_detail)
+  
+  if (firstgen_detail != "collapsed") {
+    stop("This overlay plot currently expects firstgen_detail = 'collapsed'.")
+  }
+  
+  # ----------------------------------------------------------
+  # 1) Build first-gen table from existing function
+  # ----------------------------------------------------------
+  
+  table_list <- create_sim_eps_firstgen_table(
+    data            = data,
+    ord_nums        = ord_nums,
+    eps_codes       = eps_codes,
+    firstgen_detail = "collapsed"
+  )
+  
+  count_df <- table_list$count_table
+  col_df   <- table_list$col_pct_table
+  
+  # ----------------------------------------------------------
+  # 2) Totals from All row
+  # ----------------------------------------------------------
+  
+  totals_df <- count_df %>%
+    dplyr::filter(eps_codename == "All")
+  
+  baseline_total <- totals_df$stu_known
+  firstgen_total <- totals_df$stu_first_gen
+  nonfg_total    <- totals_df$stu_not_first
+  
+  # ----------------------------------------------------------
+  # 3) Build contribution dataframe
+  # ----------------------------------------------------------
+  
+  df_plot <- col_df %>%
+    dplyr::filter(eps_codename != "All") %>%
+    dplyr::transmute(
+      eps_codename,
+      baseline_pct = c_known,
+      firstgen_pct = c_first_gen,
+      nonfg_pct = c_not_first,
+      baseline_total = baseline_total,
+      firstgen_total = firstgen_total,
+      nonfg_total = nonfg_total,
+      metro = metro,
+      order_ids = order_ids,
+      test_range = test_range
+    )
+  
+  return(df_plot)
+}
+
+
+############################################################
+# 4) FIRST-GEN CONTRIBUTION OVERLAY PLOT
+############################################################
+
+create_rq2_firstgen_contribution_overlay_plot <- function(
+    plot_df,
+    title = NULL,
+    subtitle = NULL,
+    metro_label = NULL,
+    sort_order = c("geomarket", "focal", "baseline"),
+    point_size = 1.4,
+    focal_line_width = 0.55,
+    baseline_bar_width = 4.4,
+    show_value_labels = FALSE
+) {
+  
+  sort_order <- match.arg(sort_order)
+  
+  # ----------------------------------------------------------
+  # 1) Reshape to one row per Geomarket x first-gen group
+  # ----------------------------------------------------------
+  
+  df_long <- plot_df %>%
+    dplyr::mutate(
+      geomarket_num = readr::parse_number(eps_codename)
+    ) %>%
+    dplyr::select(
+      eps_codename,
+      geomarket_num,
+      baseline_pct,
+      firstgen_pct,
+      nonfg_pct,
+      firstgen_total,
+      nonfg_total,
+      metro,
+      order_ids,
+      test_range
+    ) %>%
+    tidyr::pivot_longer(
+      cols = c(firstgen_pct, nonfg_pct),
+      names_to = "group_raw",
+      values_to = "focal_pct"
+    ) %>%
+    dplyr::mutate(
+      group = dplyr::recode(
+        group_raw,
+        "firstgen_pct" = "First-gen",
+        "nonfg_pct" = "Not first-gen"
+      ),
+      group = factor(
+        group,
+        levels = c("First-gen", "Not first-gen")
+      ),
+      total_n = dplyr::if_else(
+        group == "First-gen",
+        firstgen_total,
+        nonfg_total
+      ),
+      
+      # Revised facet label: group name + n on same line
+      facet_label = stringr::str_c(
+        group,
+        " (n = ",
+        scales::comma(round(total_n)),
+        ")"
+      ),
+      
+      sort_value = dplyr::case_when(
+        sort_order == "geomarket" ~ geomarket_num,
+        sort_order == "focal"     ~ -focal_pct,
+        sort_order == "baseline"  ~ -baseline_pct,
+        TRUE ~ geomarket_num
+      )
+    )
+  
+  # ----------------------------------------------------------
+  # 2) Order Geomarkets within each first-gen group/facet
+  # ----------------------------------------------------------
+  
+  df_ordered <- df_long %>%
+    dplyr::group_by(group) %>%
+    dplyr::arrange(
+      is.na(sort_value),
+      sort_value,
+      is.na(geomarket_num),
+      geomarket_num,
+      eps_codename,
+      .by_group = TRUE
+    ) %>%
+    dplyr::mutate(
+      geomarket_order = dplyr::row_number()
+    ) %>%
+    dplyr::ungroup()
+  
+  # ----------------------------------------------------------
+  # 3) Order facet labels
+  # ----------------------------------------------------------
+  
+  facet_levels <- df_ordered %>%
+    dplyr::distinct(group, facet_label) %>%
+    dplyr::arrange(group) %>%
+    dplyr::pull(facet_label)
+  
+  df_ordered <- df_ordered %>%
+    dplyr::mutate(
+      facet_label = factor(facet_label, levels = facet_levels)
+    )
+  
+  # ----------------------------------------------------------
+  # 4) Numeric y positions, globally unique across facets
+  # ----------------------------------------------------------
+  
+  y_lookup <- df_ordered %>%
+    dplyr::select(group, facet_label, eps_codename, geomarket_order) %>%
+    dplyr::distinct() %>%
+    dplyr::mutate(
+      facet_label = factor(facet_label, levels = facet_levels)
+    ) %>%
+    dplyr::arrange(facet_label, geomarket_order) %>%
+    dplyr::group_by(facet_label) %>%
+    dplyr::mutate(
+      n_in_facet = dplyr::n(),
+      y_within_facet = n_in_facet - dplyr::row_number() + 1
+    ) %>%
+    dplyr::ungroup()
+  
+  facet_offsets <- y_lookup %>%
+    dplyr::distinct(facet_label, n_in_facet) %>%
+    dplyr::arrange(facet_label) %>%
+    dplyr::mutate(
+      facet_offset = dplyr::lag(cumsum(n_in_facet), default = 0)
+    )
+  
+  y_lookup <- y_lookup %>%
+    dplyr::left_join(
+      facet_offsets,
+      by = c("facet_label", "n_in_facet")
+    ) %>%
+    dplyr::mutate(
+      y_base = facet_offset + y_within_facet
+    )
+  
+  df_plot <- df_ordered %>%
+    dplyr::left_join(
+      y_lookup %>%
+        dplyr::select(group, facet_label, eps_codename, geomarket_order, y_base),
+      by = c("group", "facet_label", "eps_codename", "geomarket_order")
+    ) %>%
+    dplyr::mutate(
+      focal_label = stringr::str_c(
+        scales::number(focal_pct, accuracy = 0.1),
+        "%"
+      ),
+      baseline_label = stringr::str_c(
+        scales::number(baseline_pct, accuracy = 0.1),
+        "%"
+      )
+    )
+  
+  # ----------------------------------------------------------
+  # 5) Y-axis breaks and labels
+  # ----------------------------------------------------------
+  
+  y_breaks_df <- y_lookup %>%
+    dplyr::arrange(y_base)
+  
+  y_breaks <- y_breaks_df$y_base
+  y_labels <- y_breaks_df$eps_codename
+  
+  # ----------------------------------------------------------
+  # 6) Title/subtitle defaults
+  # ----------------------------------------------------------
+  
+  if (is.null(metro_label)) {
+    
+    metro_label <- plot_df$metro[1] %>%
+      stringr::str_replace_all("_", " ") %>%
+      tools::toTitleCase()
+    
+    if (!is.na(metro_label) && metro_label != "Bay Area") {
+      metro_label <- stringr::str_c(metro_label, " area")
+    }
+  }
+  
+  if (is.null(title)) {
+    title <- stringr::str_c(
+      "Where do first-generation and non-first-generation prospects come from, ",
+      metro_label,
+      "?"
+    )
+  }
+  
+  if (is.null(subtitle)) {
+    
+    test_range_this <- plot_df$test_range[1]
+    
+    subtitle <- stringr::str_c(
+      test_range_this,
+      " — focal first-generation-status groups overlaid on all first-gen-known prospects"
+    )
+  }
+  
+  # ----------------------------------------------------------
+  # 7) Build plot
+  # ----------------------------------------------------------
+  
+  plot <- ggplot2::ggplot(df_plot) +
+    
+    ggplot2::geom_segment(
+      ggplot2::aes(
+        x = 0,
+        xend = baseline_pct,
+        y = y_base,
+        yend = y_base,
+        color = "All first-gen-known prospects"
+      ),
+      linewidth = baseline_bar_width,
+      lineend = "butt"
+    ) +
+    
+    ggplot2::geom_segment(
+      ggplot2::aes(
+        x = 0,
+        xend = focal_pct,
+        y = y_base,
+        yend = y_base,
+        color = "Focal first-generation-status group"
+      ),
+      linewidth = focal_line_width,
+      lineend = "round"
+    ) +
+    
+    ggplot2::geom_point(
+      ggplot2::aes(
+        x = focal_pct,
+        y = y_base,
+        color = "Focal first-generation-status group"
+      ),
+      size = point_size
+    ) +
+    
+    ggplot2::facet_wrap(
+      ~ facet_label,
+      scales = "free_y",
+      ncol = 1
+    ) +
+    ggplot2::scale_y_continuous(
+      breaks = y_breaks,
+      labels = y_labels,
+      expand = ggplot2::expansion(add = c(0.6, 0.6))
+    ) +
+    ggplot2::scale_x_continuous(
+      labels = function(x) {
+        stringr::str_c(scales::number(x, accuracy = 1), "%")
+      }
+    ) +
+    ggplot2::scale_color_manual(
+      values = c(
+        "Focal first-generation-status group" = "#0072B2",
+        "All first-gen-known prospects" = "gray82"
+      )
+    ) +
+    ggplot2::labs(
+      x = "Share of group contributed by Geomarket",
+      y = NULL,
+      color = NULL
+    ) +
+    ggplot2::theme_minimal(base_size = 11) +
+    ggplot2::theme(
+      panel.grid.minor = ggplot2::element_blank(),
+      panel.grid.major.y = ggplot2::element_blank(),
+      strip.text = ggplot2::element_text(face = "bold", hjust = 0),
+      axis.text.y = ggplot2::element_text(size = 8),
+      axis.text.x = ggplot2::element_text(size = 10),
+      axis.title.x = ggplot2::element_text(size = 11),
+      legend.position = "bottom"
+    )
+  
+  if (show_value_labels) {
+    
+    plot <- plot +
+      ggplot2::geom_text(
+        ggplot2::aes(
+          x = focal_pct,
+          y = y_base,
+          label = focal_label,
+          color = "Focal first-generation-status group"
+        ),
+        hjust = -0.15,
+        size = 3,
+        show.legend = FALSE
+      ) +
+      ggplot2::coord_cartesian(clip = "off")
+  }
+  
+  attr(plot, "figure_title") <- title
+  attr(plot, "figure_subtitle") <- subtitle
+  
+  return(plot)
+}
+############################################################
 # CREATE RQ2 RACE X FIRST-GEN CONTRIBUTION DATA + GRAPH
 ############################################################
 
@@ -714,22 +1482,43 @@ create_rq2_race_firstgen_two_lollipop_plot <- function(
   
   # ----------------------------------------------------------
   # 3) Create one numeric y-base row per Geomarket
-  #    This avoids nudging problems on a discrete y-axis
+  #    IMPORTANT: y_base must be globally unique across facets
   # ----------------------------------------------------------
   
   y_lookup <- df_ordered %>%
     dplyr::select(race, facet_label, eps_codename, geomarket_order) %>%
     dplyr::distinct() %>%
+    dplyr::mutate(
+      facet_label = factor(facet_label, levels = facet_levels)
+    ) %>%
     dplyr::arrange(facet_label, geomarket_order) %>%
     dplyr::group_by(facet_label) %>%
     dplyr::mutate(
-      y_base = dplyr::n() - dplyr::row_number() + 1
+      n_in_facet = dplyr::n(),
+      y_within_facet = n_in_facet - dplyr::row_number() + 1
     ) %>%
     dplyr::ungroup()
   
+  facet_offsets <- y_lookup %>%
+    dplyr::distinct(facet_label, n_in_facet) %>%
+    dplyr::arrange(facet_label) %>%
+    dplyr::mutate(
+      facet_offset = dplyr::lag(cumsum(n_in_facet), default = 0)
+    )
+  
+  y_lookup <- y_lookup %>%
+    dplyr::left_join(
+      facet_offsets,
+      by = c("facet_label", "n_in_facet")
+    ) %>%
+    dplyr::mutate(
+      y_base = facet_offset + y_within_facet
+    )
+  
   df_ordered <- df_ordered %>%
     dplyr::left_join(
-      y_lookup,
+      y_lookup %>%
+        dplyr::select(race, facet_label, eps_codename, geomarket_order, y_base),
       by = c("race", "facet_label", "eps_codename", "geomarket_order")
     )
   
@@ -780,7 +1569,6 @@ create_rq2_race_firstgen_two_lollipop_plot <- function(
   
   # ----------------------------------------------------------
   # 5) Y-axis breaks and labels
-  #    Show Geomarket name once, at the base row
   # ----------------------------------------------------------
   
   y_breaks_df <- y_lookup %>%
@@ -788,7 +1576,6 @@ create_rq2_race_firstgen_two_lollipop_plot <- function(
   
   y_breaks <- y_breaks_df$y_base
   y_labels <- y_breaks_df$eps_codename
-  names(y_labels) <- y_breaks
   
   # ----------------------------------------------------------
   # 6) Title/subtitle defaults
@@ -829,7 +1616,6 @@ create_rq2_race_firstgen_two_lollipop_plot <- function(
   
   plot <- ggplot2::ggplot() +
     
-    # First-gen lollipop
     ggplot2::geom_segment(
       data = df_fg,
       ggplot2::aes(
@@ -851,7 +1637,6 @@ create_rq2_race_firstgen_two_lollipop_plot <- function(
       size = point_size
     ) +
     
-    # Not first-gen lollipop
     ggplot2::geom_segment(
       data = df_nonfg,
       ggplot2::aes(
@@ -911,7 +1696,6 @@ create_rq2_race_firstgen_two_lollipop_plot <- function(
     )
   
   if (show_value_labels) {
-    
     plot <- plot +
       ggplot2::geom_text(
         data = df_long,
@@ -928,7 +1712,6 @@ create_rq2_race_firstgen_two_lollipop_plot <- function(
       ggplot2::coord_cartesian(clip = "off")
   }
   
-  # Store title/subtitle as metadata
   attr(plot, "figure_title") <- title
   attr(plot, "figure_subtitle") <- subtitle
   
