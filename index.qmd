@@ -409,26 +409,57 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE)
 graphs_dir <- file.path(".", "results", "graphs")
 tables_dir <- file.path(".", "results", "tables")
 
-# Revised insert_figure() that does NOT print a heading
+# Revised insert_figure() that can read either .tex or .txt title sidecars
 insert_figure <- function(rq, metro, graph_type, base_path = graphs_dir) {
-
+  
   # We'll use 'metro' directly since it's already underscored (e.g. "los_angeles").
-  fig_file  <- file.path(base_path, rq, stringr::str_c(rq, "_", metro, "_", graph_type, ".png"))
-  cap_file  <- file.path(base_path, rq, stringr::str_c(rq, "_", metro, "_", graph_type, "_title.txt"))
-  note_file <- file.path(base_path, rq, stringr::str_c(rq, "_", metro, "_", graph_type, "_note.txt"))
-
-  # Print a heading/caption
-  caption_text <- if (file.exists(cap_file)) readLines(cap_file, warn = FALSE) else "No Title Found"
-  writeLines(paste0("#### ", caption_text))
-
-  # Output the figure (if it exists)
+  fig_file <- file.path(
+    base_path,
+    rq,
+    stringr::str_c(rq, "_", metro, "_", graph_type, ".png")
+  )
+  
+  title_stub <- file.path(
+    base_path,
+    rq,
+    stringr::str_c(rq, "_", metro, "_", graph_type, "_title")
+  )
+  
+  cap_file_tex <- stringr::str_c(title_stub, ".tex")
+  cap_file_txt <- stringr::str_c(title_stub, ".txt")
+  
+  note_file <- file.path(
+    base_path,
+    rq,
+    stringr::str_c(rq, "_", metro, "_", graph_type, "_note.txt")
+  )
+  
+  # Print title/caption.
+  # - New RQ3 .tex files already include heading markup like #### and subtitle italics.
+  # - Older .txt files only contain the title text, so add #### here.
+  if (file.exists(cap_file_tex)) {
+    
+    caption_text <- readLines(cap_file_tex, warn = FALSE)
+    writeLines(caption_text)
+    
+  } else if (file.exists(cap_file_txt)) {
+    
+    caption_text <- readLines(cap_file_txt, warn = FALSE)
+    writeLines(paste0("#### ", caption_text))
+    
+  } else {
+    
+    writeLines("#### No Title Found")
+  }
+  
+  # Output the figure if it exists
   if (file.exists(fig_file)) {
     writeLines(stringr::str_c("![](", fig_file, ")\n"))
   } else {
     writeLines(paste("*(Missing figure file:", fig_file, ")*\n"))
   }
-
-  # Print footnotes (if the .txt file exists)
+  
+  # Print footnotes if the note file exists
   if (file.exists(note_file)) {
     notes_txt <- readLines(note_file, warn = FALSE)
     writeLines(
@@ -440,7 +471,6 @@ insert_figure <- function(rq, metro, graph_type, base_path = graphs_dir) {
     )
   }
 }
-
 insert_rq1_table <- function(metro) {
   table_df <- readRDS(file.path(tables_dir, str_c('rq1_table_', metro, '.rds')))
   table_df$value[is.na(table_df$value)] <- NA_real_
@@ -528,11 +558,11 @@ insert_rq2_table <- function(metro, table_type, rq_name = 'rq2') {
           mutate(
             across(all, \(x) format(round(x, 0), big.mark = ',')),
             across(known, ~ if_else(table == 'col_pct_table' & eps_codename != 'All', sprintf('%.1f', .), format(round(., 0), big.mark = ','))),
-            across(no_col:not_first, ~ if_else(table == 'count_table' | (table == 'col_pct_table' & eps_codename == 'All'), format(round(., 0), big.mark = ','), sprintf('%.1f', .)))
+            across(first_gen:not_first, ~ if_else(table == 'count_table' | (table == 'col_pct_table' & eps_codename == 'All'), format(round(., 0), big.mark = ','), sprintf('%.1f', .)))
           ) %>%
           select(-unknown, -table, -order_ids, -test_range),
-        align = 'lrrrrr', escape = F,
-        col.names = c('', 'All', 'First-gen known', 'No college', 'Some college', 'Not first-gen')
+        align = 'lrrrr', escape = F,
+        col.names = c('', 'All', 'First-gen known', 'First-gen', 'Not first-gen')
       ) %>% 
         pack_rows(index = orders_group, colnum = 1, label_row_css = 'background-color: #eaeaea; padding: 10px 7.5px;') %>% 
         pack_rows(index = rep(tables_group, length(orders)), colnum = 1, label_row_css = '')
@@ -542,7 +572,7 @@ insert_rq2_table <- function(metro, table_type, rq_name = 'rq2') {
     table_df$eps_codename <- factor(table_df$eps_codename, levels = c(x[x != 'All'], 'All'))
     table_df <- table_df %>% arrange(order_ids, stu_race_cb, eps_codename)
     
-    group_df <- table_df %>% group_by(order_ids, stu_race_cb) %>% summarise(n = n())
+    group_df <- table_df %>% group_by(order_ids, stu_race_cb) %>% summarise(n = n(), .groups = "drop")
     race_group <- group_df$n
     names(race_group) <- str_replace(str_to_title(group_df$stu_race_cb), 'Or', 'or')
     
@@ -551,11 +581,11 @@ insert_rq2_table <- function(metro, table_type, rq_name = 'rq2') {
         table_df %>% 
           mutate(
             across(all, \(x) format(round(x, 0), big.mark = ',')),
-            across(row_no_col:row_not_first_gen, \(x) sprintf('%.1f', x))
+            across(c(row_first_gen, row_not_first_gen), \(x) sprintf('%.1f', x))
           ) %>% 
           select(-stu_race_cb, -order_ids, -test_range),
-        align = 'lrrrr', escape = F,
-        col.names = c('', 'All', 'No college', 'Some college', 'Not first-gen')
+        align = 'lrrr', escape = F,
+        col.names = c('', 'All', 'First-gen', 'Not first-gen')
       ) %>% 
         pack_rows(index = orders_group, colnum = 1, label_row_css = 'background-color: #eaeaea; padding: 10px 7.5px;') %>% 
         pack_rows(index = race_group, colnum = 1, label_row_css = '')
@@ -584,7 +614,7 @@ insert_rq2_table <- function(metro, table_type, rq_name = 'rq2') {
     "san_diego"
   )
 
-rqs <- c("rq1", "rq2")
+rqs <- c("rq1", "rq2", "rq3")
 
 # For RQ1, we have two plot types: "race" and "ses"
 graph_types_rq1 <- c("race", "ses")
@@ -592,11 +622,20 @@ graph_types_rq1 <- c("race", "ses")
 # For RQ2, we have two plot types: "race" and "firstgen"
 graph_types_rq2 <- c("race", "firstgen")
 
+# For RQ3, we currently have two plot types: "race" and "firstgen"
+graph_types_rq3 <- c("race", "firstgen")
+
 # 3) Read the CSV (underscored metro column)
 orders_df <- read_csv("scripts/metro_orders.csv")
 
 # Derive the RQ2 metros from the CSV
 rq2_metros <- unique(orders_df$metro)
+
+# Derive the RQ3 metros from the CSV, excluding the special AI/AN order
+rq3_orders_df <- orders_df %>%
+  filter(order_ids != "487927")
+
+rq3_metros <- unique(rq3_orders_df$metro)
 
 # 4) Main loop
 for (m in metros) {
@@ -678,13 +717,24 @@ for (m in metros) {
       # Gather all the underscore-delimited order_ids
       orders_for_m <- df_metro$order_ids
       
-      # -- HERE is the new line to remove "487927" --
-      orders_for_m <- orders_for_m[ orders_for_m != "487927" ]  
+      # Remove special AI/AN order from regular RQ2 display
+      orders_for_m <- orders_for_m[orders_for_m != "487927"]  
       
       get_notes <- function(missing_txt = '') {
         str_replace(
-          str_c('<div class="footnote">', paste0(readLines(file.path(graphs_dir, rq, str_c('rq2_', m, '_race_row_plot_note.txt')), warn = FALSE), collapse = "</br>"), '</div>'),
-          'Excludes students with missing values for race\\. ', missing_txt
+          str_c(
+            '<div class="footnote">',
+            paste0(
+              readLines(
+                file.path(graphs_dir, rq, str_c('rq2_', m, '_race_row_plot_note.txt')),
+                warn = FALSE
+              ),
+              collapse = "</br>"
+            ),
+            '</div>'
+          ),
+          'Excludes students with missing values for race\\. ',
+          missing_txt
         )
       }
 
@@ -740,7 +790,6 @@ for (m in metros) {
       # -------------------------------------------
       for (order_id in orders_for_m) {
         writeLines(str_c("### Research question ", rq_num, " {.hide}"))
-        # e.g. "rq2b_los_angeles_order_448375_546954_race_by_firstgen.png"
         graph_type_rbf <- str_c("order_", order_id, "_race_by_firstgen")
         insert_figure(rq = "rq2b", metro = m, graph_type = graph_type_rbf)
       }
@@ -766,12 +815,59 @@ for (m in metros) {
       writeLines('<p class="fullscreen">Fullscreen</p>')
       writeLines(get_notes())
 
-    } # end if (rq == "rq2")
+    # ---------------------------------------------
+    # RQ3 Logic: exclusion composition graphs
+    # ---------------------------------------------
+    } else if (rq == "rq3") {
 
+      # Only run RQ3 code if the metro has RQ3 order groups
+      if (!(m %in% rq3_metros)) next
+
+      # Filter to regular/non-AI/AN order groups for this metro
+      df_metro_rq3 <- rq3_orders_df %>%
+        filter(metro == m)
+
+      # If none, skip
+      if (nrow(df_metro_rq3) == 0) next
+
+      # Gather regular order IDs for this metro
+      orders_for_m_rq3 <- df_metro_rq3$order_ids
+
+      # RQ3 currently has two graph types: race and firstgen
+      first_rq3_slide <- TRUE
+
+      for (g in graph_types_rq3) {
+
+        for (order_id in orders_for_m_rq3) {
+
+          # First RQ3 slide gets visible heading; later ones hidden
+          writeLines(str_c(
+            "### Research question ",
+            rq_num,
+            if_else(first_rq3_slide, "", " {.hide}")
+          ))
+
+          graph_type_rq3 <- str_c(
+            g,
+            "_exclusion_plot_order_",
+            order_id
+          )
+
+          insert_figure(
+            rq = "rq3",
+            metro = m,
+            graph_type = graph_type_rq3
+          )
+
+          first_rq3_slide <- FALSE
+        }
+      }
+
+    } # end if/else rq logic
+        
   } # end rq loop
 
 } # end metros loop
-
 
 
 # A special version insert_figure_aian for AI/AN that does NOT print a heading

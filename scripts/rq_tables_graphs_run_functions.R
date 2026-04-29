@@ -50,66 +50,306 @@ source(file = file.path('scripts', 'create_stu_list.R'))
 getwd()
 
 # script that creates functions to create tables and graphs
-source(file = file.path(scripts_dir, 'rq2_tables_graphs_create_functions.R'))
+source(file = file.path(scripts_dir, 'rq_tables_graphs_create_functions.R'))
 
 
 # 1) Load the CSV into a data frame
 orders_df <- read_csv(file.path(scripts_dir,"metro_orders.csv"))
 
-# get_table_data <- function(metro_df) {
-#   list(
-#     race = do.call(bind_rows, lapply(1:nrow(metro_df), function(i) {
-#       res <- create_sim_eps_race_table(data = lists_orders_zip_hs_df_sf, ord_nums = str_split(metro_df[[i, 'order_ids']], '_')[[1]], eps_codes = get(metro_df[[i, 'eps_codes']]))
-#       
-#       for (r in names(res)) {
-#         names(res[[r]]) <- sub('^stu_|^r_|^c_', '', names(res[[r]]))
-#         if ('known' %in% names(res[[r]])) {
-#           res[[r]] <- res[[r]] %>% select(-race_known) %>% rename('race_known' = 'known')
-#         }
-#         res[[r]]$table <- r
-#       }
-#       
-#       do.call(bind_rows, res) %>% mutate(order_ids = metro_df[[i, 'order_ids']], test_range = metro_df[[i, 'test_range']])
-#     })),
-#     firstgen = do.call(bind_rows, lapply(1:nrow(metro_df), function(i) {
-#       res <- create_sim_eps_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = str_split(metro_df[[i, 'order_ids']], '_')[[1]], eps_codes = get(metro_df[[i, 'eps_codes']]))
-#       
-#       for (r in names(res)) {
-#         if (r %in% c('row_pct_table', 'col_pct_table')) {
-#           res[[r]] <- res[[r]] %>% select(-stu_known)
-#         }
-#         names(res[[r]]) <- sub('^stu_|^r_|^c_', '', names(res[[r]]))
-#         res[[r]]$table <- r
-#       }
-#       
-#       do.call(bind_rows, res) %>% mutate(order_ids = metro_df[[i, 'order_ids']], test_range = metro_df[[i, 'test_range']])
-#     })),
-#     race_firstgen = do.call(bind_rows, lapply(1:nrow(metro_df), function(i) {
-#       create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = str_split(metro_df[[i, 'order_ids']], '_')[[1]], eps_codes = get(metro_df[[i, 'eps_codes']]), exclude_race = '') %>%
-#         mutate(order_ids = metro_df[[i, 'order_ids']], test_range = metro_df[[i, 'test_range']])
-#     }))
-#   )
-# }
-# 
-# rq2_orders_df <- orders_df %>% filter(order_ids != '487927')
-# 
-# for (m in unique(rq2_orders_df$metro)) {
-#   metro_df <- rq2_orders_df %>% filter(metro == m)
-#   
-#   l <- get_table_data(metro_df)
-#   
-#   saveRDS(l, file.path('.', 'results', 'tables', str_c('rq2_table_', m, '.rds')))
-# }
-# 
-# aian_orders_df <- orders_df %>% filter(order_ids == '487927')
-# 
-# for (m in unique(aian_orders_df$metro)) {
-#   metro_df <- aian_orders_df %>% filter(metro == m)
-#   
-#   l <- get_table_data(metro_df)
-#   
-#   saveRDS(l, file.path('.', 'results', 'tables', str_c('rq2_aian_table_', m, '.rds')))
-# }
+get_table_data <- function(metro_df) {
+  list(
+    race = do.call(bind_rows, lapply(1:nrow(metro_df), function(i) {
+      res <- create_sim_eps_race_table(data = lists_orders_zip_hs_df_sf, ord_nums = str_split(metro_df[[i, 'order_ids']], '_')[[1]], eps_codes = get(metro_df[[i, 'eps_codes']]))
+
+      for (r in names(res)) {
+        names(res[[r]]) <- sub('^stu_|^r_|^c_', '', names(res[[r]]))
+        if ('known' %in% names(res[[r]])) {
+          res[[r]] <- res[[r]] %>% select(-race_known) %>% rename('race_known' = 'known')
+        }
+        res[[r]]$table <- r
+      }
+
+      do.call(bind_rows, res) %>% mutate(order_ids = metro_df[[i, 'order_ids']], test_range = metro_df[[i, 'test_range']])
+    })),
+    firstgen = do.call(bind_rows, lapply(1:nrow(metro_df), function(i) {
+      res <- create_sim_eps_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = str_split(metro_df[[i, 'order_ids']], '_')[[1]], eps_codes = get(metro_df[[i, 'eps_codes']]))
+
+      for (r in names(res)) {
+        if (r %in% c('row_pct_table', 'col_pct_table')) {
+          res[[r]] <- res[[r]] %>% select(-stu_known)
+        }
+        names(res[[r]]) <- sub('^stu_|^r_|^c_', '', names(res[[r]]))
+        res[[r]]$table <- r
+      }
+
+      do.call(bind_rows, res) %>% mutate(order_ids = metro_df[[i, 'order_ids']], test_range = metro_df[[i, 'test_range']])
+    })),
+    race_firstgen = do.call(bind_rows, lapply(1:nrow(metro_df), function(i) {
+      create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = str_split(metro_df[[i, 'order_ids']], '_')[[1]], eps_codes = get(metro_df[[i, 'eps_codes']]), exclude_race = '') %>%
+        mutate(order_ids = metro_df[[i, 'order_ids']], test_range = metro_df[[i, 'test_range']])
+    }))
+  )
+}
+
+rq2_orders_df <- orders_df %>% filter(order_ids != '487927')
+
+for (m in unique(rq2_orders_df$metro)) {
+  metro_df <- rq2_orders_df %>% filter(metro == m)
+
+  l <- get_table_data(metro_df)
+
+  saveRDS(l, file.path('.', 'results', 'tables', str_c('rq2_table_', m, '.rds')))
+}
+
+aian_orders_df <- orders_df %>% filter(order_ids == '487927')
+
+for (m in unique(aian_orders_df$metro)) {
+  metro_df <- aian_orders_df %>% filter(metro == m)
+
+  l <- get_table_data(metro_df)
+
+  saveRDS(l, file.path('.', 'results', 'tables', str_c('rq2_aian_table_', m, '.rds')))
+}
+
+############################################################
+# CREATE ANALYSIS DATASET(S) FOR REVISED RQ3 EXCLUSION GRAPHS
+############################################################
+
+# For main RQ3 analyses, exclude the special AI/AN order.
+# We can handle that separately later if needed.
+rq3_orders_df <- orders_df %>% 
+  filter(order_ids != "487927")
+
+get_rq3_exclusion_data <- function(metro_df) {
+  
+  list(
+    
+    race = do.call(
+      bind_rows,
+      lapply(seq_len(nrow(metro_df)), function(i) {
+        
+        create_rq3_eps_exclusion_table(
+          data             = lists_orders_zip_hs_df_sf,
+          ord_nums         = str_split(metro_df[[i, "order_ids"]], "_")[[1]],
+          eps_codes        = get(metro_df[[i, "eps_codes"]]),
+          composition_type = "race"
+        ) %>%
+          mutate(
+            metro       = metro_df[[i, "metro"]],
+            order_ids   = metro_df[[i, "order_ids"]],
+            test_range  = metro_df[[i, "test_range"]],
+            figure_note = metro_df[[i, "figure_note"]]
+          )
+      })
+    ),
+    
+    firstgen = do.call(
+      bind_rows,
+      lapply(seq_len(nrow(metro_df)), function(i) {
+        
+        create_rq3_eps_exclusion_table(
+          data             = lists_orders_zip_hs_df_sf,
+          ord_nums         = str_split(metro_df[[i, "order_ids"]], "_")[[1]],
+          eps_codes        = get(metro_df[[i, "eps_codes"]]),
+          composition_type = "firstgen",
+          firstgen_detail  = "collapsed"
+        ) %>%
+          mutate(
+            metro       = metro_df[[i, "metro"]],
+            order_ids   = metro_df[[i, "order_ids"]],
+            test_range  = metro_df[[i, "test_range"]],
+            figure_note = metro_df[[i, "figure_note"]]
+          )
+      })
+    ),
+    
+    race_firstgen = do.call(
+      bind_rows,
+      lapply(seq_len(nrow(metro_df)), function(i) {
+        
+        create_rq3_eps_exclusion_table(
+          data             = lists_orders_zip_hs_df_sf,
+          ord_nums         = str_split(metro_df[[i, "order_ids"]], "_")[[1]],
+          eps_codes        = get(metro_df[[i, "eps_codes"]]),
+          composition_type = "race_firstgen",
+          exclude_race     = c(1, 8),
+          firstgen_detail  = "collapsed"
+        ) %>%
+          mutate(
+            metro       = metro_df[[i, "metro"]],
+            order_ids   = metro_df[[i, "order_ids"]],
+            test_range  = metro_df[[i, "test_range"]],
+            figure_note = metro_df[[i, "figure_note"]]
+          )
+      })
+    )
+  )
+}
+
+for (m in unique(rq3_orders_df$metro)) {
+  
+  metro_df <- rq3_orders_df %>% 
+    filter(metro == m)
+  
+  rq3_l <- get_rq3_exclusion_data(metro_df)
+  
+  saveRDS(
+    rq3_l,
+    file.path(".", "results", "tables", str_c("rq3_exclusion_table_", m, ".rds"))
+  )
+}
+
+############################################################
+# CREATE GRAPHS FOR REVISED RQ3 EXCLUSION ANALYSES
+############################################################
+
+# Create RQ3 graph folder if needed
+dir.create(
+  file.path(graphs_dir, "rq3"),
+  showWarnings = FALSE,
+  recursive = TRUE
+)
+
+for (m in unique(rq3_orders_df$metro)) {
+  
+  message("Creating RQ3 exclusion plots for: ", m)
+  
+  rq3_l <- readRDS(
+    file.path(".", "results", "tables", str_c("rq3_exclusion_table_", m, ".rds"))
+  )
+  
+  metro_df <- rq3_orders_df %>%
+    filter(metro == m)
+  
+  for (i in seq_len(nrow(metro_df))) {
+    
+    order_ids_this <- metro_df$order_ids[i]
+    
+    for (g in c("race", "firstgen")) {
+      
+      # ------------------------------------------------------
+      # Create plot using revised RQ3 graph functions
+      # ------------------------------------------------------
+      
+      if (g == "race") {
+        
+        plot_obj <- create_rq3_race_delta_facet_plot(
+          rq3_df = rq3_l$race,
+          order_ids_this = order_ids_this
+        )
+        
+      } else if (g == "firstgen") {
+        
+        plot_obj <- create_rq3_firstgen_dualaxis_plot(
+          rq3_df = rq3_l$firstgen,
+          order_ids_this = order_ids_this
+        )
+      }
+      
+      # ------------------------------------------------------
+      # Stable file name, same as before
+      # ------------------------------------------------------
+      
+      plot_name <- str_c(
+        "rq3_",
+        m,
+        "_",
+        g,
+        "_exclusion_plot_order_",
+        order_ids_this
+      )
+      
+      message("Saving RQ3 plot: ", plot_name)
+      
+      # ------------------------------------------------------
+      # Set graph height based on number of excluded Geomarkets
+      # ------------------------------------------------------
+      
+      n_exclusions <- rq3_l[[g]] %>%
+        filter(
+          order_ids == order_ids_this,
+          scenario_type == "exclusion"
+        ) %>%
+        distinct(excluded_eps_codename) %>%
+        nrow()
+      
+      plot_height <- if_else(
+        g == "race",
+        max(8, 3.5 + 0.55 * n_exclusions),
+        max(6, 3.5 + 0.45 * n_exclusions)
+      )
+      
+      ggsave(
+        filename = file.path(graphs_dir, "rq3", str_c(plot_name, ".png")),
+        plot = plot_obj,
+        width = 14,
+        height = plot_height,
+        bg = "white"
+      )
+      
+      # ------------------------------------------------------
+      # Save title/subtitle as .tex sidecar file
+      # ------------------------------------------------------
+      
+      figure_title <- attr(plot_obj, "figure_title")
+      figure_subtitle <- attr(plot_obj, "figure_subtitle")
+      
+      title_tex <- c(
+        str_c("#### ", figure_title),
+        "",
+        str_c("*", figure_subtitle, "*")
+      )
+      
+      writeLines(
+        title_tex,
+        file.path(graphs_dir, "rq3", str_c(plot_name, "_title.tex"))
+      )
+      
+      # ------------------------------------------------------
+      # Save note
+      # ------------------------------------------------------
+      
+      figure_note_local <- metro_df$figure_note[i]
+      
+      if (g == "race") {
+        
+        note_text <- c(
+          "Figure Notes:",
+          str_c(
+            "- Each point shows the percentage-point change in the racial/ethnic composition of the remaining visible prospect pool after excluding the named Geomarket. ",
+            "Positive values mean the remaining pool has a higher share of that group than the full metro pool; negative values mean the remaining pool has a lower share. ",
+            "Facet titles report the full-pool baseline share. ",
+            "Excludes students with missing values for race/ethnicity. ",
+            figure_note_local
+          )
+        )
+        
+      } else if (g == "firstgen") {
+        
+        note_text <- c(
+          "Figure Notes:",
+          str_c(
+            "- Each point shows the percentage-point change in the first-generation share of the remaining visible prospect pool after excluding the named Geomarket. ",
+            "The bottom x-axis reports percentage-point change from the full-pool baseline; the top x-axis reports the first-generation share of the remaining visible pool. ",
+            "Excludes students with missing values for first-generation status. ",
+            figure_note_local
+          )
+        )
+      }
+      
+      writeLines(
+        note_text,
+        file.path(graphs_dir, "rq3", str_c(plot_name, "_note.txt"))
+      )
+    }
+  }
+}
+
+############################################################
+############################################################
+
+############################################################
+############################################################
 
 orders_df
 # Part #1) Creating "rq2_{metro}_{g}_plot_order_{ids}" objects
@@ -457,11 +697,11 @@ for (i in seq_len(nrow(orders_df))) {
   
   # 5) Call the function
   create_race_by_firstgen_graph(
-    data_graph     = lists_orders_zip_hs_df_sf,
-    ord_nums_graph = ord_nums_graph,
-    eps_codes_graph = eps_codes_graph,
-    metro_name     = metro_name_graph,  # still underscores internally
-    exclude_race   = c(1, 8, 12),
-    title_suf      = custom_title_suf   # pass the test range only
+    data         = lists_orders_zip_hs_df_sf,
+    ord_nums     = ord_nums_graph,
+    eps_codes    = eps_codes_graph,
+    metro_name   = metro_name_graph,
+    exclude_race = c(1, 8, 12),
+    title_suf    = custom_title_suf
   )
 }

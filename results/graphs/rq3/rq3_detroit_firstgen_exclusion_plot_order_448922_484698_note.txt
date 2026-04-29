@@ -1,0 +1,2 @@
+Figure Notes:
+- Each point shows the percentage-point change in the first-generation share of the remaining visible prospect pool after excluding the named Geomarket. The bottom x-axis reports percentage-point change from the full-pool baseline; the top x-axis reports the first-generation share of the remaining visible pool. Excludes students with missing values for first-generation status. Order number 448922 (ordered 1/9/2019): HS class 2020; selected Geomarkets; PSAT 1070 - 1180. Order number 484698 (ordered 7/25/2019); HS class 2021; selected Geomarkets; PSAT 1070 - 1180

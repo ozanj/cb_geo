@@ -1,0 +1,2 @@
+Figure Notes:
+- Each point shows the percentage-point change in the racial/ethnic composition of the remaining visible prospect pool after excluding the named Geomarket. Positive values mean the remaining pool has a higher share of that group than the full metro pool; negative values mean the remaining pool has a lower share. Facet titles report the full-pool baseline share. Excludes students with missing values for race/ethnicity. Order number 329702 (ordered 8/31/2017): HS class 2019; State = TX; PSAT 1010-1520

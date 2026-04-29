@@ -180,109 +180,212 @@ create_sim_eps_race_table <- function(data, ord_nums, eps_codes) {
 # FIRSTGEN TABLE FUNCTION. CREATE TABLE OF PERCENT OF PEOPLE IN FIRST GEN STATUS GROUP THAT ARE IN EACH GEOMARKET
 
 # Define the function
-create_sim_eps_firstgen_table <- function(data, ord_nums, eps_codes) {
+# FIRSTGEN TABLE FUNCTION
+# Default: combines "No college" + "Some college" into "First-gen"
+# Optional: set firstgen_detail = "disaggregated" to keep old categories
+
+create_sim_eps_firstgen_table <- function(
+    data,
+    ord_nums,
+    eps_codes,
+    firstgen_detail = c("collapsed", "disaggregated")
+) {
+  
+  firstgen_detail <- match.arg(firstgen_detail)
   
   df <- data %>%
     as_tibble() %>%
     filter(ord_num %in% ord_nums, eps %in% eps_codes) %>%
     mutate(
       eps_codename = str_c(eps, eps_name, sep = ", "),
-      stu_no_col_01 = if_else(stu_first_gen ==1,1,0),
-      stu_some_col_01 = if_else(stu_first_gen ==2,1,0),
-      stu_not_first_gen_01 = if_else(stu_first_gen ==3,1,0),
-      stu_unknown_01 = if_else(stu_first_gen ==4,1,0),
+      
+      # Original College Board categories
+      # 1 = No college
+      # 2 = Some college
+      # 3 = Not first-gen
+      # 4 = Unknown
+      stu_no_col_01 = if_else(stu_first_gen == 1, 1, 0),
+      stu_some_col_01 = if_else(stu_first_gen == 2, 1, 0),
+      stu_first_gen_01 = if_else(stu_first_gen %in% c(1, 2), 1, 0),
+      stu_not_first_gen_01 = if_else(stu_first_gen == 3, 1, 0),
+      stu_unknown_01 = if_else(stu_first_gen == 4, 1, 0)
     ) %>% 
     group_by(eps_codename) %>% 
     summarize(
       stu_all = n(),
       stu_no_col = sum(stu_no_col_01, na.rm = TRUE),
       stu_some_col = sum(stu_some_col_01, na.rm = TRUE),
+      stu_first_gen = sum(stu_first_gen_01, na.rm = TRUE),
       stu_not_first = sum(stu_not_first_gen_01, na.rm = TRUE),
       stu_unknown = sum(stu_unknown_01, na.rm = TRUE),
-    ) %>% mutate(
-      stu_known = rowSums(select(., stu_no_col,stu_some_col,stu_not_first)),
-      stu_sum_calc = rowSums(select(., stu_no_col,stu_some_col,stu_not_first,stu_unknown))
-    )
-  
-  # create row that is sum of all geomarkets
-  df_sum <- df %>% summarize(
-    stu_all = sum(stu_all, na.rm = TRUE),
-    stu_sum_calc = sum(stu_sum_calc, na.rm = TRUE),
-    stu_known = sum(stu_known, na.rm = TRUE),
-    stu_no_col = sum(stu_no_col, na.rm = TRUE),
-    stu_some_col = sum(stu_some_col, na.rm = TRUE),
-    stu_not_first = sum(stu_not_first, na.rum = TRUE),
-    stu_unknown = sum(stu_unknown, na.rm = TRUE),
-    stu_sum_calc = sum(stu_sum_calc, na.rm = TRUE),
-  ) %>% mutate(
-    eps_codename = "All"
-  ) 
-  
-  df <- bind_rows(df,df_sum)
-  
-  # create row percentage variables
-  df_r <- df %>% mutate(
-    r_no_col = stu_no_col / stu_known * 100,
-    r_some_col = stu_some_col / stu_known * 100,
-    r_not_first = stu_not_first / stu_known * 100,
-    r_known = stu_known / stu_known * 100,
-  ) 
-  
-  
-  # Create column percentage variables
-  df_c <- df %>% 
-    filter(eps_codename != "All") %>%         
+      .groups = "drop"
+    ) %>% 
     mutate(
-      
-      c_no_col = stu_no_col / sum(stu_no_col, na.rm = TRUE) * 100,
-      c_some_col = stu_some_col / sum(stu_some_col, na.rm = TRUE) * 100,
-      c_not_first = stu_not_first / sum(stu_not_first, na.rm = TRUE) * 100,
-      c_known = stu_known/ sum(stu_known, na.rm = TRUE) * 100,
+      stu_known = rowSums(select(., stu_first_gen, stu_not_first)),
+      stu_sum_calc = rowSums(select(., stu_first_gen, stu_not_first, stu_unknown))
     )
   
-  # create new "all" row for column table
-  df_c_sum <- df_c %>% summarize(
-    stu_all = sum(stu_all, na.rm = TRUE),
-    stu_known = sum(stu_known, na.rm = TRUE),
-    c_known = sum(c_known, na.rm = TRUE),
-    c_no_col = sum(c_no_col, na.rm = TRUE),
-    c_some_col = sum(c_some_col, na.rm = TRUE),
-    c_not_first = sum(c_not_first, na.rm = TRUE),
-  ) %>% mutate(eps_codename = "All")
+  # Create row that is sum of all geomarkets
+  df_sum <- df %>% 
+    summarize(
+      stu_all = sum(stu_all, na.rm = TRUE),
+      stu_sum_calc = sum(stu_sum_calc, na.rm = TRUE),
+      stu_known = sum(stu_known, na.rm = TRUE),
+      stu_no_col = sum(stu_no_col, na.rm = TRUE),
+      stu_some_col = sum(stu_some_col, na.rm = TRUE),
+      stu_first_gen = sum(stu_first_gen, na.rm = TRUE),
+      stu_not_first = sum(stu_not_first, na.rm = TRUE),
+      stu_unknown = sum(stu_unknown, na.rm = TRUE)
+    ) %>% 
+    mutate(eps_codename = "All")
   
-  df_c <- bind_rows(df_c,df_c_sum)
+  df <- bind_rows(df, df_sum)
   
-  # First table: current output with counts
-  table1 <- df %>% 
-    select(
-      eps_codename, stu_all, stu_known, stu_unknown, stu_no_col, stu_some_col, stu_not_first
-    )
-  table1
+  if (firstgen_detail == "collapsed") {
+    
+    # Row percentages: first-gen composition within each Geomarket
+    df_r <- df %>% 
+      mutate(
+        r_first_gen = stu_first_gen / stu_known * 100,
+        r_not_first = stu_not_first / stu_known * 100,
+        r_known = stu_known / stu_known * 100
+      )
+    
+    # Column percentages: where each first-gen group comes from
+    df_c <- df %>% 
+      filter(eps_codename != "All") %>%         
+      mutate(
+        c_first_gen = stu_first_gen / sum(stu_first_gen, na.rm = TRUE) * 100,
+        c_not_first = stu_not_first / sum(stu_not_first, na.rm = TRUE) * 100,
+        c_known = stu_known / sum(stu_known, na.rm = TRUE) * 100
+      )
+    
+    # Create new "All" row for column table
+    df_c_sum <- df_c %>% 
+      summarize(
+        stu_all = sum(stu_all, na.rm = TRUE),
+        stu_known = sum(stu_known, na.rm = TRUE),
+        c_known = sum(c_known, na.rm = TRUE),
+        c_first_gen = sum(c_first_gen, na.rm = TRUE),
+        c_not_first = sum(c_not_first, na.rm = TRUE)
+      ) %>% 
+      mutate(eps_codename = "All")
+    
+    df_c <- bind_rows(df_c, df_c_sum)
+    
+    # Count table
+    table1 <- df %>% 
+      select(
+        eps_codename,
+        stu_all,
+        stu_known,
+        stu_unknown,
+        stu_first_gen,
+        stu_not_first
+      )
+    
+    # Row percentage table
+    table2 <- df_r %>% 
+      select(
+        eps_codename,
+        stu_all,
+        stu_known,
+        r_known,
+        r_first_gen,
+        r_not_first
+      )
+    
+    # Column percentage table
+    table3 <- df_c %>%
+      select(
+        eps_codename,
+        stu_all,
+        stu_known,
+        c_known,
+        c_first_gen,
+        c_not_first
+      )
+    
+  } else if (firstgen_detail == "disaggregated") {
+    
+    # Row percentages: original no-college / some-college / not-first-gen categories
+    df_r <- df %>% 
+      mutate(
+        r_no_col = stu_no_col / stu_known * 100,
+        r_some_col = stu_some_col / stu_known * 100,
+        r_not_first = stu_not_first / stu_known * 100,
+        r_known = stu_known / stu_known * 100
+      )
+    
+    # Column percentages: original no-college / some-college / not-first-gen categories
+    df_c <- df %>% 
+      filter(eps_codename != "All") %>%         
+      mutate(
+        c_no_col = stu_no_col / sum(stu_no_col, na.rm = TRUE) * 100,
+        c_some_col = stu_some_col / sum(stu_some_col, na.rm = TRUE) * 100,
+        c_not_first = stu_not_first / sum(stu_not_first, na.rm = TRUE) * 100,
+        c_known = stu_known / sum(stu_known, na.rm = TRUE) * 100
+      )
+    
+    # Create new "All" row for column table
+    df_c_sum <- df_c %>% 
+      summarize(
+        stu_all = sum(stu_all, na.rm = TRUE),
+        stu_known = sum(stu_known, na.rm = TRUE),
+        c_known = sum(c_known, na.rm = TRUE),
+        c_no_col = sum(c_no_col, na.rm = TRUE),
+        c_some_col = sum(c_some_col, na.rm = TRUE),
+        c_not_first = sum(c_not_first, na.rm = TRUE)
+      ) %>% 
+      mutate(eps_codename = "All")
+    
+    df_c <- bind_rows(df_c, df_c_sum)
+    
+    # Count table
+    table1 <- df %>% 
+      select(
+        eps_codename,
+        stu_all,
+        stu_known,
+        stu_unknown,
+        stu_no_col,
+        stu_some_col,
+        stu_not_first
+      )
+    
+    # Row percentage table
+    table2 <- df_r %>% 
+      select(
+        eps_codename,
+        stu_all,
+        stu_known,
+        r_known,
+        r_no_col,
+        r_some_col,
+        r_not_first
+      )
+    
+    # Column percentage table
+    table3 <- df_c %>%
+      select(
+        eps_codename,
+        stu_all,
+        stu_known,
+        c_known,
+        c_no_col,
+        c_some_col,
+        c_not_first
+      )
+  }
   
-  # Second table: current output with row percentages    
-  table2 <- df_r %>% 
-    select(
-      eps_codename, stu_all, stu_known, r_known, r_no_col, r_some_col, r_not_first
-    )
-  table2
-  
-  # Third table: specified columns with column percentages
-  table3 <- df_c %>%
-    select(
-      eps_codename, stu_all, stu_known, c_known, c_no_col, c_some_col, c_not_first
-    )
-  table3
-  
-  # Return a list with both tables
   result <- list(
     count_table = table1,
     row_pct_table = table2,
     col_pct_table = table3
   )
-  return(result)
   
+  return(result)
 }
-# run function that creates row and column tables for first-gen
 
 # RACE X FIRSTGEN TABLE FUNCTION. CREATE TABLE OF RACE X FIRSTGEN STATUS GROUP THAT ARE IN EACH GEOMARKET
 #stu_race_cb                                 n
@@ -298,130 +401,149 @@ create_sim_eps_firstgen_table <- function(data, ord_nums, eps_codes) {
 #9 12 [two or more races, non-Hispanic]   183166
 #10 NA                                      17800
 
-create_sim_eps_race_firstgen_table <- function(data, ord_nums, eps_codes, exclude_race = c(1,8)) {
+create_sim_eps_race_firstgen_table <- function(
+    data,
+    ord_nums,
+    eps_codes,
+    exclude_race = c(1, 8),
+    firstgen_detail = c("collapsed", "disaggregated")
+) {
+  
+  firstgen_detail <- match.arg(firstgen_detail)
   
   # First, create the main processed data frame
-  # <- lists_orders_zip_hs_df_sf %>%  as_tibble() %>% filter(ord_num %in% c('448922'), eps %in% c('PA 1','PA 2','PA 3','PA 4','PA 5')) %>%
   df_work <- data %>% 
     as_tibble() %>% 
     filter(ord_num %in% ord_nums, eps %in% eps_codes) %>%
     # get rid of obs where race is not known or first-generation status is not known
     filter(!is.na(stu_race_cb), stu_race_cb != 0, stu_first_gen != 4) %>% 
-    filter(stu_race_cb %in% c(1,2,3,4,8,9,12)) %>% # only some racial groups. excludes: no-response; other; and NA
+    # only selected racial groups; excludes no-response, other, and NA
+    filter(stu_race_cb %in% c(1, 2, 3, 4, 8, 9, 12)) %>% 
     filter(!stu_race_cb %in% exclude_race) %>% 
     mutate(
       eps_codename = str_c(eps, eps_name, sep = ", "),
-      stu_race_cb = as_factor(stu_race_cb)
-    ) 
-  
-  #df_work %>% count(stu_race_cb)
-  
-  # create counts of first gen status for all race + all EPS
-  df_work_all <- df_work %>% count(stu_first_gen) %>% 
-    mutate(stu_first_gen = case_match(
-      stu_first_gen,
-      1 ~ 'no_col',
-      2 ~ 'some_col',
-      3 ~ 'not_first_gen'
-    )) %>% 
-    pivot_wider(
-      names_from = stu_first_gen,
-      values_from = n
-    ) %>% 
-    mutate(
-      across(c(no_col, some_col, not_first_gen), ~ if_else(is.na(.), 0, .)),
-    ) %>% 
-    mutate(
-      all = rowSums(select(., no_col, some_col, not_first_gen)),
-      stu_race_cb = factor("All"),
-      eps_codename = "All",
-    ) %>% relocate(stu_race_cb, eps_codename)
-  
-  #df_work_all
-  
-  # create counts of first gen status by EPS
-  df_work_by_eps <- df_work %>% group_by(eps_codename) %>% 
-    count(stu_first_gen) %>% 
-    ungroup() %>%
-    mutate(stu_first_gen = case_match(
-      stu_first_gen,
-      1 ~ 'no_col',
-      2 ~ 'some_col',
-      3 ~ 'not_first_gen'
-    )) %>% 
-    pivot_wider(
-      names_from = stu_first_gen,
-      values_from = n
-    ) %>% 
-    mutate(
-      across(c(no_col, some_col, not_first_gen), ~ if_else(is.na(.), 0, .)),
-    ) %>% 
-    mutate(
-      all = rowSums(select(., no_col, some_col, not_first_gen)),
-      stu_race_cb = "All",
-      stu_race_cb = as_factor(stu_race_cb)
-    ) %>% relocate(stu_race_cb)
-  
-  #df_work_by_eps
-  
-  
-  # create counts of first gen status by race, all EPS
-  df_work_by_race <- df_work %>% 
-    group_by(stu_race_cb) %>%
-    count(stu_first_gen) %>% 
-    ungroup() %>%
-    mutate(stu_first_gen = case_match(
-      stu_first_gen,
-      1 ~ 'no_col',
-      2 ~ 'some_col',
-      3 ~ 'not_first_gen'
-    )) %>% 
-    pivot_wider(
-      names_from = stu_first_gen,
-      values_from = n
-    ) %>% 
-    mutate(
-      across(c(no_col, some_col, not_first_gen), ~ if_else(is.na(.), 0, .)),
-    ) %>% 
-    mutate(
-      all = rowSums(select(., no_col, some_col, not_first_gen)),
-      eps_codename = "All",
-    ) %>% relocate(stu_race_cb, eps_codename)
-  
-  #df_work_by_race
-  
-  # create counts of first gen status by race and eps
-  df_work_by_race_eps <- df_work %>% 
-    group_by(stu_race_cb, eps_codename) %>%
-    count(stu_first_gen) %>% 
-    ungroup() %>%
-    mutate(stu_first_gen = case_match(
-      stu_first_gen,
-      1 ~ 'no_col',
-      2 ~ 'some_col',
-      3 ~ 'not_first_gen'
-    )) %>% 
-    pivot_wider(
-      names_from = stu_first_gen,
-      values_from = n
-    ) %>% 
-    mutate(
-      across(c(no_col, some_col, not_first_gen), ~ if_else(is.na(.), 0, .)),
-    ) %>% 
-    mutate(
-      all = rowSums(select(., no_col, some_col, not_first_gen))      
+      stu_race_cb = as_factor(stu_race_cb),
+      
+      # Collapsed first-gen variable:
+      # 1 = no college; 2 = some college; both count as first-gen
+      stu_first_gen_collapsed = case_when(
+        stu_first_gen %in% c(1, 2) ~ "first_gen",
+        stu_first_gen == 3 ~ "not_first_gen",
+        TRUE ~ NA_character_
+      ),
+      
+      # Original disaggregated first-gen variable
+      stu_first_gen_disaggregated = case_match(
+        stu_first_gen,
+        1 ~ "no_col",
+        2 ~ "some_col",
+        3 ~ "not_first_gen"
+      )
     )
   
-  #df_work_by_race_eps %>% print(n=30)
+  if (firstgen_detail == "collapsed") {
+    
+    firstgen_var <- "stu_first_gen_collapsed"
+    firstgen_cols <- c("first_gen", "not_first_gen")
+    
+  } else {
+    
+    firstgen_var <- "stu_first_gen_disaggregated"
+    firstgen_cols <- c("no_col", "some_col", "not_first_gen")
+  }
   
-  # Finally, bind the two data frames together
-  final_df <- bind_rows(df_work_all, df_work_by_eps, df_work_by_race, df_work_by_race_eps) %>% 
+  # Counts of first-gen status for all races + all EPS
+  df_work_all <- df_work %>% 
+    count(.data[[firstgen_var]]) %>% 
+    rename(firstgen_group = .data[[firstgen_var]]) %>% 
+    filter(!is.na(firstgen_group)) %>% 
+    pivot_wider(
+      names_from = firstgen_group,
+      values_from = n
+    ) %>% 
     mutate(
-      across(c(no_col, some_col, not_first_gen, some_col),
-             ~ (.x / all) * 100,
-             .names = "row_{.col}")
-    ) %>% select(-c(no_col,some_col,not_first_gen)) %>% 
-    # Set factor levels for stu_race_cb in the desired order
+      across(all_of(firstgen_cols), ~ if_else(is.na(.), 0L, as.integer(.)))
+    ) %>% 
+    mutate(
+      all = rowSums(select(., all_of(firstgen_cols))),
+      stu_race_cb = factor("All"),
+      eps_codename = "All"
+    ) %>% 
+    relocate(stu_race_cb, eps_codename)
+  
+  # Counts of first-gen status by EPS, all races
+  df_work_by_eps <- df_work %>% 
+    group_by(eps_codename) %>% 
+    count(.data[[firstgen_var]]) %>% 
+    ungroup() %>% 
+    rename(firstgen_group = .data[[firstgen_var]]) %>% 
+    filter(!is.na(firstgen_group)) %>% 
+    pivot_wider(
+      names_from = firstgen_group,
+      values_from = n
+    ) %>% 
+    mutate(
+      across(all_of(firstgen_cols), ~ if_else(is.na(.), 0L, as.integer(.)))
+    ) %>% 
+    mutate(
+      all = rowSums(select(., all_of(firstgen_cols))),
+      stu_race_cb = "All",
+      stu_race_cb = as_factor(stu_race_cb)
+    ) %>% 
+    relocate(stu_race_cb)
+  
+  # Counts of first-gen status by race, all EPS
+  df_work_by_race <- df_work %>% 
+    group_by(stu_race_cb) %>%
+    count(.data[[firstgen_var]]) %>% 
+    ungroup() %>% 
+    rename(firstgen_group = .data[[firstgen_var]]) %>% 
+    filter(!is.na(firstgen_group)) %>% 
+    pivot_wider(
+      names_from = firstgen_group,
+      values_from = n
+    ) %>% 
+    mutate(
+      across(all_of(firstgen_cols), ~ if_else(is.na(.), 0L, as.integer(.)))
+    ) %>% 
+    mutate(
+      all = rowSums(select(., all_of(firstgen_cols))),
+      eps_codename = "All"
+    ) %>% 
+    relocate(stu_race_cb, eps_codename)
+  
+  # Counts of first-gen status by race and EPS
+  df_work_by_race_eps <- df_work %>% 
+    group_by(stu_race_cb, eps_codename) %>%
+    count(.data[[firstgen_var]]) %>% 
+    ungroup() %>% 
+    rename(firstgen_group = .data[[firstgen_var]]) %>% 
+    filter(!is.na(firstgen_group)) %>% 
+    pivot_wider(
+      names_from = firstgen_group,
+      values_from = n
+    ) %>% 
+    mutate(
+      across(all_of(firstgen_cols), ~ if_else(is.na(.), 0L, as.integer(.)))
+    ) %>% 
+    mutate(
+      all = rowSums(select(., all_of(firstgen_cols)))
+    )
+  
+  final_df <- bind_rows(
+    df_work_all,
+    df_work_by_eps,
+    df_work_by_race,
+    df_work_by_race_eps
+  ) %>% 
+    mutate(
+      across(
+        all_of(firstgen_cols),
+        ~ (.x / all) * 100,
+        .names = "row_{.col}"
+      )
+    ) %>% 
+    select(-all_of(firstgen_cols)) %>% 
     mutate(
       stu_race_cb = fct_relevel(
         stu_race_cb,
@@ -431,17 +553,13 @@ create_sim_eps_race_firstgen_table <- function(data, ord_nums, eps_codes, exclud
         "Hispanic/Latino",
         "white",
         "two or more races, non-Hispanic",
-        'American Indian/Alaska Native',
-        'Native Hawaiian/Pacific Islander'
+        "American Indian/Alaska Native",
+        "Native Hawaiian/Pacific Islander"
       )
     ) %>%
-    # Then arrange by stu_race_cb and eps_codename
-    arrange(stu_race_cb, eps_codename) 
-  
-  #final_df %>% print(n=60)
+    arrange(stu_race_cb, eps_codename)
   
   return(final_df)
-  
 }
 
 # philly metro area
@@ -507,19 +625,14 @@ race_row_levels <- c(
 )
 
 # First-gen column factor levels (top→bottom)
-# e.g. "All (first-gen known)" at top, then "No college", etc.
 firstgen_col_levels <- c(
   "All (first-gen known)",
-  "No college",
-  "Some college",
+  "First-gen",
   "Not first-gen"
 )
 
-# First-gen row factor levels (top→bottom)
-# e.g. "No college" at the top, then "Some college", then "Not first-gen".
 firstgen_row_levels <- c(
-  "No college",
-  "Some college",
+  "First-gen",
   "Not first-gen"
 )
 
@@ -575,21 +688,25 @@ recode_race <- function(x) {
 recode_firstgen <- function(x) {
   dplyr::recode(
     x,
-    "r_no_col"     = "No college",
-    "r_some_col"   = "Some college",
-    "r_not_first"  = "Not first-gen",
+    "r_first_gen" = "First-gen",
+    "r_no_col" = "No college",
+    "r_some_col" = "Some college",
+    "r_not_first" = "Not first-gen",
     
-    "c_no_col"     = "No college",
-    "c_some_col"   = "Some college",
-    "c_not_first"  = "Not first-gen",
-    "c_known"      = "All (first-gen known)",
+    "c_first_gen" = "First-gen",
+    "c_no_col" = "No college",
+    "c_some_col" = "Some college",
+    "c_not_first" = "Not first-gen",
+    "c_known" = "All (first-gen known)",
     
-    "stu_no_col"   = "No college",
+    "stu_first_gen" = "First-gen",
+    "stu_no_col" = "No college",
     "stu_some_col" = "Some college",
-    "stu_not_first"= "Not first-gen",
-    "stu_known"    = "All (first-gen known)"
+    "stu_not_first" = "Not first-gen",
+    "stu_known" = "All (first-gen known)"
   )
 }
+
 
 ##------------------------------------------
 ## B) Main function with Approach A (top→bottom + fct_rev)
@@ -599,7 +716,11 @@ create_sim_eps_graph <- function(data_graph,
                                  ord_nums_graph,
                                  eps_codes_graph,
                                  variable = c("race", "firstgen"),
-                                 title = "") {
+                                 title = "",
+                                 firstgen_detail = c("collapsed", "disaggregated")) {
+  
+  variable <- match.arg(variable)
+  firstgen_detail <- match.arg(firstgen_detail)
   
   # Match user input to "race" or "firstgen"
   variable <- match.arg(variable)
@@ -685,85 +806,132 @@ create_sim_eps_graph <- function(data_graph,
     row_legend_title <- "Race/ethnicity"   # for the row plot
     
   } else {  # variable == "firstgen"
+    
     table_list <- create_sim_eps_firstgen_table(
-      data      = data_graph,
-      ord_nums  = ord_nums_graph,
-      eps_codes = eps_codes_graph
+      data            = data_graph,
+      ord_nums        = ord_nums_graph,
+      eps_codes       = eps_codes_graph,
+      firstgen_detail = firstgen_detail
     )
     
+    if (firstgen_detail == "collapsed") {
+      
+      row_cols <- c("r_first_gen", "r_not_first")
+      col_cols <- c("c_known", "c_first_gen", "c_not_first")
+      
+      firstgen_row_levels_this <- c(
+        "First-gen",
+        "Not first-gen"
+      )
+      
+      firstgen_col_levels_this <- c(
+        "All (first-gen known)",
+        "First-gen",
+        "Not first-gen"
+      )
+      
+    } else {
+      
+      row_cols <- c("r_no_col", "r_some_col", "r_not_first")
+      col_cols <- c("c_known", "c_no_col", "c_some_col", "c_not_first")
+      
+      firstgen_row_levels_this <- c(
+        "No college",
+        "Some college",
+        "Not first-gen"
+      )
+      
+      firstgen_col_levels_this <- c(
+        "All (first-gen known)",
+        "No college",
+        "Some college",
+        "Not first-gen"
+      )
+    }
+    
     df_r <- table_list[[2]] %>%
-      tidyr::pivot_longer(
-        cols      = c(r_no_col, r_some_col, r_not_first),
+      pivot_longer(
+        cols      = all_of(row_cols),
         names_to  = "group",
         values_to = "value"
       ) %>%
-      dplyr::mutate(
+      mutate(
         group = recode_firstgen(group),
-        group = factor(group, levels = firstgen_row_levels)
+        group = factor(group, levels = firstgen_row_levels_this)
       )
     
     all_eps <- unique(df_r$eps_codename)
     new_eps <- move_all_to_top_in_row(all_eps)
+    
     df_r <- df_r %>%
-      dplyr::mutate(
+      mutate(
         eps_codename = factor(eps_codename, levels = new_eps)
       )
     
     df_c <- table_list[[3]] %>%
-      tidyr::pivot_longer(
-        cols      = c(c_known, c_no_col, c_some_col, c_not_first),
+      pivot_longer(
+        cols      = all_of(col_cols),
         names_to  = "group",
         values_to = "value"
       ) %>%
-      dplyr::filter(eps_codename != "All") %>%
-      dplyr::mutate(
-        group       = recode_firstgen(group),
-        group       = factor(group, levels = firstgen_col_levels),
+      filter(eps_codename != "All") %>%
+      mutate(
+        group = recode_firstgen(group),
+        group = factor(group, levels = firstgen_col_levels_this),
         eps_codename = factor(eps_codename)
       ) %>%
-      dplyr::mutate(
-        group       = forcats::fct_rev(group),
+      mutate(
+        group = forcats::fct_rev(group),
         eps_codename = forcats::fct_rev(eps_codename)
       )
     
-    totals <- table_list[[1]] %>%
-      dplyr::filter(eps_codename == "All") %>%
-      tidyr::pivot_longer(
-        cols      = c(stu_known, stu_no_col, stu_some_col, stu_not_first),
-        names_to  = "group",
-        values_to = "total_group"
-      ) %>%
-      dplyr::select(-eps_codename) %>%
-      dplyr::mutate(
-        group       = recode_firstgen(group),
-        total_group = scales::comma(total_group, accuracy = 1)
-      )
+    if (firstgen_detail == "collapsed") {
+      
+      totals <- table_list[[1]] %>%
+        filter(eps_codename == "All") %>%
+        pivot_longer(
+          cols      = c(stu_known, stu_first_gen, stu_not_first),
+          names_to  = "group",
+          values_to = "total_group"
+        ) %>%
+        select(-stu_all, -stu_unknown, -eps_codename) %>%
+        mutate(
+          group = recode_firstgen(group),
+          total_group = scales::comma(total_group, accuracy = 1)
+        )
+      
+    } else {
+      
+      totals <- table_list[[1]] %>%
+        filter(eps_codename == "All") %>%
+        pivot_longer(
+          cols      = c(stu_known, stu_no_col, stu_some_col, stu_not_first),
+          names_to  = "group",
+          values_to = "total_group"
+        ) %>%
+        select(-stu_all, -stu_unknown, -eps_codename) %>%
+        mutate(
+          group = recode_firstgen(group),
+          total_group = scales::comma(total_group, accuracy = 1)
+        )
+    }
     
     df_c <- df_c %>%
-      dplyr::left_join(totals, by = "group") %>%
-      dplyr::mutate(
-        group    = factor(group, levels = rev(firstgen_col_levels)),
-        label_str = paste0(group, "\n(N = ", total_group, ")")
+      left_join(totals, by = "group") %>%
+      mutate(
+        group = factor(group, levels = rev(firstgen_col_levels_this)),
+        group_label = factor(
+          paste0(group, "\n(N = ", total_group, ")"),
+          levels = rev(
+            paste0(firstgen_col_levels_this, "\n(N = ", totals$total_group, ")")
+          )
+        )
       )
     
-    label_levels <- rev(
-      sapply(firstgen_col_levels, function(g) {
-        val <- totals %>%
-          dplyr::filter(group == g) %>%
-          dplyr::pull(total_group)
-        paste0(g, "\n(N = ", val, ")")
-      })
-    )
-    
-    df_c <- df_c %>%
-      dplyr::mutate(
-        group_label = factor(label_str, levels = label_levels)
-      )
-    
-    row_plot_title   <- "First-Gen Distribution Within Each EPS Code (Row %)"
-    col_plot_title   <- "Distribution of First-Gen Groups Across EPS Codes (Column %)"
-    fill_legend      <- "Geomarket"          # for the column plot
-    row_legend_title <- "Parental education" # for the row plot
+    row_plot_title   <- "First-generation Status Within Each EPS Code (Row %)"
+    col_plot_title   <- "Distribution of Each First-generation Status Group Across EPS Codes (Column %)"
+    fill_legend      <- "Geomarket"
+    row_legend_title <- "First-generation status"
   }
   
   # (A) Append the user-supplied title if provided
@@ -913,23 +1081,69 @@ custom_race_labels <- c(
 
 
 create_race_by_firstgen_graph <- function(
-    data_graph,
-    ord_nums_graph,
-    eps_codes_graph,
-    metro_name = '',
-    exclude_race_graph = c(1,8,12),
-    title_suf = ''
+    data,
+    ord_nums,
+    eps_codes,
+    metro_name,
+    exclude_race = c(1, 8),
+    title_suf = "",
+    firstgen_detail = c("collapsed", "disaggregated")
 ) {
   
+  firstgen_detail <- match.arg(firstgen_detail)
+  
+  # ----------------------------------------------------------
+  # 0) Set first-gen columns and labels
+  # ----------------------------------------------------------
+  
+  if (firstgen_detail == "collapsed") {
+    
+    firstgen_cols <- c("row_first_gen", "row_not_first_gen")
+    
+    custom_group_order <- c(
+      "all",
+      "row_first_gen",
+      "row_not_first_gen"
+    )
+    
+    custom_group_labels <- c(
+      "All",
+      "First-gen",
+      "Not first-gen"
+    )
+    
+  } else {
+    
+    firstgen_cols <- c("row_no_col", "row_some_col", "row_not_first_gen")
+    
+    custom_group_order <- c(
+      "all",
+      "row_no_col",
+      "row_some_col",
+      "row_not_first_gen"
+    )
+    
+    custom_group_labels <- c(
+      "All",
+      "No college",
+      "Some college",
+      "Not first-gen"
+    )
+  }
+  
+  # ----------------------------------------------------------
   # 1) Build the main data frame
+  # ----------------------------------------------------------
+  
   df <- create_sim_eps_race_firstgen_table(
-    data      = data_graph, 
-    ord_nums  = ord_nums_graph, 
-    eps_codes = eps_codes_graph,
-    exclude_race = exclude_race_graph
+    data            = data, 
+    ord_nums        = ord_nums, 
+    eps_codes       = eps_codes,
+    exclude_race    = exclude_race,
+    firstgen_detail = firstgen_detail
   ) %>% 
     pivot_longer(
-      cols      = c(all, row_no_col, row_some_col, row_not_first_gen),
+      cols      = c("all", all_of(firstgen_cols)),
       names_to  = "group",
       values_to = "value"
     ) %>%
@@ -946,18 +1160,26 @@ create_race_by_firstgen_graph <- function(
       ),
       eps_codename = factor(
         eps_codename,
-        levels = rev(unique(eps_codename))  # reverse the unique order
+        levels = rev(unique(eps_codename))
       )
     )
   
-  # 2) Separate the "All" group (totals) from the subgroups
-  df_plot <- df %>% filter(group != "All")
+  # ----------------------------------------------------------
+  # 2) Separate the "All" group totals from the subgroups
+  # ----------------------------------------------------------
+  
+  df_plot <- df %>% 
+    filter(group != "All")
+  
   df_totals <- df %>%
     filter(group == "All") %>%
     distinct(stu_race_cb, eps_codename, value) %>%
     rename(total_n = value)
   
+  # ----------------------------------------------------------
   # 3) Attach total_n to each row in df_plot
+  # ----------------------------------------------------------
+  
   df_plot <- df_plot %>%
     left_join(df_totals, by = c("stu_race_cb", "eps_codename")) %>%
     distinct() %>%
@@ -969,12 +1191,18 @@ create_race_by_firstgen_graph <- function(
       eps_label_factor = factor(eps_label, levels = rev(unique(eps_label)))
     )
   
+  # ----------------------------------------------------------
   # 4) Create the ggplot
-  plot <- ggplot(df_plot, aes(
-    x    = eps_label_factor,
-    y    = value,
-    fill = group
-  )) +
+  # ----------------------------------------------------------
+  
+  plot <- ggplot(
+    df_plot,
+    aes(
+      x    = eps_label_factor,
+      y    = value,
+      fill = group
+    )
+  ) +
     geom_bar(stat = "identity", position = position_fill(reverse = TRUE)) +
     coord_flip(clip = "off") +
     facet_grid(
@@ -1005,10 +1233,13 @@ create_race_by_firstgen_graph <- function(
       axis.text.x       = element_text(size = 12)
     )
   
+  # ----------------------------------------------------------
   # 5) Figure file name: use underscores
+  # ----------------------------------------------------------
+  
   if (is.na(metro_name) || metro_name == "") {
     metro <- str_replace(
-      deparse(substitute(eps_codes_graph)),
+      deparse(substitute(eps_codes)),
       pattern = "_eps_codes",
       replacement = ""
     )
@@ -1020,22 +1251,22 @@ create_race_by_firstgen_graph <- function(
     "rq2b", 
     metro,
     "order",
-    str_c(ord_nums_graph, collapse = "_"),
+    str_c(ord_nums, collapse = "_"),
     "race_by_firstgen",
     sep = "_"
   )
   
   writeLines(plot_name)
   
-  # 6) Build the figure title with a "friendly" metro name
-  #    i.e. remove underscores, apply Title Case
+  # ----------------------------------------------------------
+  # 6) Build the figure title with a friendly metro name
+  # ----------------------------------------------------------
+  
   friendly_metro_name <- gsub("_", " ", metro_name, fixed = TRUE)
   friendly_metro_name <- tools::toTitleCase(friendly_metro_name)
   
-  # If 'title_suf' is non-empty, we prepend ", "
   suffix_part <- if (nzchar(title_suf)) str_c(", ", title_suf) else ""
   
-  # If friendly_metro_name == "Bay Area", omit " area"
   if (friendly_metro_name == "Bay Area") {
     figure_title <- str_c(
       "First-generation status by race for ",
@@ -1054,7 +1285,10 @@ create_race_by_firstgen_graph <- function(
   
   writeLines(figure_title)
   
-  # 7) Write out to .txt
+  # ----------------------------------------------------------
+  # 7) Write title
+  # ----------------------------------------------------------
+  
   writeLines(
     figure_title,
     file.path(graphs_dir, "rq2b", str_c(plot_name, "_title.txt"))
@@ -1063,6 +1297,7 @@ create_race_by_firstgen_graph <- function(
   # ----------------------------------------------------------
   # 8) Save the plot
   # ----------------------------------------------------------
+  
   ggsave(
     filename = file.path(graphs_dir, "rq2b", str_c(plot_name, ".png")),
     plot     = plot,
@@ -1072,39 +1307,30 @@ create_race_by_firstgen_graph <- function(
   )
   
   # ----------------------------------------------------------
-  # 9) Notes: We'll now retrieve the "figure_note" from orders_df,
-  #    matching our ord_nums_graph if possible, and append after
-  #    existing text (with a period + space).
+  # 9) Notes
   # ----------------------------------------------------------
   
-  # Build the default lines
   note_text <- c(
     "Figure Notes:",
     "- Excludes students who have missing values for race or parental education"
   )
   
-  # 9-A) Attempt to retrieve the figure_note for these specific order(s).
   if (exists("orders_df", envir = .GlobalEnv)) {
-    # Grab the global orders_df
-    orders_df_global <- get("orders_df", envir = .GlobalEnv)
     
-    # Build the underscore version from ord_nums_graph
-    orders_str <- str_c(ord_nums_graph, collapse = "_")
+    orders_df_global <- get("orders_df", envir = .GlobalEnv)
+    orders_str <- str_c(ord_nums, collapse = "_")
     
     row_match <- orders_df_global %>%
-      dplyr::filter(order_ids == orders_str)
+      filter(order_ids == orders_str)
     
     if (nrow(row_match) > 0) {
       figure_note_local <- row_match$figure_note[1]
-      # Append the figure note with ". " preceding it
       note_text[2] <- str_c(note_text[2], ". ", figure_note_local)
     }
   }
   
-  # Optionally, add a final period if you want
   note_text <- str_c(note_text, ".")
   
-  # 9-B) Write out the final notes
   writeLines(
     note_text,
     file.path(graphs_dir, "rq2b", str_c(plot_name, "_note.txt"))
@@ -1112,8 +1338,6 @@ create_race_by_firstgen_graph <- function(
   
   return(plot)
 }
-
-
 #create_race_by_firstgen_graph(data_graph,ord_nums_graph,eps_codes_graph,metro_name = '',exclude_race_graph = c(1,8,12),title_suf = '')
   
 #create_race_by_firstgen_graph(lists_orders_zip_hs_df_sf, c('487984'), chi_eps_codes, 'chicago', exclude_race = c(1,8,12), title_suf = ', SAT score 1020 - 1150')
