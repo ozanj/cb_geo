@@ -1,0 +1,2 @@
+Figure Notes:
+- Each lollipop shows the share of a racial/ethnic × first-generation subgroup contributed by a Geomarket. For each racial/ethnic group, Geomarkets are sorted by the first-generation contribution share. Excludes students with missing values for race/ethnicity or first-generation status. Figure excludes Two+, non-Hispanic; AIAN, non-Hispanic; and NHPI, non-Hispanic groups. Order number 448427 (ordered 1/8/2019): HS class 2020; selected Geomarkets; PSAT 1190 - 1260

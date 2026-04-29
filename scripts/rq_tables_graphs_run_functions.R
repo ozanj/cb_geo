@@ -674,6 +674,145 @@ for (m in unique_metros) {
 
 
 ############################################################
+# Part #2B) Create RQ2 race x first-gen contribution plots
+#           Two-lollipop version
+############################################################
+
+# These plots answer:
+# Where do first-generation and non-first-generation students
+# from each racial/ethnic group come from?
+
+dir.create(
+  file.path(graphs_dir, "rq2"),
+  showWarnings = FALSE,
+  recursive = TRUE
+)
+
+# Main student-list orders only.
+# Exclude the special AI/AN order from the regular RQ2 race x first-gen plots.
+rq2_rfgen_orders_df <- orders_df %>%
+  filter(
+    order_ids != "487927",
+    metro != "houston"
+  )
+
+for (i in seq_len(nrow(rq2_rfgen_orders_df))) {
+  
+  row_i <- rq2_rfgen_orders_df[i, ]
+  
+  metro_this <- row_i$metro
+  order_ids_this <- row_i$order_ids
+  test_range_this <- row_i$test_range
+  figure_note_this <- row_i$figure_note
+  
+  message(
+    "Creating RQ2 race x first-gen contribution plot for: ",
+    metro_this,
+    ", order group ",
+    order_ids_this
+  )
+  
+  # ----------------------------------------------------------
+  # 1) Build inputs
+  # ----------------------------------------------------------
+  
+  ord_nums_this <- stringr::str_split(order_ids_this, "_")[[1]]
+  eps_codes_this <- get(row_i$eps_codes, envir = .GlobalEnv)
+  
+  # ----------------------------------------------------------
+  # 2) Create plotting data
+  # ----------------------------------------------------------
+  
+  plot_df <- create_rq2_race_firstgen_contribution_df(
+    data       = lists_orders_zip_hs_df_sf,
+    ord_nums   = ord_nums_this,
+    eps_codes  = eps_codes_this,
+    metro      = metro_this,
+    order_ids  = order_ids_this,
+    test_range = test_range_this,
+    exclude_race = c(1, 8, 12)
+  )
+  
+  # ----------------------------------------------------------
+  # 3) Create plot
+  # ----------------------------------------------------------
+  
+  plot_obj <- create_rq2_race_firstgen_two_lollipop_plot(
+    plot_df = plot_df
+  )
+  
+  # ----------------------------------------------------------
+  # 4) Stable file name
+  # ----------------------------------------------------------
+  
+  plot_name <- stringr::str_c(
+    "rq2_",
+    metro_this,
+    "_race_firstgen_contribution_plot_",
+    order_ids_this
+  )
+  
+  # ----------------------------------------------------------
+  # 5) Dynamic plot height
+  # ----------------------------------------------------------
+  
+  n_geomarkets <- plot_df %>%
+    distinct(eps_codename) %>%
+    nrow()
+  
+  plot_height <- max(
+    8,
+    4.5 + 0.50 * n_geomarkets
+  )
+  
+  ggsave(
+    filename = file.path(graphs_dir, "rq2", stringr::str_c(plot_name, ".png")),
+    plot     = plot_obj,
+    width    = 14,
+    height   = plot_height,
+    bg       = "white"
+  )
+  
+  # ----------------------------------------------------------
+  # 6) Save title/subtitle as .tex sidecar
+  # ----------------------------------------------------------
+  
+  figure_title <- attr(plot_obj, "figure_title")
+  figure_subtitle <- attr(plot_obj, "figure_subtitle")
+  
+  title_tex <- c(
+    stringr::str_c("#### ", figure_title),
+    "",
+    stringr::str_c("*", figure_subtitle, "*")
+  )
+  
+  writeLines(
+    title_tex,
+    file.path(graphs_dir, "rq2", stringr::str_c(plot_name, "_title.tex"))
+  )
+  
+  # ----------------------------------------------------------
+  # 7) Save note
+  # ----------------------------------------------------------
+  
+  note_text <- c(
+    "Figure Notes:",
+    stringr::str_c(
+      "- Each lollipop shows the share of a racial/ethnic × first-generation subgroup contributed by a Geomarket. ",
+      "For each racial/ethnic group, Geomarkets are sorted by the first-generation contribution share. ",
+      "Excludes students with missing values for race/ethnicity or first-generation status. ",
+      "Figure excludes Two+, non-Hispanic; AIAN, non-Hispanic; and NHPI, non-Hispanic groups. ",
+      figure_note_this
+    )
+  )
+  
+  writeLines(
+    note_text,
+    file.path(graphs_dir, "rq2", stringr::str_c(plot_name, "_note.txt"))
+  )
+}
+
+############################################################
 # Part #3) create_race_by_firstgen_graph() loop
 ############################################################
 

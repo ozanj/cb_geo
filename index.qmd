@@ -883,6 +883,29 @@ for (m in metros) {
         }
       }
 
+      # -------------------------------------------------------
+      # RQ2C: Race x first-gen contribution plots
+      # -------------------------------------------------------
+      
+      for (order_id in orders_for_m) {
+      
+        writeLines(str_c(
+          "### Research question ",
+          rq_num,
+          " {.hide}"
+        ))
+      
+        graph_type_rfgen_contrib <- str_c(
+          "race_firstgen_contribution_plot_",
+          order_id
+        )
+      
+        insert_figure(
+          rq = "rq2",
+          metro = m,
+          graph_type = graph_type_rfgen_contrib
+        )
+      }      
     # ---------------------------------------------
     # RQ3 Logic: What happens when a Geomarket is excluded?
     #

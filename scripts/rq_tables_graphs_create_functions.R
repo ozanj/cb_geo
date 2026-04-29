@@ -570,7 +570,374 @@ create_sim_eps_race_firstgen_table <- function(
 #create_sim_eps_race_firstgen_table(data = lists_orders_zip_hs_df_sf, ord_nums = c('487984'), eps_codes = chi_eps_codes, exclude_race = c(1,8,12)) %>% print(n=70) # 
 #lists_orders_zip_hs_df_sf %>% as_tibble() %>% count(stu_race_cb)
 
+
+############################################################
+# CREATE RQ2 RACE X FIRST-GEN CONTRIBUTION DATA + GRAPH
+############################################################
+
+############
+############ function to create data for two lollipop plot
+############
+
+create_rq2_race_firstgen_contribution_df <- function(
+    data,
+    ord_nums,
+    eps_codes,
+    metro = NULL,
+    order_ids = NULL,
+    test_range = NULL,
+    exclude_race = c(1, 8, 12),
+    race_keep = c(
+      "White, non-Hispanic",
+      "Asian, non-Hispanic",
+      "Black, non-Hispanic",
+      "Hispanic"
+    )
+) {
+  
+  # ----------------------------------------------------------
+  # 1) Build underlying race x first-gen table
+  # ----------------------------------------------------------
+  
+  df_raw <- create_sim_eps_race_firstgen_table(
+    data            = data,
+    ord_nums        = ord_nums,
+    eps_codes       = eps_codes,
+    exclude_race    = exclude_race,
+    firstgen_detail = "collapsed"
+  )
+  
+  # ----------------------------------------------------------
+  # 2) Recode race labels and keep relevant rows
+  # ----------------------------------------------------------
+  
+  df_plot <- df_raw %>%
+    dplyr::mutate(
+      race = dplyr::recode(
+        as.character(stu_race_cb),
+        "white" = "White, non-Hispanic",
+        "Asian" = "Asian, non-Hispanic",
+        "Black/African American" = "Black, non-Hispanic",
+        "Hispanic/Latino" = "Hispanic",
+        "two or more races, non-Hispanic" = "Two+, non-Hispanic",
+        "American Indian/Alaska Native" = "AIAN, non-Hispanic",
+        "Native Hawaiian/Pacific Islander" = "NHPI, non-Hispanic",
+        "All" = "All"
+      )
+    ) %>%
+    dplyr::filter(
+      race %in% race_keep,
+      eps_codename != "All"
+    )
+  
+  # ----------------------------------------------------------
+  # 3) Convert within-Geomarket composition back into counts
+  #    and then calculate contribution shares
+  # ----------------------------------------------------------
+  
+  df_plot <- df_plot %>%
+    dplyr::mutate(
+      fg_n = all * (row_first_gen / 100),
+      nonfg_n = all * (row_not_first_gen / 100)
+    ) %>%
+    dplyr::group_by(race) %>%
+    dplyr::mutate(
+      fg_total = sum(fg_n, na.rm = TRUE),
+      nonfg_total = sum(nonfg_n, na.rm = TRUE),
+      fg_pct = 100 * fg_n / fg_total,
+      nonfg_pct = 100 * nonfg_n / nonfg_total
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(
+      race = factor(race, levels = race_keep),
+      facet_label = stringr::str_c(
+        race,
+        "\nFirst-gen n = ", scales::comma(round(fg_total)),
+        " | Not first-gen n = ", scales::comma(round(nonfg_total))
+      ),
+      metro = metro,
+      order_ids = order_ids,
+      test_range = test_range
+    )
+  
+  return(df_plot)
+}
+
+############
+############ function to create two lollipop plot
+############
+
+create_rq2_race_firstgen_two_lollipop_plot <- function(
+    plot_df,
+    title = NULL,
+    subtitle = NULL,
+    metro_label = NULL,
+    point_size = 1.2,
+    line_width = 0.45,
+    pair_nudge = 0.13,
+    show_value_labels = FALSE
+) {
+  
+  # ----------------------------------------------------------
+  # 1) Order Geomarkets within race by first-gen contribution
+  # ----------------------------------------------------------
+  
+  df_ordered <- plot_df %>%
+    dplyr::group_by(race) %>%
+    dplyr::arrange(dplyr::desc(fg_pct), .by_group = TRUE) %>%
+    dplyr::mutate(
+      geomarket_order = dplyr::row_number()
+    ) %>%
+    dplyr::ungroup()
+  
+  # ----------------------------------------------------------
+  # 2) Order facet labels
+  # ----------------------------------------------------------
+  
+  facet_levels <- df_ordered %>%
+    dplyr::distinct(race, facet_label) %>%
+    dplyr::arrange(match(
+      race,
+      c(
+        "White, non-Hispanic",
+        "Asian, non-Hispanic",
+        "Black, non-Hispanic",
+        "Hispanic"
+      )
+    )) %>%
+    dplyr::pull(facet_label)
+  
+  df_ordered <- df_ordered %>%
+    dplyr::mutate(
+      facet_label = factor(facet_label, levels = facet_levels)
+    )
+  
+  # ----------------------------------------------------------
+  # 3) Create one numeric y-base row per Geomarket
+  #    This avoids nudging problems on a discrete y-axis
+  # ----------------------------------------------------------
+  
+  y_lookup <- df_ordered %>%
+    dplyr::select(race, facet_label, eps_codename, geomarket_order) %>%
+    dplyr::distinct() %>%
+    dplyr::arrange(facet_label, geomarket_order) %>%
+    dplyr::group_by(facet_label) %>%
+    dplyr::mutate(
+      y_base = dplyr::n() - dplyr::row_number() + 1
+    ) %>%
+    dplyr::ungroup()
+  
+  df_ordered <- df_ordered %>%
+    dplyr::left_join(
+      y_lookup,
+      by = c("race", "facet_label", "eps_codename", "geomarket_order")
+    )
+  
+  # ----------------------------------------------------------
+  # 4) Long format: first-gen and not-first-gen
+  # ----------------------------------------------------------
+  
+  df_long <- df_ordered %>%
+    dplyr::select(
+      race,
+      facet_label,
+      eps_codename,
+      y_base,
+      fg_pct,
+      nonfg_pct
+    ) %>%
+    tidyr::pivot_longer(
+      cols = c(fg_pct, nonfg_pct),
+      names_to = "firstgen_status",
+      values_to = "contribution_pct"
+    ) %>%
+    dplyr::mutate(
+      firstgen_status = dplyr::recode(
+        firstgen_status,
+        "fg_pct" = "First-gen",
+        "nonfg_pct" = "Not first-gen"
+      ),
+      firstgen_status = factor(
+        firstgen_status,
+        levels = c("First-gen", "Not first-gen")
+      ),
+      y_plot = dplyr::if_else(
+        firstgen_status == "First-gen",
+        y_base + pair_nudge,
+        y_base - pair_nudge
+      ),
+      value_label = stringr::str_c(
+        scales::number(contribution_pct, accuracy = 0.1),
+        "%"
+      )
+    )
+  
+  df_fg <- df_long %>%
+    dplyr::filter(firstgen_status == "First-gen")
+  
+  df_nonfg <- df_long %>%
+    dplyr::filter(firstgen_status == "Not first-gen")
+  
+  # ----------------------------------------------------------
+  # 5) Y-axis breaks and labels
+  #    Show Geomarket name once, at the base row
+  # ----------------------------------------------------------
+  
+  y_breaks_df <- y_lookup %>%
+    dplyr::arrange(y_base)
+  
+  y_breaks <- y_breaks_df$y_base
+  y_labels <- y_breaks_df$eps_codename
+  names(y_labels) <- y_breaks
+  
+  # ----------------------------------------------------------
+  # 6) Title/subtitle defaults
+  # ----------------------------------------------------------
+  
+  if (is.null(metro_label)) {
+    
+    metro_label <- plot_df$metro[1] %>%
+      stringr::str_replace_all("_", " ") %>%
+      tools::toTitleCase()
+    
+    if (!is.na(metro_label) && metro_label != "Bay Area") {
+      metro_label <- stringr::str_c(metro_label, " area")
+    }
+  }
+  
+  if (is.null(title)) {
+    title <- stringr::str_c(
+      "Where do first-generation and non-first-generation prospects come from, ",
+      metro_label,
+      "?"
+    )
+  }
+  
+  if (is.null(subtitle)) {
+    
+    test_range_this <- plot_df$test_range[1]
+    
+    subtitle <- stringr::str_c(
+      test_range_this,
+      " — share of each race × first-generation subgroup contributed by each Geomarket"
+    )
+  }
+  
+  # ----------------------------------------------------------
+  # 7) Build plot
+  # ----------------------------------------------------------
+  
+  plot <- ggplot2::ggplot() +
+    
+    # First-gen lollipop
+    ggplot2::geom_segment(
+      data = df_fg,
+      ggplot2::aes(
+        x = 0,
+        xend = contribution_pct,
+        y = y_plot,
+        yend = y_plot,
+        color = firstgen_status
+      ),
+      linewidth = line_width
+    ) +
+    ggplot2::geom_point(
+      data = df_fg,
+      ggplot2::aes(
+        x = contribution_pct,
+        y = y_plot,
+        color = firstgen_status
+      ),
+      size = point_size
+    ) +
+    
+    # Not first-gen lollipop
+    ggplot2::geom_segment(
+      data = df_nonfg,
+      ggplot2::aes(
+        x = 0,
+        xend = contribution_pct,
+        y = y_plot,
+        yend = y_plot,
+        color = firstgen_status
+      ),
+      linewidth = line_width
+    ) +
+    ggplot2::geom_point(
+      data = df_nonfg,
+      ggplot2::aes(
+        x = contribution_pct,
+        y = y_plot,
+        color = firstgen_status
+      ),
+      size = point_size
+    ) +
+    
+    ggplot2::facet_wrap(
+      ~ facet_label,
+      scales = "free_y",
+      ncol = 2
+    ) +
+    ggplot2::scale_y_continuous(
+      breaks = y_breaks,
+      labels = y_labels,
+      expand = ggplot2::expansion(add = c(0.6, 0.6))
+    ) +
+    ggplot2::scale_x_continuous(
+      labels = function(x) {
+        stringr::str_c(scales::number(x, accuracy = 1), "%")
+      }
+    ) +
+    ggplot2::scale_color_manual(
+      values = c(
+        "First-gen" = "#0072B2",
+        "Not first-gen" = "#D55E00"
+      )
+    ) +
+    ggplot2::labs(
+      x = "Share of subgroup contributed by Geomarket",
+      y = NULL,
+      color = NULL
+    ) +
+    ggplot2::theme_minimal(base_size = 11) +
+    ggplot2::theme(
+      panel.grid.minor = ggplot2::element_blank(),
+      panel.grid.major.y = ggplot2::element_blank(),
+      strip.text = ggplot2::element_text(face = "bold", hjust = 0),
+      axis.text.y = ggplot2::element_text(size = 8),
+      axis.text.x = ggplot2::element_text(size = 10),
+      axis.title.x = ggplot2::element_text(size = 11),
+      legend.position = "bottom"
+    )
+  
+  if (show_value_labels) {
+    
+    plot <- plot +
+      ggplot2::geom_text(
+        data = df_long,
+        ggplot2::aes(
+          x = contribution_pct,
+          y = y_plot,
+          label = value_label,
+          color = firstgen_status
+        ),
+        hjust = -0.15,
+        size = 3,
+        show.legend = FALSE
+      ) +
+      ggplot2::coord_cartesian(clip = "off")
+  }
+  
+  # Store title/subtitle as metadata
+  attr(plot, "figure_title") <- title
+  attr(plot, "figure_subtitle") <- subtitle
+  
+  return(plot)
+}
+
+######################################
 ############## CREATE TABLE FOR COMPOSITION OF FILTERING OUT PARTICULAR GEOMARKETS
+######################################
 
 create_rq3_eps_exclusion_table <- function(
     data,
@@ -1279,229 +1646,6 @@ create_rq3_firstgen_dualaxis_plot <- function(
 ###########
 ###########
   
-create_rq3_firstgen_dualaxis_plot <- function(
-    rq3_df,
-    order_ids_this,
-    title = NULL,
-    subtitle = NULL,
-    include_n_in_label = FALSE,
-    include_removed_pct_in_label = FALSE,
-    point_label = c("pct", "delta", "none")
-) {
-  
-  point_label <- match.arg(point_label)
-  
-  # ----------------------------------------------------------
-  # 1) Filter to one order group and the first-gen group
-  # ----------------------------------------------------------
-  
-  df_plot <- rq3_df %>%
-    filter(
-      order_ids == order_ids_this,
-      composition_type == "firstgen",
-      group == "First-gen"
-    )
-  
-  if (nrow(df_plot) == 0) {
-    stop("No rows found. Check order_ids_this and confirm rq3_df is the firstgen table.")
-  }
-  
-  baseline_pct <- df_plot %>%
-    filter(scenario_type == "all") %>%
-    pull(pct) %>%
-    unique()
-  
-  if (length(baseline_pct) != 1) {
-    stop("Could not identify a unique full-pool baseline.")
-  }
-  
-  df_plot <- df_plot %>%
-    filter(scenario_type == "exclusion") %>%
-    mutate(
-      delta_pp = pct - baseline_pct,
-      scenario_label_clean = as.character(excluded_eps_codename)
-    )
-  
-  # ----------------------------------------------------------
-  # 2) Build y-axis labels
-  # ----------------------------------------------------------
-  
-  df_plot <- df_plot %>%
-    mutate(
-      scenario_label_n = case_when(
-        include_n_in_label & include_removed_pct_in_label ~
-          str_c(
-            scenario_label_clean,
-            " (n=", scales::comma(denom),
-            "; removed ", scales::percent(removed_pct / 100, accuracy = 1),
-            ")"
-          ),
-        
-        include_n_in_label & !include_removed_pct_in_label ~
-          str_c(
-            scenario_label_clean,
-            " (n=", scales::comma(denom), ")"
-          ),
-        
-        !include_n_in_label & include_removed_pct_in_label ~
-          str_c(
-            scenario_label_clean,
-            " (removed ", scales::percent(removed_pct / 100, accuracy = 1),
-            ")"
-          ),
-        
-        TRUE ~ scenario_label_clean
-      )
-    )
-  
-  scenario_levels <- df_plot %>%
-    arrange(delta_pp) %>%
-    pull(scenario_label_n)
-  
-  # Most negative change appears at top
-  df_plot <- df_plot %>%
-    mutate(
-      scenario_label_n = factor(
-        scenario_label_n,
-        levels = rev(scenario_levels)
-      )
-    )
-  
-  # ----------------------------------------------------------
-  # 3) Title/subtitle defaults
-  # ----------------------------------------------------------
-  
-  if (is.null(title)) {
-    
-    metro_name <- df_plot$metro[1] %>%
-      str_replace_all("_", " ") %>%
-      tools::toTitleCase()
-    
-    if (metro_name == "Bay Area") {
-      title <- str_c(
-        "Change in first-gen share after excluding each Geomarket, ",
-        metro_name
-      )
-    } else {
-      title <- str_c(
-        "Change in first-gen share after excluding each Geomarket, ",
-        metro_name,
-        " area"
-      )
-    }
-  }
-  
-  if (is.null(subtitle)) {
-    subtitle <- str_c(
-      df_plot$test_range[1],
-      " \u2014 full-pool baseline = ",
-      scales::number(baseline_pct, accuracy = 0.1),
-      "% first-gen"
-    )
-  }
-  
-  # ----------------------------------------------------------
-  # 4) Axis limits
-  # ----------------------------------------------------------
-  
-  x_vals <- c(df_plot$delta_pp, 0)
-  x_min <- min(x_vals, na.rm = TRUE)
-  x_max <- max(x_vals, na.rm = TRUE)
-  x_pad <- max(0.75, (x_max - x_min) * 0.12)
-  
-  x_limits <- c(x_min - x_pad, x_max + x_pad)
-  
-  # ----------------------------------------------------------
-  # 5) Optional point labels
-  # ----------------------------------------------------------
-  
-  df_plot <- df_plot %>%
-    mutate(
-      point_label_text = case_when(
-        point_label == "pct" ~ str_c(scales::number(pct, accuracy = 0.1), "%"),
-        point_label == "delta" & delta_pp > 0 ~ str_c("+", scales::number(delta_pp, accuracy = 0.1)),
-        point_label == "delta" ~ scales::number(delta_pp, accuracy = 0.1),
-        TRUE ~ NA_character_
-      ),
-      hjust_val = if_else(delta_pp >= 0, -0.15, 1.15)
-    )
-  
-  # ----------------------------------------------------------
-  # 6) Plot
-  # ----------------------------------------------------------
-  
-  plot <- ggplot(
-    df_plot,
-    aes(
-      x = delta_pp,
-      y = scenario_label_n
-    )
-  ) +
-    geom_vline(
-      xintercept = 0,
-      linetype = "dashed",
-      linewidth = 0.6
-    ) +
-    geom_segment(
-      aes(
-        x = 0,
-        xend = delta_pp,
-        y = scenario_label_n,
-        yend = scenario_label_n
-      ),
-      linewidth = 0.8
-    ) +
-    geom_point(size = 2.8) +
-    scale_x_continuous(
-      limits = x_limits,
-      labels = function(x) {
-        ifelse(
-          x > 0,
-          str_c("+", scales::number(x, accuracy = 0.1)),
-          scales::number(x, accuracy = 0.1)
-        )
-      },
-      sec.axis = sec_axis(
-        ~ . + baseline_pct,
-        name = "First-gen share of remaining visible pool (%)",
-        labels = function(x) scales::number(x, accuracy = 0.1)
-      )
-    ) +
-    labs(
-      title = title,
-      subtitle = subtitle,
-      x = "Percentage-point change from full-pool baseline",
-      y = NULL
-    ) +
-    theme_minimal() +
-    theme(
-      plot.title = element_text(size = 16, face = "bold"),
-      plot.subtitle = element_text(size = 13),
-      axis.text.y = element_text(size = 12),
-      axis.text.x = element_text(size = 11),
-      axis.title.x.top = element_text(size = 12, face = "bold"),
-      axis.text.x.top = element_text(size = 11),
-      panel.grid.major.y = element_blank(),
-      panel.grid.minor = element_blank()
-    )
-  
-  if (point_label != "none") {
-    plot <- plot +
-      geom_text(
-        aes(
-          label = point_label_text,
-          hjust = hjust_val
-        ),
-        size = 3.6
-      )
-  }
-  
-  return(plot)
-}
-
-##########
-##########
-##########
 
 create_rq3_race_delta_facet_plot <- function(
     rq3_df,
