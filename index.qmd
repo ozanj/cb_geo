@@ -614,21 +614,25 @@ insert_rq2_table <- function(metro, table_type, rq_name = 'rq2') {
     "san_diego"
   )
 
-rqs <- c("rq1", "rq2", "rq3")
+rqs <- c("rq0", "rq1", "rq2", "rq3")
 
-# For RQ1, we have two plot types: "race" and "ses"
-graph_types_rq1 <- c("race", "ses")
+# Metros where student-list purchase results should not be displayed
+# because the orders used additional filters that make interpretation misleading.
+skip_student_list_metros <- c("houston")
 
-# For RQ2, we have two plot types: "race" and "firstgen"
-graph_types_rq2 <- c("race", "firstgen")
+# Old RQ1 outputs, now displayed as RQ0
+graph_types_rq0 <- c("race", "ses")
 
-# For RQ3, we currently have two plot types: "race" and "firstgen"
+# Old RQ2 graph types, now split across displayed RQ1 and RQ2
+graph_types_rq_composition <- c("race", "firstgen")
+
+# RQ3 exclusion/delta graph types
 graph_types_rq3 <- c("race", "firstgen")
 
 # 3) Read the CSV (underscored metro column)
 orders_df <- read_csv("scripts/metro_orders.csv")
 
-# Derive the RQ2 metros from the CSV
+# Derive the old RQ2/new RQ1-RQ2 metros from the CSV
 rq2_metros <- unique(orders_df$metro)
 
 # Derive the RQ3 metros from the CSV, excluding the special AI/AN order
@@ -647,7 +651,6 @@ for (m in metros) {
   } else if (m == "bay_area") {
     heading_text <- "Bay Area"
   } else {
-    # Normal logic
     heading_text <- gsub("_", " ", m, fixed = TRUE)
     heading_text <- tools::toTitleCase(heading_text)
     heading_text <- str_c(heading_text, " area")
@@ -658,25 +661,43 @@ for (m in metros) {
 
   for (rq in rqs) {
     
-    # For clarity, parse out the numeric portion
+    # Displayed RQ number.
+    # Internal file/folder names remain legacy names: rq1, rq2, rq2b, rq3.
     rq_num <- str_replace(string = rq, pattern = "rq", replacement = "")
 
+    # Skip student-list analyses for selected metros.
+    # Keep RQ0 because it is based on Census/Geomarket data, not student-list purchases.
+    if (m %in% skip_student_list_metros & rq %in% c("rq1", "rq2", "rq3")) {
+      next
+    }    
+    
     # ---------------------------------------------
-    # RQ1 Logic
+    # RQ0 Logic: old RQ1
+    # Socioeconomic and racial variation between/within Geomarkets over time
     # ---------------------------------------------
-    if (rq == "rq1") {
+    if (rq == "rq0") {
 
-      # Each metro has 2 plots: "race" & "ses"
-      for (i in seq_along(graph_types_rq1)) {
-        g <- graph_types_rq1[i]
+      # Each metro has 2 old-rq1 plots: "race" & "ses"
+      for (i in seq_along(graph_types_rq0)) {
+        g <- graph_types_rq0[i]
 
-        # The first RQ1 slide for a metro has a real heading;
-        # subsequent ones are hidden slides (".hide")
-        writeLines(str_c("### Research question ", rq_num, if_else(i == 1, "", " {.hide}")))
-        insert_figure(rq = rq, metro = m, graph_type = g)
+        # The first RQ0 slide for a metro has a visible heading;
+        # subsequent ones are hidden slides.
+        writeLines(str_c(
+          "### Research question ",
+          rq_num,
+          if_else(i == 1, "", " {.hide}")
+        ))
+
+        # Files still live in results/graphs/rq1/
+        insert_figure(
+          rq = "rq1",
+          metro = m,
+          graph_type = g
+        )
       }
       
-      # Add RQ1 table
+      # Add old RQ1 table, displayed as RQ0
       writeLines(str_c("### Research question ", rq_num, " {.hide}"))
       writeLines(str_c("#### Racial/ethnic and socioeconomic characteristics of ", heading_text, " Geomarkets over time"))
       
@@ -685,7 +706,7 @@ for (m in metros) {
       writeLines('</div>')
       writeLines('<div class="footnote">Table Notes:<br>- Race/ethnicity categories not available in 1980 Census: Asian, non-Hispanic; Two+ races, non-Hispanic; NHPI, non-Hispanic; AIAN non-Hispanic<br>- Household income measured using 2024 CPI</div>')
       
-      # Add RQ1 map
+      # Add old RQ1 map, displayed as RQ0
       writeLines(str_c("### Research question ", rq_num, " {.hide}"))
       writeLines(str_c("#### Racial/ethnic and socioeconomic characteristics of ", heading_text, " Geomarkets over time"))
       
@@ -701,11 +722,22 @@ for (m in metros) {
       writeLines('<div class="footnote">Figure Notes:<br>- Race/ethnicity categories not available in 1980 Census: Asian, non-Hispanic; Two+ races, non-Hispanic; NHPI, non-Hispanic; AIAN non-Hispanic<br>- Household income measured using 2024 CPI</div>')
 
     # ---------------------------------------------
-    # RQ2 Logic (row vs. col approach + race_by_firstgen)
+    # RQ1 Logic: What is each Geomarket made of?
+    #
+    # Formal:
+    # To what extent do College Board Geomarkets partition academically similar
+    # prospects into racially and socioeconomically distinct pools within
+    # metropolitan areas?
+    #
+    # Uses:
+    # - old rq2 race row-percent graph
+    # - old rq2 firstgen row-percent graph
+    # - old rq2b race x firstgen graphs/table
+    # - old rq2 map
     # ---------------------------------------------
-    } else if (rq == "rq2") {
+    } else if (rq == "rq1") {
 
-      # Only run RQ2 code if the metro is in our RQ2 list
+      # Only run RQ1 code if the metro is in our student-list orders
       if (!(m %in% rq2_metros)) next
 
       # Filter orders_df to just rows for this underscored metro
@@ -714,19 +746,17 @@ for (m in metros) {
       # If none, skip
       if (nrow(df_metro) == 0) next
 
-      # Gather all the underscore-delimited order_ids
+      # Gather regular/non-AI/AN order IDs
       orders_for_m <- df_metro$order_ids
-      
-      # Remove special AI/AN order from regular RQ2 display
-      orders_for_m <- orders_for_m[orders_for_m != "487927"]  
-      
+      orders_for_m <- orders_for_m[orders_for_m != "487927"]
+
       get_notes <- function(missing_txt = '') {
         str_replace(
           str_c(
             '<div class="footnote">',
             paste0(
               readLines(
-                file.path(graphs_dir, rq, str_c('rq2_', m, '_race_row_plot_note.txt')),
+                file.path(graphs_dir, "rq2", str_c('rq2_', m, '_race_row_plot_note.txt')),
                 warn = FALSE
               ),
               collapse = "</br>"
@@ -738,63 +768,50 @@ for (m in metros) {
         )
       }
 
-      # We'll do 2 group types: race & firstgen
-      for (i in seq_along(graph_types_rq2)) {
-        g <- graph_types_rq2[i]
+      first_rq1_slide <- TRUE
 
-        # We'll do row and col for each group type
-        for (rc in c("row", "col")) {
+      # -------------------------------------------------------
+      # RQ1A: Within each Geomarket, row percent by race
+      #      and row percent by first-gen status
+      # -------------------------------------------------------
+      for (g in graph_types_rq_composition) {
 
-          if (rc == "row") {
-            #
-            # ROW => single combined figure on one slide
-            #
-            writeLines(str_c("### Research question ", rq_num, if_else(i == 1, "", " {.hide}")))
-            graph_type_row <- str_c(g, "_", rc, "_plot")
-            insert_figure(rq = rq, metro = m, graph_type = graph_type_row)
-
-          } else {
-            #
-            # COL => separate file(s) by order ID => each on its own slide
-            #
-            for (order_id in orders_for_m) {
-              
-              # Each order ID gets its own "###" => new Reveal.js slide
-              writeLines(str_c("### Research question ", rq_num, " {.hide}"))
-              
-              graph_type_col <- str_c(g, "_", rc, "_plot_", order_id)
-              insert_figure(rq = rq, metro = m, graph_type = graph_type_col)
-            }
-            
-          } # end if (row vs col)
-
-        } # end rc loop
-        
-        # Add RQ2 table
-        writeLines(str_c("### Research question ", rq_num, " {.hide}"))
-        writeLines(if_else(
-          g == 'race',
-          str_c('#### Racial/ethnic composition of purchased student profiles by Geomarket, ', heading_text),
-          str_c('#### First-generation status of purchased student profiles by Geomarket, ', heading_text)
+        writeLines(str_c(
+          "### Research question ",
+          rq_num,
+          if_else(first_rq1_slide, "", " {.hide}")
         ))
 
-        writeLines('<div class="table-wrapper freeze-pane">')
-        writeLines(insert_rq2_table(m, g))
-        writeLines('</div>')
-        writeLines(get_notes())
-        
-      } # end g loop
+        graph_type_row <- str_c(g, "_row_plot")
 
-      # -------------------------------------------
-      # ADDITIONAL: "race_by_firstgen" => goes to RQ2B
-      # -------------------------------------------
-      for (order_id in orders_for_m) {
-        writeLines(str_c("### Research question ", rq_num, " {.hide}"))
-        graph_type_rbf <- str_c("order_", order_id, "_race_by_firstgen")
-        insert_figure(rq = "rq2b", metro = m, graph_type = graph_type_rbf)
+        # Files still live in results/graphs/rq2/
+        insert_figure(
+          rq = "rq2",
+          metro = m,
+          graph_type = graph_type_row
+        )
+
+        first_rq1_slide <- FALSE
       }
-      
-      # Add RQ2B table
+
+      # -------------------------------------------------------
+      # RQ1B: Within each Geomarket, race x first-gen composition
+      # -------------------------------------------------------
+      for (order_id in orders_for_m) {
+
+        writeLines(str_c("### Research question ", rq_num, " {.hide}"))
+
+        graph_type_rbf <- str_c("order_", order_id, "_race_by_firstgen")
+
+        # Files live in results/graphs/rq2b/
+        insert_figure(
+          rq = "rq2b",
+          metro = m,
+          graph_type = graph_type_rbf
+        )
+      }
+
+      # Add race x first-gen table, displayed as part of new RQ1
       writeLines(str_c("### Research question ", rq_num, " {.hide}"))
       writeLines(str_c("#### First-generation status by race for ", heading_text, " Geomarkets"))
 
@@ -802,11 +819,11 @@ for (m in metros) {
       writeLines(insert_rq2_table(m, 'race_firstgen'))
       writeLines('</div>')
       writeLines(get_notes('Excludes students who have missing values for race or parental education. '))
-      
-      # Add RQ2 map
+
+      # Add old RQ2 map, displayed as part of new RQ1
       writeLines(str_c("### Research question ", rq_num, " {.hide}"))
       writeLines(str_c("#### Purchased student profiles by racial/ethnic composition and first-generation status, ", heading_text))
-      
+
       writeLines(str_c(
         '<iframe data-src="./results/maps/rq2_map_',
         m,
@@ -816,7 +833,62 @@ for (m in metros) {
       writeLines(get_notes())
 
     # ---------------------------------------------
-    # RQ3 Logic: exclusion composition graphs
+    # RQ2 Logic: Which Geomarkets contribute disproportionately?
+    #
+    # Formal:
+    # Which Geomarkets contribute disproportionately to the availability of
+    # racially minoritized and first-generation prospects?
+    #
+    # Uses:
+    # - old rq2 race column-percent graphs
+    # - old rq2 firstgen column-percent graphs
+    # ---------------------------------------------
+    } else if (rq == "rq2") {
+
+      # Only run RQ2 code if the metro is in our student-list orders
+      if (!(m %in% rq2_metros)) next
+
+      # Filter orders_df to just rows for this underscored metro
+      df_metro <- filter(orders_df, metro == m)
+
+      # If none, skip
+      if (nrow(df_metro) == 0) next
+
+      # Gather regular/non-AI/AN order IDs
+      orders_for_m <- df_metro$order_ids
+      orders_for_m <- orders_for_m[orders_for_m != "487927"]
+
+      first_rq2_slide <- TRUE
+
+      for (g in graph_types_rq_composition) {
+
+        for (order_id in orders_for_m) {
+
+          writeLines(str_c(
+            "### Research question ",
+            rq_num,
+            if_else(first_rq2_slide, "", " {.hide}")
+          ))
+
+          graph_type_col <- str_c(g, "_col_plot_", order_id)
+
+          # Files still live in results/graphs/rq2/
+          insert_figure(
+            rq = "rq2",
+            metro = m,
+            graph_type = graph_type_col
+          )
+
+          first_rq2_slide <- FALSE
+        }
+      }
+
+    # ---------------------------------------------
+    # RQ3 Logic: What happens when a Geomarket is excluded?
+    #
+    # Formal:
+    # How does excluding particular Geomarkets change the composition of the
+    # prospect pool made visible to colleges?
     # ---------------------------------------------
     } else if (rq == "rq3") {
 
@@ -833,14 +905,12 @@ for (m in metros) {
       # Gather regular order IDs for this metro
       orders_for_m_rq3 <- df_metro_rq3$order_ids
 
-      # RQ3 currently has two graph types: race and firstgen
       first_rq3_slide <- TRUE
 
       for (g in graph_types_rq3) {
 
         for (order_id in orders_for_m_rq3) {
 
-          # First RQ3 slide gets visible heading; later ones hidden
           writeLines(str_c(
             "### Research question ",
             rq_num,
@@ -868,8 +938,6 @@ for (m in metros) {
   } # end rq loop
 
 } # end metros loop
-
-
 # A special version insert_figure_aian for AI/AN that does NOT print a heading
 insert_figure_aian <- function(rq, metro, graph_type, base_path = graphs_dir) {
   
