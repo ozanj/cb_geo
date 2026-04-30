@@ -16,7 +16,7 @@ format:
     auto-stretch: false
     slide-level: 3
     menu:
-      titleSelector: 'h1, h2, .slide:not(.hide) h3'
+      titleSelector: 'h1, h2, .slide:not(.hide) h3 .menu-title'
       useTextContentForMissingTitles: false
       hideMissingTitles: true
     template-partials:
@@ -616,6 +616,34 @@ insert_rq2_table <- function(metro, table_type, rq_name = 'rq2') {
 
 rqs <- c("rq0", "rq1", "rq2", "rq3")
 
+rq_slide_titles <- c(
+  rq0 = "RQ0: How unequal are Geomarkets?",
+  rq1 = "RQ1: What is the composition of each Geomarket?",
+  rq2 = "RQ2: Where does each group come from?",
+  rq3 = "RQ3: What happens when a Geomarket is excluded?"
+)
+
+make_rq_heading <- function(rq_title, rq, hide = FALSE) {
+  
+  if (hide) {
+    
+    stringr::str_c("### ", rq_title, " {.hide}")
+    
+  } else {
+    
+    rq_menu_title <- stringr::str_to_upper(rq)
+    
+    stringr::str_c(
+      "### ",
+      "<span class=\"menu-title\" style=\"display:none;\">&emsp;",
+      rq_menu_title,
+      "</span>",
+      "<span class=\"slide-title\">",
+      rq_title,
+      "</span>"
+    )
+  }
+}
 # Metros where student-list purchase results should not be displayed
 # because the orders used additional filters that make interpretation misleading.
 skip_student_list_metros <- c("houston")
@@ -665,6 +693,8 @@ for (m in metros) {
     # Internal file/folder names remain legacy names: rq1, rq2, rq2b, rq3.
     rq_num <- str_replace(string = rq, pattern = "rq", replacement = "")
 
+    rq_title <- rq_slide_titles[[rq]]
+    
     # Skip student-list analyses for selected metros.
     # Keep RQ0 because it is based on Census/Geomarket data, not student-list purchases.
     if (m %in% skip_student_list_metros & rq %in% c("rq1", "rq2", "rq3")) {
@@ -683,12 +713,11 @@ for (m in metros) {
 
         # The first RQ0 slide for a metro has a visible heading;
         # subsequent ones are hidden slides.
-        writeLines(str_c(
-          "### Research question ",
-          rq_num,
-          if_else(i == 1, "", " {.hide}")
+        writeLines(make_rq_heading(
+          rq_title = rq_title,
+          rq = rq,
+          hide = i != 1
         ))
-
         # Files still live in results/graphs/rq1/
         insert_figure(
           rq = "rq1",
@@ -698,7 +727,7 @@ for (m in metros) {
       }
       
       # Add old RQ1 table, displayed as RQ0
-      writeLines(str_c("### Research question ", rq_num, " {.hide}"))
+      writeLines(str_c("### ", rq_title, " {.hide}"))
       writeLines(str_c("#### Racial/ethnic and socioeconomic characteristics of ", heading_text, " Geomarkets over time"))
       
       writeLines('<div class="table-wrapper freeze-pane">')
@@ -707,7 +736,7 @@ for (m in metros) {
       writeLines('<div class="footnote">Table Notes:<br>- Race/ethnicity categories not available in 1980 Census: Asian, non-Hispanic; Two+ races, non-Hispanic; NHPI, non-Hispanic; AIAN non-Hispanic<br>- Household income measured using 2024 CPI</div>')
       
       # Add old RQ1 map, displayed as RQ0
-      writeLines(str_c("### Research question ", rq_num, " {.hide}"))
+      writeLines(str_c("### ", rq_title, " {.hide}"))
       writeLines(str_c("#### Racial/ethnic and socioeconomic characteristics of ", heading_text, " Geomarkets over time"))
       
       rq1_map <- str_c('./results/maps/rq1_map_', m, '.html')
@@ -776,12 +805,11 @@ for (m in metros) {
       # -------------------------------------------------------
       for (g in graph_types_rq_composition) {
 
-        writeLines(str_c(
-          "### Research question ",
-          rq_num,
-          if_else(first_rq1_slide, "", " {.hide}")
+        writeLines(make_rq_heading(
+          rq_title = rq_title,
+          rq = rq,
+          hide = !first_rq1_slide
         ))
-
         graph_type_row <- str_c(g, "_row_plot")
 
         # Files still live in results/graphs/rq2/
@@ -799,7 +827,7 @@ for (m in metros) {
       # -------------------------------------------------------
       for (order_id in orders_for_m) {
 
-        writeLines(str_c("### Research question ", rq_num, " {.hide}"))
+        writeLines(str_c("### ", rq_title, " {.hide}"))
 
         graph_type_rbf <- str_c("order_", order_id, "_race_by_firstgen")
 
@@ -812,7 +840,7 @@ for (m in metros) {
       }
 
       # Add race x first-gen table, displayed as part of new RQ1
-      writeLines(str_c("### Research question ", rq_num, " {.hide}"))
+      writeLines(str_c("### ", rq_title, " {.hide}"))
       writeLines(str_c("#### First-generation status by race for ", heading_text, " Geomarkets"))
 
       writeLines('<div class="table-wrapper freeze-pane">')
@@ -821,7 +849,7 @@ for (m in metros) {
       writeLines(get_notes('Excludes students who have missing values for race or parental education. '))
 
       # Add old RQ2 map, displayed as part of new RQ1
-      writeLines(str_c("### Research question ", rq_num, " {.hide}"))
+      writeLines(str_c("### ", rq_title, " {.hide}"))
       writeLines(str_c("#### Purchased student profiles by racial/ethnic composition and first-generation status, ", heading_text))
 
       writeLines(str_c(
@@ -867,12 +895,12 @@ for (m in metros) {
 
       for (order_id in orders_for_m) {
 
-        writeLines(str_c(
-          "### Research question ",
-          rq_num,
-          if_else(first_rq2_slide, "", " {.hide}")
+        writeLines(make_rq_heading(
+          rq_title = rq_title,
+          rq = rq,
+          hide = !first_rq2_slide
         ))
-
+        
         graph_type_race_overlay <- str_c(
           "race_contribution_overlay_plot_",
           order_id
@@ -894,8 +922,8 @@ for (m in metros) {
       for (order_id in orders_for_m) {
 
         writeLines(str_c(
-          "### Research question ",
-          rq_num,
+          "### ",
+          rq_title,
           " {.hide}"
         ))
 
@@ -918,8 +946,8 @@ for (m in metros) {
       for (order_id in orders_for_m) {
 
         writeLines(str_c(
-          "### Research question ",
-          rq_num,
+          "### ",
+          rq_title,
           " {.hide}"
         ))
 
@@ -962,12 +990,12 @@ for (m in metros) {
 
         for (order_id in orders_for_m_rq3) {
 
-          writeLines(str_c(
-            "### Research question ",
-            rq_num,
-            if_else(first_rq3_slide, "", " {.hide}")
+          writeLines(make_rq_heading(
+            rq_title = rq_title,
+            rq = rq,
+            hide = !first_rq3_slide
           ))
-
+          
           graph_type_rq3 <- str_c(
             g,
             "_exclusion_plot_order_",

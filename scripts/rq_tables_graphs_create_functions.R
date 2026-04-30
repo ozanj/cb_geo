@@ -2204,91 +2204,102 @@ create_rq3_firstgen_dualaxis_plot <- function(
     order_ids_this,
     title = NULL,
     subtitle = NULL,
-    include_n_in_label = FALSE,
-    include_removed_pct_in_label = FALSE,
-    point_label = c("pct", "delta", "none")
+    firstgen_groups_to_keep = c(
+      "First-gen",
+      "Not first-gen"
+    ),
+    point_label = TRUE,
+    point_size = 2.0,
+    label_nudge = 0.1
 ) {
   
-  point_label <- match.arg(point_label)
-  
   # ----------------------------------------------------------
-  # 1) Filter to one order group and the first-gen group
+  # 1) Filter to one order group and first-gen composition
   # ----------------------------------------------------------
   
   df_plot <- rq3_df %>%
     filter(
       order_ids == order_ids_this,
       composition_type == "firstgen",
-      group == "First-gen"
+      group %in% firstgen_groups_to_keep
     )
   
   if (nrow(df_plot) == 0) {
     stop("No rows found. Check order_ids_this and confirm rq3_df is the firstgen table.")
   }
   
-  baseline_pct <- df_plot %>%
-    filter(scenario_type == "all") %>%
-    pull(pct) %>%
-    unique()
+  # ----------------------------------------------------------
+  # 2) Compute baseline and delta
+  # ----------------------------------------------------------
   
-  if (length(baseline_pct) != 1) {
-    stop("Could not identify a unique full-pool baseline.")
-  }
+  baseline_df <- df_plot %>%
+    filter(scenario_type == "all") %>%
+    select(
+      group,
+      baseline_pct = pct
+    )
   
   df_plot <- df_plot %>%
     filter(scenario_type == "exclusion") %>%
+    left_join(baseline_df, by = "group") %>%
     mutate(
       delta_pp = pct - baseline_pct,
-      scenario_label_clean = as.character(excluded_eps_codename)
+      excluded_label = as.character(excluded_eps_codename)
     )
   
   # ----------------------------------------------------------
-  # 2) Build y-axis labels
+  # 3) Group/facet order and within-facet sorting
+  #    Top facet = First-gen
+  #    Bottom facet = Not first-gen
   # ----------------------------------------------------------
   
   df_plot <- df_plot %>%
     mutate(
-      scenario_label_n = case_when(
-        include_n_in_label & include_removed_pct_in_label ~
-          str_c(
-            scenario_label_clean,
-            " (n=", scales::comma(denom),
-            "; removed ", scales::percent(removed_pct / 100, accuracy = 1),
-            ")"
-          ),
-        
-        include_n_in_label & !include_removed_pct_in_label ~
-          str_c(
-            scenario_label_clean,
-            " (n=", scales::comma(denom), ")"
-          ),
-        
-        !include_n_in_label & include_removed_pct_in_label ~
-          str_c(
-            scenario_label_clean,
-            " (removed ", scales::percent(removed_pct / 100, accuracy = 1),
-            ")"
-          ),
-        
-        TRUE ~ scenario_label_clean
+      group = factor(group, levels = firstgen_groups_to_keep),
+      facet_label = str_c(
+        group,
+        " (full pool = ",
+        scales::number(baseline_pct, accuracy = 0.1),
+        "%)"
       )
     )
   
-  scenario_levels <- df_plot %>%
-    arrange(delta_pp) %>%
-    pull(scenario_label_n)
+  facet_levels <- df_plot %>%
+    distinct(group, facet_label) %>%
+    arrange(group) %>%
+    pull(facet_label)
   
-  # Most negative change appears at top
   df_plot <- df_plot %>%
     mutate(
-      scenario_label_n = factor(
-        scenario_label_n,
-        levels = rev(scenario_levels)
-      )
+      facet_label = factor(facet_label, levels = facet_levels)
+    )
+  
+  # Create unique y-axis labels so each facet can be sorted independently.
+  # The visible label removes the "___group" suffix later.
+  y_levels <- df_plot %>%
+    arrange(group, delta_pp) %>%
+    mutate(y_label = str_c(excluded_label, "___", group)) %>%
+    pull(y_label)
+  
+  df_plot <- df_plot %>%
+    mutate(
+      y_label = str_c(excluded_label, "___", group),
+      y_label = factor(y_label, levels = rev(y_levels)),
+      delta_label = if_else(
+        delta_pp > 0,
+        str_c("+", scales::number(delta_pp, accuracy = 0.1)),
+        scales::number(delta_pp, accuracy = 0.1)
+      ),
+      label_x = if_else(
+        delta_pp >= 0,
+        delta_pp + label_nudge,
+        delta_pp - label_nudge
+      ),
+      hjust_val = if_else(delta_pp >= 0, 0, 1)
     )
   
   # ----------------------------------------------------------
-  # 3) Title/subtitle defaults
+  # 4) Title/subtitle defaults
   # ----------------------------------------------------------
   
   if (is.null(title)) {
@@ -2299,12 +2310,12 @@ create_rq3_firstgen_dualaxis_plot <- function(
     
     if (metro_name == "Bay Area") {
       title <- str_c(
-        "Change in first-gen share after excluding each Geomarket, ",
+        "Change in first-generation share after excluding Geomarket, ",
         metro_name
       )
     } else {
       title <- str_c(
-        "Change in first-gen share after excluding each Geomarket, ",
+        "Change in first-generation share after excluding Geomarket, ",
         metro_name,
         " area"
       )
@@ -2312,39 +2323,19 @@ create_rq3_firstgen_dualaxis_plot <- function(
   }
   
   if (is.null(subtitle)) {
-    subtitle <- str_c(
-      df_plot$test_range[1],
-      " \u2014 full-pool baseline = ",
-      scales::number(baseline_pct, accuracy = 0.1),
-      "% first-gen"
-    )
+    subtitle <- df_plot$test_range[1]
   }
   
   # ----------------------------------------------------------
-  # 4) Axis limits
+  # 5) Axis limits
   # ----------------------------------------------------------
   
-  x_vals <- c(df_plot$delta_pp, 0)
+  x_vals <- c(df_plot$delta_pp, df_plot$label_x, 0)
   x_min <- min(x_vals, na.rm = TRUE)
   x_max <- max(x_vals, na.rm = TRUE)
   x_pad <- max(0.75, (x_max - x_min) * 0.12)
   
   x_limits <- c(x_min - x_pad, x_max + x_pad)
-  
-  # ----------------------------------------------------------
-  # 5) Optional point labels
-  # ----------------------------------------------------------
-  
-  df_plot <- df_plot %>%
-    mutate(
-      point_label_text = case_when(
-        point_label == "pct" ~ str_c(scales::number(pct, accuracy = 0.1), "%"),
-        point_label == "delta" & delta_pp > 0 ~ str_c("+", scales::number(delta_pp, accuracy = 0.1)),
-        point_label == "delta" ~ scales::number(delta_pp, accuracy = 0.1),
-        TRUE ~ NA_character_
-      ),
-      hjust_val = if_else(delta_pp >= 0, -0.15, 1.15)
-    )
   
   # ----------------------------------------------------------
   # 6) Plot
@@ -2354,7 +2345,7 @@ create_rq3_firstgen_dualaxis_plot <- function(
     df_plot,
     aes(
       x = delta_pp,
-      y = scenario_label_n
+      y = y_label
     )
   ) +
     geom_vline(
@@ -2366,15 +2357,24 @@ create_rq3_firstgen_dualaxis_plot <- function(
       aes(
         x = 0,
         xend = delta_pp,
-        y = scenario_label_n,
-        yend = scenario_label_n
+        y = y_label,
+        yend = y_label
       ),
-      linewidth = 0.8,
+      linewidth = 0.75,
       color = "gray35"
     ) +
     geom_point(
-      size = 2.8,
+      size = point_size,
       color = "gray20"
+    ) +
+    facet_wrap(
+      facets = vars(facet_label),
+      ncol = 1,
+      scales = "free_y",
+      strip.position = "top"
+    ) +
+    scale_y_discrete(
+      labels = function(x) str_remove(x, "___.*$")
     ) +
     scale_x_continuous(
       limits = x_limits,
@@ -2384,12 +2384,7 @@ create_rq3_firstgen_dualaxis_plot <- function(
           str_c("+", scales::number(x, accuracy = 0.1)),
           scales::number(x, accuracy = 0.1)
         )
-      },
-      sec.axis = sec_axis(
-        ~ . + baseline_pct,
-        name = "First-gen share of remaining visible pool (%)",
-        labels = function(x) scales::number(x, accuracy = 0.1)
-      )
+      }
     ) +
     labs(
       x = "Percentage-point change from full-pool baseline",
@@ -2397,23 +2392,29 @@ create_rq3_firstgen_dualaxis_plot <- function(
     ) +
     theme_minimal() +
     theme(
-      axis.text.y = element_text(size = 12),
+      strip.text = element_text(
+        size = 12,
+        face = "bold",
+        hjust = 0
+      ),
+      strip.background = element_blank(),
+      axis.text.y = element_text(size = 10.5),
       axis.text.x = element_text(size = 11),
       axis.title.x = element_text(size = 12),
-      axis.title.x.top = element_text(size = 12, face = "bold"),
-      axis.text.x.top = element_text(size = 11),
       panel.grid.major.y = element_blank(),
-      panel.grid.minor = element_blank()
+      panel.grid.minor = element_blank(),
+      panel.spacing.y = unit(0.9, "lines")
     )
   
-  if (point_label != "none") {
+  if (point_label) {
     plot <- plot +
       geom_text(
         aes(
-          label = point_label_text,
+          x = label_x,
+          label = delta_label,
           hjust = hjust_val
         ),
-        size = 3.6,
+        size = 3.3,
         color = "gray15"
       )
   }

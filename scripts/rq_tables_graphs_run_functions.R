@@ -56,6 +56,26 @@ source(file = file.path(scripts_dir, 'rq_tables_graphs_create_functions.R'))
 # 1) Load the CSV into a data frame
 orders_df <- read_csv(file.path(scripts_dir,"metro_orders.csv"))
 
+format_metro_for_slide_subtitle <- function(metro) {
+  
+  metro_clean <- metro %>%
+    stringr::str_replace_all("_", " ") %>%
+    tools::toTitleCase()
+  
+  dplyr::case_when(
+    metro == "bay_area" ~ "Bay Area",
+    metro == "dc_maryland_virginia" ~ "D.C., Maryland, and Virginia",
+    TRUE ~ metro_clean
+  )
+}
+
+format_score_range_for_slide_subtitle <- function(test_range) {
+  
+  test_range %>%
+    stringr::str_replace_all("\\s+-\\s+", "–")
+}
+
+
 get_table_data <- function(metro_df) {
   list(
     race = do.call(bind_rows, lapply(1:nrow(metro_df), function(i) {
@@ -291,14 +311,24 @@ for (m in unique(rq3_orders_df$metro)) {
       # Save title/subtitle as .tex sidecar file
       # ------------------------------------------------------
       
-      figure_title <- attr(plot_obj, "figure_title")
-      figure_subtitle <- attr(plot_obj, "figure_subtitle")
-      
-      title_tex <- c(
-        str_c("#### ", figure_title),
-        "",
-        str_c("*", figure_subtitle, "*")
-      )
+      if (g == "race") {
+        
+        title_tex <- stringr::str_c(
+          "#### Change in racial/ethnic composition after excluding each Geomarket: ",
+          format_metro_for_slide_subtitle(m),
+          ", ",
+          format_score_range_for_slide_subtitle(metro_df$test_range[i])
+        )
+        
+      } else if (g == "firstgen") {
+        
+        title_tex <- stringr::str_c(
+          "#### Change in first-generation status composition after excluding Geomarket: ",
+          format_metro_for_slide_subtitle(m),
+          ", ",
+          format_score_range_for_slide_subtitle(metro_df$test_range[i])
+        )
+      }
       
       writeLines(
         title_tex,
@@ -766,10 +796,11 @@ for (i in seq_len(nrow(rq2_overlay_orders_df))) {
     bg       = "white"
   )
   
-  race_title_tex <- c(
-    stringr::str_c("#### ", attr(race_plot_obj, "figure_title")),
-    "",
-    stringr::str_c("*", attr(race_plot_obj, "figure_subtitle"), "*")
+  race_title_tex <- stringr::str_c(
+    "#### Geomarket contributions to each racial/ethnic group: ",
+    format_metro_for_slide_subtitle(metro_this),
+    ", ",
+    format_score_range_for_slide_subtitle(test_range_this)
   )
   
   writeLines(
@@ -836,10 +867,11 @@ for (i in seq_len(nrow(rq2_overlay_orders_df))) {
     bg       = "white"
   )
   
-  firstgen_title_tex <- c(
-    stringr::str_c("#### ", attr(firstgen_plot_obj, "figure_title")),
-    "",
-    stringr::str_c("*", attr(firstgen_plot_obj, "figure_subtitle"), "*")
+  firstgen_title_tex <- stringr::str_c(
+    "#### Geomarket contributions by first-generation status: ",
+    format_metro_for_slide_subtitle(metro_this),
+    ", ",
+    format_score_range_for_slide_subtitle(test_range_this)
   )
   
   writeLines(
@@ -968,13 +1000,11 @@ for (i in seq_len(nrow(rq2_rfgen_orders_df))) {
   # 6) Save title/subtitle as .tex sidecar
   # ----------------------------------------------------------
   
-  figure_title <- attr(plot_obj, "figure_title")
-  figure_subtitle <- attr(plot_obj, "figure_subtitle")
-  
-  title_tex <- c(
-    stringr::str_c("#### ", figure_title),
-    "",
-    stringr::str_c("*", figure_subtitle, "*")
+  title_tex <- stringr::str_c(
+    "#### Geomarket contributions by race and first-generation status: ",
+    format_metro_for_slide_subtitle(metro_this),
+    ", ",
+    format_score_range_for_slide_subtitle(test_range_this)
   )
   
   writeLines(
