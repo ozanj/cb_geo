@@ -395,7 +395,7 @@ Analyses (RQ1 and RQ2)
 - Interactive maps for within Geomarket variation
 
 
-# Results
+# Appendix
 
 ```{r setup, echo=FALSE, results = 'asis', eval = TRUE}
 
@@ -593,26 +593,64 @@ insert_rq2_table <- function(metro, table_type, rq_name = 'rq2') {
   }
 }
 
-# 2) Define your *underscored* metros / RQs
-  metros <- c(
-    "atlanta",
-    "bay_area",
-    "boston",
-    "chicago",
-    "cleveland",
-    "dallas",
-    "dc_maryland_virginia",
-    "detroit",
-    "houston",
-    "long_island",
-    "los_angeles",
-    "miami",
-    "new_york_city",
-    "northern_new_jersey",
-    "orange_county",
-    "philadelphia",
-    "san_diego"
-  )
+# 2) Read the CSV and define metro order / RQs
+
+orders_df <- read_csv("scripts/metro_orders.csv")
+
+# Metros where student-list purchase results should not be displayed
+# because the orders used additional filters that make interpretation misleading.
+# These metros should be treated as RQ0-only.
+skip_student_list_metros <- c("houston")
+
+# All metros with RQ0 Census/Geomarket results
+all_metros <- c(
+  "atlanta",
+  "bay_area",
+  "boston",
+  "chicago",
+  "cleveland",
+  "dallas",
+  "dc_maryland_virginia",
+  "detroit",
+  "houston",
+  "long_island",
+  "los_angeles",
+  "miami",
+  "new_york_city",
+  "northern_new_jersey",
+  "orange_county",
+  "philadelphia",
+  "san_diego"
+)
+
+# Metros with student-list results for RQ1-RQ3,
+# excluding special AI/AN-only orders and excluding Houston.
+student_list_metros <- orders_df %>%
+  filter(order_ids != "487927") %>%
+  distinct(metro) %>%
+  pull(metro) %>%
+  setdiff(skip_student_list_metros)
+
+# Metros with only RQ0 results.
+rq0_only_metros <- setdiff(all_metros, student_list_metros)
+
+# Final display order:
+# 1. metros with RQ1-RQ3 results, alphabetically
+# 2. metros with only RQ0 results, alphabetically
+metros <- c(
+  sort(student_list_metros),
+  sort(rq0_only_metros)
+)
+
+rqs <- c("rq0", "rq1", "rq2", "rq3")
+
+# Final display order:
+# 1. metros with RQ1-RQ3 results, alphabetically
+# 2. metros with only RQ0 results, alphabetically
+metros <- c(
+  sort(student_list_metros),
+  sort(rq0_only_metros)
+)
 
 rqs <- c("rq0", "rq1", "rq2", "rq3")
 
@@ -644,9 +682,6 @@ make_rq_heading <- function(rq_title, rq, hide = FALSE) {
     )
   }
 }
-# Metros where student-list purchase results should not be displayed
-# because the orders used additional filters that make interpretation misleading.
-skip_student_list_metros <- c("houston")
 
 # Old RQ1 outputs, now displayed as RQ0
 graph_types_rq0 <- c("race", "ses")
@@ -665,15 +700,16 @@ graph_types_rq3 <- c(
   "race_firstgen_relative"
 )
 
-# 3) Read the CSV (underscored metro column)
-orders_df <- read_csv("scripts/metro_orders.csv")
-
 # Derive the old RQ2/new RQ1-RQ2 metros from the CSV
-rq2_metros <- unique(orders_df$metro)
+rq2_metros <- orders_df %>%
+  distinct(metro) %>%
+  pull(metro) %>%
+  setdiff(skip_student_list_metros)
 
 # Derive the RQ3 metros from the CSV, excluding the special AI/AN order
 rq3_orders_df <- orders_df %>%
-  filter(order_ids != "487927")
+  filter(order_ids != "487927") %>%
+  filter(!metro %in% skip_student_list_metros)
 
 rq3_metros <- unique(rq3_orders_df$metro)
 
