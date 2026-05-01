@@ -24,395 +24,34 @@ format:
 include-in-header: ./assets/html/header.html
 ---
 
-
-# Introduction
-
-### [__College Board _Student Search Service_, order \#448922__](./assets/images/geomarket_orders_redacted.pdf){target="_blank"} {.hide}
-
-__"Geomarkets" carve states and metro areas into smaller geographic regions__
-
-- Geomarkets are an input in two College Board recruiting products:
-  - Student Search Service (est. 1972); Enrollment Planning Service (est. 1984)
-
-__Perspectives from sociology on sorting students into colleges:__
-
-- Status attainment model [e.g., @RN915]
-- Cultural capital model [e.g., @RN1228]
-- Enrollment management behavior of colleges [e.g., @RN3519]
-- Sociology ignores third-party products that sort students on behalf of colleges
-  - Designed to amplify historic inequality in student demand
-
-<!-- 
-__Sociology misses an important mechanism of social reproduction:__
-
-- Third-party vendors/products sort students on behalf of colleges
-  - Amplify past structural inequality in student demand
- -->
-
-__Research questions:__
-
-1. What is SES, racial variation between, within Geomarkets? Over time?
-1. What is SES and racial composition of included vs. excluded prospects when student list purchases filter on particular Geomarkets?
-
-<!-- 
-
-### Introduction og {.hide}
-
-Two recruiting products sold by College Board
-
-- Student Search Service (est. 1972): purchase contact information of prospects that meet "search filter" criteria [@RN5012]
-- Enrollment Planning Service (EPS, est. 1984): software recommends which "Geomarkets" to target and which high schools to visit
-
-College Board "Geomarkets" are an input in both products
-
-- Geomarkets carve states and metro areas into smaller geographic regions
-
-Concerns: Geomarket borders correlated with race/class; likely to be used in ways that undermine equality of opportunity
-
-1. What is SES, racial variation between, within Geomarkets? Over time?
-1. What is SES and racial composition of included vs. excluded prospects when student list purchases filter on particular Geomarkets?
-
- -->
-
-### Geomarkets around Chicago-land {.hide}
-
-::: columns
-::: {.column width="50%"}
-
-![](./assets/images/chicago_geomarkets.png)
-
-<!-- <img src="./assets/images/nyc_geomarkets.png" data-width="60%"> -->
-:::
-
-::: {.column width="50%"}
-**[University of Chicago admissions counselors, IL territories](https://collegeadmissions.uchicago.edu/contact)**
-![](./assets/images/territories/chicagoland_territories_u_chicago_redacted.png)
-:::
-:::
-
-### Presentation Outline {.hide}
-
-<br>
-
-1. <span style="color:blue">Enrollment management: Background & scholarship</span>  
-1. <span style="color:red">Empirical case and theory</span>  
-1. <span style="color:red">Methods</span>  
-1. <span style="color:red">Results</span>  
-1. <span style="color:blue">Discussion<br>– Creating a "knowledge infrastructure" [@RN5025] to study the role of private firms and private equity funding in education</span>
-
-# Enrollment Management: Background \& Scholarship
-
-### __Enrollment Management (EM)__ {.hide .columns-2}
-
-::: columns
-
-:::: {.column width=65%}
-
-__Enrollment management__
-
-- EM profession integrates techniques from marketing and economics to "influence the characteristics and the size of enrolled student bodies" [@RN2771, p. xiv]
-- EM office controls recruiting, admissions, fin aid
-
-__Interventions along enrollment funnel__
-
-- Convert prospects to leads 
-  - Purchase student lists
-- Convert leads/inquiries to applicants
-  - Email, mail, school visits
-- Convert applicants to admits
-  - Holistic review [e.g., @RN4146]
-- Convert admits to enrollees
-  - Financial aid offers [e.g., @RN2241]
-::::
-
-:::: {.column width=35%}
-
-__Enrollment Funnel__
-```{r, echo=FALSE, out.width="85%", fig.cap=""}
-knitr::include_graphics("./assets/images/enroll_funnelv2.png")
-```
-::::
-
-:::
-
-### __Scholarship on Recruiting "in the Wild"__{.hide}
-
-__Sociological ethnographies of enrollment management__
-
-- Private Colleges: visit affluent "feeder schools" to maintain relationships with HS guidance counselors [@RN3519; @RN4407]
-- For-profits: door-to-door visits to local, low-income communities of color [@cottom2017lower]
-
-__Web-scraped the travel schedules of public research and selective private univs__
-
-- Visit rich, mostly White public schools [@RN4758]
-- Disproportionate visits to private schools [@RN5023]
-- "Recruitment redlining": circuitous avoidance of Black and Latinx communities along visit paths [@RN4759] ([LA map](#){data-modal-type="image" data-modal-url="assets/images/recruitment_redlining_map.jpg"})
-
-___But recruiting process not wholly done by colleges...___
-
-- Third-party vendors and consultancies help colleges find and recruit students
-<!-- [LA map](#){data-modal-type="image" data-modal-url="assets/images/chicago_geomarkets.png"} -->
-
-
-### <span style="font-size:0.9em;">__U.S. Higher Education Market: A National Voucher System__</span> {.hide}
-#### Motivating the role of student lists in college access
-
-__Federal government__
-
-- Takes a "steer, don't row" approach
-- Subsidizes higher education by providing Title IV grants and loans to students
-- Department of Education regulates Title IV institutions
-
-__Students__
-
-- Attend college to improve career, social, and civic outcomes
-- Pay for college using: 
-  - Household savings; grants and loans from federal, state, private sources
-
-__Direct providers (Title IV institutions)__
-
-- A mix of public, private nonprofit, for-profit providers
-- Funding follows students to whichever institution they enroll in
-  - A national voucher system
-- Colleges have a financial incentive to enroll students, so competition for students
-
-
-### __Student Lists are a Match-Making Intermediary__{.hide}
-  
-__@RN2247 on emergence of a national higher education system:__
-
-- Information costs were primary barrier to efficient matches
-  - Students want to attend best college, but don't know options or costs
-  - Colleges want to enroll best students, but don't know who or where they are
-- SAT causes "dramatic fall" in cost of "information about students" (p. 102)
-
-__"Lead generation" is process of connecting merchants to potential consumers__
-
-- "List-based" lead generation based on direct-mail model (legacy)
-  - In 1972, College Board began selling lists of prospects to colleges
-- "Behavioral-based" targeting (contemporary)
-  - Target users of a platform while they use that platform or a partner platform
-
-__Students who opt into College Board _Search_ are [@RN4739]:__
-
-  - 25% more likely to enroll in a four-year university after high school
-  - 31% more likely to graduate college within four years 
-- Magnitude of effects largest for Black, Latinx, and first-gen college students 
-
-### __College Board Lists and Student Outcomes__{.hide}
-#### _Howell, Hurwitz, Mabel et al. (2021)_
-
-```{r, fig.align="left"}
-knitr::include_graphics("./assets/images/cb-fig-1.png")
-```
-
-### __The Student List Project__{.hide}
-
-__Public records requests to public univs in CA, IL, MN, TX, AZ, 2016-2020__
-
-- for each purchase, request: (1) [order summary](https://drive.google.com/drive/u/1/folders/18CHMlUIa5OO0zRkET7eSIzYnvk4S9_U1); (2) [prospect-level data](https://drive.google.com/drive/u/1/folders/1rDIAuHLsh3IfglSsqhNuCmYsfnbtc0tV)
-
-__What is the relationship between using academic and geographic filters and the demographic composition of resulting student lists?__ [@RN5012]
-
-- Student list products are "selection devices" [@RN4778]
-- Utilize "racialized inputs"[@RN4786], disadvantage non-white communities because they have been historically excluded from input (e.g., zip codes, AP)
-
-__Analyze who included in purchases: (1) simulated, [HSLS:09](https://nces.ed.gov/surveys/hsls09/); (2) College Board__
-
-- Racial inequity results from:
-  - College Board student list databases exclude non-test-takers
-  - Test scores and geographic filters compound disparities in excluded prospects
-    - [SAT scores + Segment, LA map](#){data-modal-type="image" data-modal-url="assets/images/la_segment_map.png"}
-- Collge Board creates new geographic filters that include/exclude ([FIGURE](#){data-modal-type="image" data-modal-url="assets/images/research_univ_list_filters.png"})
-
-
-
-# Emprical Case and Theory
-
-### *The Structure of College Choice* [@RN4982] {.hide}
-
-__Project goal: "capture and quantify" (p. 11) knowledge of admissions officers__
-
-> Admissions officers are tellers of stories – about the colleges they represent, about the colleges they attended, about each other, and about the vagabond life of college recruiting...We begin with this celebration of sotrytelling...[because] the intuitions of admissions officers comprise a remarkably systematic body of knowledge about the college selection process (p. 9-10).<br><br>A good recruiter knows where to look for prospective applicants, as seen in the students’ willingness or reluctance to travel (p. 11).
-
-
-<p class="quote">Initial task "was to define enrollment markets in a manner consistent with admissions officers’ intuitive understanding of student pools" (p. 4)</p>
-<p style="display:none;">'There are only three kinds of college-bound students: those who want to live at home, those who want to live on campus but bring their laundry home, and those who want to go far enough from home that Mom and Dad can’t visit without calling first.' (p. 11)</p>
-
-- Creates three geographic levels: region, state, community (Geomarket)
-
-<p class="quote">Geomarkets carve states and metro areas into smaller geographic regions</p>
-<p style="display:none;">Boundaries [often] match formal political and educational divisions, reflecting natural channels of communication. **Each major metro area is composed of several markets, usually corresponding to the inner city, a first ring of suburbs, and an outer ring of suburbs.** In more sparsely populated areas, communities are sometimes combined in order to make the analysis meaningful. [@RN4982, pp. 11-12].</p>
-
-- Meant to reproduce the recruiting territories of admissions officers
-
-
-### __Creating the Market Segment Model__{.hide}
-
-> We sought not a complex mathematical model, but a straightforward classification system that would track the pattern of SAT-score submissions to create a map of student choice. The Market Segment Model we developed was nothing more than a set of simple rules for disaggregating high school seniors into similar groups. The model worked because students, once so disaggregated, appeared to behave in remarkably consistent ways (p. 4).
-
-**Market Segment Model predicts how demand for a college varies by Geomarket**
-
-- Categorize students into 4 market segments -- local, in-state, regional, national -- based on SAT score-sending behavior
-  - local: send most scores to colleges within Geomarket
-  - regional: send most scores out-of-state but in-region (e.g., Midwest)
-  - Selective colleges should look for regional and national students
-  
-<p class="quote">College Board underwrites project to enter enrollment management space</p>
-<p style="display:none;">We asked the College Board if it might provide the database we required. Coincidentally, the Board was reviewing its own efforts to help colleges estimate their enrollment potential, efforts which had faltered largely because the smallest geographic unit used in these analyses was the state [@RN4982, p. x]</p>
-
-- @RN4982 outputs are basis for College Board EPS software
-
-### Scholarship on Quantification {.hide}
-#### Discussions of correlation and homophily by @RN4975
-
-<p class="quote">**Correlation**: extent to which variables move together</p>
-<p style="display:none;">Our research has simply demonstrated what everyone has always known: communities with high levels of family income and parental education are also communities in which students have higher than average SATs and more far-reaching aspirations” [@RN4982, p. 42].</p>
-
-- Correlations observed in training data caused by structural inequality
-  - "Predicting the future on the basis of the past threatens to reify and reproduce existing inequalities" [@RN4794, p. 224]
-- @RN4982 find 4 predictors of student market segment
-  - Parental education, family income, SAT score, educational aspirations
-  - Recommend selective colleges target high-SES Geomarkets
-
-
-<p class="quote">**Homophily**: birds of a feather flock together</p>
-<p style="display:none;">The layering of collegiate competition is primarily a socioeconomic layering. The hierarchical structure of collegiate competition reflects the stratified social and economic dimensions of communities from which colleges draw their students. Competition among colleges, as admissions officers have told us for so long, is a matter of keeping company with one’s peers [@RN4982, p. 72].</p>
-
-
-- Homophily not the result of voluntary action; homophily programmed into algorithms that create connections
-  - Match vertically ranked consumers to vertically ranked producers
-- @RN4982: like colleges compete for like students (SES)
-<p class="quote" style="font-size: 0.85em;">Recommend colleges target Geomarkets, schools targeted by peer colleges</p>
-<p style="display:none;">On occasion, senior spokespersons for the profession worry that students outside the main [Geo]market areas remain forgotten and hence, unchallenged. Inevitably, the increasing competition for students, the expense of travel and mailings, and internal political constraints compel institutions to concentrate their efforts where they will do the most good. The result is a natural reinforcing of the basic socioeconomic patterns that gave shape in the first place to the structure of college choice [@RN4982, p. 44].</p>
-
-<!--
-
-### Scholarship on quantification {.hide}
-#### Discussion of correlation by @RN4975[chapter 1]
-
-**Correlation**, extent to which variables move together
-
-- Predictive analytics in two steps: 
-    1. Measure correlations in previous cases (training data)
-    1. Apply training data correlations to predict future cases
-- But correlations from training data are point-in-time snapshot
-  - Observed correlations caused by enduring structural inequality
-  - "Predicting the future on the basis of the past threatens to reify and reproduce existing inequalities" [@RN4794, p. 224]
-
-<p class="quote">@RN4982[chapter 3]</p>
-<p style="display:none;">Our research has simply demonstrated what everyone has always known: communities with high levels of family income and parental education are also communities in which students have higher than average SATs and more far-reaching aspirations” [@RN4982, p. 42].</p>
-
-- Which variables correlated with student market segment (training data)?
-  - Parental education, family income, SAT score, educational aspirations
-  - Conclusion: demand for higher education is a function of social origin
-- Recommendation: selective colleges target high-SES Geomarkets
-
-
-### Scholarship on quantification {.hide}
-#### Discussion of homophily by @RN4975[chapter 2]
-
-**Homophily**, birds of a feather flock together
-
-- Network science assumes homophily result of voluntary action by actors
-- But homophily programmed into algorithms that create connections
-- Homophily in market research/geodemography
-  - Based on snapshot of existing social stratification, match vertically categorized consumers to vertically categorized producers
-  - Amplifies the effect of initial stratificaiton on subsequent stratification
-
-<p class="quote">@RN4982[chapter 4]</p>
-<p style="display:none;">The layering of collegiate competition is primarily a socioeconomic layering. The hierarchical structure of collegiate competition reflects the stratified social and economic dimensions of communities from which colleges draw their students. Competition among colleges, as admissions officers have told us for so long, is a matter of keeping company with one’s peers [@RN4982, p. 72].</p>
-
-- Conducted a social network analysis (training data):
-  - 2-mode network: students (1) tie to colleges (2) by sending scores
-  - Colleges *i* and *j* compete if many students send scores to both
-  - Conclusion: Like colleges compete for like (social origin) students
-
-<p class="quote">Recommendation: target Geomarkets, HS targeted by peer colleges</p>
-<p style="display:none;">On occasion, senior spokespersons for the profession worry that students outside the main market areas remain forgotten and hence, unchallenged. Inevitably, the increasing competition for students, the expense of travel and mailings, and internal political constraints compel institutions to concentrate their efforts where they will do the most good. The result is a natural reinforcing of the basic socioeconomic patterns that gave shape in the first place to the structure of college choice [@RN4982, p. 44].</p>
- -->
-
-### Research questions{.hide}
-
-<br>
-
-**Research interests**
-
-- How unequal are these Geomarkets?
-- Who is included/excluded if we purchase student lists and filter on Geomarkets as recommended by @RN4982
-
-<br>
-
-**Research questions**
-
-1. What is the socioeconomic and racial variation between and within Geomarkets? How does this change over time?
-1. What is the socioeconomic and and racial composition of included vs. excluded prospects, if "student list" purchases filter on particular Geomarkets?
-
-
-# Methods
-
-### Methods{.hide}
-#### Data
-
-**RQ1: SES and racial variation over time between, within Geomarkets**
-
-- Census tract-level data
-  - 1980, 2000 Census, 2016-2020 American Community Survey (ACS)
-- Geomarket shapefiles obtained from a 2012 blog post
-  - Each zip code assigned to one Geomarket
-- Partial spatial assigns each Census tract to one or more Geomarkets
-
-**RQ2: SES and racial composition of student list purchases**
-
-- Student lists purchased by 14 public universities from 2016-2020
-  - 414 student lists associated with 2.5 million prospects
-    - Data: search filter criteria; and de-identified student-level data
-    - Each prospect has home and HS zip code (point geometry)
-- Analyze purchases that include all Geomarkets in a metro area
-  - Show who included/excluded if we filter on particular Geomarkets
-
-### Methods{.hide}
-#### Research design is a quantitative case study
-
-
-
-<div style="margin-top: 0.8em;"></div>
-
-Cases 
-
-- Cases are metro areas associated with multiple Geomarkets (n ~ 17)
-- Initial case selection based on availability of student list purchases (RQ2)
-  - Prefer purchases that filter on test score, HS class, GPA, but not on student preferences (e.g., college size)
-  - Ideal: purchases differ on test score range, but same on other filters
-  - For some metros, don't have purchases that include all Geomarkets
-- Final set of cases for manuscript main text (3 metro areas)
-  - TBD; unsure about criteria
-  - Conducted analyses for larger sample of metros
-
-Analyses (RQ1 and RQ2)
-
-- Descriptive statistics for between Geomarket variation
-- Interactive maps for within Geomarket variation
-
-
-# Appendix
-
-```{r setup, echo=FALSE, results = 'asis', eval = TRUE}
+```{r setup, echo=FALSE, results='asis', eval=TRUE}
 
 library(tidyverse)
-library(kableExtra)  # For collapse_rows() to work
+library(kableExtra)
 library(tools)
 
-knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
+)
 
-# Example directories
 graphs_dir <- file.path(".", "results", "graphs")
 tables_dir <- file.path(".", "results", "tables")
 
-# Revised insert_figure() that can read either .tex or .txt title sidecars
+orders_df <- read_csv("scripts/metro_orders.csv")
+
+# Metros where student-list purchase results should not be displayed
+# because the orders used additional filters that make interpretation misleading.
+# These metros should be treated as RQ0-only.
+skip_student_list_metros <- c("houston")
+
+# ------------------------------------------------------------
+# Shared figure insertion helper
+# ------------------------------------------------------------
+
 insert_figure <- function(rq, metro, graph_type, base_path = graphs_dir) {
   
-  # We'll use 'metro' directly since it's already underscored (e.g. "los_angeles").
   fig_file <- file.path(
     base_path,
     rq,
@@ -434,9 +73,6 @@ insert_figure <- function(rq, metro, graph_type, base_path = graphs_dir) {
     stringr::str_c(rq, "_", metro, "_", graph_type, "_note.txt")
   )
   
-  # Print title/caption.
-  # - New RQ3 .tex files already include heading markup like #### and subtitle italics.
-  # - Older .txt files only contain the title text, so add #### here.
   if (file.exists(cap_file_tex)) {
     
     caption_text <- readLines(cap_file_tex, warn = FALSE)
@@ -452,14 +88,12 @@ insert_figure <- function(rq, metro, graph_type, base_path = graphs_dir) {
     writeLines("#### No Title Found")
   }
   
-  # Output the figure if it exists
   if (file.exists(fig_file)) {
     writeLines(stringr::str_c("![](", fig_file, ")\n"))
   } else {
     writeLines(paste("*(Missing figure file:", fig_file, ")*\n"))
   }
   
-  # Print footnotes if the note file exists
   if (file.exists(note_file)) {
     notes_txt <- readLines(note_file, warn = FALSE)
     writeLines(
@@ -471,6 +105,234 @@ insert_figure <- function(rq, metro, graph_type, base_path = graphs_dir) {
     )
   }
 }
+
+# ------------------------------------------------------------
+# Shared heading helpers
+# ------------------------------------------------------------
+
+rq_slide_titles <- c(
+  rq0 = "RQ0: How unequal are Geomarkets?",
+  rq1 = "RQ1: What is the composition of each Geomarket?",
+  rq2 = "RQ2: Where does each group come from?",
+  rq3 = "RQ3: What happens when a Geomarket is excluded?"
+)
+
+make_rq_heading <- function(rq_title, rq, hide = FALSE) {
+  
+  if (hide) {
+    
+    stringr::str_c("### ", rq_title, " {.hide}")
+    
+  } else {
+    
+    rq_menu_title <- stringr::str_to_upper(rq)
+    
+    stringr::str_c(
+      "### ",
+      "<span class=\"menu-title\" style=\"display:none;\">&emsp;",
+      rq_menu_title,
+      "</span>",
+      "<span class=\"slide-title\">",
+      rq_title,
+      "</span>"
+    )
+  }
+}
+
+format_metro_heading <- function(metro) {
+  
+  if (metro == "dc_maryland_virginia") {
+    "D.C., Maryland, and Virginia"
+  } else if (metro == "bay_area") {
+    "Bay Area"
+  } else {
+    metro %>%
+      stringr::str_replace_all("_", " ") %>%
+      tools::toTitleCase() %>%
+      stringr::str_c(" area")
+  }
+}
+
+# ------------------------------------------------------------
+# Main-results settings
+# ------------------------------------------------------------
+
+main_results_metros <- c("chicago")
+main_results_include_rq0 <- TRUE
+
+main_results_layout <- if_else(
+  length(main_results_metros) == 1,
+  "by_rq",
+  "by_metro"
+)
+
+# Pick the middle score-band order for each main-results metro
+get_middle_order_id <- function(metro_name) {
+  
+  order_id <- orders_df %>%
+    filter(
+      metro == metro_name,
+      order_ids != "487927",
+      !metro %in% skip_student_list_metros
+    ) %>%
+    mutate(
+      score_low = readr::parse_number(test_range)
+    ) %>%
+    arrange(score_low) %>%
+    slice(ceiling(n() / 2)) %>%
+    pull(order_ids)
+  
+  if (length(order_id) != 1) {
+    stop("Expected exactly one middle-order ID for ", metro_name, ", but found ", length(order_id), ".")
+  }
+  
+  order_id
+}
+
+main_results_middle_orders <- tibble(
+  metro = main_results_metros,
+  middle_order_id = map_chr(main_results_metros, get_middle_order_id)
+)
+
+if (any(is.na(main_results_middle_orders$middle_order_id)) ||
+    any(main_results_middle_orders$middle_order_id == "")) {
+  stop("At least one main-results metro has no valid middle-order ID. Check main_results_metros and skip_student_list_metros.")
+}
+
+# ------------------------------------------------------------
+# Main-results figure manifest
+# ------------------------------------------------------------
+
+make_main_results_manifest <- function(metro_name) {
+  
+  middle_order_id <- main_results_middle_orders %>%
+    filter(metro == metro_name) %>%
+    pull(middle_order_id)
+  
+  rq0_rows <- tibble(
+    rq = "rq1",              # old RQ1 files, displayed as RQ0
+    displayed_rq = "rq0",
+    graph_type = c("race", "ses")
+  )
+  
+  rq1_rows <- tibble(
+    rq = c("rq2", "rq2", "rq2b"),
+    displayed_rq = "rq1",
+    graph_type = c(
+      "race_row_plot",
+      "firstgen_row_plot",
+      str_c("order_", middle_order_id, "_race_by_firstgen")
+    )
+  )
+  
+  rq2_rows <- tibble(
+    rq = "rq2",
+    displayed_rq = "rq2",
+    graph_type = c(
+      str_c("race_contribution_overlay_plot_", middle_order_id),
+      str_c("firstgen_contribution_overlay_plot_", middle_order_id),
+      str_c("race_firstgen_contribution_plot_", middle_order_id)
+    )
+  )
+  
+  rq3_rows <- tibble(
+    rq = "rq3",
+    displayed_rq = "rq3",
+    graph_type = c(
+      str_c("race_pp_exclusion_plot_order_", middle_order_id),
+      str_c("race_relative_exclusion_plot_order_", middle_order_id),
+      str_c("firstgen_pp_exclusion_plot_order_", middle_order_id),
+      str_c("firstgen_relative_exclusion_plot_order_", middle_order_id),
+      str_c("race_firstgen_pp_exclusion_plot_order_", middle_order_id),
+      str_c("race_firstgen_relative_exclusion_plot_order_", middle_order_id)
+    )
+  )
+  
+  bind_rows(
+    if (main_results_include_rq0) rq0_rows else NULL,
+    rq1_rows,
+    rq2_rows,
+    rq3_rows
+  ) %>%
+    mutate(metro = metro_name)
+}
+```
+
+# Results
+
+```{r main-results, echo=FALSE, results='asis'}
+main_results_manifest <- bind_rows(
+  map(main_results_metros, make_main_results_manifest)
+)
+
+if (main_results_layout == "by_rq") {
+  
+  for (rq_this in unique(main_results_manifest$displayed_rq)) {
+    
+    df_rq <- main_results_manifest %>%
+      filter(displayed_rq == rq_this)
+    
+    first_rq_slide <- TRUE
+    
+    for (j in seq_len(nrow(df_rq))) {
+      
+      writeLines(make_rq_heading(
+        rq_title = rq_slide_titles[[rq_this]],
+        rq = rq_this,
+        hide = !first_rq_slide
+      ))
+      
+      insert_figure(
+        rq = df_rq$rq[j],
+        metro = df_rq$metro[j],
+        graph_type = df_rq$graph_type[j]
+      )
+      
+      first_rq_slide <- FALSE
+    }
+  }
+  
+} else if (main_results_layout == "by_metro") {
+  
+  for (metro_this in main_results_metros) {
+    
+    writeLines(str_c("## ", format_metro_heading(metro_this)))
+    
+    df_metro <- main_results_manifest %>%
+      filter(metro == metro_this)
+    
+    for (rq_this in unique(df_metro$displayed_rq)) {
+      
+      df_rq <- df_metro %>%
+        filter(displayed_rq == rq_this)
+      
+      first_rq_slide <- TRUE
+      
+      for (j in seq_len(nrow(df_rq))) {
+        
+        writeLines(make_rq_heading(
+          rq_title = rq_slide_titles[[rq_this]],
+          rq = rq_this,
+          hide = !first_rq_slide
+        ))
+        
+        insert_figure(
+          rq = df_rq$rq[j],
+          metro = df_rq$metro[j],
+          graph_type = df_rq$graph_type[j]
+        )
+        
+        first_rq_slide <- FALSE
+      }
+    }
+  }
+}
+```
+
+# Appendix
+
+```{r appendix, echo=FALSE, results = 'asis', eval = TRUE}
+
 insert_rq1_table <- function(metro) {
   table_df <- readRDS(file.path(tables_dir, str_c('rq1_table_', metro, '.rds')))
   table_df$value[is.na(table_df$value)] <- NA_real_
@@ -593,14 +455,6 @@ insert_rq2_table <- function(metro, table_type, rq_name = 'rq2') {
   }
 }
 
-# 2) Read the CSV and define metro order / RQs
-
-orders_df <- read_csv("scripts/metro_orders.csv")
-
-# Metros where student-list purchase results should not be displayed
-# because the orders used additional filters that make interpretation misleading.
-# These metros should be treated as RQ0-only.
-skip_student_list_metros <- c("houston")
 
 # All metros with RQ0 Census/Geomarket results
 all_metros <- c(
@@ -644,44 +498,6 @@ metros <- c(
 
 rqs <- c("rq0", "rq1", "rq2", "rq3")
 
-# Final display order:
-# 1. metros with RQ1-RQ3 results, alphabetically
-# 2. metros with only RQ0 results, alphabetically
-metros <- c(
-  sort(student_list_metros),
-  sort(rq0_only_metros)
-)
-
-rqs <- c("rq0", "rq1", "rq2", "rq3")
-
-rq_slide_titles <- c(
-  rq0 = "RQ0: How unequal are Geomarkets?",
-  rq1 = "RQ1: What is the composition of each Geomarket?",
-  rq2 = "RQ2: Where does each group come from?",
-  rq3 = "RQ3: What happens when a Geomarket is excluded?"
-)
-
-make_rq_heading <- function(rq_title, rq, hide = FALSE) {
-  
-  if (hide) {
-    
-    stringr::str_c("### ", rq_title, " {.hide}")
-    
-  } else {
-    
-    rq_menu_title <- stringr::str_to_upper(rq)
-    
-    stringr::str_c(
-      "### ",
-      "<span class=\"menu-title\" style=\"display:none;\">&emsp;",
-      rq_menu_title,
-      "</span>",
-      "<span class=\"slide-title\">",
-      rq_title,
-      "</span>"
-    )
-  }
-}
 
 # Old RQ1 outputs, now displayed as RQ0
 graph_types_rq0 <- c("race", "ses")
@@ -718,24 +534,13 @@ for (m in metros) {
 
   # Convert underscores -> spaces, then title case
   # But add special checks for "dc_maryland_virginia" and "bay_area"
-  if (m == "dc_maryland_virginia") {
-    heading_text <- "D.C., Maryland, and Virginia"
-  } else if (m == "bay_area") {
-    heading_text <- "Bay Area"
-  } else {
-    heading_text <- gsub("_", " ", m, fixed = TRUE)
-    heading_text <- tools::toTitleCase(heading_text)
-    heading_text <- str_c(heading_text, " area")
-  }
+  heading_text <- format_metro_heading(m)
 
   # Print a top-level heading for the metro area
   writeLines(str_c("## ", heading_text))
 
   for (rq in rqs) {
     
-    # Displayed RQ number.
-    # Internal file/folder names remain legacy names: rq1, rq2, rq2b, rq3.
-    rq_num <- str_replace(string = rq, pattern = "rq", replacement = "")
 
     rq_title <- rq_slide_titles[[rq]]
     
@@ -1112,13 +917,11 @@ var_rc_pairs <- list(
 for (m in native_metros) {
   
   # (Level-2) heading for each metro (not a slide at slide-level=3)
-  heading_text <- if (m == "nyny") {
-    "New York City"
-  } else {
-    m_no_underscores <- gsub("_", " ", m, fixed = TRUE)
-    m_title          <- tools::toTitleCase(m_no_underscores)
-    paste0(m_title, " area")
-  }
+  heading_text <- if_else(
+    m == "nyny",
+    "New York City",
+    format_metro_heading(m)
+  )
   writeLines(paste0("## ", heading_text, "\n"))
 
   # For each var/rc pair, create a new slide at level-3 (always hidden in TOC)
@@ -1178,169 +981,3 @@ for (m in native_metros) {
 }
 ```
 
-# Discussion
-
-### Summary of results{.hide}
-
-**RQ1: SES and racial variation over time between, within Geomarkets**
-
-- Geomarkets highly correllated with race and class in many metros
-- In 1980, Black people are usually concentrated in poorest Geomarket
-  - In some metros, this pattern persists (e.g., Cleveland)
-
-**RQ2: SES and racial composition of student list purchases**
-
-- Poor, non-white Geomarkets produce disproportionate share of Black and Hispanic students
-- Poor, non-white Geomarkets produce disproportionate share of first-generation students
-- Intersection of race and parental education
-  - Compared to students from affluent Geomarkets, Asian and Hispanic students from low-income Geomarkets tend to be first-gen
-  - Targeting non-white students in affluent Geomarkets yields mostly non-first-gen
-
-## Organizational Field of College Access
-
-### __Organizational Fields [@RN527]__{.hide}
-
-<p class="quote">"Organizational field" salient to college access, according to prior research</p>
-<p style="display:none;">Those organizations that, in the aggregate, constitute a recognized area of institutional life: key suppliers, resource and product consumers, regulatory agencies, and other organizations that produce similar services or products. The virtue of this unit of analysis is that it directs our attention...to the totality of relevant actors [@RN527, p. 148].</p>
-
-<!-- - Economics $\rightarrow$ effects of schools and policies (district/state/federal) on students -->
-
-__Sociology $\rightarrow$ how schools and households sort students into colleges__
-
-- Demand-side explanations
-  - Status attainment model [e.g., @RN915]
-  - Cultural capital model [e.g., @RN1228; @RN4991]
-- Supply-side explanations
-  - The "credentialism" literature [e.g., @RN865; @RN861]
-  - Enrollment management behavior of colleges [e.g., @RN3519]
-  
-__Research ignores third-party vendors that classify consumers for producers__
-
-- Structural inequality $\rightarrow$ unequal student demand for college
-  - Third-party products take snapshot student demand $\rightarrow$ encourage supply-side to amplify structural inequalities observed on demand-side
-- Vendors have structured college access for decades [@RN5045]
-  - Private equity + data science + software-as-service $\rightarrow$ financiers control which students sorted to which colleges
-
-## EM Industry Dynamics
-
-### __Dynamics in the Market for Student List Data__{.hide}
-
-[Jaquette, O., Salazar, K., & Martin, P. M. (2022). *The student list business*.](https://ticas.org/wp-content/uploads/2022/09/The-Student-List-Business_-Primer-and-Market-Dynamics.pdf)
-
-
-1. __Centrality of consulting firms to EM industry__
-    - In our data collection, ~50\% of univs outsourced student list purchases
-1. __Technology and new data sources to identify+serve prospects__
-    - "Free" college search engines (e.g., Cappex)
-    - College planning software purchased by k-12 districts (e.g., Naviance, Scoir)
-1. __Test optional and moves by incumbents__
-    - Test-optional reduces coverage advantage of testing companies
-    - ACT becomes an edtech firm (epic fail); College Board has AP+savvy
-1. __From owner-operated to private-equity owned firms__
-    - 1990s - 2000s = firm entry; 2010s = vertical+horizontal acquisitions
-      - [Vista Equity Partners portfolio](https://www.vistaequitypartners.com/companies/portfolio/)
-      - [EAB](https://eab.com/) + [Ruffalo Noel Levitz](https://www.ruffalonl.com/) claim to serve more than 3,000 colleges
-    - Consulting firms sell software-as-service "solutions"
-      - Build subscription recruiting platforms around database of prospects
-
-<!-- This is a comment in the Quarto document body
-
-### __Enrollment Management (EM) Consulting Firms__{.hide}
-#### _From Owner-Operated to Private Equity_
-
-- Domains of EM consulting along the student lifecycle
-  - Marketing/recruiting, pricing and financial aid, student success, advancement
-  - Colleges hire EM firms to choose tuition price and "discounting" strategy
-    - Typically based on modeling behavior of past applicants
-  
-Evolution of EM consultancies mirrors evolution of for-profit colleges [@list_biz; @RN5027; @RN5022]
-
-- 1980s and 1990s: rise of owner-operated firms
-  - In 1983, Bill Royall founds Royall & Co., direct marketing for political campaigns
-- 2010s: acquisitions and market concentration from private equity investment
-  - In 2015, Advisory Board Company purchases Royall & Co. for $850 million (2015 CPI), Royall renamed EAB
-  - In 2017, Vista Equity Partners buys EAB for $1.5 billion
-- By 2022:
-  - EAB claims to serve more than 1,100 colleges [@eabcomm]
-  - Ruffalo Noel Levitz (RNL) claims to serve 1,900 orgs [@rnlabout]
-
- -->
- 
-### __The EAB Story: Acquire and Integrate__{.hide}
-#### _Acquistiions in lead generation [@list_biz; @RN5027]_
-
-
-Goal of acquisitions is to make colleges depend on EAB (software) products
-
-- [YouVisit](https://www.youvisit.com/), 2019 -- virtual tours
-- [Cappex](https://www.appily.com/), 2020 -- college search engine
-- Hobsons, 2021 -- edtech/consulting firm
-  - PowerSchool buys Naviance; [EAB becomes exclusive reseller of Intersect](#){data-modal-type="image" data-modal-url="assets/images/intersect_connection_subscription_renewal_notice_university_utah_1_7_2022_redacted.png"}
-    - (PowerSchool IPO in 2021; acquired by Bain Capital in 2024)
-- [Concourse](https://discover.concourseglobal.net/student/start), 2022 -- direct admissions
-
-EAB creates [Enroll360](https://eab.com/solutions/enroll360/) in 2021:
-
-<blockquote style="font-size: 0.9em;">
-We spent the last couple of years creating a connected recruitment ecosystem.... This work led us to join forces with several leading companies: Cappex, Intersect, Wisr, and YouVisit....Individually, each solution can solve important challenges at various stages of the enrollment funnel...By bringing these capabilities together, our vision is to reinvent how enrollment leaders reach their goals [@koppenheffer_2021].
-</blockquote>
-
-### __The Private Equity Business Model__ {.hide .columns-2}
-#### _Software Subscriptions and Upselling_
-
-::: columns
-
-:::: {.column width=50%}
-
-[Vista Equity Partners. (2021). _The next frontier of software investment and the private markets_](https://info.vistaequitypartners.com/rs/vistaequitypartnersiiillc/images/vista-equity-partners-whitepaper-uk-next-frontier-software-investment-private-markets.PDF)
-```{r, echo=FALSE, out.width="80%", fig.cap=""}
-knitr::include_graphics("./assets/images/vista_software_value_proposition.png")
-```
-
-
-::::
-
-:::: {.column width=50%}
-
-[Securities and Exchange Commission. (2022). _Form 10-K: PowerSchool Holdings, Inc. for fiscal year ended Dec. 31, 2021_](https://s27.q4cdn.com/190453437/files/doc_financials/2021/q4/78e2074c-196d-4e96-b3e6-e471d3ac452e.pdf), p. 43:
-
-<blockquote style="font-size: 0.9em;">
-Many customers begin their journey with us by using only two of our 15 products... As customers begin to appreciate the benefits of an integrated software platform..., they increase the number of solutions they buy from us... Our future revenue growth is dependent upon our ability to expand our customers’ use of our platform, and our go-to-market efforts are designed to drive cross-sell growth (p. 43).
-</blockquote>
-::::
-
-:::
-
-
-
-## Building a Knowledge Infrastructure
-
-
-### The "Knowledge Infrastructure" of Education Research{.hide}
-
-__Knowledge infrastructures (KIs) [@RN5025]__
-
-- "Systems of observation and measurement" [@RN5025, p. 743] that provide the foundation for scalable research
-- Collect, process, and distribute data in ways that "enable certain kinds of knowledge production while channeling researchers away from questions not readily answerable within...that infrastructure” [@RN5025, p. 742]
-
-__The KI of education policy research__
-
-- Data on students and schools from district, state, and federal sources
-- Researchers investigated for-profit colleges because for-profit colleges (direct providers) and students included in ongoing data collections
-
-__Expanding the KI to consider private firms and private equity__
-
-- Case-study research (e.g., this study)
-  - Granular data; critical analyses; gnarly data collection; difficult to scale
-- Data subscriptions created for investment community (e.g., PitchBook, Orbis)
-  - Can these data be leveraged to expand the domain of education research?
-
-# Thank you!{.align-center}
-
-<div><img class="qr" src="./assets/images/qr_code.png" /></div>
-
-
-# References
-
-::: {#refs}
-:::
