@@ -230,6 +230,181 @@ dir.create(
   recursive = TRUE
 )
 
+# ----------------------------------------------------------
+# RQ3 plot configuration
+# ----------------------------------------------------------
+
+rq3_plot_specs <- tibble::tribble(
+  ~g,              ~effect_scale, ~width, ~height_min, ~height_base, ~height_per_exclusion,
+  "race",          "pp",          14,     8,           3.5,          0.55,
+  "race",          "relative",    14,     8,           3.5,          0.55,
+  "firstgen",      "pp",          14,     6,           3.5,          0.45,
+  "firstgen",      "relative",    14,     6,           3.5,          0.45,
+  "race_firstgen", "pp",          16,     10,          4.5,          0.65,
+  "race_firstgen", "relative",    16,     10,          4.5,          0.65
+)
+
+# ----------------------------------------------------------
+# Helper: create plot object
+# ----------------------------------------------------------
+
+create_rq3_plot_obj <- function(g, effect_scale, rq3_l, order_ids_this) {
+  
+  if (g == "race") {
+    
+    create_rq3_race_delta_facet_plot(
+      rq3_df = rq3_l$race,
+      order_ids_this = order_ids_this,
+      effect_scale = effect_scale
+    )
+    
+  } else if (g == "firstgen") {
+    
+    create_rq3_firstgen_delta_facet_plot(
+      rq3_df = rq3_l$firstgen,
+      order_ids_this = order_ids_this,
+      effect_scale = effect_scale
+    )
+    
+  } else if (g == "race_firstgen") {
+    
+    create_rq3_race_firstgen_delta_facet_plot(
+      rq3_df = rq3_l$race_firstgen,
+      order_ids_this = order_ids_this,
+      sort_by = "firstgen_delta",
+      effect_scale = effect_scale
+    )
+    
+  } else {
+    
+    stop("Unknown RQ3 graph type: ", g)
+  }
+}
+
+# ----------------------------------------------------------
+# Helper: title text
+# ----------------------------------------------------------
+
+make_rq3_title_tex <- function(g, effect_scale, metro, test_range) {
+  
+  scale_phrase <- if_else(
+    effect_scale == "pp",
+    "Percentage-point change",
+    "Relative percent change"
+  )
+  
+  outcome_phrase <- case_when(
+    g == "race" ~ "racial/ethnic composition",
+    g == "firstgen" ~ "first-generation status composition",
+    g == "race_firstgen" ~ "race × first-generation composition",
+    TRUE ~ "composition"
+  )
+  
+  geomarket_phrase <- if_else(
+    g == "race",
+    "after excluding each Geomarket: ",
+    "after excluding Geomarket: "
+  )
+  
+  stringr::str_c(
+    "#### ",
+    scale_phrase,
+    " in ",
+    outcome_phrase,
+    " ",
+    geomarket_phrase,
+    format_metro_for_slide_subtitle(metro),
+    ", ",
+    format_score_range_for_slide_subtitle(test_range)
+  )
+}
+
+# ----------------------------------------------------------
+# Helper: figure notes
+# ----------------------------------------------------------
+
+make_rq3_note_text <- function(g, effect_scale, figure_note_local) {
+  
+  scale_sentence <- if_else(
+    effect_scale == "pp",
+    "Each point shows the percentage-point change",
+    "Each point shows the relative percent change"
+  )
+  
+  formula_sentence <- if_else(
+    effect_scale == "relative",
+    " Relative percent change is calculated as 100 × (remaining-pool share − full-pool share) / full-pool share.",
+    ""
+  )
+  
+  interpretation_sentence <- if_else(
+    effect_scale == "pp",
+    "Positive values mean the remaining pool has a higher share than the full metro pool; negative values mean the remaining pool has a lower share.",
+    "Positive values mean the remaining pool has higher relative representation than the full metro pool; negative values mean the remaining pool has lower relative representation."
+  )
+  
+  if (g == "race") {
+    
+    note_body <- str_c(
+      "- ",
+      scale_sentence,
+      " in the racial/ethnic composition of the remaining visible prospect pool after excluding the named Geomarket.",
+      formula_sentence,
+      " ",
+      interpretation_sentence,
+      " Facet titles report the full-pool count and baseline share for each racial/ethnic group. ",
+      "Excludes students with missing values for race/ethnicity. ",
+      figure_note_local
+    )
+    
+  } else if (g == "firstgen") {
+    
+    note_body <- str_c(
+      "- ",
+      scale_sentence,
+      " in first-generation status composition of the remaining visible prospect pool after excluding the named Geomarket.",
+      formula_sentence,
+      " ",
+      interpretation_sentence,
+      " Facet titles report the full-pool count and baseline share for each first-generation status group. ",
+      "Excludes students with missing values for first-generation status. ",
+      figure_note_local
+    )
+    
+  } else if (g == "race_firstgen") {
+    
+    sort_sentence <- if_else(
+      effect_scale == "pp",
+      "Within each racial/ethnic row, Geomarkets are sorted by the first-generation subgroup's percentage-point change. ",
+      "Within each racial/ethnic row, Geomarkets are sorted by the first-generation subgroup's relative percent change. "
+    )
+    
+    note_body <- str_c(
+      "- ",
+      scale_sentence,
+      " in the race-by-first-generation composition of the remaining visible prospect pool after excluding the named Geomarket.",
+      formula_sentence,
+      " ",
+      interpretation_sentence,
+      " Rows show racial/ethnic groups; columns distinguish first-generation and non-first-generation prospects. ",
+      sort_sentence,
+      "Panel labels report the full-pool count and baseline share for each race-by-first-generation subgroup. ",
+      "Excludes students with missing values for race/ethnicity or first-generation status. ",
+      figure_note_local
+    )
+    
+  } else {
+    
+    stop("Unknown RQ3 graph type: ", g)
+  }
+  
+  c("Figure Notes:", note_body)
+}
+
+# ----------------------------------------------------------
+# Main RQ3 graph loop
+# ----------------------------------------------------------
+
 for (m in unique(rq3_orders_df$metro)) {
   
   message("Creating RQ3 exclusion plots for: ", m)
@@ -244,46 +419,35 @@ for (m in unique(rq3_orders_df$metro)) {
   for (i in seq_len(nrow(metro_df))) {
     
     order_ids_this <- metro_df$order_ids[i]
+    test_range_this <- metro_df$test_range[i]
+    figure_note_local <- metro_df$figure_note[i]
     
-    for (g in c("race", "firstgen")) {
+    for (spec_i in seq_len(nrow(rq3_plot_specs))) {
       
-      # ------------------------------------------------------
-      # Create plot using revised RQ3 graph functions
-      # ------------------------------------------------------
+      spec <- rq3_plot_specs[spec_i, ]
       
-      if (g == "race") {
-        
-        plot_obj <- create_rq3_race_delta_facet_plot(
-          rq3_df = rq3_l$race,
-          order_ids_this = order_ids_this
-        )
-        
-      } else if (g == "firstgen") {
-        
-        plot_obj <- create_rq3_firstgen_dualaxis_plot(
-          rq3_df = rq3_l$firstgen,
-          order_ids_this = order_ids_this
-        )
-      }
+      g <- spec$g
+      effect_scale_this <- spec$effect_scale
       
-      # ------------------------------------------------------
-      # Stable file name, same as before
-      # ------------------------------------------------------
+      plot_obj <- create_rq3_plot_obj(
+        g = g,
+        effect_scale = effect_scale_this,
+        rq3_l = rq3_l,
+        order_ids_this = order_ids_this
+      )
       
       plot_name <- str_c(
         "rq3_",
         m,
         "_",
         g,
+        "_",
+        effect_scale_this,
         "_exclusion_plot_order_",
         order_ids_this
       )
       
       message("Saving RQ3 plot: ", plot_name)
-      
-      # ------------------------------------------------------
-      # Set graph height based on number of excluded Geomarkets
-      # ------------------------------------------------------
       
       n_exclusions <- rq3_l[[g]] %>%
         filter(
@@ -293,79 +457,36 @@ for (m in unique(rq3_orders_df$metro)) {
         distinct(excluded_eps_codename) %>%
         nrow()
       
-      plot_height <- if_else(
-        g == "race",
-        max(8, 3.5 + 0.55 * n_exclusions),
-        max(6, 3.5 + 0.45 * n_exclusions)
+      plot_height <- max(
+        spec$height_min,
+        spec$height_base + spec$height_per_exclusion * n_exclusions
       )
       
       ggsave(
         filename = file.path(graphs_dir, "rq3", str_c(plot_name, ".png")),
         plot = plot_obj,
-        width = 14,
+        width = spec$width,
         height = plot_height,
         bg = "white"
       )
       
-      # ------------------------------------------------------
-      # Save title/subtitle as .tex sidecar file
-      # ------------------------------------------------------
-      
-      if (g == "race") {
-        
-        title_tex <- stringr::str_c(
-          "#### Change in racial/ethnic composition after excluding each Geomarket: ",
-          format_metro_for_slide_subtitle(m),
-          ", ",
-          format_score_range_for_slide_subtitle(metro_df$test_range[i])
-        )
-        
-      } else if (g == "firstgen") {
-        
-        title_tex <- stringr::str_c(
-          "#### Change in first-generation status composition after excluding Geomarket: ",
-          format_metro_for_slide_subtitle(m),
-          ", ",
-          format_score_range_for_slide_subtitle(metro_df$test_range[i])
-        )
-      }
+      title_tex <- make_rq3_title_tex(
+        g = g,
+        effect_scale = effect_scale_this,
+        metro = m,
+        test_range = test_range_this
+      )
       
       writeLines(
         title_tex,
         file.path(graphs_dir, "rq3", str_c(plot_name, "_title.tex"))
       )
       
-      # ------------------------------------------------------
-      # Save note
-      # ------------------------------------------------------
-      
-      figure_note_local <- metro_df$figure_note[i]
-      
-      if (g == "race") {
-        
-        note_text <- c(
-          "Figure Notes:",
-          str_c(
-            "- Each point shows the percentage-point change in the racial/ethnic composition of the remaining visible prospect pool after excluding the named Geomarket. ",
-            "Positive values mean the remaining pool has a higher share of that group than the full metro pool; negative values mean the remaining pool has a lower share. ",
-            "Facet titles report the full-pool baseline share. ",
-            "Excludes students with missing values for race/ethnicity. ",
-            figure_note_local
-          )
-        )
-        
-      } else if (g == "firstgen") {
-        
-        note_text <- c(
-          "Figure Notes:",
-          str_c(
-            "- Each point shows the percentage-point change in the first-generation share of the remaining visible prospect pool after excluding the named Geomarket. ",
-            "The bottom x-axis reports percentage-point change from the full-pool baseline; the top x-axis reports the first-generation share of the remaining visible pool. ",
-            "Excludes students with missing values for first-generation status. ",
-            figure_note_local
-          )
-        )
-      }
+      note_text <- make_rq3_note_text(
+        g = g,
+        effect_scale = effect_scale_this,
+        figure_note_local = figure_note_local
+      )
       
       writeLines(
         note_text,

@@ -655,7 +655,15 @@ graph_types_rq0 <- c("race", "ses")
 graph_types_rq_composition <- c("race", "firstgen")
 
 # RQ3 exclusion/delta graph types
-graph_types_rq3 <- c("race", "firstgen")
+
+graph_types_rq3 <- c(
+  "race_pp",
+  "race_relative",
+  "firstgen_pp",
+  "firstgen_relative",
+  "race_firstgen_pp",
+  "race_firstgen_relative"
+)
 
 # 3) Read the CSV (underscored metro column)
 orders_df <- read_csv("scripts/metro_orders.csv")

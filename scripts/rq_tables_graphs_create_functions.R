@@ -2199,7 +2199,7 @@ recode_firstgen <- function(x) {
 
 ############## CREATE GRAPH FOR REVISED RQ3 EXCLUSION COMPOSITION
 
-create_rq3_firstgen_dualaxis_plot <- function(
+create_rq3_firstgen_delta_facet_plot <- function(
     rq3_df,
     order_ids_this,
     title = NULL,
@@ -2208,10 +2208,16 @@ create_rq3_firstgen_dualaxis_plot <- function(
       "First-gen",
       "Not first-gen"
     ),
+    effect_scale = c(
+      "pp",
+      "relative"
+    ),
     point_label = TRUE,
     point_size = 2.0,
-    label_nudge = 0.1
+    label_nudge = NULL
 ) {
+  
+  effect_scale <- match.arg(effect_scale)
   
   # ----------------------------------------------------------
   # 1) Filter to one order group and first-gen composition
@@ -2228,74 +2234,125 @@ create_rq3_firstgen_dualaxis_plot <- function(
     stop("No rows found. Check order_ids_this and confirm rq3_df is the firstgen table.")
   }
   
+  if (!"n" %in% names(df_plot)) {
+    stop("rq3_df must contain a count column named `n`.")
+  }
+  
   # ----------------------------------------------------------
-  # 2) Compute baseline and delta
+  # 2) Compute baseline, percentage-point change, and relative change
   # ----------------------------------------------------------
   
   baseline_df <- df_plot %>%
     filter(scenario_type == "all") %>%
     select(
       group,
+      baseline_n = n,
       baseline_pct = pct
     )
   
   df_plot <- df_plot %>%
     filter(scenario_type == "exclusion") %>%
-    left_join(baseline_df, by = "group") %>%
+    left_join(
+      baseline_df,
+      by = "group"
+    ) %>%
     mutate(
       delta_pp = pct - baseline_pct,
-      excluded_label = as.character(excluded_eps_codename)
+      relative_change_pct = if_else(
+        baseline_pct > 0,
+        ((pct - baseline_pct) / baseline_pct) * 100,
+        NA_real_
+      ),
+      effect_value = case_when(
+        effect_scale == "pp" ~ delta_pp,
+        effect_scale == "relative" ~ relative_change_pct
+      ),
+      excluded_label = as.character(excluded_eps_codename),
+      group_display = recode(
+        as.character(group),
+        "First-gen" = "First-generation",
+        "Not first-gen" = "Not first-generation"
+      )
     )
   
   # ----------------------------------------------------------
   # 3) Group/facet order and within-facet sorting
-  #    Top facet = First-gen
-  #    Bottom facet = Not first-gen
   # ----------------------------------------------------------
+  
+  display_levels <- c("First-generation", "Not first-generation")
   
   df_plot <- df_plot %>%
     mutate(
-      group = factor(group, levels = firstgen_groups_to_keep),
+      group_display = factor(
+        group_display,
+        levels = display_levels
+      ),
       facet_label = str_c(
-        group,
+        group_display,
         " (full pool = ",
+        scales::comma(baseline_n),
+        ", ",
         scales::number(baseline_pct, accuracy = 0.1),
         "%)"
       )
     )
   
   facet_levels <- df_plot %>%
-    distinct(group, facet_label) %>%
-    arrange(group) %>%
+    distinct(group_display, facet_label) %>%
+    arrange(group_display) %>%
     pull(facet_label)
   
   df_plot <- df_plot %>%
     mutate(
-      facet_label = factor(facet_label, levels = facet_levels)
+      facet_label = factor(
+        facet_label,
+        levels = facet_levels
+      )
     )
   
   # Create unique y-axis labels so each facet can be sorted independently.
   # The visible label removes the "___group" suffix later.
   y_levels <- df_plot %>%
-    arrange(group, delta_pp) %>%
-    mutate(y_label = str_c(excluded_label, "___", group)) %>%
+    arrange(group_display, effect_value) %>%
+    mutate(
+      y_label = str_c(excluded_label, "___", group_display)
+    ) %>%
     pull(y_label)
+  
+  # Default label nudges differ by scale.
+  if (is.null(label_nudge)) {
+    label_nudge <- if_else(effect_scale == "pp", 0.1, 1.0)
+  }
   
   df_plot <- df_plot %>%
     mutate(
-      y_label = str_c(excluded_label, "___", group),
-      y_label = factor(y_label, levels = rev(y_levels)),
-      delta_label = if_else(
-        delta_pp > 0,
-        str_c("+", scales::number(delta_pp, accuracy = 0.1)),
-        scales::number(delta_pp, accuracy = 0.1)
+      y_label = str_c(excluded_label, "___", group_display),
+      y_label = factor(
+        y_label,
+        levels = rev(y_levels)
+      ),
+      effect_label = case_when(
+        effect_scale == "pp" & effect_value > 0 ~ str_c(
+          "+",
+          scales::number(effect_value, accuracy = 0.1)
+        ),
+        effect_scale == "pp" ~ scales::number(effect_value, accuracy = 0.1),
+        effect_scale == "relative" & effect_value > 0 ~ str_c(
+          "+",
+          scales::number(effect_value, accuracy = 1),
+          "%"
+        ),
+        effect_scale == "relative" ~ str_c(
+          scales::number(effect_value, accuracy = 1),
+          "%"
+        )
       ),
       label_x = if_else(
-        delta_pp >= 0,
-        delta_pp + label_nudge,
-        delta_pp - label_nudge
+        effect_value >= 0,
+        effect_value + label_nudge,
+        effect_value - label_nudge
       ),
-      hjust_val = if_else(delta_pp >= 0, 0, 1)
+      hjust_val = if_else(effect_value >= 0, 0, 1)
     )
   
   # ----------------------------------------------------------
@@ -2308,14 +2365,21 @@ create_rq3_firstgen_dualaxis_plot <- function(
       str_replace_all("_", " ") %>%
       tools::toTitleCase()
     
+    scale_phrase <- case_when(
+      effect_scale == "pp" ~ "Percentage-point change",
+      effect_scale == "relative" ~ "Relative percent change"
+    )
+    
     if (metro_name == "Bay Area") {
       title <- str_c(
-        "Change in first-generation share after excluding Geomarket, ",
+        scale_phrase,
+        " in first-generation status composition after excluding each Geomarket, ",
         metro_name
       )
     } else {
       title <- str_c(
-        "Change in first-generation share after excluding Geomarket, ",
+        scale_phrase,
+        " in first-generation status composition after excluding each Geomarket, ",
         metro_name,
         " area"
       )
@@ -2330,12 +2394,41 @@ create_rq3_firstgen_dualaxis_plot <- function(
   # 5) Axis limits
   # ----------------------------------------------------------
   
-  x_vals <- c(df_plot$delta_pp, df_plot$label_x, 0)
+  x_vals <- c(df_plot$effect_value, df_plot$label_x, 0)
   x_min <- min(x_vals, na.rm = TRUE)
   x_max <- max(x_vals, na.rm = TRUE)
-  x_pad <- max(0.75, (x_max - x_min) * 0.12)
+  
+  x_pad <- max(
+    if_else(effect_scale == "pp", 0.75, 5),
+    (x_max - x_min) * 0.12
+  )
   
   x_limits <- c(x_min - x_pad, x_max + x_pad)
+  
+  x_axis_title <- case_when(
+    effect_scale == "pp" ~ "Percentage-point change from full-pool baseline",
+    effect_scale == "relative" ~ "Relative percent change from full-pool subgroup baseline"
+  )
+  
+  x_axis_labels <- function(x) {
+    
+    if (effect_scale == "pp") {
+      
+      ifelse(
+        x > 0,
+        str_c("+", scales::number(x, accuracy = 0.1)),
+        scales::number(x, accuracy = 0.1)
+      )
+      
+    } else {
+      
+      ifelse(
+        x > 0,
+        str_c("+", scales::number(x, accuracy = 1), "%"),
+        str_c(scales::number(x, accuracy = 1), "%")
+      )
+    }
+  }
   
   # ----------------------------------------------------------
   # 6) Plot
@@ -2344,7 +2437,7 @@ create_rq3_firstgen_dualaxis_plot <- function(
   plot <- ggplot(
     df_plot,
     aes(
-      x = delta_pp,
+      x = effect_value,
       y = y_label
     )
   ) +
@@ -2356,7 +2449,7 @@ create_rq3_firstgen_dualaxis_plot <- function(
     geom_segment(
       aes(
         x = 0,
-        xend = delta_pp,
+        xend = effect_value,
         y = y_label,
         yend = y_label
       ),
@@ -2378,16 +2471,10 @@ create_rq3_firstgen_dualaxis_plot <- function(
     ) +
     scale_x_continuous(
       limits = x_limits,
-      labels = function(x) {
-        ifelse(
-          x > 0,
-          str_c("+", scales::number(x, accuracy = 0.1)),
-          scales::number(x, accuracy = 0.1)
-        )
-      }
+      labels = x_axis_labels
     ) +
     labs(
-      x = "Percentage-point change from full-pool baseline",
+      x = x_axis_title,
       y = NULL
     ) +
     theme_minimal() +
@@ -2407,11 +2494,12 @@ create_rq3_firstgen_dualaxis_plot <- function(
     )
   
   if (point_label) {
+    
     plot <- plot +
       geom_text(
         aes(
           x = label_x,
-          label = delta_label,
+          label = effect_label,
           hjust = hjust_val
         ),
         size = 3.3,
@@ -2442,10 +2530,16 @@ create_rq3_race_delta_facet_plot <- function(
       "Black, non-Hispanic",
       "Hispanic"
     ),
+    effect_scale = c(
+      "pp",
+      "relative"
+    ),
     point_label = TRUE,
     point_size = 2.0,
-    label_nudge = 0.1
+    label_nudge = NULL
 ) {
+  
+  effect_scale <- match.arg(effect_scale)
   
   # ----------------------------------------------------------
   # 1) Filter to one order group and race composition
@@ -2462,22 +2556,39 @@ create_rq3_race_delta_facet_plot <- function(
     stop("No rows found. Check order_ids_this and confirm rq3_df is the race table.")
   }
   
+  if (!"n" %in% names(df_plot)) {
+    stop("rq3_df must contain a count column named `n`.")
+  }
+  
   # ----------------------------------------------------------
-  # 2) Compute baseline and delta
+  # 2) Compute baseline, percentage-point change, and relative change
   # ----------------------------------------------------------
   
   baseline_df <- df_plot %>%
     filter(scenario_type == "all") %>%
     select(
       group,
+      baseline_n = n,
       baseline_pct = pct
     )
   
   df_plot <- df_plot %>%
     filter(scenario_type == "exclusion") %>%
-    left_join(baseline_df, by = "group") %>%
+    left_join(
+      baseline_df,
+      by = "group"
+    ) %>%
     mutate(
       delta_pp = pct - baseline_pct,
+      relative_change_pct = if_else(
+        baseline_pct > 0,
+        ((pct - baseline_pct) / baseline_pct) * 100,
+        NA_real_
+      ),
+      effect_value = case_when(
+        effect_scale == "pp" ~ delta_pp,
+        effect_scale == "relative" ~ relative_change_pct
+      ),
       excluded_label = as.character(excluded_eps_codename)
     )
   
@@ -2487,10 +2598,15 @@ create_rq3_race_delta_facet_plot <- function(
   
   df_plot <- df_plot %>%
     mutate(
-      group = factor(group, levels = race_groups_to_keep),
+      group = factor(
+        group,
+        levels = race_groups_to_keep
+      ),
       facet_label = str_c(
         group,
         " (full pool = ",
+        scales::comma(baseline_n),
+        ", ",
         scales::number(baseline_pct, accuracy = 0.1),
         "%)"
       )
@@ -2503,31 +2619,55 @@ create_rq3_race_delta_facet_plot <- function(
   
   df_plot <- df_plot %>%
     mutate(
-      facet_label = factor(facet_label, levels = facet_levels)
+      facet_label = factor(
+        facet_label,
+        levels = facet_levels
+      )
     )
   
   # Create unique y-axis labels so each facet can be sorted independently.
   # The visible label removes the "___racegroup" suffix later.
   y_levels <- df_plot %>%
-    arrange(group, delta_pp) %>%
-    mutate(y_label = str_c(excluded_label, "___", group)) %>%
+    arrange(group, effect_value) %>%
+    mutate(
+      y_label = str_c(excluded_label, "___", group)
+    ) %>%
     pull(y_label)
+  
+  # Default label nudges differ by scale.
+  if (is.null(label_nudge)) {
+    label_nudge <- if_else(effect_scale == "pp", 0.1, 1.0)
+  }
   
   df_plot <- df_plot %>%
     mutate(
       y_label = str_c(excluded_label, "___", group),
-      y_label = factor(y_label, levels = rev(y_levels)),
-      delta_label = if_else(
-        delta_pp > 0,
-        str_c("+", scales::number(delta_pp, accuracy = 0.1)),
-        scales::number(delta_pp, accuracy = 0.1)
+      y_label = factor(
+        y_label,
+        levels = rev(y_levels)
+      ),
+      effect_label = case_when(
+        effect_scale == "pp" & effect_value > 0 ~ str_c(
+          "+",
+          scales::number(effect_value, accuracy = 0.1)
+        ),
+        effect_scale == "pp" ~ scales::number(effect_value, accuracy = 0.1),
+        effect_scale == "relative" & effect_value > 0 ~ str_c(
+          "+",
+          scales::number(effect_value, accuracy = 1),
+          "%"
+        ),
+        effect_scale == "relative" ~ str_c(
+          scales::number(effect_value, accuracy = 1),
+          "%"
+        )
       ),
       label_x = if_else(
-        delta_pp >= 0,
-        delta_pp + label_nudge,
-        delta_pp - label_nudge
+        effect_value >= 0,
+        effect_value + label_nudge,
+        effect_value - label_nudge
       ),
-      hjust_val = if_else(delta_pp >= 0, 0, 1)
+      hjust_val = if_else(effect_value >= 0, 0, 1)
     )
   
   # ----------------------------------------------------------
@@ -2540,14 +2680,21 @@ create_rq3_race_delta_facet_plot <- function(
       str_replace_all("_", " ") %>%
       tools::toTitleCase()
     
+    scale_phrase <- case_when(
+      effect_scale == "pp" ~ "Percentage-point change",
+      effect_scale == "relative" ~ "Relative percent change"
+    )
+    
     if (metro_name == "Bay Area") {
       title <- str_c(
-        "Change in racial/ethnic composition after excluding each Geomarket, ",
+        scale_phrase,
+        " in racial/ethnic composition after excluding each Geomarket, ",
         metro_name
       )
     } else {
       title <- str_c(
-        "Change in racial/ethnic composition after excluding each Geomarket, ",
+        scale_phrase,
+        " in racial/ethnic composition after excluding each Geomarket, ",
         metro_name,
         " area"
       )
@@ -2562,12 +2709,41 @@ create_rq3_race_delta_facet_plot <- function(
   # 5) Axis limits
   # ----------------------------------------------------------
   
-  x_vals <- c(df_plot$delta_pp, df_plot$label_x, 0)
+  x_vals <- c(df_plot$effect_value, df_plot$label_x, 0)
   x_min <- min(x_vals, na.rm = TRUE)
   x_max <- max(x_vals, na.rm = TRUE)
-  x_pad <- max(0.75, (x_max - x_min) * 0.12)
+  
+  x_pad <- max(
+    if_else(effect_scale == "pp", 0.75, 5),
+    (x_max - x_min) * 0.12
+  )
   
   x_limits <- c(x_min - x_pad, x_max + x_pad)
+  
+  x_axis_title <- case_when(
+    effect_scale == "pp" ~ "Percentage-point change from full-pool baseline",
+    effect_scale == "relative" ~ "Relative percent change from full-pool subgroup baseline"
+  )
+  
+  x_axis_labels <- function(x) {
+    
+    if (effect_scale == "pp") {
+      
+      ifelse(
+        x > 0,
+        str_c("+", scales::number(x, accuracy = 0.1)),
+        scales::number(x, accuracy = 0.1)
+      )
+      
+    } else {
+      
+      ifelse(
+        x > 0,
+        str_c("+", scales::number(x, accuracy = 1), "%"),
+        str_c(scales::number(x, accuracy = 1), "%")
+      )
+    }
+  }
   
   # ----------------------------------------------------------
   # 6) Plot
@@ -2576,7 +2752,7 @@ create_rq3_race_delta_facet_plot <- function(
   plot <- ggplot(
     df_plot,
     aes(
-      x = delta_pp,
+      x = effect_value,
       y = y_label
     )
   ) +
@@ -2588,7 +2764,7 @@ create_rq3_race_delta_facet_plot <- function(
     geom_segment(
       aes(
         x = 0,
-        xend = delta_pp,
+        xend = effect_value,
         y = y_label,
         yend = y_label
       ),
@@ -2610,16 +2786,10 @@ create_rq3_race_delta_facet_plot <- function(
     ) +
     scale_x_continuous(
       limits = x_limits,
-      labels = function(x) {
-        ifelse(
-          x > 0,
-          str_c("+", scales::number(x, accuracy = 0.1)),
-          scales::number(x, accuracy = 0.1)
-        )
-      }
+      labels = x_axis_labels
     ) +
     labs(
-      x = "Percentage-point change from full-pool baseline",
+      x = x_axis_title,
       y = NULL
     ) +
     theme_minimal() +
@@ -2639,11 +2809,12 @@ create_rq3_race_delta_facet_plot <- function(
     )
   
   if (point_label) {
+    
     plot <- plot +
       geom_text(
         aes(
           x = label_x,
-          label = delta_label,
+          label = effect_label,
           hjust = hjust_val
         ),
         size = 3.3,
@@ -2652,6 +2823,492 @@ create_rq3_race_delta_facet_plot <- function(
   }
   
   # Store title/subtitle as metadata so the run script can save them separately.
+  attr(plot, "figure_title") <- title
+  attr(plot, "figure_subtitle") <- subtitle
+  
+  return(plot)
+}
+
+#####################
+##################### RQ3c: race X firstgen exclusion
+#####################
+
+create_rq3_race_firstgen_delta_facet_plot <- function(
+    rq3_df,
+    order_ids_this,
+    title = NULL,
+    subtitle = NULL,
+    race_groups_to_keep = c(
+      "White, non-Hispanic",
+      "Asian, non-Hispanic",
+      "Black, non-Hispanic",
+      "Hispanic"
+    ),
+    firstgen_groups_to_keep = c(
+      "First-gen",
+      "Not first-gen"
+    ),
+    sort_by = c(
+      "firstgen_delta",
+      "not_firstgen_delta",
+      "mean_delta",
+      "geomarket"
+    ),
+    effect_scale = c(
+      "pp",
+      "relative"
+    ),
+    point_label = TRUE,
+    point_size = 1.8,
+    label_nudge = NULL
+) {
+  
+  sort_by <- match.arg(sort_by)
+  effect_scale <- match.arg(effect_scale)
+  
+  # ----------------------------------------------------------
+  # 1) Filter to one order group and race x first-gen composition
+  # ----------------------------------------------------------
+  
+  df_plot <- rq3_df %>%
+    filter(
+      order_ids == order_ids_this,
+      composition_type == "race_firstgen"
+    )
+  
+  if (nrow(df_plot) == 0) {
+    stop("No rows found. Check order_ids_this and confirm rq3_df is the race_firstgen table.")
+  }
+  
+  if (!"n" %in% names(df_plot)) {
+    stop("rq3_df must contain a count column named `n`.")
+  }
+  
+  # ----------------------------------------------------------
+  # 2) Split group into race_group and firstgen_group
+  #    Expected group format: 'Race | First-gen status'
+  # ----------------------------------------------------------
+  
+  df_plot <- df_plot %>%
+    tidyr::separate(
+      col = group,
+      into = c("race_group", "firstgen_group"),
+      sep = " \\| ",
+      remove = FALSE
+    ) %>%
+    filter(
+      race_group %in% race_groups_to_keep,
+      firstgen_group %in% firstgen_groups_to_keep
+    ) %>%
+    mutate(
+      firstgen_group = recode(
+        firstgen_group,
+        "First-gen" = "First-generation",
+        "Not first-gen" = "Not first-generation"
+      )
+    )
+  
+  if (nrow(df_plot) == 0) {
+    stop("No rows left after filtering race_group and firstgen_group. Check group labels.")
+  }
+  
+  # ----------------------------------------------------------
+  # 3) Compute baseline, percentage-point change, and relative change
+  # ----------------------------------------------------------
+  
+  baseline_df <- df_plot %>%
+    filter(scenario_type == "all") %>%
+    select(
+      race_group,
+      firstgen_group,
+      baseline_pct = pct,
+      baseline_n = n
+    )
+  
+  df_plot <- df_plot %>%
+    filter(scenario_type == "exclusion") %>%
+    left_join(
+      baseline_df,
+      by = c("race_group", "firstgen_group")
+    ) %>%
+    mutate(
+      delta_pp = pct - baseline_pct,
+      relative_change_pct = if_else(
+        baseline_pct > 0,
+        ((pct - baseline_pct) / baseline_pct) * 100,
+        NA_real_
+      ),
+      effect_value = case_when(
+        effect_scale == "pp" ~ delta_pp,
+        effect_scale == "relative" ~ relative_change_pct
+      ),
+      excluded_label = as.character(excluded_eps_codename)
+    )
+  
+  # ----------------------------------------------------------
+  # 4) Set factor levels
+  # ----------------------------------------------------------
+  
+  df_plot <- df_plot %>%
+    mutate(
+      race_group = factor(
+        race_group,
+        levels = race_groups_to_keep
+      ),
+      firstgen_group = factor(
+        firstgen_group,
+        levels = c("First-generation", "Not first-generation")
+      )
+    )
+  
+  baseline_df <- baseline_df %>%
+    mutate(
+      race_group = factor(
+        race_group,
+        levels = race_groups_to_keep
+      ),
+      firstgen_group = factor(
+        firstgen_group,
+        levels = c("First-generation", "Not first-generation")
+      )
+    )
+  
+  # ----------------------------------------------------------
+  # 5) Create one shared Geomarket ordering within each race row
+  #    Default: sort by First-generation effect within each race
+  # ----------------------------------------------------------
+  
+  sort_df <- df_plot %>%
+    select(
+      race_group,
+      firstgen_group,
+      excluded_label,
+      effect_value
+    ) %>%
+    tidyr::pivot_wider(
+      names_from = firstgen_group,
+      values_from = effect_value
+    ) %>%
+    rename(
+      firstgen_delta = `First-generation`,
+      not_firstgen_delta = `Not first-generation`
+    ) %>%
+    mutate(
+      mean_delta = rowMeans(
+        select(., firstgen_delta, not_firstgen_delta),
+        na.rm = TRUE
+      ),
+      geomarket_num = readr::parse_number(excluded_label),
+      sort_value = case_when(
+        sort_by == "firstgen_delta"     ~ firstgen_delta,
+        sort_by == "not_firstgen_delta" ~ not_firstgen_delta,
+        sort_by == "mean_delta"         ~ mean_delta,
+        sort_by == "geomarket"          ~ geomarket_num,
+        TRUE                            ~ firstgen_delta
+      )
+    ) %>%
+    group_by(race_group) %>%
+    arrange(
+      sort_value,
+      geomarket_num,
+      excluded_label,
+      .by_group = TRUE
+    ) %>%
+    mutate(
+      geomarket_order = row_number()
+    ) %>%
+    ungroup() %>%
+    select(
+      race_group,
+      excluded_label,
+      geomarket_order
+    )
+  
+  df_plot <- df_plot %>%
+    left_join(
+      sort_df,
+      by = c("race_group", "excluded_label")
+    )
+  
+  # ----------------------------------------------------------
+  # 6) Create y-axis variable with a blank header row
+  #    at the top of each race row for the panel baseline text
+  # ----------------------------------------------------------
+  
+  y_lookup_geomarkets <- sort_df %>%
+    arrange(race_group, geomarket_order) %>%
+    mutate(
+      y_label = str_c(excluded_label, "___", race_group),
+      y_order = geomarket_order
+    ) %>%
+    select(race_group, y_label, y_order)
+  
+  y_lookup_headers <- tibble(
+    race_group = factor(race_groups_to_keep, levels = race_groups_to_keep),
+    y_label = str_c("HEADER___", race_groups_to_keep),
+    y_order = 0
+  )
+  
+  y_lookup <- bind_rows(
+    y_lookup_headers,
+    y_lookup_geomarkets
+  ) %>%
+    arrange(race_group, y_order)
+  
+  y_levels <- y_lookup$y_label
+  
+  # Default label nudges differ by scale
+  if (is.null(label_nudge)) {
+    label_nudge <- if_else(effect_scale == "pp", 0.1, 1.0)
+  }
+  
+  df_plot <- df_plot %>%
+    mutate(
+      y_label = str_c(excluded_label, "___", race_group),
+      y_label = factor(y_label, levels = rev(y_levels)),
+      
+      effect_label = case_when(
+        effect_scale == "pp" & effect_value > 0 ~ str_c(
+          "+",
+          scales::number(effect_value, accuracy = 0.1)
+        ),
+        effect_scale == "pp" ~ scales::number(effect_value, accuracy = 0.1),
+        effect_scale == "relative" & effect_value > 0 ~ str_c(
+          "+",
+          scales::number(effect_value, accuracy = 1),
+          "%"
+        ),
+        effect_scale == "relative" ~ str_c(
+          scales::number(effect_value, accuracy = 1),
+          "%"
+        )
+      ),
+      
+      label_x = if_else(
+        effect_value >= 0,
+        effect_value + label_nudge,
+        effect_value - label_nudge
+      ),
+      hjust_val = if_else(effect_value >= 0, 0, 1)
+    )
+  
+  # ----------------------------------------------------------
+  # 7) Panel baseline labels
+  # ----------------------------------------------------------
+  
+  panel_label_df <- baseline_df %>%
+    mutate(
+      y_label = factor(
+        str_c("HEADER___", race_group),
+        levels = rev(y_levels)
+      ),
+      panel_label = str_c(
+        "(full pool = ",
+        scales::comma(baseline_n),
+        ", ",
+        scales::number(baseline_pct, accuracy = 0.1),
+        "%)"
+      )
+    )
+  
+  # ----------------------------------------------------------
+  # 8) Title/subtitle defaults
+  # ----------------------------------------------------------
+  
+  if (is.null(title)) {
+    
+    metro_name <- df_plot$metro[1] %>%
+      str_replace_all("_", " ") %>%
+      tools::toTitleCase()
+    
+    scale_phrase <- case_when(
+      effect_scale == "pp" ~ "Percentage-point change",
+      effect_scale == "relative" ~ "Relative percent change"
+    )
+    
+    if (metro_name == "Bay Area") {
+      title <- str_c(
+        scale_phrase,
+        " in race × first-generation composition after excluding Geomarket, ",
+        metro_name
+      )
+    } else {
+      title <- str_c(
+        scale_phrase,
+        " in race × first-generation composition after excluding Geomarket, ",
+        metro_name,
+        " area"
+      )
+    }
+  }
+  
+  if (is.null(subtitle)) {
+    subtitle <- df_plot$test_range[1]
+  }
+  
+  # ----------------------------------------------------------
+  # 9) Axis limits and labels
+  # ----------------------------------------------------------
+  
+  x_vals <- c(df_plot$effect_value, df_plot$label_x, 0)
+  x_min <- min(x_vals, na.rm = TRUE)
+  x_max <- max(x_vals, na.rm = TRUE)
+  
+  x_pad <- max(
+    if_else(effect_scale == "pp", 0.75, 5),
+    (x_max - x_min) * 0.12
+  )
+  
+  x_limits <- c(x_min - x_pad, x_max + x_pad)
+  x_range <- diff(x_limits)
+  panel_label_x <- x_limits[1] + 0.02 * x_range
+  
+  x_axis_title <- case_when(
+    effect_scale == "pp" ~ "Percentage-point change from full-pool baseline",
+    effect_scale == "relative" ~ "Relative percent change from full-pool subgroup baseline"
+  )
+  
+  x_axis_labels <- function(x) {
+    
+    if (effect_scale == "pp") {
+      
+      ifelse(
+        x > 0,
+        str_c("+", scales::number(x, accuracy = 0.1)),
+        scales::number(x, accuracy = 0.1)
+      )
+      
+    } else {
+      
+      ifelse(
+        x > 0,
+        str_c("+", scales::number(x, accuracy = 1), "%"),
+        str_c(scales::number(x, accuracy = 1), "%")
+      )
+    }
+  }
+  
+  # ----------------------------------------------------------
+  # 10) Plot
+  # ----------------------------------------------------------
+  
+  plot <- ggplot(
+    df_plot,
+    aes(
+      x = effect_value,
+      y = y_label
+    )
+  ) +
+    geom_vline(
+      xintercept = 0,
+      linetype = "dashed",
+      linewidth = 0.6
+    ) +
+    geom_segment(
+      aes(
+        x = 0,
+        xend = effect_value,
+        y = y_label,
+        yend = y_label
+      ),
+      linewidth = 0.75,
+      color = "gray35"
+    ) +
+    geom_point(
+      size = point_size,
+      color = "gray20"
+    ) +
+    geom_text(
+      data = panel_label_df,
+      aes(
+        x = panel_label_x,
+        y = y_label,
+        label = panel_label
+      ),
+      inherit.aes = FALSE,
+      hjust = 0,
+      vjust = 0.5,
+      size = 3.3,
+      color = "gray15"
+    ) +
+    facet_grid(
+      rows = vars(race_group),
+      cols = vars(firstgen_group),
+      scales = "free_y",
+      space = "free_y",
+      switch = "y"
+    ) +
+    scale_y_discrete(
+      labels = function(x) {
+        ifelse(
+          stringr::str_detect(x, "^HEADER___"),
+          "",
+          stringr::str_remove(x, "___.*$")
+        )
+      },
+      expand = ggplot2::expansion(add = c(0.6, 0.6))
+    ) +
+    scale_x_continuous(
+      limits = x_limits,
+      labels = x_axis_labels
+    ) +
+    labs(
+      x = x_axis_title,
+      y = NULL
+    ) +
+    theme_minimal() +
+    theme(
+      strip.placement = "outside",
+      strip.clip = "off",
+      strip.background = element_blank(),
+      
+      # column headers
+      strip.text.x = element_text(
+        size = 13,
+        face = "bold",
+        margin = margin(b = 10)
+      ),
+      
+      # row headers: horizontal on the left
+      strip.text.y = element_blank(),
+      strip.text.y.left = element_text(
+        angle = 0,
+        size = 12,
+        face = "bold",
+        hjust = 0,
+        vjust = 1,
+        margin = margin(r = 8)
+      ),
+      
+      axis.text.y = element_text(size = 9.5),
+      axis.text.x = element_text(size = 10.5),
+      axis.title.x = element_text(size = 12),
+      axis.ticks.y = element_blank(),
+      
+      panel.grid.major.y = element_blank(),
+      panel.grid.minor = element_blank(),
+      panel.spacing.y = unit(1.1, "lines"),
+      panel.spacing.x = unit(1.2, "lines"),
+      
+      plot.margin = margin(
+        t = 5.5, r = 20, b = 5.5, l = 5.5
+      )
+    )
+  
+  if (point_label) {
+    
+    plot <- plot +
+      geom_text(
+        aes(
+          x = label_x,
+          label = effect_label,
+          hjust = hjust_val
+        ),
+        size = 3.1,
+        color = "gray15"
+      )
+  }
+  
   attr(plot, "figure_title") <- title
   attr(plot, "figure_subtitle") <- subtitle
   
