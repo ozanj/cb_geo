@@ -258,6 +258,23 @@ make_main_results_manifest <- function(metro_name) {
 }
 ```
 
+### Research Questions
+
+**Overarching RQ**  
+
+- How do Geomarket filters within College Board’s Student Search Service shape the racial/ethnic and first-generation composition of academically similar prospect pools made visible to colleges?
+
+<br>
+
+**RQ1: What is the composition of each Geomarket?**  
+<span class="smaller">To what extent do Geomarkets partition academically similar prospects into racially/ethnically and first-generation-status distinct pools?</span>
+
+**RQ2: Where does each group come from?**  
+<span class="smaller">Which Geomarkets contribute disproportionately to different racial/ethnic and first-generation-status groups?</span>
+
+**RQ3: What happens when a Geomarket is excluded?**  
+<span class="smaller">How does excluding particular Geomarkets change the composition of the prospect pool made visible to colleges?</span>
+
 # Results
 
 ```{r main-results, echo=FALSE, results='asis'}
