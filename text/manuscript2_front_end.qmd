@@ -191,7 +191,91 @@ We acknowledge that the Student Search Service does not compel colleges to use t
 
 # Data and Methods
 
-text
+# Limitations
+
+<!--
+<!--
+
+# Limitations
+
+Purpose of this section:
+- Short level-1 section after Data and Methods and before Results.
+- Be direct about what the data cannot support.
+- Do not frame limitations apologetically.
+- Use the limitations to clarify the paper’s actual object of analysis: the distributional consequences of Geomarket filtering as a product affordance.
+
+Main limitation 1: We cannot estimate how “most colleges” use Geomarket filters.
+- The student-list purchases were obtained through public records requests.
+- They are not a random sample of all Student Search Service purchases.
+- The subset of purchases that use Geomarket filters is not large enough to support population-level claims about prevalence, typical use, or institutional intent.
+- Therefore, the paper should avoid claims like:
+  - “Colleges generally use Geomarkets to exclude low-income communities.”
+  - “Most colleges use Geomarket filters in racially exclusionary ways.”
+  - “The typical use of Geomarkets is to target affluent prospects.”
+- Instead, the paper’s defensible claim is:
+  - Geomarket filters create a product affordance that allows colleges to include or exclude prospects by College Board-defined geographic markets.
+  - Because those markets are racially and socioeconomically uneven, using the filter can substantially alter the racial/ethnic and first-generation composition of academically similar prospect pools.
+  - The empirical contribution is to reconstruct the consequences of filter choices made available by the product, not to estimate how often colleges make each choice.
+
+Possible language:
+- “Our data do not allow us to estimate the prevalence of different uses of Geomarket filters across colleges.”
+- “We therefore do not claim that most colleges use Geomarkets in a particular way, nor do we attribute exclusionary motives to particular institutions.”
+- “Rather, the analysis focuses on the consequences of a filtering affordance built into the Student Search Service: what happens to the composition of the visible prospect pool when particular Geomarkets are included or excluded?”
+
+Core turn-from-weakness-to-strength:
+- Existing research on college access usually studies observed organizational behavior: recruiting visits, admissions decisions, financial aid offers, enrollment outcomes.
+- This paper studies the product infrastructure that precedes and structures organizational behavior.
+- The point is not that we observe every downstream use of the product.
+- The point is that the product makes certain actions technically available and renders their counterfactual consequences invisible to users.
+- Showing the consequences of doing exactly what the product allows is an important contribution, especially because third-party enrollment management products are under-studied in sociology of education.
+
+Possible language:
+- “This limitation is also connected to the paper’s central contribution. Rather than treating student-list purchases only as records of organizational behavior, we treat Student Search Service as a market device whose built-in filters define a menu of possible actions.”
+- “The analyses show the distributional consequences of those available actions.”
+- “In this sense, the paper shifts attention from what colleges can be proven to have intended to what the product makes possible, easy, and opaque.”
+
+Main limitation 2: We can analyze only metropolitan areas for which we have appropriate student-list purchases.
+- The analysis requires student-list purchases that include all Geomarkets in a metropolitan area.
+- Without such purchases, we cannot reconstruct the full metropolitan prospect pool or estimate how the pool changes when individual Geomarkets are excluded.
+- As a result, the paper analyzes only a subset of large U.S. metropolitan areas.
+- The findings should not be presented as nationally representative estimates of all Geomarkets or all metropolitan areas.
+- Chicago is the main case because the available data support the full RQ1/RQ2/RQ3 sequence and because the metro contains multiple Geomarkets with clear racial and socioeconomic differentiation.
+- Appendix analyses for other metros can be described as showing whether similar patterns appear in other cases, not as a national probability sample.
+
+Possible language:
+- “A second limitation is geographic coverage. Our analyses require student-list purchases that include all Geomarkets within a metropolitan area. We lack such purchases for many large U.S. metropolitan areas.”
+- “Consequently, the analyses are case-based rather than nationally representative.”
+- “The results should be interpreted as evidence of how the Geomarket filter operates in the metropolitan cases we can observe, rather than as estimates of the average effect of Geomarket filtering across all U.S. metropolitan areas.”
+- “The appendix extends the analysis to additional metropolitan cases where the data permit, but the paper does not claim comprehensive national coverage.”
+
+Tone to maintain:
+- Direct.
+- Non-defensive.
+- Make clear what the study does and does not identify.
+- Avoid causal language about actual institutional motives.
+- Emphasize that the study identifies counterfactual consequences of available filter choices.
+
+Possible short section structure when drafting later:
+
+Paragraph 1:
+- State that the data are well suited to reconstructing the consequences of Geomarket filter choices but not to estimating national prevalence or institutional intent.
+- Mention non-random public-records data and limited number of Geomarket-filter purchases.
+
+Paragraph 2:
+- Explain why this limitation does not undermine the main contribution.
+- The study is about product affordances and visibility, not population-level claims about how most colleges behave.
+- It asks what happens when a product allows users to include/exclude College Board-defined markets.
+
+Paragraph 3:
+- State the geographic coverage limitation.
+- Analyses require purchases that include all Geomarkets in a metro.
+- Therefore only selected metros can be analyzed.
+- Chicago is the main case; appendix provides additional cases where possible.
+
+-->
+--> 
+# Results
+
 
 
 # Discussion
