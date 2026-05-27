@@ -1,0 +1,62 @@
+---
+title: "Structuring College Access: The Market Segment Model and College Board Geomarkets"
+# author: ["Ozan Jaquette (UCLA)", "Karina Salazar (University of Arizona)", "Crystal Han (Stanford University)"]
+bibliography: ./../assets/bib/cb_geomarket_bib.bib
+csl: ./../assets/bib/chicago-author-date.csl
+format:
+  #docx:
+  pdf:
+    documentclass: article
+    #papersize: letter
+    number-sections: true
+    number-depth: 2
+    #toc: FALSE
+    #pandoc_args: !expr rmdfiltr::add_wordcount_filter(rmdfiltr::add_citeproc_filter(args = NULL))
+    #keep_tex: true
+    extensions: [andrewheiss/wordcount]
+editor: visual
+geometry:
+  margin=1in
+fontsize: 11pt
+header-includes:
+  - \usepackage{setspace}
+  - \doublespacing
+---
+
+# Data and Methods
+
+
+## Research Design and Case Selection
+
+We utilize a quantitative case study design in which metropolitan areas are the cases. Metropolitan areas are the appropriate unit of analysis because Geomarkets partition metropolitan space into proprietary recruiting territories. Our empirical goal is to reconstruct how Geomarket filters within the College Board Student Search Service shape the racial/ethnic and first-generation composition of academically similar prospect pools made visible to colleges. We do so by analyzing actual student-list purchases and varying Geomarket inclusion and exclusion while holding academic search criteria constant. We treat Student Search Service as a market device whose built-in filters define a menu of possible actions. The analyses therefore focus on the distributional consequences of one filtering affordance built into the product
+
+Our research questions require observing all Geomarkets within a metropolitan prospect pool in order to reconstruct how alternative Geomarket selections alter the composition of visible prospects. We restrict analyses to metropolitan areas for which we have sets of student-list purchases that (A) include every Geomarket in the metropolitan area, (B) define prospect pools primarily by high school graduating class and test-score range, and (C) repeat that structure across low, middle, and high test score bands. Although the primary analyses focus on prospects in the middle test score band, we report parallel results for the low and high bands in the Online Appendix, allowing readers to assess whether the observed patterns in racial and class composition hold across test score ranges. We exclude purchases that layer on additional search criteria, such as intended undergraduate major or preferred college size, that produce dramatic and non-random reductions in the number of prospects. The final case set includes the Bay Area, Chicago, Dallas, Detroit, Long Island, Los Angeles, Northern New Jersey, Orange County, Philadelphia, and San Diego. We lack the requisite student list purchases to answer the three research questions for Atlanta, Boston, Cleveland, DC/Maryland/Virginia, Houston, Miama, and New York City.
+
+Given space constraints, we present Chicago as the primary case in the manuscript and report results for the remaining metropolitan areas in the Online Appendix. Presenting all three research questions for one metropolitan area allows readers to observe the relationship between Geomarket composition (RQ1), group distributions (RQ2), and exclusion consequences (RQ3) within a single metropolitan structure. Chicago is well suited for this purpose. Its seven Geomarkets follow the canonical metropolitan structure described by @RN4982, with a central city, first-ring suburbs, and outer suburbs. At the same time, Chicago exhibits substantial racial and socioeconomic differentiation across Geomarkets, making it useful for examining how Geomarket filters structure the composition of visible prospect pools. Chicago is also large enough to exhibit substantial variation while remaining sufficiently legible for readers to follow the full Geomarket structure. 
+
+Los Angeles and New York similarly exhibit strong differentiation across Geomarkets, but their large number of Geomarkets makes interpretation cumbersome in the main text. Other metropolitan areas, including Dallas-Fort Worth and the San Francisco Bay Area, follow alternative urban forms, such as bi-modal or metroplex structures with two centralized cores surrounded by suburban rings. Complete results for all metropolitan areas in our sample are provided in the Online Appendix. After presenting results for Chicago, we provide a high-level discussion of results from other metropolitan areas.
+
+## Data
+
+The primary data source consists of student lists purchased through the College Board Student Search Service by public universities. We obtained these data through public records requests submitted to public universities in multiple states. The data sample for the broader project this manuscript draws from includes a total of 414 orders associated with 2,549,085 prospects made by 11 public universities located in California, Illinois, Texas, and Arizona. Although these lists were purchased by individual universities, the set of prospects included in each list is a function of the search criteria specified for that student list purchase. A different university that selected the same set of search filters would obtain the same resulting prospect profiles. One caveat, most purchases select the option to exclude prospect profiles that were previously purchased by the university.
+
+For each student list purchased from 2016 through 2020, we requested two related pieces of data: (1) the order summary, which specifies search criteria for the student list purchase; and (2) the de-identified prospect-level list produced from these search criteria. Prospect-level records contain information about students’ high schools, geographic location, race/ethnicity, parental education, and other variables included in the purchased list. We use parental education to construct a first-generation indicator.
+
+We also incorporated data from the 1980 Decennial Census, the 2000 Decennial Census, and the 2020 ACS 5-year estimates to provide descriptive historical and contemporary context about the racial and socioeconomic composition of Geomarkets.
+
+### Geomarket boundaries and prospect assignment
+
+We digitized College Board Geomarket maps published in @collegeboard_connections_geographies and converted them into GIS shapefiles. 
+In order to assign each each Census tract to a Geomarket, we georeferenced the College Board’s Geomarket maps by overlaying PDF images onto spatial coordinates aligned with census tract boundaries. We then extracted vector data by manually tracing the Geomarket boundaries and generating individual shapefiles for each Geomarket. This approach to constructing Geomarkets aligned precisely with 2020 census tract boundaries from ACS 5-year estimates; that is, each census tract corresponded uniquely to a Geomarket generated from the College Board images. Finally, we spatially assigned prospect records to Geomarkets based on the geographic coordinates of their high school.
+
+<!--
+For instance, @fig-geomarket-methods shows The College Board's map of Geomarkets in the Chicago metropolitan area on the left and our created shapefiles on the right. For example, @fig-geomarket-misalign zooms into the northern Geomarkets of the Chicago metropolitan area from @fig-geomarket-methods. The center map showcases how our created Geomarket shapefiles (delineated in purple) align with the spatial coordinates of 2020 census tract boundaries (delineated in grey).
+-->
+
+
+## Analyses
+
+We utilize descriptive statistics, tables, and maps to analyze how Geomarket filters structure the composition of visible prospect pools.
+First, we provide contextual descriptive analyses of Geomarkets themselves by describing the racial and socioeconomic differentiation across Geomarkets from 1980, 2000 and 2020.
+
+Analyses for research questions 1-3 rely primarily on student list purchase data. For RQ1, we examine the racial/ethnic and first-generation composition of academically similar prospects -- based on test score thresholds --  within each Geomarket. These analyses show how Geomarket filtering partitions academically similar students into prospect pools that differ by race/ethnicity and parental education. For RQ2, we calculate the share of each racial/ethnic and first-generation group contributed by each Geomarket within a metropolitan prospect pool. These analyses identify Geomarkets that disproportionately contribute particular groups to the overall pool of academically eligible prospects. For RQ3, we show how the racial/etnic and first-generation composition the prospect pool changes when specific Geomarkets are excluded from a student list purchase. These analyses estimate which groups become disproportionately invisible under alternative Geomarket selections.
