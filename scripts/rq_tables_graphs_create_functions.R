@@ -1376,7 +1376,27 @@ create_rq2_race_firstgen_contribution_df <- function(
   )
   
   # ----------------------------------------------------------
-  # 2) Recode race labels and keep relevant rows
+  # 2) Recode race labels and create baseline shares
+  #    Baseline = share of all prospects with known race/ethnicity
+  #    and known first-generation status who come from each Geomarket
+  # ----------------------------------------------------------
+  
+  baseline_df <- df_raw %>%
+    dplyr::filter(
+      as.character(stu_race_cb) == "All",
+      eps_codename != "All"
+    ) %>%
+    dplyr::select(
+      eps_codename,
+      baseline_n = all
+    ) %>%
+    dplyr::mutate(
+      baseline_total = sum(baseline_n, na.rm = TRUE),
+      baseline_pct = 100 * baseline_n / baseline_total
+    )
+  
+  # ----------------------------------------------------------
+  # 3) Recode race labels and keep relevant rows
   # ----------------------------------------------------------
   
   df_plot <- df_raw %>%
@@ -1396,10 +1416,14 @@ create_rq2_race_firstgen_contribution_df <- function(
     dplyr::filter(
       race %in% race_keep,
       eps_codename != "All"
+    ) %>%
+    dplyr::left_join(
+      baseline_df,
+      by = "eps_codename"
     )
   
   # ----------------------------------------------------------
-  # 3) Convert within-Geomarket composition back into counts
+  # 4) Convert within-Geomarket composition back into counts
   #    and then calculate contribution shares
   # ----------------------------------------------------------
   
@@ -1430,7 +1454,6 @@ create_rq2_race_firstgen_contribution_df <- function(
   
   return(df_plot)
 }
-
 ############
 ############ function to create two lollipop plot
 ############
@@ -1440,19 +1463,49 @@ create_rq2_race_firstgen_two_lollipop_plot <- function(
     title = NULL,
     subtitle = NULL,
     metro_label = NULL,
+    sort_order = c("geomarket", "firstgen_share"),
     point_size = 1.2,
     line_width = 0.45,
+    baseline_bar_width = 4.4,
     pair_nudge = 0.13,
     show_value_labels = FALSE
 ) {
   
   # ----------------------------------------------------------
-  # 1) Order Geomarkets within race by first-gen contribution
+  # 0) Check required baseline variable
+  # ----------------------------------------------------------
+  
+  if (!"baseline_pct" %in% names(plot_df)) {
+    stop(
+      "plot_df must include baseline_pct. ",
+      "Run the revised create_rq2_race_firstgen_contribution_df() first."
+    )
+  }
+  
+  sort_order <- match.arg(sort_order)
+  
+  # ----------------------------------------------------------
+  # 1) Order Geomarkets within race
   # ----------------------------------------------------------
   
   df_ordered <- plot_df %>%
+    dplyr::mutate(
+      geomarket_num = readr::parse_number(eps_codename),
+      sort_value = dplyr::case_when(
+        sort_order == "geomarket" ~ geomarket_num,
+        sort_order == "firstgen_share" ~ -fg_pct,
+        TRUE ~ geomarket_num
+      )
+    ) %>%
     dplyr::group_by(race) %>%
-    dplyr::arrange(dplyr::desc(fg_pct), .by_group = TRUE) %>%
+    dplyr::arrange(
+      is.na(sort_value),
+      sort_value,
+      is.na(geomarket_num),
+      geomarket_num,
+      eps_codename,
+      .by_group = TRUE
+    ) %>%
     dplyr::mutate(
       geomarket_order = dplyr::row_number()
     ) %>%
@@ -1523,7 +1576,22 @@ create_rq2_race_firstgen_two_lollipop_plot <- function(
     )
   
   # ----------------------------------------------------------
-  # 4) Long format: first-gen and not-first-gen
+  # 4) Baseline dataframe:
+  #    all prospects with race/ethnicity and first-gen status known
+  # ----------------------------------------------------------
+  
+  df_baseline <- df_ordered %>%
+    dplyr::select(
+      race,
+      facet_label,
+      eps_codename,
+      y_base,
+      baseline_pct
+    ) %>%
+    dplyr::distinct()
+  
+  # ----------------------------------------------------------
+  # 5) Long format: first-gen and not-first-gen
   # ----------------------------------------------------------
   
   df_long <- df_ordered %>%
@@ -1568,7 +1636,7 @@ create_rq2_race_firstgen_two_lollipop_plot <- function(
     dplyr::filter(firstgen_status == "Not first-gen")
   
   # ----------------------------------------------------------
-  # 5) Y-axis breaks and labels
+  # 6) Y-axis breaks and labels
   # ----------------------------------------------------------
   
   y_breaks_df <- y_lookup %>%
@@ -1578,7 +1646,7 @@ create_rq2_race_firstgen_two_lollipop_plot <- function(
   y_labels <- y_breaks_df$eps_codename
   
   # ----------------------------------------------------------
-  # 6) Title/subtitle defaults
+  # 7) Title/subtitle defaults
   # ----------------------------------------------------------
   
   if (is.null(metro_label)) {
@@ -1606,15 +1674,28 @@ create_rq2_race_firstgen_two_lollipop_plot <- function(
     
     subtitle <- stringr::str_c(
       test_range_this,
-      " — share of each race × first-generation subgroup contributed by each Geomarket"
+      " — race × first-generation subgroups overlaid on all race/first-gen-known prospects"
     )
   }
   
   # ----------------------------------------------------------
-  # 7) Build plot
+  # 8) Build plot
   # ----------------------------------------------------------
   
   plot <- ggplot2::ggplot() +
+    
+    ggplot2::geom_segment(
+      data = df_baseline,
+      ggplot2::aes(
+        x = 0,
+        xend = baseline_pct,
+        y = y_base,
+        yend = y_base,
+        color = "All race/first-gen-known prospects"
+      ),
+      linewidth = baseline_bar_width,
+      lineend = "butt"
+    ) +
     
     ggplot2::geom_segment(
       data = df_fg,
@@ -1676,7 +1757,8 @@ create_rq2_race_firstgen_two_lollipop_plot <- function(
     ggplot2::scale_color_manual(
       values = c(
         "First-gen" = "#0072B2",
-        "Not first-gen" = "#D55E00"
+        "Not first-gen" = "#D55E00",
+        "All race/first-gen-known prospects" = "gray82"
       )
     ) +
     ggplot2::labs(

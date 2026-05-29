@@ -1140,8 +1140,8 @@ for (i in seq_len(nrow(rq2_rfgen_orders_df))) {
   note_text <- c(
     "Figure Notes:",
     stringr::str_c(
-      "- Each lollipop shows the share of a racial/ethnic × first-generation subgroup contributed by a Geomarket. ",
-      "For each racial/ethnic group, Geomarkets are sorted by the first-generation contribution share. ",
+      "- Gray bars show the share of all race/ethnicity-known and first-generation-status-known purchased student profiles contributed by each Geomarket. ",
+      "Colored lollipops show the share of the focal racial/ethnic × first-generation subgroup contributed by each Geomarket. ",
       "Excludes students with missing values for race/ethnicity or first-generation status. ",
       "Figure excludes Two+, non-Hispanic; AIAN, non-Hispanic; and NHPI, non-Hispanic groups. ",
       figure_note_this
