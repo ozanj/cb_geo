@@ -31,8 +31,6 @@ filters:
 
 **ABSTRACT**
 
-Word count: {{< words-sum body-note-ref >}}
-
 ```{r setup, echo=F}
 knitr::opts_chunk$set(echo = F, message = F, warning = F)
 ```
@@ -378,7 +376,7 @@ Although each of these literatures is valuable, the market devices literature pr
 -->
 ```
 
-# References
+# References {.unnumbered}
 
 \singlespacing
 
