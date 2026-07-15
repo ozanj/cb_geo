@@ -1,15 +1,28 @@
 ---
 title: "Structuring College Access: The Market Segment Model and College Board Geomarkets"
-author: ["Ozan Jaquette (UCLA)", "Karina Salazar (University of Arizona)", "Crystal Han (Stanford University)"]
+author: ["Ozan Jaquette (UCLA)*", "Karina Salazar (University of Arizona)", "Crystal Han (Stanford University)"]
 format: pdf
 geometry:
   margin=1in
 ---
 
-**Abstract word count**: 220 words
+**Abstract word count**: XXX words
 
-**Text word count**: 25,651 words
+**Text word count**: 14,150 words
 
-- **Text**: 21,660 words
-- **Footnotes**: 1,414 words
-- **References**: 2,577 words
+- **Text**: 12,363 words
+- **Footnotes**: 171 words
+- **References**: 1,616 words
+
+
+\vspace{200pt}
+
+
+
+*Corresponding Author
+
+**Address**: Moore Hall 3038, 405 Hilgard Avenue, Los Angeles, CA 90095-1521
+
+**Phone**: (310) 206-3030
+
+**Email**: ozanj@ucla.edu
