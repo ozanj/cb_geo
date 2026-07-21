@@ -1,0 +1,242 @@
+---
+title: 'Geomarket Filter'
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: paged
+---
+
+<style>
+details table {
+  overflow: scroll;
+  display: block;
+  white-space: nowrap;
+}
+</style>
+
+```{r setup, include = F, eval = T}
+options(width = 10000)
+knitr::opts_chunk$set(warning = F, message = F, echo = F, eval = F, comment = '')
+
+library(tidyverse)
+library(leaflet)
+library(sf)
+
+# load('../../cb_geomarket_shape/analysis_data/allyr_anal_eps_sf.RData')
+# load('../../cb_geomarket_shape/analysis_data/allyr_anal_tract_sf.RData')]
+
+eps_data_dir <- file.path('..', 'data', 'eps_market')
+
+# CBSA shapes (2020)
+load(file.path(eps_data_dir, 'cbsa_2020.RData'))
+cbsa_data_2020 <- readRDS(file.path(eps_data_dir, 'cbsa_data_2020.RDS'))
+
+setwd('..')
+source('./scripts/map_functions.R')
+setwd('scripts')
+
+load('../../public_requests_eda/data/combined_data.RData')
+geomarket_orders_df <- orders_df %>%
+  filter(order_num %in% lists_df$order_no, !univ_id %in% c('174358', '174075'), !is.na(geomarket)) %>%
+  mutate(eps = str_extract_all(geomarket, '([A-Z]{2} ?\\d{1,2})') %>% purrr::map(~str_replace(.x, '([A-Z]+)0([1-9])$', '\\1 \\2')))
+
+js <- read_file('geomarket_filters.js')
+metro <- 'metro'
+highlight_shp <- highlightOptions(weight = 1, color = '#606060', dashArray = '')
+
+eps_data <- eps_data %>% filter(year == 2020)
+tract_data <- tract_data %>% filter(year == 2020)
+
+cbsa_data <- cbsa_2020 %>% left_join(
+  cbsa_data_2020 %>% 
+    select(geoid, tot_all, inc_house_med, pct_nhisp_white, pct_nhisp_black, pct_hisp_all, pct_nhisp_asian, pct_nhisp_nhpi, pct_nhisp_native, pct_nhisp_multi, pct_pov_yes, pct_edu_baplus_all) %>% 
+    rename(sum_tot_all = tot_all, med_inc_house = inc_house_med) %>% 
+    format_vars(),
+  by = c('GEOID' = 'geoid')
+)
+
+get_univ_orders <- function(univ) {
+  geomarket_orders_df %>%
+    filter(univ_id == univ) %>%
+    group_by(univ_id, geomarket, eps) %>%
+    summarise(
+      n_orders = n(),
+      order_nums = str_c(order_num, collapse = ',')
+      # order_nums = str_c(order_num, order_title, sep = ': ', collapse = ', ')
+    ) %>%
+    ungroup() %>%
+    mutate(
+      group = str_c('Group ', row_number())
+    )
+}
+
+plot_map <- function(data_df, level = 'eps') {
+  m <- leaflet() %>%
+    addProviderTiles(providers$CartoDB.Positron)
+  
+  states <- data_df$eps %>% flatten() %>% as.character() %>% str_sub(1, 2) %>% unique() %>% str_c(collapse = '|')
+  
+  eps <- eps_data %>% filter(str_detect(eps, states))
+  tract <- tract_data %>% filter(str_detect(eps, states))
+  cbsa <- cbsa_data %>% filter(str_detect(NAME, states))
+  
+  for (v in names(base_vars)) {
+    
+    if (level == 'eps') {
+      color_pal <- get_palette(v, eps[[v]], 'eps')
+      # color_pal_tract <- get_palette(v, tract[[v]], 'tract')
+      
+      d <- eps
+    } else if (level == 'cbsa') {
+      color_pal <- get_palette(v, cbsa[[v]], 'eps')
+      
+      d <- cbsa
+    }
+    
+    
+    group_name <- if_else(str_detect(base_vars[[v]]$name, 'Hispanic'), base_vars[[v]]$name, paste0('MSA by ', base_vars[[v]]$name))
+    
+    if (level == 'eps') {
+      m <- m %>% 
+      
+        # addPolygons(data = tract, opacity = 1, color = '#808080', weight = 1, dashArray = '3', fillOpacity = 0.8, smoothFactor = 0.2, fillColor = ~color_pal_tract$palette(get(v)), label = ~paste0('<b style="font-size:11px">', eps, ' - ', eps_name, '</b><br><b>Tract ', tract_code, '</b>: ', get(paste0(v, '_text'))) %>% lapply(htmltools::HTML), group = group_name, highlightOptions = highlight_shp, options = pathOptions(className = paste0('metro-shape metro-', metro))) %>%
+        
+        addPolygons(data = eps, opacity = 1, color = '#808080', weight = 1, dashArray = '3', fillOpacity = 0.8, smoothFactor = 0.2, fillColor = ~color_pal$palette(get(v)), label = ~paste0('<b style="font-size:11px">', eps, ' - ', eps_name, '</b><br>', get(paste0(v, '_text'))) %>% lapply(htmltools::HTML), group = group_name, highlightOptions = highlight_shp, options = pathOptions(className = paste0('metro-shape metro-', metro)))
+    } else if (level == 'cbsa') {
+      m <- m %>% 
+        addPolygons(data = cbsa, opacity = 1, color = '#808080', weight = 1, dashArray = '3', fillOpacity = 0.8, smoothFactor = 0.2, fillColor = ~color_pal$palette(get(v)), label = ~paste0('<b style="font-size:11px">', NAMELSAD, '</b><br>', get(paste0(v, '_text'))) %>% lapply(htmltools::HTML), group = group_name, highlightOptions = highlight_shp, options = pathOptions(className = paste0('metro-shape metro-', metro)))
+    }
+    
+    
+      
+    m <- m %>% 
+      
+      addLegend(data = d,
+                position = 'topright', pal = color_pal$palette, values = ~get(v),
+                title = base_vars[[v]]$name,
+                className = paste0('info legend legend-', base_vars[[v]]$abbrev, '-', metro),
+                labFormat = color_pal$label_format,
+                na.label = 'N/A',
+                opacity = 1)
+  }
+  
+  for (i in 1:nrow(data_df)) {
+    m <- m %>% addPolylines(data = eps_data %>% filter(eps %in% data_df$eps[[i]]), color = 'purple', fillOpacity = 0, label = ~str_c(eps, ' - ', eps_name), group = data_df$group[[i]])
+    
+    if (level == 'cbsa') {
+      m <- m %>% addPolylines(data = eps_data %>% filter(!eps %in% data_df$eps[[i]]), color = 'red', fillOpacity = 0, label = ~str_c(eps, ' - ', eps_name), group = str_c('Not in ', data_df$group[[i]]))
+    }
+  }
+  
+  g <- data_df$group
+  if (level == 'cbsa') {
+    m <- m %>% addPolylines(data = eps_data %>% filter(!eps %in% unique(as.character(flatten(data_df$eps)))), color = 'red', fillOpacity = 0, label = ~str_c(eps, ' - ', eps_name), group = 'Unpurchased')
+    
+    g <- c(str_c(rep(c('', 'Not in '), nrow(data_df)), rep(data_df$group, each = 2)), 'Unpurchased')
+  }
+  
+  m %>%
+    hideGroup(g) %>%
+    addLayersControl(
+      position = c('bottomleft'),
+      baseGroups = c(flatten_chr(map(base_vars, \(x) if_else(str_detect(x$name, 'Hispanic'), x$name, str_c('MSA by ', x$name))))),
+      overlayGroups = g,
+      options = layersControlOptions(collapsed = F)
+    ) %>% 
+      htmlwidgets::onRender(js)
+}
+```
+
+<!-- # 110653: University of California, Irvine -->
+
+```{r, eval = T}
+uci_filters <- get_univ_orders('110653')
+```
+
+```{r, results='asis', eval = nrow(uci_filters) > 0}
+for (i in 1:nrow(uci_filters)) {
+  cat('<details><summary><b>Group ', i, '</b> (', uci_filters$n_orders[[i]], ' order', if_else(uci_filters$n_orders[[i]] == 1, '', 's'), ' filtering on ', length(uci_filters$eps[[i]]), ' geomarket', if_else(length(uci_filters$eps[[i]]) == 1, '', 's'), ')</summary>', sep = '')
+  
+  d <- orders_df %>% filter(order_num %in% str_split(uci_filters$order_nums[[i]], ',')[[1]]) %>% select(-c(univ_id, po_num, order_cost, num_runs, created_by, date_updated, source_file, geomarket))
+  cat('\n', d[, colSums(!is.na(d)) > 0] %>% knitr::kable(), sep = '\n')
+
+  for (ep in sort(uci_filters$eps[[i]])) {
+    cat('  - ', ep, ': ', eps_data %>% filter(eps == ep) %>% pull(eps_name), '\n', sep = '')
+  }
+  cat('</details>', sep = '')
+}
+cat('<br/>')
+```
+
+```{r, eval = nrow(uci_filters) > 0}
+plot_map(uci_filters)
+```
+
+<!-- # 228431: Stephen F. Austin State University -->
+
+```{r, eval = T}
+sfa_filters <- get_univ_orders('228431')
+```
+
+```{r, results='asis', eval = T}
+for (i in 1:nrow(sfa_filters)) {
+  cat('<details><summary><b>Group ', i, '</b> (', sfa_filters$n_orders[[i]], ' order', if_else(sfa_filters$n_orders[[i]] == 1, '', 's'), ' filtering on ', length(sfa_filters$eps[[i]]), ' geomarket', if_else(length(sfa_filters$eps[[i]]) == 1, '', 's'), ')</summary>', sep = '')
+  
+  d <- orders_df %>% filter(order_num %in% str_split(sfa_filters$order_nums[[i]], ',')[[1]]) %>% select(-c(univ_id, po_num, order_cost, num_runs, created_by, date_updated, source_file, geomarket))
+  cat('\n', d[, colSums(!is.na(d)) > 0] %>% knitr::kable(), sep = '\n')
+  
+  for (ep in sort(sfa_filters$eps[[i]])) {
+    cat('  - ', ep, ': ', eps_data %>% filter(eps == ep) %>% pull(eps_name), '\n', sep = '')
+  }
+  cat('</details>', sep = '')
+}
+cat('<br/>')
+```
+
+```{r, eval = T}
+plot_map(sfa_filters)
+```
+
+# 104151: Arizona State University-Tempe
+
+```{r, eval = T}
+asu_filters <- get_univ_orders('104151')
+```
+
+```{r, results='asis', eval = T}
+for (i in 1:nrow(asu_filters)) {
+  cat('<details><summary><b>Group ', i, '</b> (', asu_filters$n_orders[[i]], ' order', if_else(asu_filters$n_orders[[i]] == 1, '', 's'), ' filtering on ', length(asu_filters$eps[[i]]), ' geomarket', if_else(length(asu_filters$eps[[i]]) == 1, '', 's'), ')</summary>', sep = '')
+  
+  d <- orders_df %>% filter(order_num %in% str_split(asu_filters$order_nums[[i]], ',')[[1]]) %>% select(-c(univ_id, po_num, order_cost, num_runs, created_by, date_updated, source_file, geomarket))
+  cat('\n', d[, colSums(!is.na(d)) > 0] %>% knitr::kable(), sep = '\n')
+  
+  for (ep in sort(asu_filters$eps[[i]])) {
+    cat('  - ', ep, ': ', eps_data %>% filter(eps == ep) %>% pull(eps_name), '\n', sep = '')
+  }
+  cat('</details>', sep = '')
+}
+cat('<br/>')
+```
+
+```{r, eval = T}
+plot_map(asu_filters)
+```
+
+```{r}
+plot_map(asu_filters, 'cbsa')
+```
+
+
+<!-- ## CBSA -->
+
+<!-- - **Metro Areas**: Pink -->
+<!-- - **Micro Areas**: Gray -->
+
+```{r}
+leaflet() %>% addProviderTiles(providers$CartoDB.Positron) %>%
+  addPolygons(data = cbsa_2020 %>% filter(LSAD == 'M1') %>% sf::st_transform(crs = 4326), label = ~NAMELSAD, weight = 1, opacity = 1, color = 'pink') %>%
+  addPolygons(data = cbsa_2020 %>% filter(LSAD == 'M2') %>% sf::st_transform(crs = 4326), label = ~NAMELSAD, weight = 1, opacity = 1, color = '#cccccc')
+```
+
