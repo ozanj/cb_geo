@@ -241,7 +241,17 @@ graph_var_names
 # Define graph_vars in the desired order
 graph_varlist <- c("nhisp_white", "nhisp_black", "hisp_all", "nhisp_asian", "nhisp_nhpi", "nhisp_api", "nhisp_native", "nhisp_multi", "pct_nhisp_white", "pct_nhisp_black", "pct_hisp_all", "pct_nhisp_asian", "pct_nhisp_nhpi", "pct_nhisp_api", "pct_nhisp_native", "pct_nhisp_multi", "med_inc_house", "mean_inc_house", "pov_no", "pov_yes", "pct_pov_yes", "edu_hs_all", "edu_ltba_all", "edu_baplus_all", "edu_lths_all", "pct_edu_baplus_all")
 
-create_eps_graph <- function(eps_codes, 
+race_fill_colors <- c(
+  "White, non-Hispanic" = "#7C93B0",
+  "Asian, non-Hispanic" = "#81CBC4",
+  "Black, non-Hispanic" = "#B088C4",
+  "Hispanic"            = "#C47CA4",
+  "Two+, non-Hispanic"  = "#BDA372",
+  "AIAN, non-Hispanic"  = "#9DAE81",
+  "NHPI, non-Hispanic"  = "#A6787D"
+)
+
+create_eps_graph <- function(eps_codes,
                              prefix = NULL,
                              graph_vars = graph_varlist, 
                              graph_type = "ses", 
@@ -252,8 +262,8 @@ create_eps_graph <- function(eps_codes,
                              y_label = NULL, 
                              plot_title = NULL, 
                              plot_subtitle = NULL,
-                             theme_custom = theme_minimal(), 
-                             fill_palette = NULL, 
+                             theme_custom = theme_minimal(),
+                             fill_palette = race_fill_colors,
                              debug = FALSE,
                              note = NULL) {
   

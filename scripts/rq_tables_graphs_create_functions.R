@@ -2207,6 +2207,21 @@ firstgen_row_levels <- c(
   "Not first-gen"
 )
 
+race_fill_colors <- c(
+  "White, non-Hispanic" = "#7C93B0",
+  "Asian, non-Hispanic" = "#81CBC4",
+  "Black, non-Hispanic" = "#B088C4",
+  "Hispanic"            = "#C47CA4",
+  "Two+, non-Hispanic"  = "#BDA372",
+  "AIAN, non-Hispanic"  = "#9DAE81",
+  "NHPI, non-Hispanic"  = "#A6787D"
+)
+
+firstgen_fill_colors <- c(
+  "First-gen"     = "#BDA372",
+  "Not first-gen" = "#7C93B0"
+)
+
 # Helper function that moves "All" to the top in the row plot,
 # keeping original order for the other EPS codes.
 move_all_to_top_in_row <- function(vec) {
@@ -3647,6 +3662,14 @@ create_sim_eps_graph <- function(data_graph,
   # ----------------------------------------------------------------
   # (C) Build the Row-Percent Plot (plot_r)
   # ----------------------------------------------------------------
+  row_fill_scale <- if (variable == "race") {
+    ggplot2::scale_fill_manual(values = race_fill_colors)
+  } else if (firstgen_detail == "collapsed") {
+    ggplot2::scale_fill_manual(values = firstgen_fill_colors)
+  } else {
+    ggplot2::scale_fill_discrete()
+  }
+
   plot_r <- df_r %>%
     ggplot2::ggplot(
       ggplot2::aes(
@@ -3656,6 +3679,7 @@ create_sim_eps_graph <- function(data_graph,
       )
     ) +
     ggplot2::geom_bar(stat = "identity", position = ggplot2::position_fill(reverse = TRUE)) +
+    row_fill_scale +
     ggplot2::scale_y_continuous(labels = scales::percent_format(scale = 100)) +
     ggplot2::labs(
       title = row_plot_title,
@@ -3921,7 +3945,11 @@ create_race_by_firstgen_graph <- function(
       legend.text       = element_text(size = 12),
       axis.text.x       = element_text(size = 12)
     )
-  
+
+  if (firstgen_detail == "collapsed") {
+    plot <- plot + scale_fill_manual(values = firstgen_fill_colors)
+  }
+
   # ----------------------------------------------------------
   # 5) Figure file name: use underscores
   # ----------------------------------------------------------
