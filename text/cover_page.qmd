@@ -1,5 +1,5 @@
 ---
-title: "Structuring College Access: The Market Segment Model and College Board Geomarkets"
+title: "Making Exclusion Actionable: Geographic Market Devices for Identifying Prospective College Students"
 author: ["Ozan Jaquette (UCLA)*", "Karina Salazar (University of Arizona)", "Crystal Han (Stanford University)"]
 format: pdf
 geometry:

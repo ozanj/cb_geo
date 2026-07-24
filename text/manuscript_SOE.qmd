@@ -13,7 +13,7 @@ format:
     #toc: FALSE
     #pandoc_args: !expr rmdfiltr::add_wordcount_filter(rmdfiltr::add_citeproc_filter(args = NULL))
     #keep_tex: true
-    extensions: [andrewheiss/wordcount]
+    #extensions: [andrewheiss/wordcount]
 editor: visual
 geometry:
   margin=1in
@@ -26,9 +26,9 @@ header-includes:
   - \renewcommand{\notesname}{Endnotes}
   - \renewcommand{\enotesize}{\normalsize}
   - \renewcommand{\enoteformat}{\parindent0pt\leavevmode\llap{\theenmark.\enskip}}
-filters:
+#filters:
   # - ./../_extensions/andrewheiss/wordcount/citeproc.lua
-  - ./../_extensions/andrewheiss/wordcount/wordcount.lua
+  #- ./../_extensions/andrewheiss/wordcount/wordcount.lua
 ---
 
 ```{r setup, echo=F}
@@ -67,7 +67,7 @@ Therefore, our overarching research question is: How do Geomarket filters within
 
 We answer these questions using data from actual student lists purchased by public universities, obtained via public records requests. Each observation is the profile of a student that satisfied all search filter criteria in a student list purchase (e.g., HS graduation year, PSAT score range, Geomarket). We assign students to Geomarkets by digitizing Geomarket maps published in @collegeboard_connections_geographies. We analyze student list purchases that include all Geomarkets in a metropolitan area, allowing us to show which prospects would be included or excluded had a purchase filtered on particular Geomarkets. Our analyses therefore demonstrate the racial and socioeconomic consequences of using Geomarkets as a search filter, regardless of which college is purchasing the list.
 
-We utilize a case study design in which each case is a metropolitan area that contains multiple Geomarkets. We present detailed results for Chicago, followed by an overview and selected results from other cases. In Chicagoland, Geomarkets are highly correlated with race and class: the "IL 11 - City of Chicago" Geomarket is the poorest and most racially diverse, while Geomarkets like "IL 9 - North Shore" and "IL 10 - Evanston & Skokie" are more affluent and predominantly White. Analyses of student-list data show that, even after filtering on students in the same test-score range, excluding students from the City of Chicago Geomarket disproportionately excludes Black, Hispanic, and first-generation college students. Although Asian prospects were distributed more evenly across poor and affluent Geomarkets, excluding the poorer "IL 11 - City of Chicago" and "IL 13 - South & Southwest Suburbs" Geomarkets disproportionately excludes first-generation Asian students. We find similar patterns in Dallas and in the additional metropolitan cases we analyze.
+We utilize a case study design in which each case is a metropolitan area that contains multiple Geomarkets. We present detailed results for Chicago, followed by an overview and selected results from other cases. In Chicagoland, Geomarkets are highly correlated with race and class: the "IL 11 - City of Chicago" Geomarket is the poorest and most racially diverse, while Geomarkets like "IL 9 - North Shore" and "IL 10 - Evanston & Skokie" are more affluent and predominantly White. Analyses of student-list data show that, even after filtering on students in the same test-score range, excluding students from the City of Chicago Geomarket disproportionately excludes Black, Hispanic, and first-generation college students. Although Asian prospects were distributed more evenly across poor and affluent Geomarkets, excluding the "IL 11 - City of Chicago" Geomarket disproportionately excludes first-generation Asian students. We find similar patterns in Dallas, Philadelphia, and in the additional metropolitan cases we analyze.
 
 These analyses push the sociology of college access to look upstream for mechanisms of social reproduction. Geomarkets were conceived alongside the Market Segment Model, which shares a core premise with status-attainment theory, namely that educational achievement and college-going are patterned by family socioeconomic background. College Board translated @RN4982’s observations about geographically patterned student demand into market infrastructure. EPS made class-differentiated Geomarkets actionable for market analysis, and Student Search Service made them selectable as filters for purchasing prospect names. Whereas extant scholarship treats recruiting as behavior carried out by individual colleges, our case shows that it also depends on third-party market devices that classify students, define markets, and structure which prospects become visible to colleges. This matters because third-party vendors have quietly shaped college access for decades. Their influence is growing as private-equity-backed firms develop software-as-a-service platforms that perform core enrollment management functions [@drew_hansen_2017]. Sociology needs an agenda for studying vendor-mediated educational sorting.
 
