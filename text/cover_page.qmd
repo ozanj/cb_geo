@@ -8,11 +8,11 @@ geometry:
 
 **Abstract word count**: XXX words
 
-**Text word count**: 14,150 words
+**Text word count**: 13,726 words
 
-- **Text**: 12,363 words
-- **Footnotes**: 171 words
-- **References**: 1,616 words
+- **Text**: 11,992 words
+- **Footnotes**: 175 words
+- **References**: 1,559 words
 
 
 \vspace{200pt}
