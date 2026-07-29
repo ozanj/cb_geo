@@ -1,12 +1,16 @@
 ---
 title: "Making Exclusion Actionable: Geographic Market Devices for Identifying Prospective College Students"
 author: ["Ozan Jaquette (UCLA)*", "Karina Salazar (University of Arizona)", "Crystal Han (Stanford University)"]
-format: pdf
+format:
+  docx:
+    reference-doc: cover-reference.docx
 geometry:
   margin=1in
 ---
 
-**Abstract word count**: XXX words
+```{=openxml}
+<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="400" w:lineRule="exact" /></w:pPr></w:p>
+```
 
 **Text word count**: 13,726 words
 
@@ -15,7 +19,15 @@ geometry:
 - **References**: 1,559 words
 
 
+::: {.content-visible when-format="pdf"}
 \vspace{200pt}
+:::
+
+::: {.content-visible when-format="docx"}
+```{=openxml}
+<w:p><w:pPr><w:spacing w:after="4000" w:line="240" w:lineRule="auto" /></w:pPr></w:p>
+```
+:::
 
 
 
