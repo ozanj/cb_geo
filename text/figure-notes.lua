@@ -13,6 +13,14 @@ local function is_fig_notes(blk)
   return blk.t == "Para" and pandoc.utils.stringify(blk):match("^%s*Figure notes")
 end
 
+-- Size figures for the landscape figure pages. Pandoc otherwise scales images
+-- to the reference-doc page width; an explicit width keeps them from overflowing
+-- the page height. 8in fits comfortably within the landscape text area.
+function Image(img)
+  img.attributes.width = "8in"
+  return img
+end
+
 function Blocks(blocks)
   local out = pandoc.List()
   local i = 1
