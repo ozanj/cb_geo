@@ -4,8 +4,8 @@
 bibliography: ./../assets/bib/cb_geomarket_bib.bib
 csl: ./../assets/bib/chicago-author-date.csl
 format:
-  docx:
-    reference-doc: custom-reference-v2.docx
+  #docx:
+  #  reference-doc: custom-reference-v2.docx
   pdf:
     documentclass: article
     #papersize: letter
@@ -138,7 +138,7 @@ As an administrative structure, the EM office typically controls the activities 
 
 **Student list products**. Lead generation is the process of converting "prospects" -- consumers a business wants to target -- into "leads" -- prospects whose contact information has been obtained [@ftc2016]. In enrollment management, "student lists" (also called "names") are spreadsheets that contain the contact information of prospects [@belkin2019-studata]. Student lists are a fundamental input for undergraduate recruiting campaigns because purchased names -- alongside prospects who reach out on their own -- constitute the set of prospects who receive subsequent recruiting interventions (e.g., mail, email) designed to push them to apply and enroll. Student list products are "selection devices" -- routines for making decisions about who receives an intervention [@RN4778] -- that enable colleges to select which names they purchase by incorporating search filters (e.g., HS graduating class, state, test score). For example, a college might select all California prospects from the 2028 HS class, with a GPA of 3.5+, and an SAT score between 1200-1300. Historically, the largest student list vendors are College Board and ACT, which create student list products based on their database of test-takers. In 2021, the College Board Student Search Service charged \$0.50 per name [@RN0002].
 
-@RN4895 reports that 86% of public colleges and 87% of private colleges purchase student lists. For public universities that purchased lists, 80% purchase more than 50,000 names annually<!-- \[AND PRIVATES?\]-->. @RN4896 reports that student lists were the top expenditure item in the undergraduate recruiting budget for both private and public institutions in 2022<!-- , with the average public institution allocating 15% of its budget to names-->. Prior research finds a positive relationship between student lists and student outcomes [@RN4739]. After controlling for SAT scores, parental education, and school fixed effects, 41.1% of SAT test-takers who opted into Student Search Service -- thereby allowing colleges to purchase their contact information -- attended a four-year college, compared with 32.8% of those who opted out [@RN4739].
+@RN4895 reports that 86% of public colleges and 87% of private colleges purchase student lists. For public universities that purchased lists, 80% purchase more than 50,000 names annually<!-- \[AND PRIVATES?\]-->. @RN4896 reports that student lists were the top expenditure item in the undergraduate recruiting budget for both private and public institutions in 2022<!-- , with the average public institution allocating 15% of its budget to names-->. Prior research finds a positive relationship between student lists and student outcomes \[@RN4739\]. After controlling for SAT scores, parental education, and school fixed effects, 41.1% of SAT test-takers who opted into Student Search Service -- thereby allowing colleges to purchase their contact information -- attended a four-year college, compared with 32.8% of those who opted out [@RN4739].
 
 However, @RN5012_blinded argue that student list products are selection devices that exacerbate racial inequality in college access. @RN4786 defines "racialized inputs" as ostensibly race-neutral inputs that are systematically correlated with race because marginalized racial/ethnic groups have historically been excluded from the input. Several frequently utilized student list filters (e.g., zip code, AP test score) meet the criteria of racialized inputs. For example, colleges may purchase prospects that achieve a certain score on a certain AP test, but Black and Hispanic students are more likely to attend high schools with fewer AP offerings [@RN4854]. Using a national sample of high school students and also data from actual student lists purchased by public universities, @RN5012_blinded show that racialized search filters have a strong negative relationship with the selection of Black and Latinx prospects.
 
@@ -409,7 +409,6 @@ The College Board case also points toward a broader empirical agenda on the edte
   <w:pgMar w:top="1296" w:right="1296" w:bottom="1296" w:left="1296" w:header="720" w:footer="720" w:gutter="0"/>
 </w:sectPr></w:pPr></w:p>
 ```
-
 # Figures {.unnumbered}
 
 ![Population of Chicago area Geomarkets over time](../assets/images/chicago_maps.png){#fig-chicago-maps}
