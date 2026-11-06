@@ -1,6 +1,7 @@
 library(tidyverse)
 library(rmapshaper)
 library(formattable)
+library(sf)
 
 
 source(file.path('scripts', 'directories.R'))
@@ -60,7 +61,7 @@ format_vars <- function(data_df) {
 }
 
 eps_data <- allyr_anal_eps_sf %>% 
-  filter(eps %in% flatten_chr(regions_data$eps)) %>%
+  # filter(eps %in% flatten_chr(regions_data$eps)) %>%
   select(year, eps, eps_name, n_tracts, sum_tot_all, med_inc_house, pct_nhisp_white, pct_nhisp_black, pct_hisp_all, pct_nhisp_asian, pct_nhisp_nhpi, pct_nhisp_native, pct_nhisp_multi, pct_pov_yes, pct_edu_baplus_all, geometry) %>% 
   # ms_simplify(keep = 0.1, keep_shapes = T) %>% 
   format_vars()
@@ -72,7 +73,7 @@ eps_data %>% as.data.frame() %>%
   )  # Asian, NHPI, AIAN, 2+ races in 1980 data missing
 
 tract_data <- allyr_anal_tract_sf %>% 
-  filter(eps %in% flatten_chr(regions_data$eps)) %>% 
+  # filter(eps %in% flatten_chr(regions_data$eps)) %>% 
   select(year, eps, eps_name, gisjoin, geoid, proportion, tot_all, med_inc_house, pct_nhisp_white, pct_nhisp_black, pct_hisp_all, pct_nhisp_asian, pct_nhisp_nhpi, pct_nhisp_native, pct_nhisp_multi, pct_pov_yes, pct_edu_baplus_all, geometry) %>% 
   # ms_simplify(keep = 0.1, keep_shapes = T) %>%
   rename('sum_tot_all' = 'tot_all') %>% 

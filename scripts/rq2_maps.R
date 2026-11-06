@@ -267,7 +267,11 @@ create_rq2_map <- function(metros, map_type = 'rq2') {
   highlight_shp <- highlightOptions(weight = 1, color = '#606060', dashArray = '')
   
   m <- leaflet(options = leafletOptions(zoomControl = T, zoomSnap = 0, zoomDelta = 0.5)) %>%
-    addProviderTiles(providers$CartoDB.Positron) %>%
+    addTiles(
+      urlTemplate = paste0('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=', Sys.getenv('CARTO_API_KEY')),
+      attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      options = tileOptions(subdomains = 'abcd', maxZoom = 20)
+    ) %>%
     
     addEasyButton(easyButton(
       icon = 'fa-file', title = 'Select Order Number',

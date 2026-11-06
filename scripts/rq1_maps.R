@@ -21,7 +21,11 @@ create_rq1_map <- function(metros, shared_legend = F) {
   yrs <- c(1980, 2000, 2020)
   
   m <- leaflet(options = leafletOptions(zoomControl = T, zoomSnap = 0, zoomDelta = 0.5)) %>%
-    addProviderTiles(providers$CartoDB.Positron)
+    addTiles(
+      urlTemplate = paste0('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=', Sys.getenv('CARTO_API_KEY')),
+      attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      options = tileOptions(subdomains = 'abcd', maxZoom = 20)
+    )
   
   for (metro in metros) {
     print(metro)
