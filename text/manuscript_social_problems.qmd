@@ -353,7 +353,7 @@ The College Board case also points toward a broader empirical agenda on the edte
 
 ![Population of Chicago area Geomarkets over time](../assets/images/chicago_maps.png){#fig-chicago-maps}
 
-Alt text: Three side-by-side maps of the seven Chicago-area Geomarkets in 1980, 2000, and 2020, shaded from light yellow to dark blue by total population. The City of Chicago, along the lakeshore, is darkest in every year; the Western Suburbs and South and Southwest Suburbs darken over time, while North Shore and Evanston and Skokie stay lightest.
+Alt text: Maps of the seven Chicago-area Geomarkets in 1980, 2000, and 2020, shaded by population. The City of Chicago has the highest population throughout, while North Shore and Evanston and Skokie stay the lowest.
 
 {{< pagebreak >}}
 
@@ -361,7 +361,7 @@ Alt text: Three side-by-side maps of the seven Chicago-area Geomarkets in 1980, 
 
 {{< pagebreak >}}
 
-Alt text: Grid of horizontal bar charts, with rows for 2020, 2000, and 1980 and columns for median income, percent in poverty, and percent of adults with a four-year college degree or higher. In every year, North Shore has the highest income and education levels, and the City of Chicago has the lowest income and highest poverty.
+Alt text: Bar charts of median income, poverty, and four-year degree attainment by Geomarket in 1980, 2000, and 2020. Every year, North Shore ranks highest in income and education and the City of Chicago lowest in income and highest in poverty.
 
 ```{=html}
 <!--
@@ -377,7 +377,7 @@ Alt text: Grid of horizontal bar charts, with rows for 2020, 2000, and 1980 and 
 
 {{< pagebreak >}}
 
-Alt text: Stacked horizontal bars showing the racial and ethnic composition of each Chicago-area Geomarket in 2020, 2000, and 1980. In 1980, every suburban Geomarket is more than 80 percent White, while the City of Chicago is about half White and one third Black. White shares shrink in every Geomarket over time, largely replaced by growing Hispanic and Asian shares.
+Alt text: Stacked bars of racial and ethnic composition by Geomarket in 1980, 2000, and 2020. Geomarkets except the City of Chicago are over 80 percent White in 1980; White shares shrink over time as Hispanic and Asian shares grow.
 
 ```{=html}
 <!--
@@ -393,7 +393,7 @@ Alt text: Stacked horizontal bars showing the racial and ethnic composition of e
 
 {{< pagebreak >}}
 
-Alt text: Three panels, one per SAT score range (1020 to 1150, 1160 to 1300, and 1310 to 1600), each with stacked horizontal bars of racial and ethnic composition for all prospects and for each Geomarket. In every range, the City of Chicago has the smallest White share and the largest Black and Hispanic shares, and Asian shares are largest in the top range.
+Alt text: Stacked bars of racial and ethnic composition by Geomarket for three SAT score ranges. In every range, the City of Chicago has the smallest White share and largest Black and Hispanic shares, and Asian shares are largest in the top range.
 
 ```{=html}
 <!--
@@ -409,7 +409,7 @@ Alt text: Three panels, one per SAT score range (1020 to 1150, 1160 to 1300, and
 
 {{< pagebreak >}}
 
-Alt text: Three panels, one per SAT score range, each with horizontal bars split into first-generation and not first-generation shares for all prospects and for each Geomarket. The overall first-generation share falls as scores rise; in every range it is highest in the City of Chicago and South and Southwest Suburbs and lowest in North Shore.
+Alt text: Bars of first-generation shares by Geomarket for three SAT score ranges. First-generation shares fall as scores rise and are highest in the City of Chicago and South and Southwest Suburbs.
 
 ```{=html}
 <!--
@@ -425,7 +425,7 @@ Alt text: Three panels, one per SAT score range, each with horizontal bars split
 
 {{< pagebreak >}}
 
-Alt text: Horizontal bars showing the first-generation share for all prospects and for White, Asian, Black, and Hispanic prospects, each broken out by Geomarket. Hispanic prospects have the highest first-generation share overall and White prospects the lowest; within each group, the City of Chicago share is among the highest.
+Alt text: Bars of first-generation shares by Geomarket within each racial and ethnic group. Hispanic prospects have the highest first-generation share overall and White prospects the lowest.
 
 ```{=html}
 <!--
@@ -441,7 +441,7 @@ Alt text: Horizontal bars showing the first-generation share for all prospects a
 
 {{< pagebreak >}}
 
-Alt text: Four panels, for White, Asian, Black, and Hispanic prospects. Gray bars show the share of all prospects from each Geomarket, and blue lollipops show the share of the focal group. The City of Chicago supplies about half of Black and over two fifths of Hispanic prospects, compared with under one quarter of all prospects.
+Alt text: Four panels, for White, Asian, Black, and Hispanic prospects. Gray bars show the share of all prospects from each Geomarket, and blue lollipops show the share of the focal group. The City of Chicago supplies a disproportionately high share of Black and Hispanic prospects.
 
 ```{=html}
 <!--
@@ -457,7 +457,7 @@ Alt text: Four panels, for White, Asian, Black, and Hispanic prospects. Gray bar
 
 {{< pagebreak >}}
 
-Alt text: Two panels, for first-generation and not first-generation prospects. Gray bars show the share of all prospects from each Geomarket, and blue lollipops show the share of the focal group. First-generation lollipops extend beyond the gray bars only for the City of Chicago and South and Southwest Suburbs; not first-generation lollipops extend beyond them for the other five Geomarkets.
+Alt text: Two panels, for first-generation and not first-generation prospects. Gray bars show the share of all prospects from each Geomarket, and blue lollipops show the share of the focal group. The City of Chicago and South and Southwest Suburbs supply a disproportionately high share of first-generation prospects.
 
 ```{=html}
 <!--
@@ -473,7 +473,7 @@ Alt text: Two panels, for first-generation and not first-generation prospects. G
 
 {{< pagebreak >}}
 
-Alt text: Four panels, for White, Asian, Black, and Hispanic prospects. Gray bars show the share of all prospects from each Geomarket, with paired lollipops for first-generation (blue) and not first-generation (red) prospects. First-generation Asian, Black, and Hispanic lollipops reach furthest at the City of Chicago; first-generation White lollipops reach furthest at the South and Southwest Suburbs.
+Alt text: Four panels, for White, Asian, Black, and Hispanic prospects. Gray bars show the share of all prospects from each Geomarket, with paired lollipops for first-generation (blue) and not first-generation (red) prospects. Asian, Black, and Hispanic first-generation shares peak in the City of Chicago.
 
 ```{=html}
 <!--
@@ -489,7 +489,7 @@ Alt text: Four panels, for White, Asian, Black, and Hispanic prospects. Gray bar
 
 {{< pagebreak >}}
 
-Alt text: Four panels, for White, Asian, Black, and Hispanic prospects, each a lollipop plot of the percentage-point change in group share when each Geomarket is excluded, with a dashed line at zero. Excluding the City of Chicago causes the largest shifts for White, Black, and Hispanic prospects, raising the White share and lowering the others; excluding the Western Suburbs moves every group the opposite way.
+Alt text: Lollipop plots of the percentage-point change in each racial and ethnic group share when each Geomarket is excluded. Excluding the City of Chicago produces the largest changes, raising the White share and lowering Black and Hispanic shares.
 
 ```{=html}
 <!--
@@ -505,7 +505,7 @@ Alt text: Four panels, for White, Asian, Black, and Hispanic prospects, each a l
 
 {{< pagebreak >}}
 
-Alt text: Four panels, for White, Asian, Black, and Hispanic prospects, each a lollipop plot of the relative percent change in group share when each Geomarket is excluded, with a dashed line at zero. Relative changes are largest for Black and Hispanic prospects: excluding the City of Chicago lowers their shares by more than a third and more than a quarter, while excluding the Western Suburbs raises them.
+Alt text: Lollipop plots of the relative percent change in each racial and ethnic group share when each Geomarket is excluded. Excluding the City of Chicago lowers Black and Hispanic shares, while excluding the Western Suburbs raises them.
 
 ```{=html}
 <!--
@@ -521,7 +521,7 @@ Alt text: Four panels, for White, Asian, Black, and Hispanic prospects, each a l
 
 {{< pagebreak >}}
 
-Alt text: Two panels, for first-generation and not first-generation prospects, each a lollipop plot of the percentage-point change in group share when each Geomarket is excluded, with a dashed line at zero. The panels mirror each other: excluding the City of Chicago or South and Southwest Suburbs lowers the first-generation share, while excluding any other Geomarket raises it.
+Alt text: Lollipop plots of the percentage-point change in first-generation and not first-generation shares when each Geomarket is excluded. Excluding the City of Chicago or South and Southwest Suburbs lowers the first-generation share; other exclusions raise it.
 
 ```{=html}
 <!--
@@ -537,7 +537,7 @@ Alt text: Two panels, for first-generation and not first-generation prospects, e
 
 {{< pagebreak >}}
 
-Alt text: Two panels, for first-generation and not first-generation prospects, each a lollipop plot of the relative percent change in group share when each Geomarket is excluded, with a dashed line at zero. Excluding the City of Chicago produces the largest first-generation decline, and excluding the Western Suburbs the largest first-generation increase; changes for not first-generation prospects are smaller.
+Alt text: Lollipop plots of the relative percent change in first-generation and not first-generation shares when each Geomarket is excluded. The largest first-generation changes come from excluding the City of Chicago (decline) and Western Suburbs (increase).
 
 ```{=html}
 <!--
@@ -553,7 +553,7 @@ Alt text: Two panels, for first-generation and not first-generation prospects, e
 
 {{< pagebreak >}}
 
-Alt text: Grid of lollipop plots, with rows for White, Asian, Black, and Hispanic prospects and columns for first-generation and not first-generation prospects, showing the percentage-point change in each subgroup share when each Geomarket is excluded. Most changes are under one point; the largest come from excluding the City of Chicago, which raises the not first-generation White share and lowers the first-generation Hispanic share.
+Alt text: Grid of lollipop plots of the percentage-point change in each race and first-generation subgroup when each Geomarket is excluded. The largest changes come from excluding the City of Chicago, which raises the not first-generation White share and lowers the first-generation Hispanic share.
 
 ```{=html}
 <!--
@@ -569,7 +569,7 @@ Alt text: Grid of lollipop plots, with rows for White, Asian, Black, and Hispani
 
 {{< pagebreak >}}
 
-Alt text: Grid of lollipop plots, with rows for White, Asian, Black, and Hispanic prospects and columns for first-generation and not first-generation prospects, showing the relative percent change in each subgroup share when each Geomarket is excluded. Excluding the City of Chicago yields the largest declines for first-generation Black, Hispanic, and Asian prospects; excluding the Western Suburbs yields the largest increases, up to about one quarter for first-generation Black prospects.
+Alt text: Grid of lollipop plots of the relative percent change in each race and first-generation subgroup when each Geomarket is excluded. Excluding the City of Chicago yields the largest declines for first-generation Black, Hispanic, and Asian prospects.
 
 ```{=html}
 <!--
