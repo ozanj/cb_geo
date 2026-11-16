@@ -13,6 +13,10 @@ local function is_fig_notes(blk)
   return blk.t == "Para" and pandoc.utils.stringify(blk):match("^%s*Figure notes")
 end
 
+local function is_alt_text(blk)
+  return blk.t == "Para" and pandoc.utils.stringify(blk):match("^%s*Alt text")
+end
+
 -- Size figures for the landscape figure pages. Pandoc otherwise scales images
 -- to the reference-doc page width; an explicit width keeps them from overflowing
 -- the page height. 8in fits comfortably within the landscape text area.
@@ -39,6 +43,10 @@ function Blocks(blocks)
         i = i + 1
       end
       out:insert(pandoc.Div(grp, pandoc.Attr("", {}, { ["custom-style"] = "FigureNotes" })))
+    elseif is_alt_text(b) then
+      -- un-indent the "Alt text:" paragraph (match the figure-note look) and
+      -- add trailing space so there is a blank line before the figure notes
+      out:insert(pandoc.Div({ b }, pandoc.Attr("", {}, { ["custom-style"] = "AltText" })))
     else
       out:insert(b)
     end

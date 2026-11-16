@@ -242,7 +242,9 @@ Our primary limitation is geographic coverage. Analyses require student list pur
 
 ## Research Question 1
 
-RQ1 asks the extent to which College Board Geomarkets partition academically similar prospects into racially and socioeconomically distinct pools within metropolitan areas. @fig-rq2-chicago-race-row-plot shows the racial/ethnic composition of purchased student profiles by Geomarket across three different SAT score ranges: 1020 - 1150, 1160 - 1300, and 1310 - 1600. Focusing on the middle test score range, the racial/ethnic composition of prospect pools varied sharply across Chicago-area Geomarkets. White prospects were concentrated in North Shore, Evanston & Skokie, and Western Suburbs, while Asian prospects were concentrated in Evanston & Skokie, Northwest Suburbs, and North Shore. Black and Hispanic prospects were concentrated most heavily in the City of Chicago and South & Southwest Suburbs. Asian representation increases especially sharply in North Shore and Western Suburbs at the highest score range, however these broad racial differences in Geomarket composition persist across all score ranges.
+RQ1 asks the extent to which College Board Geomarkets partition academically similar prospects into racially and socioeconomically distinct pools within metropolitan areas. @fig-rq2-chicago-race-row-plot shows the racial/ethnic composition of purchased student profiles by Geomarket across three different SAT score ranges: 1020 - 1150, 1160 - 1300, and 1310 - 1600.[^1] Focusing on the middle test score range, the racial/ethnic composition of prospect pools varied sharply across Chicago-area Geomarkets. White prospects were concentrated in North Shore, Evanston & Skokie, and Western Suburbs, while Asian prospects were concentrated in Evanston & Skokie, Northwest Suburbs, and North Shore. Black and Hispanic prospects were concentrated most heavily in the City of Chicago and South & Southwest Suburbs. Asian representation increases especially sharply in North Shore and Western Suburbs at the highest score range, however these broad racial differences in Geomarket composition persist across all score ranges.
+
+[^1]: Purchased student profiles data come from the following orders. Order number 392833 (ordered 7/10/2018): HS class 2019 OR 2020; state = IL; SAT 1020 - 1150; GPA B- to A+. Order number 487984 (ordered 7/19/2019): HS class 2020 OR 2021; state = IL; SAT 1020 - 1150; GPA B- to A+. Order number 392834 (ordered 7/10/2018): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300. Order number 488035 (ordered 7/19/2019): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300; GPA B- to A+. Order number 392835 (ordered 7/9/2018): HS class 2019 OR 2020; state = IL; SAT 1310 - 1600; GPA B- to A+. Order number 488053 (ordered 7/19/2019): HS class 2020 OR 2021; state = IL; SAT 1310 - 1600; GPA B- to A+
 
 @fig-rq2-chicago-firstgen-row-plot shows similarly large differences in first-generation composition across Geomarkets, with the share of first-generation students generally declining as test score thresholds rise. <!--# Nevertheless, we observe consistent and substantial differences in the share of first-generation students across Geomarkets. --> In the middle score range, first-generation prospects comprise approximately 47% of profiles in the City of Chicago and 38% in South & Southwest Suburbs, compared to 22% in Western Suburbs, 19% in Evanston & Skokie, and 11% in North Shore. Northwest Suburbs (29%) and Chain of Lakes (24%) fall between these ranges. Such patterns reflect broader population socioeconomic differences described above, as Geomarkets with lower median income, higher poverty, and lower educational attainment contain substantially larger shares of first-generation prospects.
 
@@ -266,7 +268,11 @@ Overall, @fig-rq2-chicago-race-firstgen-contribution-plot-392834-488035 suggests
 
 ## Research Question 3
 
-RQ3 asks how excluding particular Geomarkets changes the composition of the prospect pool made visible to colleges. @fig-rq3-chicago-race-pp-exclusion-plot-order-392834-488035 and @fig-rq3-chicago-race-relative-exclusion-plot-order-392834-488035 estimate these counterfactual exclusion scenarios by race/ethnicity, showing changes in percentage point and relative percent change, respectively. <!--#  Each point represents a counterfactual exclusion scenario, showing how the racial/ethnic composition of the prospect pool would change if that Geomarket were excluded from the student-list purchase.--> @fig-rq3-chicago-race-pp-exclusion-plot-order-392834-488035 shows White students represent 60.4% of the prospect pool when all Greater Chicago Geomarkets are included. Excluding the Western Suburbs Geomarket reduces White representation by 3.1 percentage points, which is equivalent to a 5% relative decline as shown in @fig-rq3-chicago-race-relative-exclusion-plot-order-392834-488035. <!--#  such that White students would comprise $60.4\% - 3.1\% = 57.3\%$ of the remaining prospect pool. --> By contrast, excluding the City of Chicago increases it by 7.6 percentage points. <!--#, such that White students would comprise $60.4\% + 7.6\% = 68.0\%$ of the remaining prospect pool.-->
+RQ3 asks how excluding particular Geomarkets changes the composition of the prospect pool made visible to colleges. @fig-rq3-chicago-race-pp-exclusion-plot-order-392834-488035 and @fig-rq3-chicago-race-relative-exclusion-plot-order-392834-488035 estimate these counterfactual exclusion scenarios by race/ethnicity, showing changes in percentage point[^2] and relative percent change[^3], respectively. <!--#  Each point represents a counterfactual exclusion scenario, showing how the racial/ethnic composition of the prospect pool would change if that Geomarket were excluded from the student-list purchase.--> @fig-rq3-chicago-race-pp-exclusion-plot-order-392834-488035 shows White students represent 60.4% of the prospect pool when all Greater Chicago Geomarkets are included. Excluding the Western Suburbs Geomarket reduces White representation by 3.1 percentage points, which is equivalent to a 5% relative decline as shown in @fig-rq3-chicago-race-relative-exclusion-plot-order-392834-488035. <!--#  such that White students would comprise $60.4\% - 3.1\% = 57.3\%$ of the remaining prospect pool. --> By contrast, excluding the City of Chicago increases it by 7.6 percentage points. <!--#, such that White students would comprise $60.4\% + 7.6\% = 68.0\%$ of the remaining prospect pool.-->
+
+[^2]: Positive percentage-point changes mean the remaining pool has a higher share than the full metro pool; negative changes mean the remaining pool has a lower share.
+
+[^3]: Relative percent change is calculated as 100 × (remaining-pool share − full-pool share) / full-pool share. Positive values mean the remaining pool has higher relative representation than the full metro pool; negative values mean the remaining pool has lower relative representation.
 
 On the other hand, Black students represent 7.0% of the full prospect pool, but excluding the City of Chicago Geomarket reduces their representation by 2.6 percentage points, <!--# such that Black students would comprise $7.0\% - 2.6\% = 4.4\%$ of the remaining prospect pool. However, this 2.6 percentage-point reduction from  -->equivalent to a 36% relative decline (@fig-rq3-chicago-race-relative-exclusion-plot-order-392834-488035).<!--# is associated with a much larger relative percent change. @fig-rq3-chicago-race-relative-exclusion-plot-order-392834-488035 shows the same counterfactual exclusions in relative terms, calculated as the remaining-pool share minus the full-pool baseline share, divided by the full-pool baseline share. Here, excluding the City of Chicago would reduce Black students' share of the remaining prospect pool by approximately 36% relative to their full-pool baseline: $((4.4\% - 7.0\%) / 7.0\%) \times 100 = -37.1\%$. <!--Seems like it could be due to rounding? For example, ((4.44 - 6.95) / 6.95) * 100 = -36.11511, but let me know if I should look into it further!--> Similarly, excluding the South & Southwest Suburbs reduces Black student representation by 0.8 percentage points, from 7.0% to 6.2% of the overall prospect pool, an 11% decline. By contrast, excluding the Western Suburbs would increase Black students' share of the remaining prospect pool by 1.4 percentage points, from 7.0% to 8.4%, a 20% relative increase.
 
@@ -282,9 +288,9 @@ South & Southwest Suburbs offers an interesting contrast. Like City of Chicago, 
 
 ## Other metropolitan areas
 
-Metropolitan areas in the [Online Appendix](https://structuring-college-access.github.io/), including Philadelphia, Detroit, and Dallas, exhibit Geomarket dynamics similar to Chicago. In each, one or two key Geomarkets reflecting concentrated geographical inequality largely determine the (in)visibility of first-generation prospects across racially minoritized groups. In Philadelphia, excluding central-city Philadelphia County Geomarket, which contains the lowest income and educational attainment communities, reduces the relative representation of first-generation Black (-51%), Hispanic (-42%), and Asian (-37%) prospects.[^1] In Detroit, excluding Wayne County similarly reduces first-generation Black and Hispanic prospect representation, whereas excluding the Northern Suburbs Geomarket increases it. Dallas also shows exclusion concentrated in two key Geomarkets. Although the urban-core City of Dallas Geomarket ranks lowest in median income and educational attainment and the more rural Dallas County ranks near the middle, excluding either reduces the representation of first-generation Hispanic and Black prospects. Together, these metropolitan areas show that where Geomarket boundaries align closely with concentrated racial and socioeconomic divisions, Geomarkets enable colleges to act on clearly delineated inequalities by excluding key Geomarkets central to the visibility of first-generation and racially minoritized prospects.
+Metropolitan areas in the [Online Appendix](https://structuring-college-access.github.io/), including Philadelphia, Detroit, and Dallas, exhibit Geomarket dynamics similar to Chicago. In each, one or two key Geomarkets reflecting concentrated geographical inequality largely determine the (in)visibility of first-generation prospects across racially minoritized groups. In Philadelphia, excluding central-city Philadelphia County Geomarket, which contains the lowest income and educational attainment communities, reduces the relative representation of first-generation Black (-51%), Hispanic (-42%), and Asian (-37%) prospects.[^4] In Detroit, excluding Wayne County similarly reduces first-generation Black and Hispanic prospect representation, whereas excluding the Northern Suburbs Geomarket increases it. Dallas also shows exclusion concentrated in two key Geomarkets. Although the urban-core City of Dallas Geomarket ranks lowest in median income and educational attainment and the more rural Dallas County ranks near the middle, excluding either reduces the representation of first-generation Hispanic and Black prospects. Together, these metropolitan areas show that where Geomarket boundaries align closely with concentrated racial and socioeconomic divisions, Geomarkets enable colleges to act on clearly delineated inequalities by excluding key Geomarkets central to the visibility of first-generation and racially minoritized prospects.
 
-[^1]: Relative percent changes in race by first-generation composition are reported for middle threshold PSAT scores 1190-1260 across Philadelphia student list purchase orders.
+[^4]: Relative percent changes in race by first-generation composition are reported for middle threshold PSAT scores 1190-1260 across Philadelphia student list purchase orders.
 
 Unlike Chicago, <!--# where Geomarkets more clearly map onto concentrated geographical inequality, --> metropolitan areas like Los Angeles exhibit more dispersed, overlapping, and multicentered patterns of race and class, <!--# Both affluent suburban and lower-income Geomarkets shape the visibility of particular racial/ethnic and first-generation groups,--> such that no single Geomarket drives the potential for exclusion across all groups. For instance, <!--#  six of the 11 Los Angeles Geomarkets contribute disproportionately to different first-generation and racially minoritized group representation within academically similar prospect pools.--> excluding the affluent West Los Angeles and West Beach Geomarket produces the same relative reduction of first-generation Black prospects (-9%) as excluding the lower-income South and South Central Los Angeles Geomarket. Yet, excluding South and South Central Los Angeles would also reduce first-generation Hispanic representation, whereas excluding West Los Angeles and West Beach would increase it. Similarly, including East Los Angeles Geomarket is most important for increasing first-generation Asian representation while decreasing first-generation Black representation.
 
@@ -353,7 +359,7 @@ The College Board case also points toward a broader empirical agenda on the edte
 
 ![Population of Chicago area Geomarkets over time](../assets/images/chicago_maps.png){#fig-chicago-maps}
 
-Alt text: Maps of the seven Chicago-area Geomarkets in 1980, 2000, and 2020, shaded by population. The City of Chicago has the highest population throughout, while North Shore and Evanston and Skokie stay the lowest.
+**Alt text**: Maps of the seven Chicago-area Geomarkets in 1980, 2000, and 2020, shaded by population. The City of Chicago has the highest population throughout, while North Shore and Evanston and Skokie stay the lowest.
 
 {{< pagebreak >}}
 
@@ -361,15 +367,10 @@ Alt text: Maps of the seven Chicago-area Geomarkets in 1980, 2000, and 2020, sha
 
 {{< pagebreak >}}
 
-Alt text: Bar charts of median income, poverty, and four-year degree attainment by Geomarket in 1980, 2000, and 2020. Every year, North Shore ranks highest in income and education and the City of Chicago lowest in income and highest in poverty.
+**Alt text**: Bar charts of median income, poverty, and four-year degree attainment by Geomarket in 1980, 2000, and 2020. Every year, North Shore ranks highest in income and education and the City of Chicago lowest in income and highest in poverty.
 
-```{=html}
-<!--
-***Figure notes***:
+**Figure notes**: Household income measured using 2024 CPI.
 
-- Household income measured using 2024 CPI
--->
-```
 
 {{< pagebreak >}}
 
@@ -377,15 +378,10 @@ Alt text: Bar charts of median income, poverty, and four-year degree attainment 
 
 {{< pagebreak >}}
 
-Alt text: Stacked bars of racial and ethnic composition by Geomarket in 1980, 2000, and 2020. Geomarkets except the City of Chicago are over 80 percent White in 1980; White shares shrink over time as Hispanic and Asian shares grow.
+**Alt text**: Stacked bars of racial and ethnic composition by Geomarket in 1980, 2000, and 2020. Geomarkets except the City of Chicago are over 80 percent White in 1980; White shares shrink over time as Hispanic and Asian shares grow.
 
-```{=html}
-<!--
-***Figure notes***:
+**Figure notes**: Race/ethnicity categories not available in 1980 Census: Asian, non-Hispanic; Two+ races, non-Hispanic; NHPI, non-Hispanic; AIAN non-Hispanic.
 
-- Race/ethnicity categories not available in 1980 Census: Asian, non-Hispanic; Two+ races, non-Hispanic; NHPI, non-Hispanic; AIAN non-Hispanic
--->
-```
 
 {{< pagebreak >}}
 
@@ -393,15 +389,10 @@ Alt text: Stacked bars of racial and ethnic composition by Geomarket in 1980, 20
 
 {{< pagebreak >}}
 
-Alt text: Stacked bars of racial and ethnic composition by Geomarket for three SAT score ranges. In every range, the City of Chicago has the smallest White share and largest Black and Hispanic shares, and Asian shares are largest in the top range.
+**Alt text**: Stacked bars of racial and ethnic composition by Geomarket for three SAT score ranges. In every range, the City of Chicago has the smallest White share and largest Black and Hispanic shares, and Asian shares are largest in the top range.
 
-```{=html}
-<!--
-***Figure notes***:
+**Figure notes**: Excludes students with missing values for race.
 
-- Excludes students with missing values for race. Order number 392833 (ordered 7/10/2018): HS class 2019 OR 2020; state = IL; SAT 1020 - 1150; GPA B- to A+. Order number 487984 (ordered 7/19/2019): HS class 2020 OR 2021; state = IL; SAT 1020 - 1150; GPA B- to A+. Order number 392834 (ordered 7/10/2018): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300. Order number 488035 (ordered 7/19/2019): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300; GPA B- to A+. Order number 392835 (ordered 7/9/2018): HS class 2019 OR 2020; state = IL; SAT 1310 - 1600; GPA B- to A+. Order number 488053 (ordered 7/19/2019): HS class 2020 OR 2021; state = IL; SAT 1310 - 1600; GPA B- to A+
--->
-```
 
 {{< pagebreak >}}
 
@@ -409,15 +400,10 @@ Alt text: Stacked bars of racial and ethnic composition by Geomarket for three S
 
 {{< pagebreak >}}
 
-Alt text: Bars of first-generation shares by Geomarket for three SAT score ranges. First-generation shares fall as scores rise and are highest in the City of Chicago and South and Southwest Suburbs.
+**Alt text**: Bars of first-generation shares by Geomarket for three SAT score ranges. First-generation shares fall as scores rise and are highest in the City of Chicago and South and Southwest Suburbs.
 
-```{=html}
-<!--
-***Figure notes***:
+**Figure notes**: Excludes students with missing values for first-generation status.
 
-- Excludes students with missing values for firstgen. Order number 392833 (ordered 7/10/2018): HS class 2019 OR 2020; state = IL; SAT 1020 - 1150; GPA B- to A+. Order number 487984 (ordered 7/19/2019): HS class 2020 OR 2021; state = IL; SAT 1020 - 1150; GPA B- to A+. Order number 392834 (ordered 7/10/2018): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300. Order number 488035 (ordered 7/19/2019): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300; GPA B- to A+. Order number 392835 (ordered 7/9/2018): HS class 2019 OR 2020; state = IL; SAT 1310 - 1600; GPA B- to A+. Order number 488053 (ordered 7/19/2019): HS class 2020 OR 2021; state = IL; SAT 1310 - 1600; GPA B- to A+
--->
-```
 
 {{< pagebreak >}}
 
@@ -425,15 +411,10 @@ Alt text: Bars of first-generation shares by Geomarket for three SAT score range
 
 {{< pagebreak >}}
 
-Alt text: Bars of first-generation shares by Geomarket within each racial and ethnic group. Hispanic prospects have the highest first-generation share overall and White prospects the lowest.
+**Alt text**: Bars of first-generation shares by Geomarket within each racial and ethnic group. Hispanic prospects have the highest first-generation share overall and White prospects the lowest.
 
-```{=html}
-<!--
-***Figure notes***:
+**Figure notes**: Excludes students with missing values for race or parental education.
 
-- Excludes students who have missing values for race or parental education. Order number 392834 (ordered 7/10/2018): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300. Order number 488035 (ordered 7/19/2019): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300; GPA B- to A+
--->
-```
 
 {{< pagebreak >}}
 
@@ -441,15 +422,10 @@ Alt text: Bars of first-generation shares by Geomarket within each racial and et
 
 {{< pagebreak >}}
 
-Alt text: Four panels, for White, Asian, Black, and Hispanic prospects. Gray bars show the share of all prospects from each Geomarket, and blue lollipops show the share of the focal group. The City of Chicago supplies a disproportionately high share of Black and Hispanic prospects.
+**Alt text**: Four panels, for White, Asian, Black, and Hispanic prospects. Gray bars show the share of all prospects from each Geomarket, and blue lollipops show the share of the focal group. The City of Chicago supplies a disproportionately high share of Black and Hispanic prospects.
 
-```{=html}
-<!--
-***Figure notes***:
+**Figure notes**: Gray bars show the share of all race-known purchased student profiles contributed by each Geomarket. Blue lollipops show the share of the focal racial/ethnic group contributed by each Geomarket. Geomarkets are sorted by Geomarket number. Excludes students with missing values for race/ethnicity. Figure excludes Two+, non-Hispanic; AIAN, non-Hispanic; and NHPI, non-Hispanic groups.
 
-- Gray bars show the share of all race-known purchased student profiles contributed by each Geomarket. Blue lollipops show the share of the focal racial/ethnic group contributed by each Geomarket. Geomarkets are sorted by Geomarket number. Excludes students with missing values for race/ethnicity. Figure shows White, Asian, Black, and Hispanic groups; it excludes Two+, non-Hispanic; AIAN, non-Hispanic; and NHPI, non-Hispanic groups. Order number 392834 (ordered 7/10/2018): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300. Order number 488035 (ordered 7/19/2019): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300; GPA B- to A+
--->
-```
 
 {{< pagebreak >}}
 
@@ -457,15 +433,10 @@ Alt text: Four panels, for White, Asian, Black, and Hispanic prospects. Gray bar
 
 {{< pagebreak >}}
 
-Alt text: Two panels, for first-generation and not first-generation prospects. Gray bars show the share of all prospects from each Geomarket, and blue lollipops show the share of the focal group. The City of Chicago and South and Southwest Suburbs supply a disproportionately high share of first-generation prospects.
+**Alt text**: Two panels, for first-generation and not first-generation prospects. Gray bars show the share of all prospects from each Geomarket, and blue lollipops show the share of the focal group. The City of Chicago and South and Southwest Suburbs supply a disproportionately high share of first-generation prospects.
 
-```{=html}
-<!--
-***Figure notes***:
+**Figure notes**: Gray bars show the share of all first-generation-known purchased student profiles contributed by each Geomarket. Blue lollipops show the share of the focal first-generation group contributed by each Geomarket. Geomarkets are sorted by Geomarket number. Excludes students with missing values for first-generation status.
 
-- Gray bars show the share of all first-gen-known purchased student profiles contributed by each Geomarket. Blue lollipops show the share of the focal first-generation-status group contributed by each Geomarket. Geomarkets are sorted by Geomarket number. Excludes students with missing values for first-generation status. Order number 392834 (ordered 7/10/2018): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300. Order number 488035 (ordered 7/19/2019): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300; GPA B- to A+
--->
-```
 
 {{< pagebreak >}}
 
@@ -473,15 +444,10 @@ Alt text: Two panels, for first-generation and not first-generation prospects. G
 
 {{< pagebreak >}}
 
-Alt text: Four panels, for White, Asian, Black, and Hispanic prospects. Gray bars show the share of all prospects from each Geomarket, with paired lollipops for first-generation (blue) and not first-generation (red) prospects. Asian, Black, and Hispanic first-generation shares peak in the City of Chicago.
+**Alt text**: Four panels, for White, Asian, Black, and Hispanic prospects. Gray bars show the share of all prospects from each Geomarket, with paired lollipops for first-generation (blue) and not first-generation (red) prospects. Asian, Black, and Hispanic first-generation shares peak in the City of Chicago.
 
-```{=html}
-<!--
-***Figure notes***:
+**Figure notes**: Gray bars show the share of all race-known and first-generation-known purchased student profiles contributed by each Geomarket. Colored lollipops show the share of the focal racial/ethnic × first-generation subgroup contributed by each Geomarket. Excludes students with missing values for race/ethnicity or first-generation status. Figure excludes Two+, non-Hispanic; AIAN, non-Hispanic; and NHPI, non-Hispanic groups.
 
-- Gray bars show the share of all race/ethnicity-known and first-generation-status-known purchased student profiles contributed by each Geomarket. Colored lollipops show the share of the focal racial/ethnic × first-generation subgroup contributed by each Geomarket. Excludes students with missing values for race/ethnicity or first-generation status. Figure excludes Two+, non-Hispanic; AIAN, non-Hispanic; and NHPI, non-Hispanic groups. Order number 392834 (ordered 7/10/2018): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300. Order number 488035 (ordered 7/19/2019): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300; GPA B- to A+
--->
-```
 
 {{< pagebreak >}}
 
@@ -489,15 +455,10 @@ Alt text: Four panels, for White, Asian, Black, and Hispanic prospects. Gray bar
 
 {{< pagebreak >}}
 
-Alt text: Lollipop plots of the percentage-point change in each racial and ethnic group share when each Geomarket is excluded. Excluding the City of Chicago produces the largest changes, raising the White share and lowering Black and Hispanic shares.
+**Alt text**: Lollipop plots of the percentage-point change in each racial and ethnic group share when each Geomarket is excluded. Excluding the City of Chicago produces the largest changes, raising the White share and lowering Black and Hispanic shares.
 
-```{=html}
-<!--
-***Figure notes***:
+**Figure notes**: Each point shows the percentage-point change in the racial/ethnic composition of the remaining visible prospect pool after excluding the named Geomarket. Facet titles report the full-pool count and baseline share for each racial/ethnic group. Excludes students with missing values for race/ethnicity.
 
-- Each point shows the percentage-point change in the racial/ethnic composition of the remaining visible prospect pool after excluding the named Geomarket. Positive values mean the remaining pool has a higher share than the full metro pool; negative values mean the remaining pool has a lower share. Facet titles report the full-pool count and baseline share for each racial/ethnic group. Excludes students with missing values for race/ethnicity. Order number 392834 (ordered 7/10/2018): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300. Order number 488035 (ordered 7/19/2019): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300; GPA B- to A+
--->
-```
 
 {{< pagebreak >}}
 
@@ -505,15 +466,10 @@ Alt text: Lollipop plots of the percentage-point change in each racial and ethni
 
 {{< pagebreak >}}
 
-Alt text: Lollipop plots of the relative percent change in each racial and ethnic group share when each Geomarket is excluded. Excluding the City of Chicago lowers Black and Hispanic shares, while excluding the Western Suburbs raises them.
+**Alt text**: Lollipop plots of the relative percent change in each racial and ethnic group share when each Geomarket is excluded. Excluding the City of Chicago lowers Black and Hispanic shares, while excluding the Western Suburbs raises them.
 
-```{=html}
-<!--
-***Figure notes***:
+**Figure notes**: Each point shows the relative percent change in the racial/ethnic composition of the remaining visible prospect pool after excluding the named Geomarket. Facet titles report the full-pool count and baseline share for each racial/ethnic group. Excludes students with missing values for race/ethnicity.
 
-- Each point shows the relative percent change in the racial/ethnic composition of the remaining visible prospect pool after excluding the named Geomarket. Relative percent change is calculated as 100 × (remaining-pool share − full-pool share) / full-pool share. Positive values mean the remaining pool has higher relative representation than the full metro pool; negative values mean the remaining pool has lower relative representation. Facet titles report the full-pool count and baseline share for each racial/ethnic group. Excludes students with missing values for race/ethnicity. Order number 392834 (ordered 7/10/2018): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300. Order number 488035 (ordered 7/19/2019): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300; GPA B- to A+
--->
-```
 
 {{< pagebreak >}}
 
@@ -521,15 +477,10 @@ Alt text: Lollipop plots of the relative percent change in each racial and ethni
 
 {{< pagebreak >}}
 
-Alt text: Lollipop plots of the percentage-point change in first-generation and not first-generation shares when each Geomarket is excluded. Excluding the City of Chicago or South and Southwest Suburbs lowers the first-generation share; other exclusions raise it.
+**Alt text**: Lollipop plots of the percentage-point change in first-generation and not first-generation shares when each Geomarket is excluded. Excluding the City of Chicago or South and Southwest Suburbs lowers the first-generation share; other exclusions raise it.
 
-```{=html}
-<!--
-***Figure notes***:
+**Figure notes**: Each point shows the percentage-point change in first-generation status composition of the remaining visible prospect pool after excluding the named Geomarket. Facet titles report the full-pool count and baseline share for each first-generation status group. Excludes students with missing values for first-generation status.
 
-- Each point shows the percentage-point change in first-generation status composition of the remaining visible prospect pool after excluding the named Geomarket. Positive values mean the remaining pool has a higher share than the full metro pool; negative values mean the remaining pool has a lower share. Facet titles report the full-pool count and baseline share for each first-generation status group. Excludes students with missing values for first-generation status. Order number 392834 (ordered 7/10/2018): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300. Order number 488035 (ordered 7/19/2019): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300; GPA B- to A+
--->
-```
 
 {{< pagebreak >}}
 
@@ -537,15 +488,10 @@ Alt text: Lollipop plots of the percentage-point change in first-generation and 
 
 {{< pagebreak >}}
 
-Alt text: Lollipop plots of the relative percent change in first-generation and not first-generation shares when each Geomarket is excluded. The largest first-generation changes come from excluding the City of Chicago (decline) and Western Suburbs (increase).
+**Alt text**: Lollipop plots of the relative percent change in first-generation and not first-generation shares when each Geomarket is excluded. The largest first-generation changes come from excluding the City of Chicago (decline) and Western Suburbs (increase).
 
-```{=html}
-<!--
-***Figure notes***:
+**Figure notes**: Each point shows the relative percent change in first-generation status composition of the remaining visible prospect pool after excluding the named Geomarket. Facet titles report the full-pool count and baseline share for each first-generation status group. Excludes students with missing values for first-generation status.
 
-- Each point shows the relative percent change in first-generation status composition of the remaining visible prospect pool after excluding the named Geomarket. Relative percent change is calculated as 100 × (remaining-pool share − full-pool share) / full-pool share. Positive values mean the remaining pool has higher relative representation than the full metro pool; negative values mean the remaining pool has lower relative representation. Facet titles report the full-pool count and baseline share for each first-generation status group. Excludes students with missing values for first-generation status. Order number 392834 (ordered 7/10/2018): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300. Order number 488035 (ordered 7/19/2019): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300; GPA B- to A+
--->
-```
 
 {{< pagebreak >}}
 
@@ -553,15 +499,10 @@ Alt text: Lollipop plots of the relative percent change in first-generation and 
 
 {{< pagebreak >}}
 
-Alt text: Grid of lollipop plots of the percentage-point change in each race and first-generation subgroup when each Geomarket is excluded. The largest changes come from excluding the City of Chicago, which raises the not first-generation White share and lowers the first-generation Hispanic share.
+**Alt text**: Grid of lollipop plots of the percentage-point change in each race and first-generation subgroup when each Geomarket is excluded. The largest changes come from excluding the City of Chicago, which raises the not first-generation White share and lowers the first-generation Hispanic share.
 
-```{=html}
-<!--
-***Figure notes***:
+**Figure notes**: Each point shows the percentage-point change in the race-by-first-generation composition of the remaining visible prospect pool after excluding the named Geomarket. Rows show racial/ethnic groups; columns distinguish first-generation and non-first-generation prospects. Within each racial/ethnic row, Geomarkets are sorted by the first-generation subgroup’s percentage-point change. Panel labels report the full-pool count and baseline share for each race-by-first-generation subgroup. Excludes students with missing values for race/ethnicity or first-generation status.
 
-- Each point shows the percentage-point change in the race-by-first-generation composition of the remaining visible prospect pool after excluding the named Geomarket. Positive values mean the remaining pool has a higher share than the full metro pool; negative values mean the remaining pool has a lower share. Rows show racial/ethnic groups; columns distinguish first-generation and non-first-generation prospects. Within each racial/ethnic row, Geomarkets are sorted by the first-generation subgroup’s percentage-point change. Panel labels report the full-pool count and baseline share for each race-by-first-generation subgroup. Excludes students with missing values for race/ethnicity or first-generation status. Order number 392834 (ordered 7/10/2018): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300. Order number 488035 (ordered 7/19/2019): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300; GPA B- to A+
--->
-```
 
 {{< pagebreak >}}
 
@@ -569,12 +510,6 @@ Alt text: Grid of lollipop plots of the percentage-point change in each race and
 
 {{< pagebreak >}}
 
-Alt text: Grid of lollipop plots of the relative percent change in each race and first-generation subgroup when each Geomarket is excluded. Excluding the City of Chicago yields the largest declines for first-generation Black, Hispanic, and Asian prospects.
+**Alt text**: Grid of lollipop plots of the relative percent change in each race and first-generation subgroup when each Geomarket is excluded. Excluding the City of Chicago yields the largest declines for first-generation Black, Hispanic, and Asian prospects.
 
-```{=html}
-<!--
-***Figure notes***:
-
-- Each point shows the relative percent change in the race-by-first-generation composition of the remaining visible prospect pool after excluding the named Geomarket. Relative percent change is calculated as 100 × (remaining-pool share − full-pool share) / full-pool share. Positive values mean the remaining pool has higher relative representation than the full metro pool; negative values mean the remaining pool has lower relative representation. Rows show racial/ethnic groups; columns distinguish first-generation and non-first-generation prospects. Within each racial/ethnic row, Geomarkets are sorted by the first-generation subgroup’s relative percent change. Panel labels report the full-pool count and baseline share for each race-by-first-generation subgroup. Excludes students with missing values for race/ethnicity or first-generation status. Order number 392834 (ordered 7/10/2018): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300. Order number 488035 (ordered 7/19/2019): HS class 2019 OR 2020; state = IL; SAT 1160 - 1300; GPA B- to A+
--->
-```
+**Figure notes**: Each point shows the relative percent change in the race-by-first-generation composition of the remaining visible prospect pool after excluding the named Geomarket. Rows show racial/ethnic groups; columns distinguish first-generation and non-first-generation prospects. Within each racial/ethnic row, Geomarkets are sorted by the first-generation subgroup’s relative percent change. Panel labels report the full-pool count and baseline share for each race-by-first-generation subgroup. Excludes students with missing values for race/ethnicity or first-generation status.
