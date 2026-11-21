@@ -459,6 +459,8 @@ The College Board case also points toward a broader empirical agenda on the edte
 -->
 ```
 
+{{< pagebreak >}}
+
 ![Relative percent change in first-generation status composition after excluding Geomarket: Chicago, SAT score 1160–1300](../results/graphs/rq3/rq3_chicago_firstgen_relative_exclusion_plot_order_392834_488035.png){#fig-rq3-chicago-firstgen-relative-exclusion-plot-order-392834-488035}
 
 <!-- Alt text: Lollipop plots of the relative percent change in first-generation and not first-generation shares when each Geomarket is excluded. The largest first-generation changes come from excluding the City of Chicago (decline) and Western Suburbs (increase). -->
@@ -478,6 +480,8 @@ The College Board case also points toward a broader empirical agenda on the edte
 **Figure notes**: Each point shows the percentage-point change in the race-by-first-generation composition of the remaining visible prospect pool after excluding the named Geomarket. Rows show racial/ethnic groups; columns distinguish first-generation and non-first-generation prospects. Within each racial/ethnic row, Geomarkets are sorted by the first-generation subgroup’s percentage-point change. Panel labels report the full-pool count and baseline share for each race-by-first-generation subgroup. Excludes students with missing values for race/ethnicity or first-generation status.
 -->
 ```
+
+{{< pagebreak >}}
 
 ![Relative percent change in race × first-generation composition after excluding Geomarket: Chicago, SAT score 1160–1300](../results/graphs/rq3/rq3_chicago_race_firstgen_relative_exclusion_plot_order_392834_488035.png){#fig-rq3-chicago-race-firstgen-relative-exclusion-plot-order-392834-488035}
 
