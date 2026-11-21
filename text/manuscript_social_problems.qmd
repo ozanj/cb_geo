@@ -4,16 +4,16 @@
 bibliography: ./../assets/bib/cb_geomarket_bib_asa.bib
 csl: ./../assets/bib/american-sociological-association.csl
 format:
-  #docx:
-    #reference-doc: custom-reference-v2.docx
+  docx:
+    reference-doc: custom-reference-v2.docx
   pdf:
     documentclass: article
-    papersize: letter
+    #papersize: letter
     number-sections: true
     number-depth: 2
-    toc: FALSE
+    #toc: FALSE
     pandoc_args: !expr rmdfiltr::add_wordcount_filter(rmdfiltr::add_citeproc_filter(args = NULL))
-    keep_tex: true
+    #keep_tex: true
     extensions: [andrewheiss/wordcount]
 editor: visual
 geometry:
@@ -363,8 +363,6 @@ The College Board case also points toward a broader empirical agenda on the edte
 
 ![Socioeconomic characteristics of Chicago area Geomarkets](../results/graphs/rq1/rq1_chicago_ses.png){#fig-chicago-ses}
 
-{{< pagebreak >}}
-
 <!--Alt text: Bar charts of median income, poverty, and four-year degree attainment by Geomarket in 1980, 2000, and 2020. Every year, North Shore ranks highest in income and education and the City of Chicago lowest in income and highest in poverty. -->
 
 **Figure notes**: Household income measured using 2024 CPI.
@@ -372,8 +370,6 @@ The College Board case also points toward a broader empirical agenda on the edte
 {{< pagebreak >}}
 
 ![Racial/ethnic composition of Chicago area Geomarkets](../results/graphs/rq1/rq1_chicago_race.png){#fig-chicago-race}
-
-{{< pagebreak >}}
 
 <!-- Alt text: Stacked bars of racial and ethnic composition by Geomarket in 1980, 2000, and 2020. Geomarkets except the City of Chicago are over 80 percent White in 1980; White shares shrink over time as Hispanic and Asian shares grow.-->
 
@@ -383,8 +379,6 @@ The College Board case also points toward a broader empirical agenda on the edte
 
 ![Racial/ethnic composition of purchased student profiles by Geomarket, Chicago area](../results/graphs/rq2/rq2_chicago_race_row_plot.png){#fig-rq2-chicago-race-row-plot}
 
-{{< pagebreak >}}
-
 <!-- Alt text: Stacked bars of racial and ethnic composition by Geomarket for three SAT score ranges. In every range, the City of Chicago has the smallest White share and largest Black and Hispanic shares, and Asian shares are largest in the top range. -->
 
 **Figure notes**: Excludes students with missing values for race.
@@ -392,8 +386,6 @@ The College Board case also points toward a broader empirical agenda on the edte
 {{< pagebreak >}}
 
 ![First-generation status composition of purchased student profiles by Geomarket, Chicago area](../results/graphs/rq2/rq2_chicago_firstgen_row_plot.png){#fig-rq2-chicago-firstgen-row-plot}
-
-{{< pagebreak >}}
 
 <!-- Alt text: Bars of first-generation shares by Geomarket for three SAT score ranges. First-generation shares fall as scores rise and are highest in the City of Chicago and South and Southwest Suburbs. -->
 
@@ -403,8 +395,6 @@ The College Board case also points toward a broader empirical agenda on the edte
 
 ![First-generation status by race for Chicago area Geomarkets, SAT score 1160 - 1300](../results/graphs/rq2b/rq2b_chicago_order_392834_488035_race_by_firstgen.png){#fig-rq2b-chicago-order-392834-488035-race-by-firstgen}
 
-{{< pagebreak >}}
-
 <!-- Alt text: Bars of first-generation shares by Geomarket within each racial and ethnic group. Hispanic prospects have the highest first-generation share overall and White prospects the lowest. -->
 
 **Figure notes**: Excludes students with missing values for race or parental education.
@@ -412,8 +402,6 @@ The College Board case also points toward a broader empirical agenda on the edte
 {{< pagebreak >}}
 
 ![Geomarket contributions to each racial/ethnic group: Chicago, SAT score 1160–1300](../results/graphs/rq2/rq2_chicago_race_contribution_overlay_plot_392834_488035.png){#fig-rq2-chicago-race-contribution-overlay-plot-392834-488035}
-
-{{< pagebreak >}}
 
 <!-- Alt text: Four panels, for White, Asian, Black, and Hispanic prospects. Gray bars show the share of all prospects from each Geomarket, and blue lollipops show the share of the focal group. The City of Chicago supplies a disproportionately high share of Black and Hispanic prospects. -->
 
@@ -423,8 +411,6 @@ The College Board case also points toward a broader empirical agenda on the edte
 
 ![Geomarket contributions by first-generation status: Chicago, SAT score 1160–1300](../results/graphs/rq2/rq2_chicago_firstgen_contribution_overlay_plot_392834_488035.png){#fig-rq2-chicago-firstgen-contribution-overlay-plot-392834-488035}
 
-{{< pagebreak >}}
-
 <!-- Alt text: Two panels, for first-generation and not first-generation prospects. Gray bars show the share of all prospects from each Geomarket, and blue lollipops show the share of the focal group. The City of Chicago and South and Southwest Suburbs supply a disproportionately high share of first-generation prospects.-->
 
 **Figure notes**: Gray bars show the share of all first-generation-known purchased student profiles contributed by each Geomarket. Blue lollipops show the share of the focal first-generation group contributed by each Geomarket. Geomarkets are sorted by Geomarket number. Excludes students with missing values for first-generation status.
@@ -432,8 +418,6 @@ The College Board case also points toward a broader empirical agenda on the edte
 {{< pagebreak >}}
 
 ![Geomarket contributions by race and first-generation status: Chicago, SAT score 1160–1300](../results/graphs/rq2/rq2_chicago_race_firstgen_contribution_plot_392834_488035.png){#fig-rq2-chicago-race-firstgen-contribution-plot-392834-488035}
-
-{{< pagebreak >}}
 
 <!-- Alt text: Four panels, for White, Asian, Black, and Hispanic prospects. Gray bars show the share of all prospects from each Geomarket, with paired lollipops for first-generation (blue) and not first-generation (red) prospects. Asian, Black, and Hispanic first-generation shares peak in the City of Chicago.-->
 
@@ -457,8 +441,6 @@ The College Board case also points toward a broader empirical agenda on the edte
 
 ![Relative percent change in racial/ethnic composition after excluding each Geomarket: Chicago, SAT score 1160–1300](../results/graphs/rq3/rq3_chicago_race_relative_exclusion_plot_order_392834_488035.png){#fig-rq3-chicago-race-relative-exclusion-plot-order-392834-488035}
 
-{{< pagebreak >}}
-
 <!-- Alt text: Lollipop plots of the relative percent change in each racial and ethnic group share when each Geomarket is excluded. Excluding the City of Chicago lowers Black and Hispanic shares, while excluding the Western Suburbs raises them.-->
 
 **Figure notes**: Each point shows the relative percent change in the racial/ethnic composition of the remaining visible prospect pool after excluding the named Geomarket. Facet titles report the full-pool count and baseline share for each racial/ethnic group. Excludes students with missing values for race/ethnicity.
@@ -477,11 +459,7 @@ The College Board case also points toward a broader empirical agenda on the edte
 -->
 ```
 
-{{< pagebreak >}}
-
 ![Relative percent change in first-generation status composition after excluding Geomarket: Chicago, SAT score 1160–1300](../results/graphs/rq3/rq3_chicago_firstgen_relative_exclusion_plot_order_392834_488035.png){#fig-rq3-chicago-firstgen-relative-exclusion-plot-order-392834-488035}
-
-{{< pagebreak >}}
 
 <!-- Alt text: Lollipop plots of the relative percent change in first-generation and not first-generation shares when each Geomarket is excluded. The largest first-generation changes come from excluding the City of Chicago (decline) and Western Suburbs (increase). -->
 
@@ -501,11 +479,7 @@ The College Board case also points toward a broader empirical agenda on the edte
 -->
 ```
 
-{{< pagebreak >}}
-
 ![Relative percent change in race × first-generation composition after excluding Geomarket: Chicago, SAT score 1160–1300](../results/graphs/rq3/rq3_chicago_race_firstgen_relative_exclusion_plot_order_392834_488035.png){#fig-rq3-chicago-race-firstgen-relative-exclusion-plot-order-392834-488035}
-
-{{< pagebreak >}}
 
 <!-- Alt text: Grid of lollipop plots of the relative percent change in each race and first-generation subgroup when each Geomarket is excluded. Excluding the City of Chicago yields the largest declines for first-generation Black, Hispanic, and Asian prospects. -->
 
